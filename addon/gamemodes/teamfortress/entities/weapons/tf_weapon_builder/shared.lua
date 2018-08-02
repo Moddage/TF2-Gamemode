@@ -266,7 +266,7 @@ end
 if CLIENT then
 
 SWEP.PrintName			= "Builder"
-SWEP.Slot				= 5
+SWEP.Slot				= 1
 SWEP.Crosshair = "tf_crosshair6"
 
 function SWEP:InitializeBuildings(buildings)

@@ -565,6 +565,8 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 			umsg.Vector(dmginfo:GetDamagePosition()-ent:GetPos())
 			umsg.Float(dmginfo:GetDamage())
 		umsg.End()
+	elseif dmginfo:IsFallDamage() then 
+		ent:Speak("TLK_PLAYER_ATTACKER_PAIN")
 	end
 end
 

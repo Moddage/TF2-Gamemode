@@ -5,6 +5,7 @@ local Scale = H/480
 -- Fonts
 
 surface.CreateFont("HudClassHealth", {font = "TF2", size = 16*Scale})
+surface.CreateFont("HudClassHealthMax", {font = "DefaultSmall", size = 10*Scale})
 surface.CreateFont("HudFontMedium", {font = "TF2", size = 24*Scale})
 surface.CreateFont("HudFontMediumSmall", {font = "TF2", size = 18*Scale})
 surface.CreateFont("HudFontBig", {font = "TF2", size = 36*Scale})

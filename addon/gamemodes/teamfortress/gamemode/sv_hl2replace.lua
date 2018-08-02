@@ -60,7 +60,7 @@ function GM:PlayerCanPickupWeapon(ply, wep)
 		return true
 	end
 	
-	if HL2Weapon[wep:GetClass()] then return false end
+	if HL2Weapon[wep:GetClass()] then return true end
 	return true
 end
 

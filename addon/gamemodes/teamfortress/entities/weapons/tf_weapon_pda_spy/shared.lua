@@ -16,7 +16,7 @@ SWEP.Primary.Ammo			= "none"
 if CLIENT then
 
 SWEP.PrintName			= "Build PDA"
-SWEP.Slot				= 1
+SWEP.Slot				= 3
 SWEP.Crosshair = ""
 
 end

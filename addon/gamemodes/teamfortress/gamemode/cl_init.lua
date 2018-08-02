@@ -22,6 +22,8 @@ include("tf_draw_module.lua")
 include("cl_materialfix.lua")
 
 CreateClientConVar( "tf_haltinspect", "1", FCVAR_CLIENTCMD_CAN_EXECUTE, "Whether or not players can inspect while no-clipping." )
+CreateClientConVar( "tf_maxhealth_hud", "1", FCVAR_CLIENTCMD_CAN_EXECUTE, "Enable maxhealth above health when hurt." )
+CreateClientConVar( "tf_robot", "0", FCVAR_CLIENTCMD_CAN_EXECUTE, "Become a robot after respawning." )
 
 function GM:ShouldDrawWorldModel(pl)
 	return true
@@ -386,7 +388,7 @@ end
 
 local Option1text = vgui.Create( "DLabel", ClassFrame )
 Option1text:SetPos( 150, 110 )
-Option1text:SetText(  "Right handed" )
+Option1text:SetText( "Right handed" )
 Option1text:SizeToContents()
 
 local Option2 = vgui.Create( "DCheckBox", ClassFrame )
@@ -403,9 +405,26 @@ end
 
 local Option2text = vgui.Create( "DLabel", ClassFrame )
 Option2text:SetPos( 240, 110 )
-Option2text:SetText(  "Autoreload" )
+Option2text:SetText( "Autoreload" )
 Option2text:SizeToContents()
 
+local Option3 = vgui.Create( "DCheckBox", ClassFrame )
+Option3:SetPos( 300, 110 )
+Option3:SetValue( GetConVar("tf_robot"):GetInt() )
+
+function Option3:OnChange(new)
+	RunConsoleCommand("kill")
+	if new == false then
+		RunConsoleCommand("tf_robot", 0)
+	else
+		RunConsoleCommand("tf_robot", 1)
+	end
+end
+
+local Option3text = vgui.Create( "DLabel", ClassFrame )
+Option3text:SetPos( 320, 110 )
+Option3text:SetText( "Become a Robot" )
+Option3text:SizeToContents()
 
 end
 

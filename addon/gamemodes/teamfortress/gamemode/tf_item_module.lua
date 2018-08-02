@@ -225,6 +225,7 @@ function ITEM:InitVisuals(owner, visuals)
 	--MsgFN("InitVisuals (%s) %s",tostring(self),tostring(owner))
 	visuals = visuals or {}
 	
+	if not self:GetItemData() then return end
 	-- Skin and material
 	self.WeaponSkin = visuals.skin
 	if not self.WeaponSkin then

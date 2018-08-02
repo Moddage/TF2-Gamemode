@@ -28,7 +28,7 @@ SWEP.PunchView = Angle( 0, 0, 0 )
 
 SWEP.HoldType = "PRIMARY"
 
-SWEP.AutoReloadTime = 0.5
+SWEP.AutoReloadTime = 0.01
 
 idle_timer = 1
 end_timer = 1
@@ -57,11 +57,13 @@ function SWEP:PrimaryAttack()
 	self.Owner:DoAttackEvent()
 	
 	self.NextIdle = CurTime() + self:SequenceDuration()
-	
-	if auto_reload then
-		timer.Create("AutoReload", (self:SequenceDuration() + self.AutoReloadTime), 1, function() if self then self:Reload() end end)
+	if self then
+		if self.Owner:GetInfoNum("tf_autoreload", 1) == 1 then
+			if auto_reload then
+				timer.Create("AutoReload", (self:SequenceDuration() + self.AutoReloadTime), 1, function() if self then self:Reload() end end)
+			end
+		end
 	end
-	
 	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
 	self:TakePrimaryAmmo(1)
 	

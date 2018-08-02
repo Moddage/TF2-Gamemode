@@ -688,9 +688,9 @@ hook.Add("Think", "TFPlayerThink", function()
 					v:AddHealing(v.AddedHealing)
 				end
 			end
-
+			if v.AddedHealing then
 			v.AddedHealing = 0
-			
+			end
 			if v.HealingScoreProgress then
 				local score = 0
 				while v.HealingScoreProgress > 600 do

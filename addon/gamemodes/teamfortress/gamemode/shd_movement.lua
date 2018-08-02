@@ -9,8 +9,7 @@ hook.Add("Move", "TFMove", function(pl, move)
 		local sp = -pl:GetRealClassSpeed() * 0.9
 		if fwd<sp then
 			--move:SetForwardSpeed(sp)
-  			if pl:Crouching() then 
-  			else
+  			if not pl:Crouching() then 
   				move:SetMaxSpeed(math.abs(-pl:GetRealClassSpeed() * 0.9 ))
   				move:SetMaxClientSpeed(math.abs(-pl:GetRealClassSpeed() * 0.9 ))
   			end

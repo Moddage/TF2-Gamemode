@@ -84,7 +84,7 @@ PrecacheParticleSystem("pyro_blast_warp2")
 SWEP.Base				= "tf_weapon_gun_base"
 
 SWEP.ViewModel			= "models/weapons/v_models/v_flamethrower_pyro.mdl"
-SWEP.WorldModel			= "models/weapons/w_models/w_flamethrower.mdl"
+SWEP.WorldModel			= "models/weapons/c_models/c_flamethrower.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
 SWEP.MuzzleEffect = "pyro_blast"

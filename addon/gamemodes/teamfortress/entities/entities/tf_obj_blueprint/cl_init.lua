@@ -36,12 +36,14 @@ function ENT:DrawTranslucent()
 	
 	if IsValid(self.Player) then
 		local pos, ang = self:CalcPos(self.Player)
-		ang.y = math.NormalizeAngle(ang.y + self.CurrentYaw)
-		self.Model:SetModel(self:GetModel())
-		self.Model:SetSkin(self:GetSkin())
-		self.Model:SetRenderOrigin(pos)
-		self.Model:SetRenderAngles(ang)
-		self.Model:DrawModel()
+		if ang then
+			ang.y = math.NormalizeAngle(ang.y + self.CurrentYaw)
+			self.Model:SetModel(self:GetModel())
+			self.Model:SetSkin(self:GetSkin())
+			self.Model:SetRenderOrigin(pos)
+			self.Model:SetRenderAngles(ang)
+			self.Model:DrawModel()
+		end
 	end
 end
 

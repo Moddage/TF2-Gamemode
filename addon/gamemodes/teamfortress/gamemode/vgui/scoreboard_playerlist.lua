@@ -116,10 +116,12 @@ function PANEL:Paint()
 			surface.DrawRect(3*Scale, ypos-math.floor(11*Scale), w-math.floor(6*Scale), math.floor(21*Scale))
 			surface.SetDrawColor(255, 255, 255, 255)
 		end
-		
+		if self then
+			if self.Avatars then
 		self.Avatars[i]:SetPlayer(pl)
 		self.Avatars[i]:SetVisible(true)
-		
+			end
+		end
 		if d then
 			col.a = 127
 		else

@@ -33,7 +33,8 @@ local VGUIFiles = {
 	"vgui_classmodelpanel";
 	"vgui_itemattributepanel";
 	"vgui_buildinghealth";
-	
+	--"vgui_teammenubg";
+
 	"hud_sniperchargemeter";
 	
 	"hud_obj_base";

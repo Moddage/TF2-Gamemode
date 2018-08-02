@@ -546,14 +546,17 @@ function SWEP:SecondaryAttack(noscene)
 end
 
 function SWEP:CheckAutoReload()
-	if self.Primary.ClipSize >= 0 and self:Ammo1() > 0 and not self:CanPrimaryAttack() then
-		--MsgFN("Deployed with empty clip, reloading")
-		self:Reload()
-	end
-	
 	if self then
-		if self.Owner:GetInfoNum("tf_righthand", 1) == 0 then
-			self:Reload()
+		if self.Owner:GetInfoNum("tf_autoreload", 1) == 1 then
+			if self.Owner:Alive() then
+				if self.Primary.ClipSize >= 0 and self:Ammo1() > 0 and not self:CanPrimaryAttack() then
+				--MsgFN("Deployed with empty clip, reloading")
+					self:Reload()
+				end
+	
+
+				self:Reload()
+			end
 		end
 	end
 end

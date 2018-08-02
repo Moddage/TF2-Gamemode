@@ -98,7 +98,23 @@ function PANEL:Paint()
 		xalign=TEXT_ALIGN_CENTER,
 		yalign=TEXT_ALIGN_CENTER,
 	}
-	
+	if health and maxhealth then
+	--print(health-maxhealth)
+		if health <= maxhealth and health ~= maxhealth and GetConVar("tf_maxhealth_hud"):GetInt() ~= 0 then
+		--	print(health-maxhealth+5)
+		--	print(health)
+		--	print(maxhealth)
+			draw.Text{
+				text=maxhealth,
+				font="HudClassHealthMax",
+				pos={(75+25)*Scale, (20+9)*Scale},
+				color=Colors.TanDark,
+				xalign=TEXT_ALIGN_CENTER,
+				yalign=TEXT_ALIGN_CENTER,
+			}
+		end
+	end
+
 	local droplet_x = 104*Scale
 	
 	if LocalPlayer():HasPlayerState(PLAYERSTATE_BLEEDING) then

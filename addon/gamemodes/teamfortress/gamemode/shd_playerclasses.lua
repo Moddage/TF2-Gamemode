@@ -18,7 +18,7 @@ function GM:RegisterPlayerClass(name, tbl)
 	
 	local mdl = "models/player/"..(tbl.ModelName or "scout")..".mdl"
 	util.PrecacheModel(mdl)
-	
+	--PrintTable(tbl)
 	self.PlayerClasses[name] = tbl
 	table.insert(self.PlayerClassesAutoComplete, "changeclass "..name)
 end
@@ -169,9 +169,14 @@ function meta:SetPlayerClass(class)
 	self.playerclass = string.upper(string.sub(class,1,1))..string.sub(class,2)
 	
 	-- Setting the model, obviously
-	if not c.Model then
-		c.Model = "models/player/"..(c.ModelName or "scout")..".mdl"
-	end
+	-- Stupid way to enable robots, but we just comment out class model already being defined!
+	--if not c.Model then
+		if self:GetInfoNum("tf_robot", 0) == 0 then
+			c.Model = "models/player/"..(c.ModelName or "scout")..".mdl"
+		else
+			c.Model = "models/bots/"..(c.ModelName or "scout").."/bot_"..(c.ModelName or "scout")..".mdl"
+		end
+	--end
 	
 	self:SetModel(c.Model)
 	

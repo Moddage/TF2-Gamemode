@@ -380,9 +380,11 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		end
 		
 		if not ply:IsHL2() then
-			if math.random()<p then -- gib that player
-				ply:Explode()
-				shouldgib = true
+			if ply:GetInfoNum("tf_robot", 0) == 0 then
+				if math.random()<p then -- gib that player
+					ply:Explode()
+					shouldgib = true
+				end
 			end
 		end
 	elseif inflictor.Critical and inflictor:Critical() then -- Critical damage

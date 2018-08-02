@@ -127,10 +127,11 @@ local VoiceMenuGesture = {
 
 concommand.Remove("__svspeak")
 
-concommand.Add( "changeteam", function( pl, cmd, args )
-	if tonumber( args[ 1 ] ) >= 5 then return end
+--[[concommand.Add( "changeteam", function( pl, cmd, args )
+	--if tonumber( args[ 1 ] ) >= 5 then return end
 	hook.Call( "PlayerRequestTeam", GAMEMODE, pl, tonumber( args[ 1 ] ) )
-end )
+	print("changeteam?? to what, oh, team "..tonumber( args[ 1 ] ).."!")
+end )]]
 
 if SERVER then
 
@@ -212,15 +213,15 @@ function GetTeamSecondaryColor(t)
 end
 
 function GM:CreateTeams()
-	team.SetUp(TEAM_RED, "RED Team", Color(255, 64, 64))
+	team.SetUp(TEAM_RED, "RED", Color(255, 64, 64))
 	SetTeamSecondaryColor(TEAM_RED, Color(180, 92, 77))
 	team.SetSpawnPoint(TEAM_RED, "info_player_start")
 	
-	team.SetUp(TEAM_BLU, "BLU Team", Color(153, 204, 255))
+	team.SetUp(TEAM_BLU, "BLU", Color(153, 204, 255))
 	SetTeamSecondaryColor(TEAM_BLU, Color(104, 124, 155))
 	team.SetSpawnPoint(TEAM_BLU, "info_player_start")
 	
-	team.SetUp(TEAM_NEUTRAL, "NEUTRAL Team", Color(110, 255, 80))
+	team.SetUp(TEAM_NEUTRAL, "NEUTRAL", Color(110, 255, 80))
 	SetTeamSecondaryColor(TEAM_NEUTRAL, Color(74, 130, 54))
 	team.SetSpawnPoint(TEAM_NEUTRAL, "info_player_start")
 	
@@ -566,7 +567,7 @@ concommand.Add("-inspect", function(pl)
 end)
 
 function GM:PlayerCanJoinTeam( ply, teamid )
-
+	print("Requested "..teamid.." for "..ply:GetName().."!".." (aka team "..team.GetName(teamid).."!)")
 	local TimeBetweenSwitches = GAMEMODE.SecondsBetweenTeamSwitches or 5
 	if ( ply.LastTeamSwitch && RealTime()-ply.LastTeamSwitch < TimeBetweenSwitches ) then
 		ply.LastTeamSwitch = ply.LastTeamSwitch + 1

@@ -61,9 +61,18 @@ end)
 concommand.Add("changeclass", function(pl, cmd, args)
 	if pl:Team()==TEAM_SPECTATOR then return end
 	if pl:Alive() and GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:Kill() end	
-	if GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:SetPlayerClass(args[1]) end
+	if GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:SetPlayerClass("gmodplayer") end
 	pl:SetPlayerClass(args[1])
 end, function() return GAMEMODE.PlayerClassesAutoComplete end)
+
+concommand.Add( "changeteam", function( pl, cmd, args )
+	if tonumber( args[ 1 ] ) >= 5 then return end
+	if ( pl:Team() == tonumber( args[ 1 ] ) ) then return false end
+	pl:SetTeam( tonumber( args[ 1 ] ) )  
+	timer.Simple(0.3, function() pl:SendLua("chat.AddText( Color( 235, 226, 202 ), 'Player ', LocalPlayer():Nick(), ' joined team ', team.GetName(LocalPlayer():Team()) )") end)
+	if pl:Alive() then pl:Kill() end 
+end )
+
 
 local SpawnableItems = {
 	"item_ammopack_small",
@@ -89,7 +98,7 @@ end)
 
 function GM:PlayerInitialSpawn(ply)
 	ply:SetTeam(TEAM_RED)
-	
+	ply:KillSilent()
 	-- Wait until InitPostEntity has been called
 	if not self.PostEntityDone then
 		timer.Simple(0.05, function() self:PlayerInitialSpawn(ply) end)
@@ -377,3 +386,22 @@ hook.Add( "PlayerSay", "KillYourself", function( ply, text, public )
 	end
 end )
 
+
+
+function GM:PlayerRequestTeam( ply, teamid )
+	print("test")
+
+	-- This team isn't joinable
+	if ( !team.Joinable( teamid ) ) then
+		ply:ChatPrint( "You can't join that team" )
+	return end
+
+	-- This team isn't joinable
+	if ( !GAMEMODE:PlayerCanJoinTeam( ply, teamid ) ) then
+	print("can can")	
+		-- Messages here should be outputted by this function
+	return end
+
+	GAMEMODE:PlayerJoinTeam( ply, teamid )
+
+end

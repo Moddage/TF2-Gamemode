@@ -205,6 +205,7 @@ end)
 
 
 local function Decap_HL2(ent)
+	print("nyoooooooooooooooooo")
 	local b1 = ent:LookupBone("ValveBiped.Bip01_Head1")
 	local b2 = ent:LookupBone("ValveBiped.Bip01_Spine2")
 	
@@ -294,18 +295,20 @@ end
 
 function GM:DecapitateRagdoll(rag, owner, deathpose)
 	local b
-	
+	--print("decap1")
 	b = rag:LookupBone("ValveBiped.Bip01_Head1")
 	if b and b>0 then
 		rag.NextDecapEnd = CurTime() + 5
 		rag.DecapLocator = ClientsideModel("models/props_junk/watermelon01.mdl")
 		rag.DecapLocator:SetNoDraw(true)
 		rag.DecapLocator:SetParent(rag)
-		
+		--print("decap2")
 		ParticleEffectAttach("blood_decap", PATTACH_ABSORIGIN_FOLLOW, rag.DecapLocator, 0)
 		rag.Owner = owner
 		--rag.BuildBonePositions = Decap_HL2
 		rag:AddBuildBoneHook("RagdollDecap", Decap_HL2)
+		rag:EmitSound("player/flow.wav")
+		rag:ManipulateBoneScale(b, Vector(0,0,0))
 		
 		if deathpose  then
 			PlayDeathPose(rag, DecapDeathPose)
@@ -313,7 +316,7 @@ function GM:DecapitateRagdoll(rag, owner, deathpose)
 		
 		return 1
 	end
-	
+	--print("decap3")
 	b = rag:LookupBone("bip_head")
 	if b and b>0 then
 		rag.NextDecapEnd = CurTime() + 5
@@ -325,7 +328,8 @@ function GM:DecapitateRagdoll(rag, owner, deathpose)
 		rag.Owner = owner
 		--rag.BuildBonePositions = Decap_TF2
 		rag:AddBuildBoneHook("RagdollDecap", Decap_TF2)
-		
+		rag:EmitSound("player/flow.wav")
+		rag:ManipulateBoneScale(b, Vector(0,0,0))
 		return 0
 	end
 end
@@ -370,7 +374,7 @@ usermessage.Hook("TFServerRagdollInit", function(msg)
 		rag.IsServerRagdoll = true
 		
 		--npc:SetNWBool("ShouldDropBurningRagdoll", msg:ReadBool())
-		--npc:SetNWBool("ShouldDropDecapitatedRagdoll", msg:ReadBool())
+		npc:SetNWBool("ShouldDropDecapitatedRagdoll", msg:ReadBool())
 		--npc:SetNWBool("DeathByHeadshot", msg:ReadBool())
 		
 		gamemode.Call("SetupNPCRagdoll", npc, rag)

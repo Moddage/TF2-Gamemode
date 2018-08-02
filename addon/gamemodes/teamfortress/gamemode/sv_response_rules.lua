@@ -327,7 +327,7 @@ local META = FindMetaTable("Player")
 
 function META:Speak(concept, nospeech, dbg)
 	if self:IsHL2() then return false end
-	
+	if self:GetInfoNum("tf_robot", 0) == 1 then return true end
 	if not self:Alive() then
 		return false
 	end
@@ -399,7 +399,7 @@ function META:Speak(concept, nospeech, dbg)
 	
 	local response = SelectResponse(self, dbg)
 	
-	if response then
+	if response and self:GetInfoNum("tf_robot", 0) == 0 then
 		return PlayResponse(self, response, nospeech, dbg)
 	end
 	
