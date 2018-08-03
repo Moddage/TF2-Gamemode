@@ -304,9 +304,13 @@ function PlayResponse(ent, response, nospeech)
 	
 	if not ent.NextSpeak or CurTime()>ent.NextSpeak or nospeech then
 		if delay then
-			timer.Simple(delay, function() playscene_delayed(ent, r[1]) end)
+			timer.Simple(delay, function()
+				local time = playscene_delayed(ent, r[1])
+				ent:SetNWBool("SpeechTime", time) 
+			end)
 		else
-			ent:PlayScene(r[1], 0)
+			local time = ent:PlayScene(r[1], 0)
+			ent:SetNWBool("SpeechTime", time)
 		end
 		
 		if not nospeech then

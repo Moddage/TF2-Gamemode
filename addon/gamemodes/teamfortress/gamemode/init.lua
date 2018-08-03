@@ -2,11 +2,14 @@ include("sv_clientfiles.lua")
 include("sv_resource.lua")
 include("sv_response_rules.lua")
 
+include("sv_lead_debug.lua")
+
 include("shared.lua")
 include("sv_hl2replace.lua")
 include("sv_gamelogic.lua")
 include("sv_damage.lua")
 include("sv_death.lua")
+include("shd_taunts.lua")
 
 local LOGFILE = "teamfortress/log_server.txt"
 file.Delete(LOGFILE)
@@ -36,9 +39,9 @@ response_rules.AddCriterion([[criterion "WeaponIsScattergunDouble" "item_name" "
 --	getfenv()[args[1]] = pl:GetEyeTrace().Entity
 --end)
 
---concommand.Add("taunt", function(pl)
---	GAMEMODE:PlayerStartTaunt(pl, ACT_DIESIMPLE, 1 )
---end)
+concommand.Add("taunt", function(pl)
+	GAMEMODE:PlayerStartTaunt(pl, ACT_DIESIMPLE, 1 )
+end)
 
 concommand.Add("select_slot", function(pl, cmd, args)
 	local n = tonumber(args[1] or "")

@@ -105,21 +105,6 @@ function meta:SetPlayerClass(class)
 	self:SetClassSpeed(c.Speed or 100)
 	self:ResetMaxHealth()
 	
-	-- Hull and view offset
-	if self:ShouldUseDefaultHull() then -- In HL2 maps, all players should have a normal collision hull so they can go through doors properly...
-		-- Default hull
-		self:ResetHull()
-		self:SetStepSize(18)
-		--self:SetCollisionBounds(unpack(DefaultHull))
-	else
-		-- Special hull, because TF2 players are larger than HL2 players
-		self:SetHull(unpack(TFHull))
-		self:SetHullDuck(unpack(TFHullDuck))
-		--self:SetCollisionBounds(unpack(TFHull))
-		self:SetStepSize(18)
-	end
-	self:SetDuckSpeed(0.2)
-	
 	if c.IsHL2 then -- ...however, only gmodplayers use the default view offset, TF2 players keep their own view height even when playing a HL2 map
 		self:SetViewOffset(Vector(0,0,64))
 		self:SetViewOffsetDucked(Vector(0, 0, 28))
@@ -130,6 +115,24 @@ function meta:SetPlayerClass(class)
 		self.PlayerJumpPower = 240
 	end
 	self:SetJumpPower(self.PlayerJumpPower)
+
+	-- Hull and view offset
+	if self:ShouldUseDefaultHull() then -- In HL2 maps, all players should have a normal collision hull so they can go through doors properly...
+		-- Default hull
+		self:ResetHull()
+		self:SetStepSize(18)
+		self:SetModelScale(0.9)
+		self:SetViewOffset(Vector(0,0,64))
+		self:SetViewOffsetDucked(Vector(0, 0, 28))
+		--self:SetCollisionBounds(unpack(DefaultHull))
+	else
+		-- Special hull, because TF2 players are larger than HL2 players
+		self:SetHull(unpack(TFHull))
+		self:SetHullDuck(unpack(TFHullDuck))
+		--self:SetCollisionBounds(unpack(TFHull))
+		self:SetStepSize(18)
+	end
+	self:SetDuckSpeed(0.2)
 	
 	-- Remove all weapons
 	self:StripTFItems()

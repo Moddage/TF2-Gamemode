@@ -8,6 +8,9 @@ local Scale = H/480
 surface.CreateFont("TF_Deathnotice", {font = "Verdana", size = 16, weight = 900})
 
 Neutral_Color = Color(128, 128, 128, 255)
+Red_Color = Color(163, 87, 74)
+Blu_Color = Color(85, 124, 131)
+
 
 DefaultMessage_Color = Color(251, 235, 202, 255)
 DefaultMessageNeg_Color = Color(0, 0, 0, 196)
@@ -349,12 +352,18 @@ function GM:AddDeathNotice(Attacker, team1, Inflictor, Victim, team2, Cooperator
 		end
 	else
 		if team1 == -1 then Death.color1 = table.Copy(Neutral_Color) 
+		elseif team1 == 1 then Death.color1 = table.Copy(Red_Color) 
+		elseif team1 == 2 then Death.color1 = table.Copy(Blu_Color) 
 		else Death.color1 = table.Copy(GetTeamSecondaryColor(team1)) end
 			
 		if team2 == -1 then Death.color2 = table.Copy(Neutral_Color) 
+		elseif team2 == 1 then Death.color2 = table.Copy(Red_Color) 
+		elseif team2 == 2 then Death.color2 = table.Copy(Blu_Color) 
 		else Death.color2 = table.Copy(GetTeamSecondaryColor(team2)) end
 		
 		if team3 == -1 then Death.color3 = table.Copy(Neutral_Color) 
+		elseif team3 == 1 then Death.color3 = table.Copy(Red_Color) 
+		elseif team3 == 2 then Death.color3 = table.Copy(Blu_Color) 
 		else Death.color3 = table.Copy(GetTeamSecondaryColor(team3)) end
 	end
 	

@@ -59,11 +59,11 @@ hook.Add("DoPlayerDeath", "SetPlayerKiller", function(pl, attacker)
 end)]]
 
 hook.Add("CreateMove", "SimulateCamera", function(cmd)
-	if LocalPlayer().SimulatedCamera then
-		if not LocalPlayer().CameraAngles then
-			LocalPlayer().CameraAngles = LocalPlayer():EyeAngles()
-		end
-		
+	if not LocalPlayer().CameraAngles then
+		LocalPlayer().CameraAngles = LocalPlayer():EyeAngles()
+	end
+
+	if not LocalPlayer().SimulatedCamera then
 		local s = SensitivityMultiplier * sensitivity:GetFloat()
 		LocalPlayer().CameraAngles.p = math.Clamp(LocalPlayer().CameraAngles.p + cmd:GetMouseY() * s, -90, 90)
 		LocalPlayer().CameraAngles.y = math.NormalizeAngle(LocalPlayer().CameraAngles.y - math.Clamp(cmd:GetMouseX() * s, -180, 180))
@@ -129,8 +129,11 @@ function SetDesiredCenteredView(pl, origin, ang, tbl)
 	else
 		pl.CurrentView.distance = Lerp(lag, pl.CurrentView.distance, pl.TargetView.distance)
 	end
-	
-	return {angles = pl.CurrentView.angles, origin = origin - pl.CurrentView.distance * pl.CurrentView.angles:Forward()}
+	if pl.FirstReality then
+		return {angles = pl.CurrentView.angles, origin = origin, drawviewer = true}
+	else
+		return {angles = pl.CurrentView.angles, origin = origin - pl.CurrentView.distance * pl.CurrentView.angles:Forward(), drawviewer = true}
+	end
 end
 
 hook.Add("CalcView", "TFCalcView", function(pl, pos, ang, fov)
@@ -277,19 +280,34 @@ hook.Add("CalcView", "TFCalcView", function(pl, pos, ang, fov)
 	if pl.SimulatedCamera and pl.CameraAngles then
 		ang = pl.CameraAngles
 	end
+
+	if pl.FirstReality then
+		if pl:IsHL2() then
+			pos = pl:GetBonePosition(pl:LookupBone("ValveBiped.Bip01_Head1"))+(ang:Up()*10)+(ang:Forward()*5)
+			pl:ManipulateBoneScale(pl:LookupBone("ValveBiped.Bip01_Head1"), Vector(0,0,0))
+		else
+			pos = pl:GetBonePosition(pl:LookupBone("bip_head"))+(ang:Up()*10)+(ang:Forward()*5)
+			pl:ManipulateBoneScale(pl:LookupBone("bip_head"), Vector(0,0,0))
+		end
+	end
 	
 	if pl.NextEndThirdperson then
 		if CurTime()>pl.NextEndThirdperson then
 			pl.NextEndThirdperson = nil
 			pl.IsThirdperson = false
+			pl.SimulatedCamera = false
+			pl.FirstReality = false
 			--[[if not IsValid(GetViewEntity()) or GetViewEntity()==LocalPlayer() then
 				gamemode.Call("OnViewModeChanged", false)
 			end]]
 			return
 		else
-			pl.CurrentView.angles = ang
-			pl.CurrentView.distance = Lerp((pl.NextEndThirdperson - CurTime())/ThirdpersonEndDelay, 0, pl.TargetView.distance)
-			return {angles = pl.CurrentView.angles, origin = pos - pl.CurrentView.distance * pl.CurrentView.angles:Forward()}
+			if pl.CurrentView then -- stupid bug fix
+				pl.CurrentView.angles = ang
+				pl.CurrentView.distance = Lerp((pl.NextEndThirdperson - CurTime())/ThirdpersonEndDelay, 0, pl.TargetView.distance)
+				pl:ManipulateBoneScale(pl:LookupBone("bip_head"), Vector(1,1,1)) -- we can't let them see a shrunk head when transferring back!
+				return {angles = pl.CurrentView.angles, origin = pos - pl.CurrentView.distance * pl.CurrentView.angles:Forward(), drawviewer = true}
+			end
 		end
 	end
 	
@@ -353,13 +371,48 @@ function EndThirdperson(immediate)
 	end
 end
 
+function StartThirdpersonTaunt()
+	if LocalPlayer().FirstReality == true then return end
+	LocalPlayer().IsThirdperson = true
+	LocalPlayer().CurrentView = nil
+	
+	--[[if not IsValid(GetViewEntity()) or GetViewEntity()==LocalPlayer() then
+		gamemode.Call("OnViewModeChanged", true)
+	end]]
+end
+
+function EndThirdpersonTaunt(immediate)
+	if LocalPlayer().FirstReality == true then return end
+	if immediate then
+		LocalPlayer().NextEndThirdperson = nil
+		LocalPlayer().IsThirdperson = false
+	else
+		LocalPlayer().NextEndThirdperson = CurTime() + ThirdpersonEndDelay
+	end
+end
+
 function StartSimulatedCamera()
 	LocalPlayer().SimulatedCamera = true
+	print(LocalPlayer().CameraAngles)
 	LocalPlayer().CameraAngles = nil
+end
+
+function PrintSimulatedCamera()
+	print(LocalPlayer().CameraAngles)
 end
 
 function EndSimulatedCamera()
 	LocalPlayer().SimulatedCamera = false
+end
+
+function StartFirstReality()
+	StartThirdperson()
+	LocalPlayer().FirstReality = true
+end
+
+function EndFirstReality()
+	EndThirdperson()
+	LocalPlayer().FirstReality = false
 end
 
 function StartFreezeScreen()
@@ -475,5 +528,60 @@ end)
 concommand.Add("tf_thirdperson", function(pl)
 	if not pl.IsThirdperson then
 		StartThirdperson()
+	end
+end)
+
+concommand.Add("tf_tp_thirdperson_toggle", function(pl)
+	if not pl.IsThirdperson then
+		StartThirdperson()
+	else
+		EndThirdperson()
+	end
+end)
+
+concommand.Add("tf_tp_simulation_toggle", function(pl)
+	if not pl.IsThirdperson then
+		StartSimulatedCamera()
+		StartThirdperson()
+	else
+		EndThirdperson()
+	end
+end)
+
+concommand.Add("tf_tp_taunt_toggle", function(pl)
+	if not pl.IsThirdperson then
+		StartThirdpersonTaunt()
+	else
+		EndThirdpersonTaunt()
+	end
+end)
+
+
+concommand.Add("tf_simulation_off", function(pl)
+	EndSimulatedCamera()
+end)
+
+concommand.Add("tf_simulation_on", function(pl)
+	StartSimulatedCamera()
+end)
+
+concommand.Add("tf_tp_immersive_toggle", function(pl)
+	if not pl.IsThirdperson then
+		StartThirdperson()
+		StartSimulatedCamera()
+	else
+		EndThirdperson()
+	end
+end)
+
+concommand.Add("tf_simulation_print", function(pl)
+	PrintSimulatedCamera()
+end)
+
+concommand.Add("tf_tp_immersive_toggle", function(pl)
+	if not pl.IsThirdperson then
+		StartFirstReality()
+	else
+		EndFirstReality()
 	end
 end)

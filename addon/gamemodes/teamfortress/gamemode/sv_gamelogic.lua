@@ -699,8 +699,9 @@ hook.Add("Think", "TFPlayerThink", function()
 				end
 				if score > 0 then v:AddFrags(score) end
 			end
-			
-			v.NextUpdateHealStats = CurTime() + 2
+			if v.NextUpdateHealStats then
+				v.NextUpdateHealStats = CurTime() + 2
+			end
 		end
 		
 		--------------------------------------------------------

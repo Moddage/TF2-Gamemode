@@ -207,6 +207,13 @@ local VoiceCommandGestures = {
 	[ACT_MP_GESTURE_VC_FISTPUMP] = true,
 }
 
+local TauntGestures = {
+	[ACT_DOD_HS_CROUCH_KNIFE] = "layer_taunt_laugh",
+	[ACT_DOD_CROUCH_AIM_C96] = "layer_taunt01",
+	[ACT_DOD_CROUCHWALK_AIM_MP40] = "layer_taunt02",
+	[ACT_DOD_STAND_AIM_30CAL] = "layer_taunt03",
+}
+
 function GM:TranslateActivity(pl, act)
 	if pl:IsHL2() then
 		return self.BaseClass:TranslateActivity(pl, act)
@@ -232,7 +239,7 @@ function GM:TranslateActivity(pl, act)
 	return pl:TranslateWeaponActivity(act)
 end
 
-function GM:DoAnimationEvent(pl, event, data)
+function GM:DoAnimationEvent(pl, event, data, taunt)
 	if pl:IsHL2() then
 		return self.BaseClass:DoAnimationEvent(pl, event, data)
 	end
@@ -348,6 +355,11 @@ function GM:DoAnimationEvent(pl, event, data)
 				pl:AnimRestartMainSequence()
 			end
 		elseif VoiceCommandGestures[data] then
+			pl:AnimRestartGesture(GESTURE_SLOT_CUSTOM, data, true)
+		elseif TauntGestures[data] then -- laugh
+			pl:AddVCDSequenceToGestureSlot(GESTURE_SLOT_CUSTOM, pl:LookupSequence(TauntGestures[data]), 0, true)
+		else
+			-- just let us do custom ones man
 			pl:AnimRestartGesture(GESTURE_SLOT_CUSTOM, data, true)
 		end
 		

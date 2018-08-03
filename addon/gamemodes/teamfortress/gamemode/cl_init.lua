@@ -10,6 +10,8 @@ tf_lang.Load("tf_english.txt")
 include("cl_proxies.lua")
 include("cl_pickteam.lua")
 
+include("cl_conflict.lua")
+
 include("shared.lua")
 include("cl_entclientinit.lua")
 include("cl_deathnotice.lua")
@@ -26,6 +28,7 @@ CreateClientConVar( "tf_maxhealth_hud", "1", FCVAR_CLIENTCMD_CAN_EXECUTE, "Enabl
 CreateClientConVar( "tf_robot", "0", FCVAR_CLIENTCMD_CAN_EXECUTE, "Become a robot after respawning." )
 
 function GM:ShouldDrawWorldModel(pl)
+	if pl:GetNWBool("NoWeapon") == true then return false end
 	return true
 end
 
@@ -425,6 +428,36 @@ local Option3text = vgui.Create( "DLabel", ClassFrame )
 Option3text:SetPos( 320, 110 )
 Option3text:SetText( "Become a Robot" )
 Option3text:SizeToContents()
+
+local tauntlaugh = vgui.Create( "DButton", ClassFrame )
+function tauntlaugh.DoClick() RunConsoleCommand( "tf_taunt_laugh" ) ClassFrame:Close() end
+tauntlaugh:SetPos( 400, 107 )
+tauntlaugh:SetSize( 90, 20 )
+tauntlaugh:SetText( "Schadenfreude" )
+
+local taunt1 = vgui.Create( "DButton", ClassFrame )
+function taunt1.DoClick() RunConsoleCommand( "tf_taunt", "1" ) ClassFrame:Close() end
+taunt1:SetPos( 500, 107 )
+taunt1:SetSize( 20, 20 )
+taunt1:SetText( "1" )
+
+local taunt2 = vgui.Create( "DButton", ClassFrame )
+function taunt2.DoClick() RunConsoleCommand( "tf_taunt", "2" ) ClassFrame:Close() end
+taunt2:SetPos( 530, 107 )
+taunt2:SetSize( 20, 20 )
+taunt2:SetText( "2" )
+
+local taunt3 = vgui.Create( "DButton", ClassFrame )
+function taunt3.DoClick() RunConsoleCommand( "tf_taunt", "3" ) ClassFrame:Close() end
+taunt3:SetPos( 560, 107 )
+taunt3:SetSize( 20, 20 )
+taunt3:SetText( "3" )
+
+local tauntlaugh = vgui.Create( "DButton", ClassFrame )
+function tauntlaugh.DoClick() RunConsoleCommand( "tf_tp_immersive_toggle" ) ClassFrame:Close() end
+tauntlaugh:SetPos( 590, 107 )
+tauntlaugh:SetSize( 90, 20 )
+tauntlaugh:SetText( "Immersive Toggle" )
 
 end
 

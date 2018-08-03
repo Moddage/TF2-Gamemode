@@ -19,7 +19,7 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 	
 	-- Remove all player states
 	ent:SetPlayerState(0, true)
-	
+	if ent:GetNWBool("Taunting") == true then ent:SetNWBool("Taunting", false) ent:Freeze(false) ent:ConCommand("tf_firstperson") end
 	attacker.customdeath = ""
 	local InflictorClass = gamemode.Call("GetInflictorClass", ent, attacker, inflictor)
 	
