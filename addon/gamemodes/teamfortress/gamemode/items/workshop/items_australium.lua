@@ -17,7 +17,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/c_models/c_flamethrower/c_flamethrower"
+			"image_inventory"	"backpack/weapons/c_models/c_flamethrower/c_flamethrower_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_flamethrower/c_flamethrower.mdl"
@@ -49,7 +49,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/w_models/w_grenadelauncher"
+			"image_inventory"	"backpack/weapons/w_models/w_grenadelauncher_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl"
@@ -86,7 +86,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/w_models/w_knife"
+			"image_inventory"	"backpack/weapons/w_models/w_knife_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_knife/c_knife.mdl"
@@ -118,7 +118,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/c_models/c_medigun/c_medigun"
+			"image_inventory"	"backpack/weapons/c_models/c_medigun/c_medigun_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_medigun/c_medigun.mdl"
@@ -150,7 +150,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/w_models/w_minigun"
+			"image_inventory"	"backpack/weapons/w_models/w_minigun_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_minigun/c_minigun.mdl"
@@ -175,43 +175,6 @@
 			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
-		"357"
-		{
-			"name"	"Australium Rocket Launcher"
-			"item_class"	"tf_weapon_rocketlauncher"
-			"craft_class"	"weapon"
-			"item_type_name"	"#TF_Weapon_RocketLauncher"
-			"item_name"	"#TF_Weapon_RocketLauncher"
-			"item_slot"	"primary"
-			"item_quality"	"normal"
-			"baseitem" "1"
-			"min_ilevel"	"1"
-			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/w_models/w_rocketlauncher"
-			"image_inventory_size_w"		"128"
-			"image_inventory_size_h"		"82"
-			"model_player"	"models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl"
-			"attach_to_hands"	"1"
-			"attributes"
-			{
-				"material override"
-				{
-					"attribute_class"	"material_override"
-					"value"		"models/weapons/c_models/c_rocketlauncher/c_rocketlauncher_gold"
-				}
-			}
-			"used_by_classes"
-			{
-				"soldier"	"1"
-			}
-			"visuals"
-			{
-				"muzzle_flash"	""
-				"tracer_effect"	""
-			}
-			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
-			"drop_sound"		"ui/item_heavy_gun_drop.wav"
-		}
 		"358"
 		{
 			"name"	"Australium Scattergun"
@@ -224,7 +187,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/c_models/c_scattergun"
+			"image_inventory"	"backpack/weapons/c_models/c_scattergun_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_scattergun.mdl"
@@ -261,7 +224,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/w_models/w_smg"
+			"image_inventory"	"backpack/weapons/w_models/w_smg_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_smg/c_smg.mdl"
@@ -298,7 +261,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/w_models/w_sniperrifle"
+			"image_inventory"	"backpack/weapons/w_models/w_sniperrifle_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_sniperrifle/c_sniperrifle.mdl"
@@ -335,7 +298,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/w_models/w_stickybomb_launcher"
+			"image_inventory"	"backpack/weapons/w_models/w_stickybomb_launcher_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_stickybomb_launcher/c_stickybomb_launcher.mdl"
@@ -373,7 +336,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
-			"image_inventory"	"backpack/weapons/w_models/w_wrench"
+			"image_inventory"	"backpack/weapons/w_models/w_wrench_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_wrench/c_wrench.mdl"
@@ -396,7 +359,7 @@
 		"363"
 		{
 			"name"	"Golden Frying Pan"
-			"item_class"	"tf_weapon_melee_allclass"
+			"item_class"	"tf_weapon_fryingpan"
 			"capabilities"
 			{
 				"nameable"		"1"
@@ -478,7 +441,7 @@
 			"item_iconname"	"ambassador"
 			"min_ilevel"	"5"
 			"max_ilevel"	"5"
-			"image_inventory"	"backpack/weapons/c_models/c_ambassador/parts/c_ambassador_opt"
+			"image_inventory"	"backpack/weapons/c_models/c_ambassador/c_ambassador_gold"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_ambassador/c_ambassador.mdl"
@@ -533,6 +496,43 @@
 			}
 			"mouse_pressed_sound"	"ui/item_light_gun_pickup.wav"
 			"drop_sound"		"ui/item_light_gun_drop.wav"
+		}
+		"365"
+		{
+			"name"	"Australium Rocket Launcher"
+			"item_class"	"tf_weapon_rocketlauncher"
+			"craft_class"	"weapon"
+			"item_type_name"	"#TF_Weapon_RocketLauncher"
+			"item_name"	"#TF_Weapon_RocketLauncher"
+			"item_slot"	"primary"
+			"item_quality"	"normal"
+			"baseitem" "1"
+			"min_ilevel"	"1"
+			"max_ilevel"	"1"
+			"image_inventory"	"backpack/weapons/w_models/w_rocketlauncher_gold"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl"
+			"attach_to_hands"	"1"
+			"attributes"
+			{
+				"material override"
+				{
+					"attribute_class"	"material_override"
+					"value"		"models/weapons/c_models/c_rocketlauncher/c_rocketlauncher_gold"
+				}
+			}
+			"used_by_classes"
+			{
+				"soldier"	"1"
+			}
+			"visuals"
+			{
+				"muzzle_flash"	""
+				"tracer_effect"	""
+			}
+			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
+			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 	}
 	"attributes"

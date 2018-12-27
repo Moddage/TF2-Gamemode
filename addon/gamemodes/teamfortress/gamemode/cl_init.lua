@@ -3,8 +3,11 @@ local LOGFILE = "teamfortress/log_client.txt"
 file.Delete(LOGFILE)
 file.Append(LOGFILE, "Loading clientside script\n")
 local load_time = SysTime()
+local blacklist = {["Frying Pan"] = true, ["Golden Frying Pan"] = true, ["The PASSTIME Jack"] = true, ["TTG Max Pistol"] = true, ["Sexo de Pene Gay"] = true, ["Team Spirit"] = true,} -- Items that should NEVER show, must be their item.name if a hat/weapon!
+local name_blacklist = {["The AK47"] = true,} -- Weapons that have names of other weapons must have their item.name put in here
 
 include("tf_lang_module.lua")
+include("shd_items.lua")
 tf_lang.Load("tf_english.txt")
 
 include("cl_proxies.lua")
@@ -17,15 +20,21 @@ include("cl_entclientinit.lua")
 include("cl_deathnotice.lua")
 include("cl_scheme.lua")
 
+include("cl_player_other.lua")
+
 include("cl_camera.lua")
 
 include("tf_draw_module.lua")
 
 include("cl_materialfix.lua")
 
-CreateClientConVar( "tf_haltinspect", "1", FCVAR_CLIENTCMD_CAN_EXECUTE, "Whether or not players can inspect while no-clipping." )
-CreateClientConVar( "tf_maxhealth_hud", "1", FCVAR_CLIENTCMD_CAN_EXECUTE, "Enable maxhealth above health when hurt." )
-CreateClientConVar( "tf_robot", "0", FCVAR_CLIENTCMD_CAN_EXECUTE, "Become a robot after respawning." )
+include("cl_pac.lua")
+
+include("proxies/itemtintcolor.lua")
+
+CreateClientConVar( "tf_haltinspect", "1", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Whether or not players can inspect while no-clipping." )
+CreateClientConVar( "tf_maxhealth_hud", "1", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Enable maxhealth above health when hurt." )
+CreateClientConVar( "tf_robot", "0", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Become a robot after respawning." )
 
 function GM:ShouldDrawWorldModel(pl)
 	if pl:GetNWBool("NoWeapon") == true then return false end
@@ -280,15 +289,41 @@ include("cl_hud.lua")
 file.Append(LOGFILE, Format("Done loading, time = %f\n", SysTime() - load_time))
 local load_time = SysTime()
 
+function GetImprovedItemName(name)
+for k, v in pairs(tf_items.ReturnItems()) do
+	if v and istable(v) and v["used_by_classes"] and v["name"] and v["name"] == name and v["used_by_classes"][LocalPlayer():GetPlayerClass()] and v["item_slot"] and not blacklist[v["name"]] then
+		if (v["item_slot"] == "primary" or v["item_slot"] == "secondary" or v["item_slot"] == "melee") then
+			if name_blacklist[v["name"]] then
+				return "wep"..v["name"]
+			elseif string.sub(v["name"], 1, 10) == "Australium" then
+				return "wep".."Australium "..tf_lang.GetRaw(v["item_name"]) or v["name"]
+			elseif v["item_name"] and string.sub(v["item_name"], 1, 10) == "#TF_Weapon" and string.sub(v["name"], 1, 9) ~= "TF_WEAPON" then
+				return "wep"..v["name"]
+			else
+				return "wep"..tf_lang.GetRaw(v["item_name"]) or v["name"]
+			end
+		elseif v and v["item_slot"] and v["item_slot"] == "head" and ((v["model_player"] and util.GetModelInfo(v["model_player"]) and util.GetModelInfo(v["model_player"])["KeyValues"]) or (v["model_player_per_class"] and util.GetModelInfo(v["model_player_per_class"][LocalPlayer():GetPlayerClass()]) and util.GetModelInfo(v["model_player_per_class"][LocalPlayer():GetPlayerClass()])["KeyValues"])) then
+			return "hat"..v["name"]
+		elseif v and v["item_slot"] and v["item_slot"] == "misc" then
+			return "hat"..v["name"]
+		end
+	end
+end
+end
+
 function ClassSelection()
 local ply = LocalPlayer()
 local ClassFrame = vgui.Create("DFrame") --create a frame
 ClassFrame:SetSize(840, 130) --set its size
 ClassFrame:Center() --position it at the center of the screen
 ClassFrame:SetTitle("TF2 Menu") --set the title of the menu 
-ClassFrame:SetDraggable(false) --can you move it around
+ClassFrame:SetDraggable(true) --can you move it around
 ClassFrame:SetSizable(false) --can you resize it?
-ClassFrame:ShowCloseButton(true) --can you close it
+if ply:GetPlayerClass() ~= "" then
+	ClassFrame:ShowCloseButton(true) --can you close it
+else
+	ClassFrame:ShowCloseButton(false)
+end
 ClassFrame:MakePopup() --make it appear
  
 local ScoutButton = vgui.Create("DButton", ClassFrame)
@@ -351,15 +386,20 @@ GmodButton:SetPos(366, 70)
 GmodButton:SetText("GMod Player") --Set the name of the button
 GmodButton.DoClick = function() RunConsoleCommand("changeclass", "gmodplayer") ClassFrame:Close() end
 
---local Hint = vgui.Create( "DLabel", ClassFrame )
---Hint:SetPos( 10, 98 )
---Hint:SetText(  string.upper(input.LookupBinding( "gm_showteam" )).." Change Team" )
---Hint:SizeToContents()
+local Hint = vgui.Create( "DLabel", ClassFrame )
+Hint:SetPos( 10, 70 )
+Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showteam" )) or "F2" ).." to open this menu" )
+Hint:SizeToContents()
 
-local Hint2 = vgui.Create( "DLabel", ClassFrame )
-Hint2:SetPos( 10, 110 )
-Hint2:SetText(  string.upper(input.LookupBinding( "gm_showspare1" )).." to open this menu" )
-Hint2:SizeToContents()
+local Hint = vgui.Create( "DLabel", ClassFrame )
+Hint:SetPos( 10, 82 )
+Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showspare1" )) or "F3" ).." to open the hat picker" )
+Hint:SizeToContents()
+
+local Hint = vgui.Create( "DLabel", ClassFrame )
+Hint:SetPos( 10, 94 )
+Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showspare2" )) or "F4" ).." to open the weapon picker" )
+Hint:SizeToContents()
 
 local TeamRed = vgui.Create( "DButton", ClassFrame )
 function TeamRed.DoClick() RunConsoleCommand( "changeteam", 1 ) ClassFrame:Close() end
@@ -371,14 +411,17 @@ function TeamBlu.DoClick() RunConsoleCommand( "changeteam", 2 ) ClassFrame:Close
 TeamBlu:SetPos( 700, 105 )
 TeamBlu:SetSize( 130, 20 )
 TeamBlu:SetText( "BLU Team" )
-local TeamNeu = vgui.Create( "DButton", ClassFrame )
-function TeamNeu.DoClick() RunConsoleCommand( "changeteam", 4 ) ClassFrame:Close() end
-TeamNeu:SetPos( 700, 85 )
-TeamNeu:SetSize( 130, 20 )
-TeamNeu:SetText( "Neutral Team" )
+
+if !GetConVar("tf_competitive"):GetBool() then
+	local TeamNeu = vgui.Create( "DButton", ClassFrame )
+	function TeamNeu.DoClick() RunConsoleCommand( "changeteam", 4 ) ClassFrame:Close() end
+	TeamNeu:SetPos( 700, 85 )
+	TeamNeu:SetSize( 130, 20 )
+	TeamNeu:SetText( "Neutral Team" )
+end
 
 local Option1 = vgui.Create( "DCheckBox", ClassFrame )
-Option1:SetPos( 130, 110 )
+Option1:SetPos( 10, 110 )
 Option1:SetValue( GetConVar("tf_righthand"):GetInt() )
 
 function Option1:OnChange(new)
@@ -390,12 +433,12 @@ function Option1:OnChange(new)
 end
 
 local Option1text = vgui.Create( "DLabel", ClassFrame )
-Option1text:SetPos( 150, 110 )
+Option1text:SetPos( 30, 110 )
 Option1text:SetText( "Right handed" )
 Option1text:SizeToContents()
 
 local Option2 = vgui.Create( "DCheckBox", ClassFrame )
-Option2:SetPos( 220, 110 )
+Option2:SetPos( 100, 110 )
 Option2:SetValue( GetConVar("tf_autoreload"):GetInt() )
 
 function Option2:OnChange(new)
@@ -407,12 +450,12 @@ function Option2:OnChange(new)
 end
 
 local Option2text = vgui.Create( "DLabel", ClassFrame )
-Option2text:SetPos( 240, 110 )
+Option2text:SetPos( 120, 110 )
 Option2text:SetText( "Autoreload" )
 Option2text:SizeToContents()
 
-local Option3 = vgui.Create( "DCheckBox", ClassFrame )
-Option3:SetPos( 300, 110 )
+--[[local Option3 = vgui.Create( "DCheckBox", ClassFrame )
+Option3:SetPos( 180, 110 )
 Option3:SetValue( GetConVar("tf_robot"):GetInt() )
 
 function Option3:OnChange(new)
@@ -425,39 +468,101 @@ function Option3:OnChange(new)
 end
 
 local Option3text = vgui.Create( "DLabel", ClassFrame )
-Option3text:SetPos( 320, 110 )
+Option3text:SetPos( 200, 110 )
 Option3text:SetText( "Become a Robot" )
-Option3text:SizeToContents()
+Option3text:SizeToContents()]]
 
 local tauntlaugh = vgui.Create( "DButton", ClassFrame )
 function tauntlaugh.DoClick() RunConsoleCommand( "tf_taunt_laugh" ) ClassFrame:Close() end
-tauntlaugh:SetPos( 400, 107 )
+tauntlaugh:SetPos( 180, 107 )
 tauntlaugh:SetSize( 90, 20 )
 tauntlaugh:SetText( "Schadenfreude" )
 
 local taunt1 = vgui.Create( "DButton", ClassFrame )
 function taunt1.DoClick() RunConsoleCommand( "tf_taunt", "1" ) ClassFrame:Close() end
-taunt1:SetPos( 500, 107 )
+taunt1:SetPos( 280, 107 )
 taunt1:SetSize( 20, 20 )
 taunt1:SetText( "1" )
 
 local taunt2 = vgui.Create( "DButton", ClassFrame )
 function taunt2.DoClick() RunConsoleCommand( "tf_taunt", "2" ) ClassFrame:Close() end
-taunt2:SetPos( 530, 107 )
+taunt2:SetPos( 310, 107 )
 taunt2:SetSize( 20, 20 )
 taunt2:SetText( "2" )
 
 local taunt3 = vgui.Create( "DButton", ClassFrame )
 function taunt3.DoClick() RunConsoleCommand( "tf_taunt", "3" ) ClassFrame:Close() end
-taunt3:SetPos( 560, 107 )
+taunt3:SetPos( 340, 107 )
 taunt3:SetSize( 20, 20 )
 taunt3:SetText( "3" )
 
-local tauntlaugh = vgui.Create( "DButton", ClassFrame )
+--[[local tauntlaugh = vgui.Create( "DButton", ClassFrame )
 function tauntlaugh.DoClick() RunConsoleCommand( "tf_tp_immersive_toggle" ) ClassFrame:Close() end
 tauntlaugh:SetPos( 590, 107 )
 tauntlaugh:SetSize( 90, 20 )
-tauntlaugh:SetText( "Immersive Toggle" )
+tauntlaugh:SetText( "Immersive Toggle" )]]
+
+local tauntlaugh = vgui.Create( "DButton", ClassFrame )
+function tauntlaugh.DoClick() RunConsoleCommand( "tf_hatpainter" )  end
+tauntlaugh:SetPos( 370, 107 )
+tauntlaugh:SetSize( 90, 20 )
+tauntlaugh:SetText( "Hat Painter" )
+
+--[[local function select_item(selector, data, item)
+	print(item)
+	if data and selector:GetOptionData(data) then
+		ply:ConCommand( "giveitem "..selector:GetOptionData(data) )
+	else
+		ply:ConCommand( "giveitem "..item )
+	end
+end
+
+local weaponselector = vgui.Create( "DComboBox", ClassFrame )
+weaponselector:SetValue( "Weapons" )
+weaponselector:Center()
+weaponselector:SetPos( 590, 107 )
+weaponselector:SetSize( 100, 20 )
+function weaponselector.OnSelect( _, data, weapon )
+	select_item( weaponselector, data, weapon )
+
+	weaponselector:CloseMenu()
+	weaponselector:SetValue( "Weapons" )
+	weaponselector:SetTooltip("test")
+end
+
+local miscselector = vgui.Create( "DComboBox", ClassFrame )
+miscselector:SetValue( "Miscs" )
+miscselector:Center()
+miscselector:SetPos( 590, 86 )
+miscselector:SetSize( 100, 20 )
+function miscselector.OnSelect( _, data, misc )
+	select_item( miscselector, data, misc )
+
+	miscselector:CloseMenu()
+	miscselector:SetValue( "Miscs" )
+end
+
+local hatselector = vgui.Create( "DComboBox", ClassFrame )
+hatselector:SetValue( "Hats" )
+hatselector:Center()
+hatselector:SetPos( 590, 65 )
+hatselector:SetSize( 100, 20 )
+function hatselector.OnSelect( _, data, hat )
+	select_item( hatselector, data, hat )
+
+	hatselector:CloseMenu()
+	hatselector:SetValue( "Hats" )
+end
+
+for k, v in pairs(tf_items.ReturnItems()) do
+	if v and istable(v) and v["name"] and GetImprovedItemName(v["name"]) then
+		if string.sub(GetImprovedItemName(v["name"]), 1, 3) == "wep" then
+			weaponselector:AddChoice(string.sub(GetImprovedItemName(v["name"]), 4), v["name"])
+		elseif string.sub(GetImprovedItemName(v["name"]), 1, 3) == "hat" then
+			hatselector:AddChoice(string.sub(GetImprovedItemName(v["name"]), 4), v["name"])
+		end
+	end
+end]]
 
 end
 
@@ -467,8 +572,188 @@ end
 	end
 end]]
 
+function paintcanTohex(dec) -- code from https://stackoverflow.com/a/37797380
+	return string.sub(string.format("%x", dec * 256), 1, 6)
+end
+
+function hex2color(hex) -- code from https://gist.github.com/jasonbradley/4357406
+    hex = hex:gsub("#","")
+    local r, g, b = tonumber("0x"..hex:sub(1,2)), tonumber("0x"..hex:sub(3,4)), tonumber("0x"..hex:sub(5,6))
+    return string.ToColor(r.." "..g.." "..b.." 255")
+end
+
+-- wouldn't mind a hex to rgb in glua by default
+
+local function HatPicker() -- inb4 someone modifies this menu without using #suggestions in the first place
+local ply = LocalPlayer()
+local Frame = vgui.Create( "DFrame" )
+Frame:SetTitle( "Hat Painter" )
+Frame:SetSize( 300, 385 )
+Frame:Center()
+Frame:MakePopup()
+
+local function add_hats(paintlist, convar, colorpicker)
+	local paintlistc = paintlist:AddNode("None")
+	paintlistc:SetIcon("icon16/cancel.png")
+	paintlistc.DoClick = function()
+		local color = Color(0, 0, 0, 255)
+		colorpicker:SetColor(Color(0, 0, 0)) -- hack!!
+		ply:ConCommand(convar.." "..tostring(color))
+	end
+	for k, v in pairs(tf_items.ReturnItems()) do
+		if v and istable(v) and v["name"] and v["item_name"] and v["item_class"] and v["attributes"] and v["attributes"]["set item tint rgb"] and v["attributes"]["set item tint rgb"]["value"] and not blacklist[tf_lang.GetRaw(v["item_name"])] then
+			if (v["item_class"] == "tool" and string.sub(v["name"], 1, 5) == "Paint") then
+				local paintlistn = paintlist:AddNode(tf_lang.GetRaw(v["item_name"])) --.." ("..v["attributes"]["set item tint rgb"]["value"]..")")
+				paintlistn:SetIcon("backpack/player/items/crafting/paintcan")
+				paintlistn:SetTooltip(tf_lang.GetRaw(v["item_name"]).." ("..tostring(hex2color(paintcanTohex(v["attributes"]["set item tint rgb"]["value"])))..")")
+				if ply:GetInfo(convar) == tostring(hex2color(paintcanTohex(v["attributes"]["set item tint rgb"]["value"]))) then
+					paintlist:SetSelectedItem(paintlistn)
+				end
+				paintlistn.DoClick = function()
+					local color = tostring(hex2color(paintcanTohex(v["attributes"]["set item tint rgb"]["value"])))
+					colorpicker:SetColor(hex2color(paintcanTohex(v["attributes"]["set item tint rgb"]["value"]))) -- hack!!
+					ply:ConCommand(convar.." "..color)
+				end
+			end
+		end
+	end
+	if not paintlist:GetSelectedItem() then
+		paintlist:SetSelectedItem(paintlistc)
+	end
+end
+
+local ColorPicker = vgui.Create( "DColorMixer", Frame )
+ColorPicker:SetSize( 150, 150 )
+ColorPicker:SetPos( 5, 30 )
+ColorPicker:SetPalette( false )
+ColorPicker:SetAlphaBar( false )
+ColorPicker:SetWangs( true )
+ColorPicker:SetColor(string.ToColor(ply:GetInfo("tf_hatcolor")))
+ColorPicker.ValueChanged = function()
+	local ChosenColor = ColorPicker:GetColor()
+	local color = Color(ChosenColor.r, ChosenColor.g, ChosenColor.b, ChosenColor.a)
+	ply:ConCommand("tf_hatcolor "..tostring(color))
+end
+
+local ColorPicker2 = vgui.Create( "DColorMixer", Frame )
+ColorPicker2:SetSize( 150, 150 )
+ColorPicker2:SetPos( 5, 230 )
+ColorPicker2:SetPalette( false )
+ColorPicker2:SetAlphaBar( false )
+ColorPicker2:SetWangs( true )
+ColorPicker2:SetColor(string.ToColor(ply:GetInfo("tf_misccolor")))
+ColorPicker2.ValueChanged = function()
+	local ChosenColor = ColorPicker2:GetColor()
+	local color = Color(ChosenColor.r, ChosenColor.g, ChosenColor.b, ChosenColor.a)
+	ply:ConCommand("tf_misccolor "..tostring(color))
+end
+
+local paintlist = vgui.Create( "DTree", Frame )
+paintlist:SetPos( 170, 30 )
+paintlist:SetSize( 125, 150 )
+
+local paintlist2 = vgui.Create( "DTree", Frame )
+paintlist2:SetPos( 170, 230 )
+paintlist2:SetSize( 125, 150 )
+
+add_hats(paintlist, "tf_hatcolor", ColorPicker)
+add_hats(paintlist2, "tf_misccolor", ColorPicker2)
+end
+
+local function itemselector(type)
+local Scale = ScrH()/480
+
+local loadout_rect = surface.GetTextureID("vgui/loadout_rect")
+local loadout_rect_mouseover = surface.GetTextureID("vgui/loadout_rect_mouseover")
+local color_panel = surface.GetTextureID("hud/color_panel_browner")
+local c_boxing_gloves = surface.GetTextureID("backpack/weapons/c_models/c_boxing_gloves/c_boxing_gloves")
+local Frame = vgui.Create("DFrame")
+Frame:SetTitle("Item Picker")
+Frame:SetSize(1300, 650)
+Frame:Center()
+Frame:SetDraggable(true)
+Frame:SetMouseInputEnabled(true)
+Frame:MakePopup()
+--gui.EnableScreenClicker(true)
+
+local scroll = vgui.Create("DScrollPanel", Frame)
+scroll:Dock(FILL)
+
+local itemicons = vgui.Create("DIconLayout", scroll)
+itemicons:Dock(FILL)
+
+local att = vgui.Create("ItemAttributePanel")
+att:SetSize(168*Scale,300*Scale)
+att:SetPos(0, 0)
+att.text_ypos = 20
+att:SetMouseInputEnabled(false)
+
+local attributes_xoffset1 = 30
+local attributes_xoffset2 = -168
+local attributes_yoffset = 120
+local xoffset, yoffset = attributes_xoffset1 * Scale, attributes_yoffset * Scale
+
+--Frame.OnClose = function() gui.EnableScreenClicker(false) att:Remove() end
+
+-- ugly code ahead
+for k, v in pairs(tf_items.ReturnItems()) do
+	if v and istable(v) and v["name"] and GetImprovedItemName(v["name"]) and string.sub(GetImprovedItemName(v["name"]), 1, 3) == type then
+		local t = vgui.Create("ItemModelPanel", Frame)
+		t:SetSize(140 * Scale, 75 * Scale)
+		itemicons:Add(t)
+		t.activeImage = loadout_rect_mouseover
+		t.inactiveImage = loadout_rect
+
+		t.RealName = v["name"]
+		t.centerytext = true
+
+		t.disabled = false
+		t.itemImage = surface.GetTextureID(v["image_inventory"])
+		if Material(v["image_inventory"]):IsError() then
+			t.FallbackModel = v["model_player"]
+		end
+
+		if v["attributes"] and v["attributes"]["material override"] and v["attributes"]["material override"]["value"] then
+			t.overridematerial = v["attributes"]["material override"]["value"]
+		end
+
+		t.itemImage_low = nil
+
+		t.text = string.sub(GetImprovedItemName(v["name"]), 4)
+		--t.text = tf_lang.GetRaw(v["item_name"]) or v["name"]
+		local quality = string.upper(string.sub(v["item_quality"], 1, 1)) .. string.sub(v["item_quality"], 2)
+		t:SetQuality(quality)
+
+		t.model_xpos = 0
+		t.model_ypos = 5
+		t.model_tall = 55
+		t.text_xpos = -5
+		t.text_wide = 150
+		t.text_ypos = 60
+		t.DoClick = function() LocalPlayer():ConCommand("giveitem " .. t.RealName) surface.PlaySound(v["mouse_pressed_sound"] or "ui/item_hat_pickup.wav") Frame:Close() end
+		t:SetCursor("hand")
+
+		if istable(v["attributes"]) then
+			t.attributes = v["attributes"]
+		end
+
+		if v["item_slot"] == "primary" then
+			t.number = 1
+		elseif v["item_slot"] == "secondary" then
+			t.number = 2
+		elseif v["item_slot"] == "melee" then
+			t.number = 3
+		end
+	end
+end
+
+att:MoveToFront()
+end
+
 concommand.Add("tf_changeclass", ClassSelection)
+concommand.Add("tf_hatpainter", HatPicker)
 concommand.Add("tf_menu", ClassSelection)
+concommand.Add("tf_itempicker", function(_, _, args) local type = args[1] if args[1] == "weapons" then type = "wep" elseif args[1] == "hats" then type = "hat" end itemselector(type) end)
 --spawnmenu.AddCreationTab( "Team Fortress 2", function()
 
 	--local ctrl = vgui.Create( "SpawnmenuContentPanel" )

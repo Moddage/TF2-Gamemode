@@ -18,7 +18,7 @@ function ENT:SendData(pl)
 	if not layout then
 		layout = ""
 		local tab = ents.FindByClass(team_control_point)
-		table.sort(tab, function(a,b) return a.ID<b.ID end)
+		table.sort(tab, function(a,b) if not a then return end if not b then return end if not a.ID then return end if not b.ID then return end return a.ID<b.ID end)
 		for _,v in ipairs(tab) do
 			layout = layout..(v.ID-1).." "
 		end

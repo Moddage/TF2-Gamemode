@@ -124,6 +124,7 @@ T:SetQuality("rarity3")]]
 
 local hud_targetid_anyteam = CreateConVar("hud_targetid_anyteam", "0", {FCVAR_CHEAT})
 local hud_defaultweaponselect = CreateConVar("hud_defaultweaponselect", "0")
+local hl2hudtf = CreateConVar("hud_forcehl2hud", "0")
 
 local HiddenHudElements = {
 	CHudDamageIndicator = 1,
@@ -152,6 +153,10 @@ function GM:HUDWeaponPickedUp(wep)
 	HudWeaponSelection:UpdateLoadout()
 end
 
+net.Receive("UpdateLoadout", function()
+	HudWeaponSelection:UpdateLoadout()
+	print("kk")
+end)
 
 -- Weapon selection
 
@@ -182,7 +187,7 @@ function GM:PlayerSlotSelected(slot)
 end
 
 function GM:PlayerBindPress(pl, cmd, down)
-	if pl:IsHL2() or hud_defaultweaponselect:GetBool() or GetConVar("hud_fastswitch"):GetBool() then return end
+	if pl:IsHL2() or hud_defaultweaponselect:GetBool() or hl2hudtf:GetBool() or GetConVar("hud_fastswitch"):GetBool() then return end
 	if not down then return end
 	
 	local n = tonumber(string.match(cmd, "slot(%d+)"))
@@ -318,7 +323,7 @@ function GM:TargetIDThink()
 end
 
 function GM:HUDShouldDraw(n)
-	if IsValid(LocalPlayer()) and LocalPlayer():IsHL2() then
+	if IsValid(LocalPlayer()) and (LocalPlayer():IsHL2() or hl2hudtf:GetBool()) then
 		return self.BaseClass:HUDShouldDraw(n)
 	end
 	
@@ -328,7 +333,7 @@ end
 
 function GM:HUDPaint()
 	self.BaseClass:HUDPaint()
-	if LocalPlayer():Alive() and not LocalPlayer():IsHL2() then
+	if LocalPlayer():Alive() and not LocalPlayer():IsHL2() and not hl2hudtf:GetBool() then
 		self:DrawDamageNotifiers()
 		self:DrawDamageIndicators()
 		self:DrawCrosshair()

@@ -46,12 +46,17 @@ local function DrawCrosshair(crosshair, scale)
 	local c = Crosshairs[crosshair or "_"] or Crosshairs.tf_crosshair1
 	local s = scale or 1
 	local W,H = ScrW(), ScrH()
+	local pos = LocalPlayer():GetEyeTrace().HitPos:ToScreen()
 	surface.SetDrawColor(255,255,255,255)
-	tf_draw.ModTexture(crosshairs, (W-s*c.w)/2, (H-s*c.h)/2, s*c.w, s*c.h, c)
+	if LocalPlayer():ShouldDrawLocalPlayer() then
+		tf_draw.ModTexture(crosshairs, pos.x - ((s*c.w) / 2), pos.y - ((s*c.w) / 2), s*c.w, s*c.h, c)
+	else
+		tf_draw.ModTexture(crosshairs, (W-s*c.w)/2, (H-s*c.h)/2, s*c.w, s*c.h, c)
+	end
 end
 
 function GM:DrawCrosshair()
-	if GetConVarNumber("crosshair")==0 then return end
+	if GetConVarNumber("crosshair")==0 or LocalPlayer():GetNWBool("Taunting") then return end
 	local w = LocalPlayer():GetActiveWeapon()
 	
 	-- false is not nil, this will exclude HL2 weapons, which do not have this property, but still have a crosshair

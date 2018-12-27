@@ -7057,7 +7057,7 @@
 		"264"
 		{
 			"name"	"Frying Pan"
-			"item_class"	"tf_weapon_melee_allclass"
+			"item_class"	"tf_weapon_fryingpan"
 			"capabilities"
 			{
 				"nameable"		"1"
@@ -7304,11 +7304,22 @@
 			"min_ilevel"	"10"
 			"max_ilevel"	"10"
 			"set_sequence_to_class"	"1"
-			"model_player"	"models/player/items/all_class/halloween_bag_scout.mdl"
 			"image_inventory"	"backpack/player/items/all_class/halloween_bag_scout"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"holiday_restriction"	"halloween"
+			"model_player_per_class"	
+			{
+				"scout"		"models/player/items/all_class/halloween_bag_scout_scout.mdl"
+				"sniper"	"models/player/items/all_class/halloween_bag_scout_sniper.mdl"
+				"soldier"	"models/player/items/all_class/halloween_bag_scout_soldier.mdl"
+				"demoman"	"models/player/items/all_class/halloween_bag_scout_demo.mdl"
+				"medic"		"models/player/items/all_class/halloween_bag_scout_medic.mdl"
+				"heavy"		"models/player/items/all_class/halloween_bag_scout_demo.mdl"
+				"spy"		"models/player/items/all_class/halloween_bag_scout_spy.mdl"
+				"engineer"	"models/player/items/all_class/halloween_bag_scout_engineer.mdl"
+				"pyro"		"models/player/items/all_class/halloween_bag_scout_pyro.mdl"
+			}
 			"drop_type"	"drop"
 			"used_by_classes"
 			{

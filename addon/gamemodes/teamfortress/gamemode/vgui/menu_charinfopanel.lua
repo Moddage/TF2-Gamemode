@@ -1,3 +1,17 @@
+local hud_showloadout = CreateConVar("hud_showloadout", "0", {FCVAR_ARCHIVE})
+
+cvars.AddChangeCallback("hud_showloadout", function(cvar, old, new)
+	if not CharInfoPanel then return end
+	
+	if tonumber(new)==0 then
+		gui.EnableScreenClicker(false)
+		CharInfoPanel:Hide(true)
+	else
+		gui.EnableScreenClicker(true)
+		CharInfoPanel:Show(true)
+	end
+end)
+
 local PANEL = {}
 
 local W = ScrW()

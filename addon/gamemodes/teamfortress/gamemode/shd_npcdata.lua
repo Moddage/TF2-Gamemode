@@ -1,4 +1,4 @@
- NPC_MECH			= 1		-- Shows a gear icon under the health bar in the TargetID and freezecam
+NPC_MECH			= 1		-- Shows a gear icon under the health bar in the TargetID and freezecam
 NPC_NOCRITS			= 2		-- Never receive critical damage, also immune to Jarate
 NPC_NODMGFORCE		= 4		-- Not pushed away by blast damage
 NPC_NOSPECIALMELEE	= 8		-- Always receive DMG_CLUB type damage on melee hits
@@ -482,5 +482,4 @@ obj_teleporter = {
 	flags=bit.bor(NPC_BUILDING, NPC_NODMGFORCE),
 	vplayer=VPLAYER_NONE
 },
-
 }

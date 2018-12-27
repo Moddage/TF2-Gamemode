@@ -50,6 +50,9 @@ include("shd_objects.lua")
 include("shd_attributes.lua")
 include("shd_loadout.lua")
 include("shd_extras.lua")
+include("shd_workshop.lua")
+
+include("shd_competitive.lua")
 
 --include("shd_items_temp.lua")
 
@@ -134,6 +137,9 @@ concommand.Remove("__svspeak")
 end )]]
 
 if SERVER then
+
+util.AddNetworkString("ActivateTauntCam")
+util.AddNetworkString("DeActivateTauntCam")
 
 concommand.Add("__svspeak", function(pl,_,args)
 	if pl:Speak(args[1]) then
@@ -235,6 +241,10 @@ function GM:EntityName(ent, nolocalize)
 	if ent then
 		if ent:IsPlayer() and ent:IsValid() then
 			return ent:Name()
+		elseif ent:IsValid() and list.Get("NPC")[ent:GetClass()] and list.Get("NPC")[ent:GetClass()].Name then
+			return list.Get("NPC")[ent:GetClass()].Name
+		elseif ent:IsValid() and scripted_ents.GetList()[ent:GetClass()] and scripted_ents.GetList()[ent:GetClass()].t and scripted_ents.GetList()[ent:GetClass()].t.PrintName then
+			return scripted_ents.GetList()[ent:GetClass()].t.PrintName
 		elseif ent:IsValid() then
 			return "#"..ent:GetClass()
 		else
@@ -265,6 +275,14 @@ function GM:EntityTeam(ent)
 	
 	if type(ent.Team)=="function" then
 		return ent:Team()
+	elseif isstring(ent.Team) and (ent.Team == "RED" or ent.Team == "BLU" or string.sub(ent:GetModel(), 1, 12) == "models/robo/") then
+		if ent.Team == "RED" then
+			return TEAM_RED
+		elseif ent.Team == "BLU" then
+			return TEAM_BLU
+		elseif string.sub(ent:GetModel(), 1, 12) == "models/robo/" then
+			return TEAM_SPECTATOR
+		end
 	else
 		local t = ent:GetNWInt("Team") or 0
 		if t>=1 then
@@ -557,31 +575,9 @@ include("shd_maphooks.lua")
 
 concommand.Add("+inspect", function(pl)
 	pl:SetNWString("inspect", "inspecting_start")
-	print(pl:GetNWString("inspect"))
 end)
 
 concommand.Add("-inspect", function(pl)
 	pl:SetNWString("inspect", "inspecting_released")
-	print(pl:GetNWString("inspect"))
-	timer.Simple( 0.02, function() pl:SetNWString("inspect", "inspecting_done") print(pl:GetNWString("inspect")) end )
+	timer.Simple( 0.02, function() pl:SetNWString("inspect", "inspecting_done") end )
 end)
-
-function GM:PlayerCanJoinTeam( ply, teamid )
-	print("Requested "..teamid.." for "..ply:GetName().."!".." (aka team "..team.GetName(teamid).."!)")
-	local TimeBetweenSwitches = GAMEMODE.SecondsBetweenTeamSwitches or 5
-	if ( ply.LastTeamSwitch && RealTime()-ply.LastTeamSwitch < TimeBetweenSwitches ) then
-		ply.LastTeamSwitch = ply.LastTeamSwitch + 1
-		ply:ChatPrint( Format( "Please wait %i more seconds before trying to change team again!", ( TimeBetweenSwitches - ( RealTime() - ply.LastTeamSwitch ) ) + 1 ) )
-		return false
-	end
-
-	-- Already on this team!
-	if ( ply:Team() == teamid ) then
-		ply:ChatPrint( "You're already on that team" )
-		return false
-	end
-
-	return true
-
-end
-

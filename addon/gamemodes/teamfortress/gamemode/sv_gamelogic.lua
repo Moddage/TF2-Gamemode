@@ -422,7 +422,7 @@ function GM:StopCritBoost(pl)
 	pl:RemovePlayerState(bit.bor(PLAYERSTATE_CRITBOOST,PLAYERSTATE_MINICRIT), true)
 	
 	pl.NextCritBoostExpire = nil
-	
+
 	if pl:GetActiveWeapon().RollCritical then
 		-- we need to roll a critical again, else when the crit boost expires, the next shot will still be a guaranteed crit
 		pl:GetActiveWeapon():RollCritical()
@@ -688,10 +688,10 @@ hook.Add("Think", "TFPlayerThink", function()
 					v:AddHealing(v.AddedHealing)
 				end
 			end
-			if v.AddedHealing then
-			v.AddedHealing = 0
+			if v and v.AddedHealing and isnumber(v.AddedHealing) then
+				v.AddedHealing = 0
 			end
-			if v.HealingScoreProgress then
+			if v and v.HealingScoreProgress and isnumber(v.HealingScoreProgress) then
 				local score = 0
 				while v.HealingScoreProgress > 600 do
 					v.HealingScoreProgress = v.HealingScoreProgress - 600
@@ -708,7 +708,7 @@ hook.Add("Think", "TFPlayerThink", function()
 		-- Player-only attributes
 		
 		local TA
-		if v:IsPlayer() and v:Alive() then
+		if IsValid(v) and v:IsPlayer() and v:Alive() and v.TempAttributes and TA then
 			TA = v.TempAttributes
 		end
 		

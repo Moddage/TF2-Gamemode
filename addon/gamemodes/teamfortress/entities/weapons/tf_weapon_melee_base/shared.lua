@@ -84,7 +84,20 @@ function SWEP:CanSecondaryAttack()
 end
 
 function SWEP:OnMeleeAttack(tr)
-	
+	if self:GetVisuals() then
+		if self:GetVisuals()["sound_melee_hit"] then
+			self.HitFlesh = self:GetVisuals()["sound_melee_hit"]
+		end
+		if self:GetVisuals()["sound_melee_hit_world"] then
+			self.HitWorld = self:GetVisuals()["sound_melee_hit_world"]
+		end
+		if self:GetVisuals()["sound_melee_burst"] then
+			self.SwingCrit = self:GetVisuals()["sound_melee_burst"]
+		end
+		if self:GetVisuals()["sound_melee_miss"] then
+			self.Swing = self:GetVisuals()["sound_melee_miss"]
+		end
+	end
 end
 
 function SWEP:OnMeleeHit(tr)

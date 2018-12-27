@@ -1,5 +1,8 @@
 
-EFFECT.LifeTime = 0.5
+local EFFECT = {}
+
+
+EFFECT.LifeTime = 0.15
 
 EFFECT.Model = "models/effects/sentry1_muzzle/sentry1_muzzle.mdl"
 
@@ -9,13 +12,19 @@ EFFECT.SineEnd = 180
 EFFECT.RenderGroup = RENDERGROUP_BOTH
 
 function EFFECT:Init(data)
-	local ent = data:GetEntity()
+	local ent
+	if LocalPlayer().IsThirdperson then
+		ent = data:GetEntity()
+	else
+		ent = data:GetEntity().CModel
+	end
+
+	if !IsValid(ent) then return end
 	
 	self.Entity:SetModel(self.Model)
 	self.Entity:SetPos(ent:GetPos())
 	self.Entity:SetAngles(ent:GetAngles())
-	self.Entity:SetParent(ent)
-	self.Entity:SetColor(255,255,255,255)
+	self.Entity:SetColor(Color(255,255,255,255))
 	self.Entity:SetRenderMode(RENDERMODE_GLOW)
 	
 	self.Parent = ent
@@ -34,14 +43,15 @@ function EFFECT:Render()
 	local size = math.sin(math.rad(Lerp(diff, self.SineStart, self.SineEnd)))
 	
 	local att = self.Parent:LookupAttachment("muzzle")
+	PrintTable(self.Parent:GetAttachments())
 	if att<0 then return end
 	
 	att = self.Parent:GetAttachment(att)
 	
-	self.Entity:SetModelScale(Vector(size, size, size))
+	self.Entity:SetModelScale(size)
 	self.Entity:SetPos(att.Pos)
 	self.Entity:SetAngles(att.Ang)
-	--TEST:SetupBones()
+	
 	render.UpdateRefractTexture()
-	self.Entity:DrawModel(128)
+	self.Entity:DrawModel()
 end

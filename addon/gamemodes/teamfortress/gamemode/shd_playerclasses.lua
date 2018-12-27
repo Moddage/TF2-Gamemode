@@ -11,6 +11,8 @@ local TFHullDuck = {Vector(-24, -24, 0), Vector(24, 24, 62)}
 local DefaultHull = {Vector(-16, -16, 0), Vector(16,  16,  72)}
 local DefaultHullDuck = {Vector(-16, -16, 0), Vector(16,  16,  36)}
 
+local randomizer = CreateConVar( "tf_randomizer", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
+
 function GM:RegisterPlayerClass(name, tbl)
 	for k,v in pairs(tbl.Gibs or {}) do
 		self.GibTypeTable[v] = k
@@ -129,6 +131,7 @@ function meta:SetPlayerClass(class)
 		-- Special hull, because TF2 players are larger than HL2 players
 		self:SetHull(unpack(TFHull))
 		self:SetHullDuck(unpack(TFHullDuck))
+		self:SetModelScale(1)
 		--self:SetCollisionBounds(unpack(TFHull))
 		self:SetStepSize(18)
 	end
@@ -205,6 +208,9 @@ function meta:SetClassSpeed(sp)
 		--self:SetJumpPower(self.PlayerJumpPower)
 		self:SetCrouchedWalkSpeed(0.33)
 		self:SetNWFloat("ClassSpeed", sp)
+	elseif self:IsHL2() then
+		self:SetWalkSpeed(200)
+		self:SetRunSpeed(400)
 	end
 end
 
@@ -241,6 +247,7 @@ function meta:ResetClassSpeed()
 	end
 	
 	self:SetClassSpeed(sp)
+	self:SetJumpPower(self.PlayerJumpPower)
 end
 
 end

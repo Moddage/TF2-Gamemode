@@ -3,7 +3,7 @@ if SERVER then
 end
 
 if CLIENT then
-	SWEP.PrintName			= "The Gunslinger"
+	SWEP.PrintName			= "Engineer's Fist"
 	SWEP.Slot				= 2
 	SWEP.GlobalCustomHUD = {HudAccountPanel = true}
 end
@@ -44,30 +44,6 @@ SWEP.AltIdleAnimationProbability = 0.1
 function SWEP:SetupDataTables()
 	self:CallBaseFunction("SetupDataTables")
 	self:DTVar("Int", 1, "Combo")
-end
-
-//Do not enable as this it breaks the gunslinger anims
---[[function SWEP:SetupCModelActivities(item, noreplace)
-	self:CallBaseFunction("SetupCModelActivities", item, noreplace)
-	
-	if item then
-		local hold = string.upper(item.anim_slot or item.item_slot)
-		
-		self.VM_HITCENTER		= debug.getregistry()["ACT_"..hold.."_VM_HITCENTER"] or ACT_VM_HITCENTER
-		self.VM_SWINGHARD		= debug.getregistry()["ACT_"..hold.."_VM_SWINGHARD"] or ACT_VM_SWINGHARD
-	end
-end]]
-
---[[function SWEP:Deploy()
-
-end]]
-
-function SWEP:Equip() -- weird workaround hack for viewmodel bug
-	if IsValid(self) and IsValid(self.Owner) then
-		local lastwep = self.Owner:GetActiveWeapon():GetClass()
-		self.Owner:SelectWeapon(self:GetClass())
-		timer.Simple(0.1, function() if IsValid(self) and IsValid(self.Owner) then self.Owner:SelectWeapon(lastwep) end end)
-	end
 end
 
 function SWEP:OnMeleeAttack(tr)
@@ -148,7 +124,7 @@ function SWEP:PredictCriticalHit()
 end
 
 function SWEP:Think()
-	self.Owner:SetBodygroup( 2, 1 )
+	--self.Owner:SetBodygroup( 2, 1 )
 	--self.Owner:GetViewModel():SetBodygroup(1, 0)
 	
 	if not game.SinglePlayer() or SERVER then

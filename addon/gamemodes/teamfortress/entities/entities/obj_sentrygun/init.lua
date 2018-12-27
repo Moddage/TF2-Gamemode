@@ -221,7 +221,8 @@ end
 function ENT:OnStartBuilding()
 	if self:GetBuildingType() == 1 then
 		self:SetSkin(self:GetSkin()+2)
-		self:SetBodygroup(1, 1)
+		self:SetBodygroup(2, 1)
+		self.Model:SetBodygroup(2, 1)
 		self.Model:SetSkin(self:GetSkin())
 		self.AnimNeedsBodygroup = true
 		self.Model:SetBuildingScale(0.75)
@@ -364,8 +365,8 @@ end
 function ENT:OnThink()
 	if self.AnimNeedsBodygroup then
 		if self.AnimNeedsBodygroup == true then
-			self.Model:SetBodygroup(3, 1)
-			self.AnimNeedsBodygroup = false
+			self:SetBodygroup(2, 1)
+			self.Model:SetBodygroup(2, 1)
 		end
 	end
 	self:SetPoseParameter("aim_pitch", self.VisualTurretPitch)

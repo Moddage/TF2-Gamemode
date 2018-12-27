@@ -2,8 +2,6 @@ include("sv_clientfiles.lua")
 include("sv_resource.lua")
 include("sv_response_rules.lua")
 
-include("sv_lead_debug.lua")
-
 include("shared.lua")
 include("sv_hl2replace.lua")
 include("sv_gamelogic.lua")
@@ -22,15 +20,12 @@ include("sv_ent_substitute.lua")
 response_rules.Load("talker/tf_response_rules.txt")
 response_rules.Load("talker/demoman_custom.txt")
 response_rules.Load("talker/heavy_custom.txt")
--- inspect broken in mp atm
-if game.SinglePlayer() == true then
-CreateConVar( "tf_caninspect", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY}, "Whether or not players can inspect weapons." )
-else
-CreateConVar( "tf_caninspect", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY}, "Whether or not players can inspect weapons." )
-end
-CreateConVar( "tf_npc_friendlyfire", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY}, "NPC Friendly Fire" )
-CreateConVar( "tf_use_hl_hull_size", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY}, "Whether or not players use the HL2 hull size found on coop." )
-CreateConVar( "tf_kill_on_change_class", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY}, "Whether or not players will die if they change class." )
+
+CreateConVar( "tf_caninspect", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players can inspect weapons." )
+CreateConVar( "tf_npc_friendlyfire", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "NPC Friendly Fire" )
+CreateConVar( "tf_use_hl_hull_size", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players use the HL2 hull size found on coop." )
+CreateConVar( "tf_kill_on_change_class", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will die if they change class." )
+CreateConVar( "tf_flashlight", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will have a flashlight as a TF2 Class" )
 
 -- Quickfix for Valve's typo in tf_reponse_rules.txt
 response_rules.AddCriterion([[criterion "WeaponIsScattergunDouble" "item_name" "The Force-a-Nature" "required" weight 10]])
@@ -51,11 +46,11 @@ concommand.Add("select_slot", function(pl, cmd, args)
 	end
 end)
 
---concommand.Add("decapme", function(pl, cmd, args)
+concommand.Add("decapme", function(pl, cmd, args)
 --	pl:SetNWBool("ShouldDropDecapitatedRagdoll", true)
---	pl:AddDeathFlag(DF_DECAP)
---	pl:Kill()
---end)
+	pl:AddDeathFlag(DF_DECAP)
+	pl:Kill()
+end)
 
 concommand.Add("tf_stripme", function(pl, cmd, args)
 	pl:StripWeapons()
@@ -63,16 +58,19 @@ end)
 
 concommand.Add("changeclass", function(pl, cmd, args)
 	if pl:Team()==TEAM_SPECTATOR then return end
+	if pl:GetObserverMode() ~= OBS_MODE_NONE then pl:Spectate(OBS_MODE_NONE) end
 	if pl:Alive() and GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:Kill() end	
 	if GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:SetPlayerClass("gmodplayer") end
 	pl:SetPlayerClass(args[1])
 end, function() return GAMEMODE.PlayerClassesAutoComplete end)
 
 concommand.Add( "changeteam", function( pl, cmd, args )
-	if tonumber( args[ 1 ] ) >= 5 then return end
+	--if ( tonumber( args[ 1 ] ) >= 5 and args[ 1 ] ~= 1002 ) then return end
+	if ( tonumber( args[ 1 ] ) == 0 or tonumber( args[ 1 ] ) == 3 ) then pl:ChatPrint("Invalid Team!") return end
 	if ( pl:Team() == tonumber( args[ 1 ] ) ) then return false end
+	if ( GetConVar("tf_competitive"):GetBool() and tonumber( args[ 1 ] ) == 4 ) then pl:ChatPrint("Competitive mode is on!") return end
 	pl:SetTeam( tonumber( args[ 1 ] ) )  
-	timer.Simple(0.3, function() pl:SendLua("chat.AddText( Color( 235, 226, 202 ), 'Player ', LocalPlayer():Nick(), ' joined team ', team.GetName(LocalPlayer():Team()) )") end)
+	timer.Simple(0.3, function() if !IsValid(pl) then return end pl:SendLua("chat.AddText( Color( 235, 226, 202 ), 'Player ', LocalPlayer():Nick(), ' joined team ', team.GetName(LocalPlayer():Team()) )") end)
 	if pl:Alive() then pl:Kill() end 
 end )
 
@@ -130,6 +128,64 @@ function GM:OnPlayerChangedTeam(ply, oldteam, newteam)
 	self:UpdateEntityRelationship(ply)
 end
 
+local function CanSpawn(ply) if ply:Team() == TEAM_SPECTATOR or GetConVar("tf_competitive"):GetBool() then return false end return true end
+
+function GM:CanPlayerSuicide(ply)
+	if ply:Team() == TEAM_SPECTATOR then return false end
+	return true
+end
+
+function GM:PlayerSpawnSWEP(ply)
+	return CanSpawn(ply)
+end
+
+function GM:PlayerSpawnVehicle(ply)
+	return CanSpawn(ply)
+end
+
+function GM:PlayerSpawnNPC(ply)
+	return CanSpawn(ply)
+end
+
+function GM:PlayerSpawnSENT(ply)
+	return CanSpawn(ply)
+end
+
+function GM:PlayerSpawnObject(ply)
+	return CanSpawn(ply)
+end
+
+function RandomWeapon(ply, wepslot)
+	local weps = tf_items.ReturnItems()
+	local validweapons = {}
+	for k, v in pairs(weps) do
+		if v and istable(v) and isstring(wepslot) and v["name"] and v["item_slot"] == wepslot and !string.StartWith(v["name"], "Australium") and v["craft_class"] == "weapon" then
+			PrintTable(v)
+			table.insert(validweapons, v["name"])
+		end
+	end
+
+	local wep = table.Random(validweapons)
+
+	ply:PrintMessage(HUD_PRINTTALK, "You were given " .. wep .. "!")
+	ply:ConCommand("giveitem " .. wep)
+end
+
+concommand.Add("randomweapon", function(ply, _, args)
+	if !args[1] then
+		local random = math.random(1, 3)
+		if random == 1 then
+			RandomWeapon(ply, "primary")
+		elseif random == 2 then
+			RandomWeapon(ply, "secondary")
+		elseif random == 3 then
+			RandomWeapon(ply, "melee")
+		end
+	else
+		RandomWeapon(ply, args[1])
+	end
+end)
+
 function GM:PlayerSpawn(ply)
 	if ply.CPPos and ply.CPAng then
 		ply:SetPos(ply.CPPos)
@@ -150,31 +206,52 @@ function GM:PlayerSpawn(ply)
 	
 	-- Reinitialize class
 	if ply:GetPlayerClass()=="" then
-		ply:SetPlayerClass("gmodplayer")
 		ply:ConCommand("tf_changeclass")
+		ply:SetPlayerClass("gmodplayer")
+		ply:Spectate(OBS_MODE_FIXED)
+		ply:StripWeapons()
 	else
 		ply:SetPlayerClass(ply:GetPlayerClass())
-	end
-	
-	if ply:Team()==TEAM_BLU then
-		ply:SetSkin(1)
-	else
-		ply:SetSkin(0)
+		if ply:GetObserverMode() ~= OBS_MODE_NONE then
+			ply:UnSpectate()
+		end
 	end
 	
 	if ply:Team()==TEAM_SPECTATOR then
 		GAMEMODE:PlayerSpawnAsSpectator( ply )
 	end
 	
-	if ply.IsHL2 then
+	if ply:IsHL2() then
 		ply:SetupHands()
 		ply:EquipSuit()
+		ply:AllowFlashlight(true)
 	end
 	
-	ply:AllowFlashlight(true)
+	if !ply:IsHL2() then
+		ply:AllowFlashlight(GetConVar("tf_flashlight"):GetBool())
+		if ply:Team()==TEAM_BLU then
+			ply:SetSkin(1)
+		else
+			ply:SetSkin(0)
+		end
+	end
 
 	ply:Speak("TLK_PLAYER_EXPRESSION", true)
+
+	local playercolorconv = ply:GetInfo("cl_playercolor")
+	local weaponcolorconv = ply:GetInfo("cl_weaponcolor")
+	local playercolor = Vector(string.sub(playercolorconv, 1, 8), string.sub(playercolorconv, 10, 17), string.sub(playercolorconv, 19, 26))
+	local weaponcolor = Vector(string.sub(weaponcolorconv, 1, 8), string.sub(weaponcolorconv, 10, 17), string.sub(weaponcolorconv, 19, 26))
+
+	ply:SetPlayerColor(playercolor)
+	ply:SetWeaponColor(weaponcolor)
 	
+	if GetConVar("tf_randomizer"):GetBool() and !ply:IsHL2() then
+		RandomWeapon(ply, "primary")
+		RandomWeapon(ply, "secondary")
+		RandomWeapon(ply, "melee")
+	end
+
 	umsg.Start("ExitFreezecam", ply)
 	umsg.End()
 end
@@ -184,14 +261,14 @@ function GM:PlayerSetHandsModel( ply, ent )
 	local info = player_manager.TranslatePlayerHands( simplemodel )
 	if ( info ) then
 		if ply:IsHL2() then
-		ent:SetModel( info.model )
-		ent:SetSkin( info.skin )
-		ent:SetBodyGroups( info.body )
-	else
-		ent:SetModel("models/weapons/c_arms_animations.mdl")
-		ent:SetSkin( info.skin )
-		ent:SetBodyGroups( info.body )
-	end
+			ent:SetModel( info.model )
+			ent:SetSkin( info.skin )
+			ent:SetBodyGroups( info.body )
+		else
+			ent:SetModel( "models/weapons/c_arms_animations.mdl" )
+			ent:SetSkin( info.skin )
+			ent:SetBodyGroups( info.body )
+		end
 	end
 end
 
@@ -245,11 +322,20 @@ function GM:GiveHealthPercent(pl, pc)
 	return pl:GiveHealth(pc * 0.01, true)
 end
 
+function GM:ShowHelp(ply)
+	ply:ConCommand("tf_hatpainter")
+end
+
 function GM:ShowTeam(ply)
+	ply:ConCommand("tf_menu")
 end
 
 function GM:ShowSpare1(ply)
-	ply:ConCommand("tf_menu")
+	ply:ConCommand("tf_itempicker hat")
+end
+
+function GM:ShowSpare2(ply)
+	ply:ConCommand("tf_itempicker wep")
 end
 
 function GM:HealPlayer(healer, pl, h, effect, allowoverheal)
@@ -379,32 +465,44 @@ function GM:EntityRemoved(ent, ply)
 	end
 end
 
---Pootis Chat Commands go here!
-
-hook.Add( "PlayerSay", "KillYourself", function( ply, text, public )
-	text = string.lower( text ) -- Make the chat message entirely lowercase
-	if ( string.sub( text, 1 ) == "!kill" ) then
-		ply:Kill()
-		return false
-	end
-end )
-
-
-
 function GM:PlayerRequestTeam( ply, teamid )
-	print("test")
-
 	-- This team isn't joinable
-	if ( !team.Joinable( teamid ) ) then
+	if ( !team.Joinable( teamid ) or teamid == 0 or teamid == 3 ) then
 		ply:ChatPrint( "You can't join that team" )
 	return end
 
 	-- This team isn't joinable
 	if ( !GAMEMODE:PlayerCanJoinTeam( ply, teamid ) ) then
-	print("can can")	
 		-- Messages here should be outputted by this function
 	return end
 
 	GAMEMODE:PlayerJoinTeam( ply, teamid )
+end
 
+function GM:PlayerCanJoinTeam( ply, teamid )
+	--print("Requested "..teamid.." for "..ply:GetName().."!".." (aka team "..team.GetName(teamid).."!)")
+	local TimeBetweenSwitches = GAMEMODE.SecondsBetweenTeamSwitches or 5
+	if ( ply.LastTeamSwitch && RealTime()-ply.LastTeamSwitch < TimeBetweenSwitches ) then
+		ply.LastTeamSwitch = ply.LastTeamSwitch + 1
+		ply:ChatPrint( Format( "Please wait %i more seconds before trying to change team again!", ( TimeBetweenSwitches - ( RealTime() - ply.LastTeamSwitch ) ) + 1 ) )
+		return false
+	end
+
+	-- Already on this team!
+	if ( ply:Team() == teamid ) then
+		ply:ChatPrint( "You're already on that team" )
+		return false
+	end
+
+	return true
+end
+
+-- Networking
+util.AddNetworkString("UpdateLoadout")
+
+function GM:PlayerDroppedWeapon(ply)
+	if !ply:IsHL2() then
+		net.Start("UpdateLoadout")
+		net.Send(ply)
+	end
 end

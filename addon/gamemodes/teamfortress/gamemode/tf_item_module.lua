@@ -225,6 +225,8 @@ function ITEM:InitVisuals(owner, visuals)
 	--MsgFN("InitVisuals (%s) %s",tostring(self),tostring(owner))
 	visuals = visuals or {}
 	
+	if not IsValid(self) then return end
+	if not isfunction(self.GetItemData) then return end
 	if not self:GetItemData() then return end
 	-- Skin and material
 	self.WeaponSkin = visuals.skin
@@ -297,8 +299,8 @@ function ITEM:InitVisuals(owner, visuals)
 			self.MuzzleEffect = v
 		elseif k=="tracer_effect" then
 			self.TracerEffect = v
-		elseif string.find(k, "sound") then
-			self:ModifySound(k, v)
+		--elseif string.find(k, "sound") then
+		--	self:ModifySound(k, v)
 		end
 	end
 	
@@ -427,7 +429,7 @@ function ITEM:ClearParticles()
 	self:StopParticles()
 	if IsValid(self.RootLocator) then self.RootLocator:StopParticles() end
 	
-	--[[if self:IsWeapon() then
+	if self:IsWeapon() then
 		if IsValid(self.Owner:GetViewModel()) then
 			self.Owner:GetViewModel():StopParticles()
 			if IsValid(self.Owner:GetViewModel().RootLocator) then self.Owner:GetViewModel().RootLocator:StopParticles() end
@@ -442,7 +444,7 @@ function ITEM:ClearParticles()
 			self.CModel:StopParticles()
 			if IsValid(self.CModel.RootLocator) then self.CModel.RootLocator:StopParticles() end
 		end
-	end]]
+	end
 end
 
 local function UpdateRootLocator(self)

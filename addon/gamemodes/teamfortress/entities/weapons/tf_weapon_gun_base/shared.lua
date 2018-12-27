@@ -60,7 +60,7 @@ function SWEP:PrimaryAttack()
 	if self then
 		if self.Owner:GetInfoNum("tf_autoreload", 1) == 1 then
 			if auto_reload then
-				timer.Create("AutoReload", (self:SequenceDuration() + self.AutoReloadTime), 1, function() if self then self:Reload() end end)
+				timer.Create("AutoReload", (self:SequenceDuration() + self.AutoReloadTime), 1, function() if IsValid(self) and IsValid(self.Owner) and isfunction(self:Reload()) then self:Reload() end end)
 			end
 		end
 	end
@@ -122,6 +122,10 @@ function SWEP:ShootProjectile(num_bullets, aimcone)
 end
 
 function SWEP:ShootEffects()
+	if self:GetVisuals() and self:GetVisuals()["sound_single_shot"] then
+		self.ShootSound = self:GetVisuals()["sound_single_shot"]
+		self.ShootCritSound = self:GetVisuals()["sound_burst"]
+	end
 	if self:Critical() then
 		self:EmitSound(self.ShootCritSound)
 	else

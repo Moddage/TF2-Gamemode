@@ -29,13 +29,16 @@ local BuilderParams = {
 	{1,1},
 }
 
-hook.Add("PlayerSlotSelected", "TFBuildPDASlot", function(slot)
+hook.Add("PlayerBindPress", "TFBuildPDASlot", function(pl, bind)
 	if IsValid(LocalPlayer():GetActiveWeapon()) and LocalPlayer():GetActiveWeapon():GetClass() == "tf_weapon_pda_engineer_build" then
-		local param = BuilderParams[slot]
+		local num = tonumber(string.match(bind, "^slot(%d)") or "")
+		if num then
+			local param = BuilderParams[num]
 		
-		if param then
-			RunConsoleCommand("build", unpack(param))
-			return true
+			if param then
+				RunConsoleCommand("build", unpack(param))
+				return true
+			end
 		end
 	end
 end)

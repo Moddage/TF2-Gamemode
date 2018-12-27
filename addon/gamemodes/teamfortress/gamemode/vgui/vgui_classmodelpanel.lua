@@ -31,6 +31,11 @@ function PANEL:AddModel(id, mdl, keys)
 			ent:AddEffects(EF_BONEMERGE)
 		end
 	end
+
+	if keys.Color then
+		ent.ColorType = keys.Color
+		print("Yes!")
+	end
 	
 	if keys.LayoutEntity then
 		ent.LayoutEntity = keys.LayoutEntity
@@ -41,6 +46,7 @@ function PANEL:AddModel(id, mdl, keys)
 	end
 	
 	self.Entities[id] = ent
+	return ent
 end
 
 function PANEL:GetModelEntity(id)
@@ -95,6 +101,17 @@ function PANEL:Paint()
 	cam.End3D()
 	
 	self.LastPaint = RealTime()
+	for k, v in pairs(self.Entities) do
+		if v.ColorType == "hat" then
+			print("Uhh..")
+			print(v:GetModel())
+			v:SetColor(string.ToColor(LocalPlayer():GetInfo("tf_hatcolor")))
+			PrintTable(v:GetColor())
+			print(string.ToColor(LocalPlayer():GetInfo("tf_hatcolor")))
+		elseif v.ColorType == "person" and IsValid(LocalPlayer().NeutralModel) then
+			v:SetColor(LocalPlayer().NeutralModel:GetColor())
+		end
+	end
 end
 
 function PANEL:RunAnimation()

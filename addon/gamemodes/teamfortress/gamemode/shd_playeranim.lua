@@ -105,6 +105,7 @@ function GM:HandlePlayerDriving(pl)
 	if pl:IsHL2() then
 		return self.BaseClass:HandlePlayerDriving(pl)
 	end
+
 	return false
 end
 
@@ -234,6 +235,10 @@ function GM:TranslateActivity(pl, act)
 		end
 		
 		return LoserStateActivityTranslate[act] or act
+	end
+
+	if pl:InVehicle() then
+		return ACT_KART_IDLE or act
 	end
 	
 	return pl:TranslateWeaponActivity(act)
@@ -383,11 +388,18 @@ local meta = FindMetaTable("Weapon")
 local OldSendWeaponAnim = meta.SendWeaponAnim
 
 function meta:SendWeaponAnim(act)
-	if not act then return end
+	if not act or act == -1 then return end
 	--MsgN(Format("SendWeaponAnim %d %s",act,tostring(self)))
 	if IsValid(self.Owner) and self.Owner:IsPlayer() and IsValid(self.Owner:GetViewModel()) and self.ViewModelOverride then
+		for k, v in pairs(self.Owner:GetWeapons()) do
+			if IsValid(v) and v:GetClass() == "tf_weapon_robot_arm" and v.IsRoboArm then
+				self.ViewModelOverride = "models/weapons/c_models/c_engineer_gunslinger.mdl"
+			end
+		end
+		
 		self:SetModel(self.ViewModelOverride)
 		self.Owner:GetViewModel():SetModel(self.ViewModelOverride)
 	end
+
 	OldSendWeaponAnim(self,act)
 end

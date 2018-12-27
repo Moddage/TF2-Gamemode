@@ -7,6 +7,7 @@ for k, v in pairs(engine.GetAddons()) do
 		conflict_help_frame:Center()
 		conflict_help_frame:SetTitle("!!CONFLICT!!")
 		conflict_help_frame:ShowCloseButton(true)
+		conflict_help_frame:SetBackgroundBlur(true)
 		conflict_help_frame:MakePopup()
 
 		local conflicttext = vgui.Create("RichText", conflict_help_frame)
@@ -26,5 +27,9 @@ for k, v in pairs(engine.GetAddons()) do
 			steamworks.ViewFile(349050451)
 		end
 	end
+end
+
+if !IsMounted("tf") then
+	ErrorNoHalt("TF2 is not mounted! Expect errors!")
 end
 

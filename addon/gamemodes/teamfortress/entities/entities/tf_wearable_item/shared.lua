@@ -9,6 +9,7 @@ ENT.SetupDataTables0 = ENT.SetupDataTables
 function ENT:SetupDataTables()
 	self:SetupDataTables0()
 	self:DTVar("Int", 1, "ItemTint")
+	self:NetworkVar("Vector", 1, "CosmeticTint")
 end
 
 function ENT:GetItemTint(t)
@@ -23,23 +24,44 @@ function ENT:SetItemTint(t)
 	self.dt.ItemTint = t
 end
 
+function ENT:Think()
+	if CLIENT then
+		if self:GetOwner() ~= LocalPlayer() or LocalPlayer():ShouldDrawLocalPlayer() then
+			if self.ShadowCreated ~= true then
+				self.ShadowCreated = true
+				self:CreateShadow()
+			end
+		else
+			if self.ShadowCreated ~= false then
+				self.ShadowCreated = false
+				self:DestroyShadow()
+			end
+		end
+	elseif SERVER then
+		if self:GetItemData()["item_slot"] == "head" then
+			if self:GetOwner():GetInfoNum("tf_hatcolor_rainbow", 0) == 1 then 
+				self:SetCosmeticTint(Vector(math.random(5, 255)/255, math.random(5, 255)/255, math.random(5, 255)/255))
+			else
+				self:SetCosmeticTint(Vector(string.ToColor(self:GetOwner():GetInfo("tf_hatcolor")).r/255, string.ToColor(self:GetOwner():GetInfo("tf_hatcolor")).g/255, string.ToColor(self:GetOwner():GetInfo("tf_hatcolor")).b/255))
+			end
+		elseif self:GetItemData()["item_slot"] == "misc" then
+			if self:GetOwner():GetInfoNum("tf_hatcolor_rainbow", 0) == 1 then
+				self:SetCosmeticTint(Vector(math.random(5, 255)/255, math.random(5, 255)/255, math.random(5, 255)/255))
+			else
+				self:SetCosmeticTint(Vector(string.ToColor(self:GetOwner():GetInfo("tf_misccolor")).r/255, string.ToColor(self:GetOwner():GetInfo("tf_misccolor")).g/255, string.ToColor(self:GetOwner():GetInfo("tf_misccolor")).b/255))
+			end
+		end
+	end
+end
+
 end
 
 if CLIENT then
 
-function ENT:Think()
-	if self:GetOwner() ~= LocalPlayer() or LocalPlayer():ShouldDrawLocalPlayer() then
-		if self.ShadowCreated ~= true then
-			self.ShadowCreated = true
-			self:CreateShadow()
-		end
-	else
-		if self.ShadowCreated ~= false then
-			self.ShadowCreated = false
-			self:DestroyShadow()
-		end
-	end
-end
+CreateClientConVar( "tf_hatcolor", "0 0 0 255", true, true )
+CreateClientConVar( "tf_misccolor", "0 0 0 255", true, true )
+CreateClientConVar( "tf_hatcolor_rainbow", "0", true, true )
+CreateClientConVar( "tf_misccolor_rainbow", "0", true, true )
 
 function ENT:Draw()
 	if self:GetOwner() ~= LocalPlayer() or LocalPlayer():ShouldDrawLocalPlayer() then
@@ -93,6 +115,7 @@ end
 function ENT:Initialize()
 	self.Owner = self:GetOwner()
 	self:AddToPlayerItems()
+	self.ProxyentPaintColor = self
 		
 	local item = self:GetItemData()
 	

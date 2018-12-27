@@ -863,6 +863,7 @@
 			"baseitem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
+			"attach_to_hands"	"1"
 			"image_inventory"	"backpack/weapons/w_models/w_pda_engineer"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"

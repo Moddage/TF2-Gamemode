@@ -36,6 +36,10 @@ function PANEL:Paint()
 	if not IsCustomHUDVisible("HudEngyMenuBuild") then
 		return
 	end
+
+	if LocalPlayer():GetNWBool("Taunting") then
+		return
+	end
 	
 	local slot = self.slot or 1
 	
@@ -116,6 +120,10 @@ end
 
 function PANEL:Paint()
 	if not IsCustomHUDVisible("HudEngyMenuBuild") then
+		return
+	end
+
+	if LocalPlayer():GetNWBool("Taunting") then
 		return
 	end
 	

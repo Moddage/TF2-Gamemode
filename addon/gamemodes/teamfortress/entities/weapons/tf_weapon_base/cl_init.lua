@@ -7,8 +7,9 @@ SWEP.Slot				= 0
 SWEP.SlotPos			= 10
 SWEP.DrawAmmo			= true
 SWEP.DrawCrosshair		= true
-SWEP.DrawWeaponInfoBox	= true
-SWEP.BounceWeaponIcon   = true
+SWEP.DrawWeaponInfoBox	= false
+SWEP.BounceWeaponIcon   = false
+SWEP.WepSelectIcon = surface.GetTextureID( "weapons/swep" )
 SWEP.SwayScale			= 0.5
 SWEP.BobScale			= 0.5
 
@@ -90,6 +91,7 @@ function SWEP:InitializeWModel2()
 		self.WModel2:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE_FASTCULL))
 		self.WModel2:SetParent(self.Owner)
 		self.WModel2:SetNoDraw(true)
+		self.WModel2:SetColor(Color(255, 255, 255))
 		
 		if wmodel == "models/weapons/w_models/w_shotgun.mdl" then
 			self.WModel2:SetMaterial("models/weapons/w_shotgun_tf/w_shotgun_tf")
@@ -198,6 +200,24 @@ function SWEP:RenderWModel()
 		--self.AttachedWModel:CreateShadow()
 		self.AttachedWModel:DrawModel()
 	end
+end
+
+function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
+	surface.SetDrawColor(255, 255, 255, alpha)
+	local tex = self:GetIconTextureID()
+	surface.SetTexture(tex)
+	local rx, ry = surface.GetTextureSize(tex)
+
+	-- Borders
+	y = y - 10
+	x = x + 50
+	wide = wide - 20
+
+	-- Draw that mother
+	surface.DrawTexturedRect( x, y,  wide * 0.6 , ( wide / 1.2 ) )
+
+	-- Draw weapon info box
+	self:PrintWeaponInfo( x + wide + 20, y + tall * 0.95, alpha )
 end
 
 function SWEP:ViewModelDrawn()
@@ -354,7 +374,7 @@ function SWEP:DoMuzzleFlash()
 	
 	if betaeffect then
 		local effectdata = EffectData()
-			effectdata:SetEntity(ent)
+			effectdata:SetEntity(self)
 		util.Effect(betaeffect, effectdata)
 	else
 		ParticleEffectAttach(self.MuzzleEffect, PATTACH_POINT_FOLLOW, ent, ent:LookupAttachment("muzzle"))

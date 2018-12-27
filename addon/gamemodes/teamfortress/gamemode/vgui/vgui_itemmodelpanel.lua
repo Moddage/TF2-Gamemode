@@ -30,7 +30,10 @@ function PANEL:UpdateAttributePanel()
 	end
 	
 	local x, y = self:GetPos()
-	self.AttributePanel:SetPos(x+self.Offset.x, y+self.Offset.y)
+	if self.attributes then
+		PrintTable(self.attributes)
+	end
+--	self.AttributePanel:SetPos(x+self.Offset.x, y+self.Offset.y)
 	self.AttributePanel.text = self.text
 	self.AttributePanel.attributes = self.attributes
 	self.AttributePanel.qualitycolor = self.qualitycolor
@@ -54,6 +57,7 @@ end
 
 function PANEL:Paint()
 	if self.invisible then return end
+	if !isnumber(self.itemImage) then return end
 	
 	local w, h = self:GetSize()
 	
@@ -97,19 +101,55 @@ function PANEL:Paint()
 			else
 				tex = self.itemImage
 			end
+
+			if !isnumber(tex) then return end
 			
 			surface.SetTexture(tex)
 			local rx, ry = surface.GetTextureSize(tex)
 			local sy = sx * ry/rx
-			
-			if rx>ry then
-				if self.model_tall<=50 then
-					surface.DrawTexturedRect(x - sx * 0.96, y - sy * 1.52, 2.21*sx, 2.55*sy)
-				else
-					surface.DrawTexturedRect(x - sx * 1.05, y - sy * 1.43, 2.28*sx, 2.55*sy)
+
+			if self.FallbackModel then
+				if !ispanel(self.wep) then
+					self.wep = vgui.Create( "DModelPanel", self )
+					self.wep:SetModel(self.FallbackModel)
+					if rx>ry then
+						if self.model_tall<=50 then
+							self.wep:SetPos(x - sx * 0.96, y - sy * 1.52)
+							self.wep:SetSize(2.21*sx, 2.55*sy)
+						else
+							self.wep:SetPos(x - sx * 1.05, y - sy * 1.43)
+							self.wep:SetSize(2.28*sx, 2.55*sy)
+						end
+					else
+						self.wep:SetPos(x - sx * 0.95, y - sy * 0.95)
+						self.wep:SetSize(1.85*sx, 1.85*sy)
+					end
+					local mn, mx = self.wep.Entity:GetRenderBounds()
+					local size = 0
+					size = math.max( size, math.abs( mn.x ) + math.abs( mx.x ) )
+					size = math.max( size, math.abs( mn.y ) + math.abs( mx.y ) )
+					size = math.max( size, math.abs( mn.z ) + math.abs( mx.z ) )
+
+					self.wep:SetFOV( 45 )
+					self.wep:SetCamPos( Vector( size, size, size ) )
+					self.wep:SetLookAt( ( mn + mx ) * 0.5 )
+					self.wep.LayoutEntity = function() end
+					self.wep:SetMouseInputEnabled(false)
+
+					if self.overridematerial then
+						self.wep.Entity:SetMaterial(self.overridematerial)
+					end
 				end
 			else
-				surface.DrawTexturedRect(x - sx * 0.95, y - sy * 0.95, 1.85*sx, 1.85*sy)
+				if rx>ry then
+					if self.model_tall<=50 then
+						surface.DrawTexturedRect(x - sx * 0.96, y - sy * 1.52, 2.21*sx, 2.55*sy)
+					else
+						surface.DrawTexturedRect(x - sx * 1.05, y - sy * 1.43, 2.28*sx, 2.55*sy)
+					end
+				else
+					surface.DrawTexturedRect(x - sx * 0.95, y - sy * 0.95, 1.85*sx, 1.85*sy)
+				end
 			end
 		end
 	end

@@ -22,7 +22,7 @@ function PANEL:SetProgress(p)
 end
 
 function PANEL:Paint()
-	if not LocalPlayer():Alive() or GetConVarNumber("cl_drawhud")==0 then return end
+	if not LocalPlayer():Alive() or GetConVar("hud_forcehl2hud"):GetBool() or GetConVarNumber("cl_drawhud")==0 then return end
 	
 	if not IsCustomHUDVisible("HudBowCharge") then
 		return

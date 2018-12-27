@@ -3,20 +3,16 @@ if SERVER then
 end
 
 if CLIENT then
-	SWEP.PrintName			= "All Class"
+	SWEP.PrintName			= "Frying Pan"
 	SWEP.Slot				= 2
 end
 
 SWEP.Base				= "tf_weapon_melee_base"
 
-SWEP.ViewModel			= "models/weapons/c_models/c_scout_arms.mdl"
-SWEP.WorldModel			= "models/weapons/w_models/w_shovel.mdl"
-SWEP.Crosshair = "tf_crosshair3"
-
 SWEP.Swing = Sound("Weapon_Shovel.Miss")
 SWEP.SwingCrit = Sound("Weapon_Shovel.MissCrit")
-SWEP.HitFlesh = Sound("Weapon_Shovel.HitFlesh")
-SWEP.HitWorld = Sound("Weapon_Shovel.HitWorld")
+SWEP.HitFlesh = Sound("FryingPan.HitFlesh")
+SWEP.HitWorld = Sound("FryingPan.HitWorld")
 
 local SpeedTable = {
 {40, 1.6},
@@ -65,7 +61,7 @@ function SWEP:Think()
 	end
 		
 	if self.Owner:GetPlayerClass() == "engineer" then
-		self.NoHitSound = true
+		self.NoHitSound = false
 		self.UpgradeSpeed = 25
 		self.GlobalCustomHUD = {HudAccountPanel = true}
 	end

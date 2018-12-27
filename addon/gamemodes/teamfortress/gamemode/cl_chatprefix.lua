@@ -22,9 +22,9 @@ function DevDetector(ply)
 	end
 end
 concommand.Add("getweapon", DevDetector)
-
+ 
 hook.Add("OnPlayerChat", "Tags", function(ply, strText, bTeamOnly)
-	if ply:SteamID() == "STEAM_0:0:36452708" or ply:SteamID() == "STEAM_0:0:35652170" then
+	if IsValid(ply) and ply:SteamID() == "STEAM_0:0:36452708" or ply:SteamID() == "STEAM_0:0:35652170" then
 		isDev = true
 	else
 		isDev = false

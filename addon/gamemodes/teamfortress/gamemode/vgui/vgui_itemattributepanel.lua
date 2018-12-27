@@ -38,6 +38,8 @@ function PANEL:Paint()
 	local h2 = (self.text_ypos+28+11*#(self.attributes or {})+31-2*bordersize)*Scale
 	
 	surface.SetDrawColor(255,255,255,255)
+
+	self:SetPos(gui.MouseX(), gui.MouseY())
 	
 	local b = bordersize*Scale
 	
@@ -54,17 +56,32 @@ function PANEL:Paint()
 		"ItemFontNameLarge",
 		"south"
 	)
+	--self.attributes = {["crit mod disabled hidden"] = {["attribute_class"] = "mult_crit_chance", ["name"] = "crit mod disabled hidden", ["value"] = 0}}
+	local name
+
+	if self.attributes then
+		--PrintTable(self.attributes)
+	end
 	
 	local y = (self.text_ypos+28-bordersize)*Scale
-	for k,v in ipairs(self.attributes or {}) do
+	for k,v in pairs(self.attributes or {}) do
+		local name = v["name"]
+		if v["value"] ~= 0 and v["value"] ~= 1 and isnumber(v["value"]) then
+			name = string.sub(v["value"], 1, 3) .. " " .. v["name"]
+		end
 		tf_draw.LabelText(
 			0, y,
 			w, 0,
-			v[1],
+			name,
 			attribcolors[v[2] or 2] or attribcolors[2],
 			"ItemFontAttribLarge",
 			"north"
 		)
+
+		--[[			0, y,
+			w, 0,
+			v[1],
+			attribcolors[v[2] or 2] or attribcolors[2],]]
 		y = y + 11*Scale
 	end
 end

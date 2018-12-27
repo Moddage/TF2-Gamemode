@@ -65,34 +65,18 @@ function ENT:GetRealPos()
 	end
 end
 
-function ENT:Initialize()
-	if self:GetOwner().TempAttributes.ProjectileModelModifier == 1 then
-		self.ExplosiveHat = true
-		self.BouncesLeft = 1
-		self:SetModel("models/player/items/soldier/soldier_shako.mdl")
-		self:PhysicsInit(SOLID_VPHYSICS)
-		self.BounceSound = "Flesh.ImpactSoft"
-		self:SetPos(self:GetPos() - 81 * self:GetUp())
-	elseif self.GrenadeMode==-1 then
-		self:SetModel(self.Model)
-		self:SetNoDraw(true)
-		self:DrawShadow(false)
-		self:SetNotSolid(true)
-		self:DoExplosion()
-		return
-	elseif self.GrenadeMode==1 then
-		self.BouncesLeft = 2
-		self:SetModel(self.Model2)
-		self:PhysicsInitSphere(8, "metal_bouncy")
-	else
-		self.BouncesLeft = 1
-		self:SetModel(self.Model)
-		self:PhysicsInit(SOLID_VPHYSICS)
+function ENT:Touch(ent)
+	if ent:IsPlayer() then
+		self:Remove()
 	end
-	
+end
+
+function ENT:Initialize()
+	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
-	self:SetSolid(SOLID_CUSTOM)
-	self:SetHealth(1)
+	self:SetSolid(SOLID_VPHYSICS)
+	
+	self:GetPhysicsObject():Wake()
 	
 	if self.GrenadeMode==1 then
 		self:SetMoveCollide(MOVECOLLIDE_FLY_BOUNCE)
@@ -168,78 +152,6 @@ function ENT:OnRemove()
 	if self.particle_crit and self.particle_crit:IsValid() then self.particle_crit:Remove() end
 end
 
-function ENT:Think()
-	if self.NextExplode and CurTime()>=self.NextExplode then
-		self:DoExplosion()
-		self.NextExplode = nil
-	end
-end
-
-function ENT:DoExplosion()
-	self.PhysicsCollide = nil
-	
-	self:EmitSound(self.ExplosionSound, 100, 100)
-	
-	local flags = 0
-	
-	if self:WaterLevel()>0 then
-		flags = bit.bor(flags, 1)
-	end
-	
-	local effectdata = EffectData()
-		effectdata:SetOrigin(self:GetRealPos())
-		effectdata:SetAngles(self:GetAngles())
-		effectdata:SetAttachment(flags)
-	util.Effect("tf_explosion", effectdata, true, true)
-	
-	local owner = self:GetOwner()
-	if not owner or not owner:IsValid() then owner = self end
-	
-	local range, damage
-	
-	if self.GrenadeMode==-1 then
-		range = self.ExplosionRadiusInit
-	elseif self.BouncesLeft<=0 then
-		range = self.ExplosionRadiusInit
-		
-		self.BaseDamage = 64
-		self.DamageRandomize = 0
-		self.OwnerDamage = 1
-	else
-		range = self.ExplosionRadiusInit * 0.7
-		
-		self.BaseDamage = 100
-		self.DamageRandomize = 0.05
-		self.OwnerDamage = 0.6
-	end
-	
-	--self.ResultDamage = self.BaseDamage
-	
-	--util.BlastDamage(self, owner, self:GetPos(), range, self.BaseDamage)
-	util.BlastDamage(self, owner, self:GetRealPos(), range, 100)
-	
-	self:SetNoDraw(true)
-	self:SetNotSolid(true)
-	self:Fire("kill", "", 0.01)
-end
-
-function ENT:Break()
-	if self.Dead then return end
-	
-	local effectdata = EffectData()
-		effectdata:SetOrigin(self:GetRealPos())
-		effectdata:SetNormal(Vector(0,0,1))
-		effectdata:SetMagnitude(2)
-		effectdata:SetScale(1)
-		effectdata:SetRadius(5)
-	util.Effect("Sparks", effectdata)
-	
-	self.Dead = true
-	self:SetNotSolid(true)
-	self:SetNoDraw(true)
-	self:Fire("kill", "", 0.01)
-end
-
 function ENT:PhysicsCollide(data, physobj)
 	if data.HitEntity and data.HitEntity:IsValid() and (data.HitEntity:IsNPC() or data.HitEntity:IsPlayer()) and data.HitEntity:Health()>0 then
 		if self.BouncesLeft>0 then
@@ -255,7 +167,6 @@ function ENT:PhysicsCollide(data, physobj)
 			self:EmitSound(self.BounceSound, 100, 100)
 		end
 		
-		self.BouncesLeft = self.BouncesLeft - 1
 		
 		if self.Bounciness then
 			local LastSpeed = math.max( data.OurOldVelocity:Length(), data.Speed )

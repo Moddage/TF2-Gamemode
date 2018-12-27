@@ -355,7 +355,7 @@ function LoadGameItems(path)
 		return
 	end
 	
-	ParseGameItems(data)
+	ParseGameItems(data, true) -- leaving this on silent for now, results in no script errors
 end
 
 local files, dirs = file.Find("gamemodes/teamfortress/gamemode/items/workshop/*", "GAME")
@@ -363,6 +363,10 @@ for k,v in pairs(files) do
     if string.StartWith(v, "items_") then
         tf_items.LoadGameItems("workshop/"..v)
     end
+end
+
+function ReturnItems()
+	return Items
 end
 
 function AddAttribute(data)

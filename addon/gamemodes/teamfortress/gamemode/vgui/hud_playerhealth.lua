@@ -22,7 +22,7 @@ function PANEL:PerformLayout()
 end
 
 function PANEL:Paint()
-	if not LocalPlayer():Alive() or LocalPlayer():IsHL2() or GAMEMODE.ShowScoreboard or GetConVarNumber("cl_drawhud")==0 or LocalPlayer():Team() == TEAM_SPECTATOR or LocalPlayer():GetPlayerClass()=="" then return end
+	if not LocalPlayer():Alive() or LocalPlayer():IsHL2() or GetConVar("hud_forcehl2hud"):GetBool() or GAMEMODE.ShowScoreboard or GetConVarNumber("cl_drawhud")==0 or LocalPlayer():Team() == TEAM_SPECTATOR or LocalPlayer():GetPlayerClass()=="" then return end
 	
 	local size, amplitude, frequency
 	local health = LocalPlayer():Health()

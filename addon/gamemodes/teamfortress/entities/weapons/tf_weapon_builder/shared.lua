@@ -77,7 +77,7 @@ function SWEP:SetupBuilding(obj)
 			end
 			
 			self:InitializeWModel2()
-			
+
 			self.HasCModel = false
 			if IsValid(self.CModel) then
 				self.CModel:Remove()
