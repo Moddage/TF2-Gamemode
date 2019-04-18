@@ -5,6 +5,8 @@ local H = ScrH()
 local WScale = W/640
 local Scale = H/480
 
+CreateConVar("hud_show_ctf_as_hl2", "1", {FCVAR_ARCHIVE}, "Show CTF hud as GMod Player")
+
 local objectives_flagpanel_bg_left = surface.GetTextureID("hud/objectives_flagpanel_bg_left")
 local objectives_flagpanel_bg_right = surface.GetTextureID("hud/objectives_flagpanel_bg_right")
 local objectives_flagpanel_bg_outline = surface.GetTextureID("hud/objectives_flagpanel_bg_outline")
@@ -27,7 +29,7 @@ end
 function PANEL:Paint()
 	local param
 	
-	if GetConVarNumber("cl_drawhud")==0 then return end
+	if not LocalPlayer():Alive() or (LocalPlayer():IsHL2() and !GetConVar("hud_show_ctf_as_hl2"):GetBool()) or GetConVar("hud_forcehl2hud"):GetBool() or GetConVarNumber("cl_drawhud")==0 or GAMEMODE.ShowScoreboard or !string.find(game.GetMap(), "ctf_") then return end
 	
 	surface.SetDrawColor(255,255,255,255)
 	
@@ -45,7 +47,7 @@ function PANEL:Paint()
 	
 	-- Blue score
 	param = {
-		text=0,
+		text=GetGlobalFloat("tf_ctf_blu"),
 		font="HudFontBig",
 		pos={320*WScale-128*Scale, (480-46+17.5)*Scale},
 		color=Colors.Black,
@@ -60,7 +62,7 @@ function PANEL:Paint()
 	
 	-- Red score
 	param = {
-		text=0,
+		text=GetGlobalFloat("tf_ctf_red"),
 		font="HudFontBig",
 		pos={320*WScale+132*Scale, (480-46+17.5)*Scale},
 		color=Colors.Black,
@@ -76,7 +78,7 @@ function PANEL:Paint()
 	
 	-- Playing to :
 	param = {
-		text="Playing to: 3",
+		text="Playing to: ∞",
 		font="HudFontSmall",
 		pos={320*WScale, (480-28+15)*Scale},
 		color=Colors.TanLight,

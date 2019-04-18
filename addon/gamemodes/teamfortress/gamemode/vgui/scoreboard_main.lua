@@ -165,10 +165,10 @@ function PANEL:Paint()
 	BlueTeamName.text = tf_lang.GetRaw("#TF_ScoreBoard_Blue")
 	draw.Text(BlueTeamName)
 	
-	BlueTeamScoreShadow.text = 0
+	BlueTeamScoreShadow.text = GetGlobalFloat("tf_ctf_blu")
 	draw.Text(BlueTeamScoreShadow)
 	
-	BlueTeamScore.text = 0
+	BlueTeamScore.text = GetGlobalFloat("tf_ctf_blu")
 	draw.Text(BlueTeamScore)
 	
 	num = #team.GetPlayers(TEAM_BLU)
@@ -189,10 +189,10 @@ function PANEL:Paint()
 	RedTeamName.text = tf_lang.GetRaw("#TF_ScoreBoard_Red")
 	draw.Text(RedTeamName)
 	
-	RedTeamScoreShadow.text = 0
+	RedTeamScoreShadow.text = GetGlobalFloat("tf_ctf_red")
 	draw.Text(RedTeamScoreShadow)
 	
-	RedTeamScore.text = 0
+	RedTeamScore.text = GetGlobalFloat("tf_ctf_red")
 	draw.Text(RedTeamScore)
 	
 	num = #team.GetPlayers(TEAM_RED)

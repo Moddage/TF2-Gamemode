@@ -1,3 +1,4 @@
+AddCSLuaFile()
 
 ENT.Type = "anim"  
 ENT.Base = "item_base"    
@@ -6,9 +7,17 @@ ENT.Model = "models/flag/briefcase.mdl"
 
 local FlagReturnTime = 60
 
-
+print("HI")
 
 if SERVER then
+
+hook.Add("DoPlayerDeath", "IntelSafeHelp", function(ply)
+	for _,v in pairs(ents.FindByClass("item_teamflag")) do
+		if v.Carrier==ply then
+			v:Drop()
+		end
+	end
+end)
 
 concommand.Add("drop_flag", function(pl)
 	for _,v in pairs(ents.FindByClass("item_teamflag")) do
@@ -36,6 +45,8 @@ function ENT:Initialize()
 	self.Prop:SetPos(self:GetPos())
 	self.Prop:SetAngles(self:GetAngles())
 	self.Prop:Spawn()
+
+	self:SetNWEntity("prop", self.Prop)
 	
 	self.Prop:SetParent(self)
 	
@@ -83,6 +94,7 @@ function ENT:KeyValue(key, value)
 	if key=="gametype" then
 		self.GameType = tonumber(value)
 	elseif key=="teamnum" then
+		self.te = tonumber(value)
 		local t = tonumber(value)
 		
 		if t==0 then
@@ -96,6 +108,14 @@ function ENT:KeyValue(key, value)
 end
 
 function ENT:Think()
+	self:SetNWEntity("carrier", self.Carrier)
+
+	for k, v in pairs(player.GetAll()) do
+		if v:GetPos():Distance(self:GetPos()) <= 80 and self:CanPickup(v) and not self.PickupLock[v] and util.QuickTrace(self:GetPos(), v:GetPos() - self:GetPos(), self.Prop).Entity == self then
+			self:PlayerTouched(v)
+		end
+	end
+
 	if self.NextReturn then
 		if not self.NextClientUpdateTimer or CurTime()>self.NextClientUpdateTimer then
 			self:SetNWFloat("TimeRemaining", self.NextReturn - CurTime())
@@ -131,21 +151,34 @@ function ENT:PlayerTouched(pl)
 end
 
 function ENT:Capture()
-	self:Return()
+	self:Return(true)
 	if IsValid(self.Carrier) then
 		self:TriggerOutput("OnCapture", self.Carrier)
 	end
 end
 
-function ENT:Return()
+function ENT:Return(nosound)
 	if self.State~=0 then
+		self:Drop(true)
 		self.State = 0
-		self:Drop()
 		self:SetNWBool("TimerActive", false)
 		self.NextReturn = nil
 		self:SetPos(self.HomePosition)
 		self:SetAngles(self.HomeAngles)
+		print(self.HomePosition)
 		self:TriggerOutput("OnReturn")
+
+		if nosound then
+			return
+		end
+
+		for _, ply in pairs(player.GetAll()) do
+			if ply:Team() ~= self.TeamNum then
+				ply:SendLua([[surface.PlaySound("vo/intel_teamreturned.mp3")]])
+			else
+				ply:SendLua([[surface.PlaySound("vo/intel_enemyreturned.mp3")]])
+			end
+		end
 	end
 end
 
@@ -169,11 +202,22 @@ function ENT:Pickup(ply)
 		self:SetTrigger(false)
 		self:SetParent(ply)
 		self:Fire("SetParentAttachment", "flag", 0)
+		if ply:IsHL2() then
+			self:Fire("SetParentAttachment", "chest", 0)
+		end
 		self:TriggerOutput("OnPickup", ply)
+
+		for _, ply in pairs(player.GetAll()) do
+			if ply:Team() ~= self.TeamNum then
+				ply:SendLua([[surface.PlaySound("vo/intel_teamstolen.mp3")]])
+			else
+				ply:SendLua([[surface.PlaySound("vo/intel_enemystolen.mp3")]])
+			end
+		end
 	end
 end
 
-function ENT:Drop()
+function ENT:Drop(nosound)
 	if self.State==1 and IsValid(self.Carrier) then
 		self:SetNWBool("TimerActive", true)
 		self:SetNWFloat("TimeRemaining", FlagReturnTime)
@@ -193,6 +237,18 @@ function ENT:Drop()
 		self:SetAngles(Angle(0, self:GetAngles().y, 0))
 		self:DropToFloor()
 		self:TriggerOutput("OnDrop", ply)
+
+		if nosound then
+			return
+		end
+
+		for _, ply in pairs(player.GetAll()) do
+			if ply:Team() ~= self.TeamNum then
+				ply:SendLua([[surface.PlaySound("vo/intel_teamdropped.mp3")]])
+			else
+				ply:SendLua([[surface.PlaySound("vo/intel_enemydropped.mp3")]])
+			end
+		end
 	end
 end
 
@@ -246,6 +302,24 @@ function ENT:Initialize()
 end
 
 function ENT:Draw()
+	if IsValid(self:GetNWEntity("prop", self)) and IsValid(self:GetParent()) then
+		if self:GetParent() == LocalPlayer() and !LocalPlayer():ShouldDrawLocalPlayer() then
+			self:GetNWEntity("prop", self):SetNoDraw(true) -- true)
+		else
+			self:GetNWEntity("prop", self):SetNoDraw(false)
+		end
+
+		if self:GetParent():IsHL2() and self:GetParent():LookupAttachment("chest") > 0 then
+			local att = self:GetParent():GetAttachment(self:GetParent():LookupAttachment("chest"))
+			local ang = att.Ang
+			local pos = att.Pos
+			local pos2, ang2 = LocalToWorld(ang:Forward() * 10, Angle(90, 0, 180), pos, ang)
+			self:GetNWEntity("prop", self):SetAngles(ang2)
+			self:GetNWEntity("prop", self):SetPos(pos - ang:Forward() * 10)
+			--self:Fire("SetParentAttachment", "chest", 0)
+		end
+	end
+
 	if not self:GetNWBool("TimerActive") then return end
 	
 	local s = self:GetSkin()

@@ -1,4 +1,4 @@
-if !isfunction(pac.RegisterEvent) then return end
+if !pac or !isfunction(pac.RegisterEvent) then return end
 
 local plyMeta = FindMetaTable('Player')
 local gamemode = engine.ActiveGamemode

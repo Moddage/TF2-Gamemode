@@ -48,7 +48,7 @@ local function DrawCrosshair(crosshair, scale)
 	local W,H = ScrW(), ScrH()
 	local pos = LocalPlayer():GetEyeTrace().HitPos:ToScreen()
 	surface.SetDrawColor(255,255,255,255)
-	if LocalPlayer():ShouldDrawLocalPlayer() then
+	if LocalPlayer():ShouldDrawLocalPlayer() then -- and !LocalPlayer().FirstReality then
 		tf_draw.ModTexture(crosshairs, pos.x - ((s*c.w) / 2), pos.y - ((s*c.w) / 2), s*c.w, s*c.h, c)
 	else
 		tf_draw.ModTexture(crosshairs, (W-s*c.w)/2, (H-s*c.h)/2, s*c.w, s*c.h, c)

@@ -27,6 +27,12 @@ function PANEL:Paint()
 	
 	local t = LocalPlayer():Team()
 	local tbl = LocalPlayer():GetPlayerClassTable()
+
+	if LocalPlayer():GetObserverTarget() and LocalPlayer():GetObserverTarget():IsPlayer() then
+		t = LocalPlayer():GetObserverTarget():Team()
+		tbl = LocalPlayer():GetObserverTarget():GetPlayerClassTable()
+	end
+
 	--ht = ACT_MP_STAND_..LocalPlayer():GetActiveWeapon().HoldType
 	--[[model = LocalPlayer():GetPlayerClass()
 

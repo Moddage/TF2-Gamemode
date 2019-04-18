@@ -32,6 +32,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_grenadelauncher_demo.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_grenadelauncher.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 --[[ --Viewmodel Settings Override (left-over from testing; works well)
 SWEP.ViewModelFOV	= 70
 SWEP.ViewModelFlip	= false

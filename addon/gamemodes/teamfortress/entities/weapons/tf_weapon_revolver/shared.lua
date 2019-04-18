@@ -15,6 +15,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_revolver_spy.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_revolver.mdl"
 SWEP.Crosshair = "tf_crosshair2"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.MuzzleEffect = "muzzle_revolver"
 SWEP.MuzzleOffset = Vector(20, 4, -2)
 

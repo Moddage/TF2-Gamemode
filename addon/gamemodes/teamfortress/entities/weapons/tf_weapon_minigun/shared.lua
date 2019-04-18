@@ -94,6 +94,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_minigun_heavy.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_minigun.mdl"
 SWEP.Crosshair = "tf_crosshair4"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.MuzzleEffect = "muzzle_minigun_constant"
 SWEP.MuzzleOffset = Vector(20, 3, -10)
 SWEP.TracerEffect = "bullet_tracer01"
@@ -406,7 +410,7 @@ function SWEP:Think()
 	
 	if self.barrelSpeed == 0 then
 		if self:GetItemData().attach_to_hands == 1 then
-			if CLIENT and self.CModel:LookupBone("barrel") then
+			if CLIENT and IsValid(self.CModel) and self.CModel:LookupBone("barrel") then
 				self:StopSound(self.SpecialSound2)
 			end
 		else
@@ -415,7 +419,7 @@ function SWEP:Think()
 	end
 	
 	if ( CLIENT ) then
-		if self:GetItemData().attach_to_hands == 1 then
+		if self:GetItemData().attach_to_hands == 1 and IsValid(self.CModel) then
 		bone = self.CModel:LookupBone("barrel")
 			if bone then
 				self.CModel:ManipulateBoneAngles( bone, Angle(0,self.barrelRotation,0) )
@@ -474,7 +478,7 @@ function SWEP:Holster()
 	
 	if self:GetItemData().attach_to_hands == 1 then
 
-	else
+	elseif self.Owner and IsValid(self.Owner:GetViewModel()) then
 		self.Owner:GetViewModel():ManipulateBoneAngles( 2, Angle(0,0,0) )
 	end
 	

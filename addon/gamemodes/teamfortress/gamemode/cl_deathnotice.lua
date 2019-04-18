@@ -243,6 +243,7 @@ usermessage.Hook("Notice_EntityRevengeEntity", function(msg)
 end)
 
 function GM:AddDeathNotice(Attacker, team1, Inflictor, Victim, team2, Cooperator, team3, Message, Critical, Highlight, UniqueId, NoticeType)
+print(Attacker, Attacker, Attacker, team1)
 	if string.find(Attacker, "\1") then
 		local obj, owner = unpack(string.Explode("\1", Attacker))
 		if obj and owner then

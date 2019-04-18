@@ -58,6 +58,11 @@ function PANEL:Paint()
 	surface.SetDrawColor(255,255,255,255)
 	
 	local w = LocalPlayer():GetActiveWeapon()
+
+	if LocalPlayer():GetObserverTarget() and LocalPlayer():GetObserverTarget():IsPlayer() then
+		w = LocalPlayer():GetObserverTarget():GetActiveWeapon()
+	end
+
 	if IsValid(w) and w.UsesJarateChargeMeter then
 		surface.SetMaterial(sniperscope_mat2)
 	else

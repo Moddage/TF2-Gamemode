@@ -743,6 +743,18 @@ end
 if SERVER then
 
 function CC_GiveItem(pl,_,args)
+	local resupply = nil
+
+	if GetConVar("tf_competitive"):GetBool() then
+		for k, v in pairs(ents.FindByClass("prop_dynamic")) do
+			if v:GetModel() == "models/props_gameplay/resupply_locker.mdl" and v:GetPos():Distance(pl:GetPos()) <= 100 then
+				resupply = v
+			end
+		end
+		
+		if !IsValid(resupply) then pl:ChatPrint("You need to be near a Resupply Locker!") return false end
+	end
+
 	for k,v in ipairs(args) do
 		if string.find(v, " ") then
 			args[k] = Format("%q", v)
@@ -914,7 +926,7 @@ concommand.Add("giveweapon", function(pl,_,args)
 	if table.HasValue( args, "list") then
 		PrintTable(j)
 	end
-	
+		
 	RunConsoleCommand("__svgiveitem", unpack(args))
 end, AC_GiveWeapon)
 

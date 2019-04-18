@@ -53,6 +53,7 @@ include("shd_extras.lua")
 include("shd_workshop.lua")
 
 include("shd_competitive.lua")
+include("shd_spec.lua")
 
 --include("shd_items_temp.lua")
 
@@ -255,6 +256,9 @@ function GM:EntityName(ent, nolocalize)
 end
 
 function GM:EntityDeathnoticeName(ent, nolocalize)
+	if ent:IsWeapon() then
+		ent = ent:GetOwner()
+	end
 	if ent.GetDeathnoticeName then
 		return ent:GetDeathnoticeName(nolocalize)
 	else

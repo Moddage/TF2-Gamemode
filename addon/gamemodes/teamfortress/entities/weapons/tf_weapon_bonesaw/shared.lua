@@ -13,6 +13,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_bonesaw_medic.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_bonesaw.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.Swing = Sound("Weapon_Bonesaw.Miss")
 SWEP.SwingCrit = Sound("Weapon_Bonesaw.MissCrit")
 SWEP.HitFlesh = Sound("Weapon_Bonesaw.HitFlesh")

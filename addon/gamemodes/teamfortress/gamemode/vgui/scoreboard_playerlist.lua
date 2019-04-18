@@ -7,6 +7,7 @@ local WScale = W/640
 local Scale = H/480
 
 local default_avatar = surface.GetTextureID("vgui/av_default")
+local bot_avatar = surface.GetTextureID("vgui/null")
 
 local leaderboard_dom = {}
 for i=1, 16 do
@@ -18,6 +19,8 @@ local leaderboard_dominated = surface.GetTextureID("hud/leaderboard_dominated")
 local leaderboard_nemesis = surface.GetTextureID("hud/leaderboard_nemesis")
 
 local ico_friend_indicator_scoreboard = surface.GetTextureID("vgui/ico_friend_indicator_scoreboard")
+
+CreateClientConVar("tf_scoreboard_text_ping", "0", {FCVAR_ARCHIVE})
 
 local NameLabel = {
 	text="Name",
@@ -119,7 +122,12 @@ function PANEL:Paint()
 		if self then
 			if self.Avatars then
 		self.Avatars[i]:SetPlayer(pl)
-		self.Avatars[i]:SetVisible(true)
+		if pl:IsBot() then
+			self.Avatars[i]:SetVisible(false)
+		else
+			self.Avatars[i]:SetVisible(true)
+		end
+		
 			end
 		end
 		if d then
@@ -138,22 +146,52 @@ function PANEL:Paint()
 		PlayerScore.pos[2] = ypos
 		draw.Text(PlayerScore)
 		
-		if pl:IsBot() then
-			PlayerPing.text = "BOT"
-		else
-			PlayerPing.text = pl:Ping()
-		end
-		
 		PlayerPing.color = col
 		PlayerPing.pos[2] = ypos
-		draw.Text(PlayerPing)
+		if GetConVar("tf_scoreboard_text_ping"):GetBool() then
+			if pl:IsBot() then
+				PlayerPing.text = "BOT"
+			else
+				PlayerPing.text = pl:Ping()
+			end
+			draw.Text(PlayerPing)
+		else
+		local ping = pl:Ping()
+		surface.SetTexture(surface.GetTextureID("hud/scoreboard_ping_low"))
+		if ping >= 60 and ping < 90 then
+			surface.SetTexture(surface.GetTextureID("hud/scoreboard_ping_med"))
+		elseif ping >= 90 and ping < 115 then
+			surface.SetTexture(surface.GetTextureID("hud/scoreboard_ping_high"))
+		elseif ping >= 115 then
+			surface.SetTexture(surface.GetTextureID("hud/scoreboard_ping_very_high"))
+		end
+
+		if pl:IsBot() then
+			if pl:Team() == TEAM_RED then
+				surface.SetTexture(surface.GetTextureID("hud/scoreboard_ping_bot_red"))
+			else
+				surface.SetTexture(surface.GetTextureID("hud/scoreboard_ping_bot_blue"))
+			end
+		end
+
+		if d then
+			
+		end
+
+		surface.DrawTexturedRect(PlayerPing.pos[1] - 25, PlayerPing.pos[2] - 10, 25, 20)
+		end
 		
 		if pl:GetFriendStatus() == "friend" then
 			surface.SetTexture(ico_friend_indicator_scoreboard)
 			surface.DrawTexturedRect(math.floor(3*Scale), ypos-math.floor(8.5*Scale), 30*Scale, 30*Scale)
 		end
-		
-		surface.SetTexture(default_avatar)
+
+		if pl:IsBot() then
+			surface.SetTexture(bot_avatar)
+		else
+			surface.SetTexture(default_avatar)
+		end
+
 		surface.DrawTexturedRect(math.floor(14*Scale), ypos-math.floor(8*Scale), 15*Scale, 15*Scale)
 		
 		local num_dominations = 0

@@ -280,6 +280,8 @@ function PlayResponse(ent, response, nospeech)
 	if ent.NextSpeak and CurTime()<ent.NextSpeak and not nospeech then
 		return false
 	end
+
+	--PrintTable(response)
 	
 	local num = #response
 	local i = math.random(1,num)
@@ -331,7 +333,7 @@ local META = FindMetaTable("Player")
 
 function META:Speak(concept, nospeech, dbg)
 	if self:IsHL2() then return false end
-	if self:GetInfoNum("tf_robot", 0) == 1 then return true end
+	if self:GetInfoNum("tf_robot", 0) == 1 or self:Team() == TEAM_SPECTATOR then return true end
 	if not self:Alive() then
 		return false
 	end

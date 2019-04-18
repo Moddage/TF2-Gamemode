@@ -68,7 +68,7 @@ function PANEL:PaintBackground()
 		surface.DrawTexturedRect(0, 0, wide, tall)
 	end
 	
-	if self.Centered then
+	--[[if self.Centered then
 		draw.Text{
 			text=math.floor(self:GetProgress()*100),
 			font="HudClassHealth",
@@ -86,7 +86,7 @@ function PANEL:PaintBackground()
 			xalign=TEXT_ALIGN_CENTER,
 			yalign=TEXT_ALIGN_CENTER,
 		}
-	end
+	end]]
 end
 
 function PANEL:Paint()

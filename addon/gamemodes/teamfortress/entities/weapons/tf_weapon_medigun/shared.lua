@@ -80,6 +80,7 @@ end
 end
 
 if CLIENT then
+CreateClientConVar("tf_heal_without_holding", "0", true, true)
 
 SWEP.PrintName			= "Medigun"
 SWEP.Slot				= 1
@@ -182,6 +183,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_medigun_medic.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_medigun.mdl"
 SWEP.Crosshair = "tf_crosshair5"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.MuzzleEffect = "pyro_blast"
 
 SWEP.ShootSound = Sound("WeaponMedigun.Healing")
@@ -242,6 +247,29 @@ local function medigun_trace_condition(tr, wep)
 		not tr.Entity:HasNPCFlag(NPC_CANNOTHEAL)
 end
 
+function SWEP:SecondaryAttack()
+	self.Owner:SetNWInt("Ubercharge", 0)
+
+	self:StopFiring()
+
+	if self.ShootSoundLoop and self.ChargedLoop then
+		self.ShootSoundLoop:Stop()
+		self.ChargedLoop:Stop()
+	end
+	
+	self.Firing = false
+	
+	if SERVER then
+		self:ClearHealTarget()
+		self:SetMedigunMuzzleEffect(0)
+	else
+		if self.Owner == LocalPlayer() then
+			HudHealingTargetID:SetVisible(false)
+			self.LastTargetEntity = nil
+		end
+	end
+end
+
 function SWEP:PrimaryAttack()
 	if not self.Firing then
 		local start = self.Owner:GetShootPos()
@@ -269,6 +297,7 @@ function SWEP:PrimaryAttack()
 			self:EmitSound(self.ShootSound2)
 			self.NextDeniedSound = CurTime() + 0.5
 		end
+		--self:StopFiring()
 	end
 	
 	self:StopTimers()
@@ -328,8 +357,26 @@ function SWEP:Think()
 	end
 	
 	if self.Firing and SERVER then
-		if not self.Owner:KeyDown(IN_ATTACK) or not IsValid(self.Target) or self.Target:Health()<=0 then
+		if (not self.Owner:KeyDown(IN_ATTACK) and self.Owner:GetInfoNum("tf_heal_without_holding", 0) == 0) or (self.Owner:KeyDown(IN_ATTACK) and self.Owner:GetInfoNum("tf_heal_without_holding", 0) == 1) or not IsValid(self.Target) or self.Target:Health()<=0 then
+		if self.Owner:KeyDown(IN_ATTACK) and self.Owner:GetInfoNum("tf_heal_without_holding", 0) == 1 then
+			local start = self.Owner:GetShootPos()
+			local endpos = start + self.Owner:GetAimVector() * self.Range
+			local tr = tf_util.MixedTrace({
+				start = start,
+				endpos = endpos,
+				filter = self.Owner,
+				mins = Vector(-5, -5, -5),
+				maxs = Vector(5, 5, 5),
+			}, medigun_trace_condition, self)
+		
+			self.CanInspect = false
+		
+			if !medigun_trace_condition(tr, self) then
+				self:StopFiring()
+			end
+		else
 			self:StopFiring()
+		end
 			return
 		elseif not self.NextRangeCheck or CurTime()>self.NextRangeCheck then
 			self.NextRangeCheck = CurTime() + 0.2

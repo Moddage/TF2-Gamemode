@@ -12,6 +12,9 @@ local DefaultHull = {Vector(-16, -16, 0), Vector(16,  16,  72)}
 local DefaultHullDuck = {Vector(-16, -16, 0), Vector(16,  16,  36)}
 
 local randomizer = CreateConVar( "tf_randomizer", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
+local randomizerit = CreateConVar( "tf_randomizer_class_specific", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
+local dgmod = CreateConVar( "tf_disable_fun_classes", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
+local botrobot = CreateConVar( "tf_bots_are_robots", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
 
 function GM:RegisterPlayerClass(name, tbl)
 	for k,v in pairs(tbl.Gibs or {}) do
@@ -63,6 +66,10 @@ end
 
 function meta:SetPlayerClass(class)
 	class = string.lower(class)
+
+	if dgmod:GetBool() and (class == "gmodplayer" or class == "civilian") then
+		return
+	end
 	
 	local oldclass = self:GetPlayerClass()
 	local t1 = GAMEMODE.PlayerClasses[oldclass]
@@ -177,11 +184,12 @@ function meta:SetPlayerClass(class)
 	-- Setting the model, obviously
 	-- Stupid way to enable robots, but we just comment out class model already being defined!
 	--if not c.Model then
-		if self:GetInfoNum("tf_robot", 0) == 0 then
-			c.Model = "models/player/"..(c.ModelName or "scout")..".mdl"
-		else
+		if self:GetInfoNum("tf_robot", 0) == 1 or (botrobot:GetBool() and self:IsBot()) then--or self:IsBot() then
 			c.Model = "models/bots/"..(c.ModelName or "scout").."/bot_"..(c.ModelName or "scout")..".mdl"
+		else
+			c.Model = "models/player/"..(c.ModelName or "scout")..".mdl"
 		end
+
 	--end
 	
 	self:SetModel(c.Model)
@@ -272,7 +280,7 @@ local function PlayerClassChanged(id, oldclass, newclass, timeout)
 		return
 	end
 	
-	MsgFN("PlayerClassChanged %s", tostring(pl))
+	--MsgFN("PlayerClassChanged %s", tostring(pl))
 	
 	local t1 = GAMEMODE.PlayerClasses[oldclass]
 	local t2 = GAMEMODE.PlayerClasses[newclass]

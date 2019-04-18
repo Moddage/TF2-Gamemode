@@ -17,6 +17,8 @@ local function GetAttachPosition(t)
 	local bone = t:LookupBone("ValveBiped.Bip01_Spine2")
 	if bone then return t:GetBonePosition(bone) end
 	
+	if !_R then return t:GetPos() end
+
 	-- From bounding box center
 	local pos = _R.Vector.__add(t:WorldSpaceAABB())
 	pos:Mul(0.5)

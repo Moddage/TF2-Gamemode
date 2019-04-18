@@ -26,6 +26,10 @@ function PANEL:Paint()
 	
 	local size, amplitude, frequency
 	local health = LocalPlayer():Health()
+
+	if LocalPlayer():GetObserverTarget() and LocalPlayer():GetObserverTarget():IsPlayer() then
+		health = LocalPlayer():GetObserverTarget():Health()
+	end
 	
 	if health<=0 then
 		surface.SetTexture(health_dead)

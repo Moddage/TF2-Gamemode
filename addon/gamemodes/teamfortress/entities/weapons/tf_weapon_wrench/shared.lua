@@ -14,6 +14,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_wrench_engineer.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_wrench.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.Swing = Sound("Weapon_Wrench.Miss")
 SWEP.SwingCrit = Sound("Weapon_Wrench.MissCrit")
 SWEP.HitFlesh = Sound("Weapon_Wrench.HitFlesh")

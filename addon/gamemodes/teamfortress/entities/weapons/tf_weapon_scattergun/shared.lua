@@ -13,6 +13,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_scattergun_scout.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_scattergun.mdl"
 SWEP.Crosshair = "tf_crosshair1"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.MuzzleEffect = "muzzle_scattergun"
 SWEP.MuzzleOffset = Vector(20, 4, -3)
 

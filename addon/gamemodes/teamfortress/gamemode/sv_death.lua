@@ -84,7 +84,11 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 			ApplyGlobalAttributesFromPlayer(a, "on_kill", ent, inflictor, attacker)
 		end
 		
-		if IsValid(v.inflictor) and v.inflictor:IsBuilding() and v.inflictor.AddAssists then
+		if v
+			and isentity(v)
+			and v.inflictor and
+			v.inflictor:IsBuilding()
+			and v.inflictor.AddAssists then
 			v.inflictor:AddAssists(1)
 		end
 	end
@@ -175,6 +179,12 @@ function GM:PostTFPlayerDeath(ent, attacker, inflictor)
 	--print(cooperator)
 	
 	local killer = attacker
+	print(attacker, "is a killer!")
+	if attacker:IsWeapon() then
+		attacker = attacker:GetOwner()
+	end
+	print(attacker, "is a killer!")
+	
 	--[[if inflictor.KillCreditAsInflictor then
 		killer = inflictor
 	end]]
@@ -187,6 +197,9 @@ function GM:PostTFPlayerDeath(ent, attacker, inflictor)
 			umsg.Short(GAMEMODE:EntityID(ent))
 		umsg.End()
 	elseif attacker == ent then
+		if attacker:IsWeapon() then
+			attacker = ent:GetOwner()
+		end
 		-- Suicide
 		if IsValid(cooperator) and GAMEMODE:EntityTeam(cooperator)~=TEAM_HIDDEN then
 			-- Y finished off X

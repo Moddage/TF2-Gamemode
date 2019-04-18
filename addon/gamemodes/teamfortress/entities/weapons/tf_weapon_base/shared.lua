@@ -7,6 +7,8 @@ SWEP.Instructions	= ""
 SWEP.Spawnable			= false
 SWEP.AdminSpawnable		= false
 
+	CreateConVar( "tf_caninspect", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE, FCVAR_REPLICATED}, "Whether or not players can inspect weapons." )
+
 -- Viewmodel FOV should be constant, don't change this
 SWEP.ViewModelFOV	= GetConVar( "viewmodel_fov" )
 -- Ugly hack for the viewmodel resetting on draw
@@ -331,8 +333,10 @@ function SWEP:Inspect()
 	//if self:GetSequenceActivity(self:GetSequence()) == self.VM_INSPECT_IDLE then
 
 	if self.IsDeployed and self.CanInspect then
-		if self.Owner ~= nil then
-		if ( self:GetOwner():KeyPressed( IN_SPEED ) and inspecting == false and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_sprintinspect", 1) == 1 ) then
+		local inspectionconvar2 = GetConVar("tf_caninspect")
+		local inspectionconvar = inspectionconvar2:GetBool()
+		if IsValid(self.Owner) then
+		if ( self:GetOwner():KeyPressed( IN_SPEED ) and inspecting == false and inspectionconvar and self.Owner:GetInfoNum("tf_sprintinspect", 1) == 1  ) then
 			inspecting = true
 			self:SendWeaponAnim( self.VM_INSPECT_START )
 			timer.Create("StartInspection", self:SequenceDuration(), 1,function()
@@ -352,7 +356,7 @@ function SWEP:Inspect()
 			end )
 		end
 		
-		if ( self:GetOwner():KeyReleased( IN_SPEED ) and inspecting_idle == true and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_sprintinspect", 1) == 1 ) then
+		if ( self:GetOwner():KeyReleased( IN_SPEED ) and inspecting_idle == true ) then
 			self:SendWeaponAnim( self.VM_INSPECT_END )
 			inspecting_post = false
 			inspecting_idle = false
@@ -364,13 +368,15 @@ function SWEP:Inspect()
 			end )
 		end
 
-		if ( self:GetOwner():KeyPressed( IN_RELOAD ) and ((self.Base ~= "tf_weapon_melee_base" and self:Clip1() == self:GetMaxClip1()) or self.Base == "tf_weapon_melee_base") and inspecting == false and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
+		if ( self:GetOwner():KeyPressed( IN_RELOAD ) and ((self.Base ~= "tf_weapon_melee_base" and self:Clip1() == self:GetMaxClip1()) or self.Base == "tf_weapon_melee_base") and inspecting == false and inspectionconvar and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
 			inspecting = true
 			self:SendWeaponAnim( self.VM_INSPECT_START )
+			print(self:SequenceDuration())
 			timer.Create("StartInspection", self:SequenceDuration(), 1,function()
-				if self:GetOwner():KeyDown( IN_RELOAD ) then 
+				if self:GetOwner() then 
 					self:SendWeaponAnim( self.VM_INSPECT_IDLE )
 					inspecting_idle = true
+					print("AntiIdle")
 				else
 					self:SendWeaponAnim( self.VM_INSPECT_END )
 					inspecting_post = false
@@ -384,7 +390,8 @@ function SWEP:Inspect()
 			end )
 		end
 		
-		if ( self:GetOwner():KeyReleased( IN_RELOAD ) and inspecting_idle == true and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
+		if ( self:GetOwner():KeyReleased( IN_RELOAD ) and inspecting_idle == true ) then
+			
 			self:SendWeaponAnim( self.VM_INSPECT_END )
 			inspecting_post = false
 			inspecting_idle = false

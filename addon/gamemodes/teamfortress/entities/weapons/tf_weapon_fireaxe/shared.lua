@@ -13,6 +13,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_fireaxe_pyro.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_fireaxe.mdl"
 SWEP.Crosshair = "tf_crosshair2"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.Swing = Sound("Weapon_FireAxe.Miss")
 SWEP.SwingCrit = Sound("Weapon_FireAxe.MissCrit")
 SWEP.HitFlesh = Sound("Weapon_FireAxe.HitFlesh")

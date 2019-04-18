@@ -149,6 +149,12 @@ function SWEP:SetWeaponHoldType(t)
 	if IsValid(owner) then
 		tf_util.ReadActivitiesFromModel(owner)
 	end
+
+	local slot = self:GetItemData()["item_slot"]
+	
+	if isstring(slot) then
+		t = string.upper(slot)
+	end
 	
 	if not _G["ACT_MP_STAND_"..t] then
 		MsgN("SWEP:SetWeaponHoldType - Unknown TF2 weapon hold type '"..t.."'! Defaulting to PRIMARY")
