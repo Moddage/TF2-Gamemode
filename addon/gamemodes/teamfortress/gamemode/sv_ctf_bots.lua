@@ -471,16 +471,20 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 		if IsValid(bot.TargetEnt) then
 			bot:SetEyeAngles((targetpos2 - bot:GetShootPos()):Angle())
 		end]]
+
+		debugoverlay.Text(bot:EyePos() - Vector(0, 0, 15), math.abs(bot.LastSegmented - CurTime()), 0.005, false)
 		
-		if bot:GetPos():Distance( curgoal.pos ) <= 45 or math.abs(bot.LastSegmented - CurTime()) == 5 then
-			debugoverlay.Text(bot:EyePos(), "MOVING!!", 0.001, false)
+		if math.abs(bot.LastSegmented - CurTime()) > 5 then -- ai fault check (buggy)
+			debugoverlay.Text(bot:EyePos(), "yikes!", 1, false)
 			bot.CurSegment = bot.CurSegment + 1
 			bot.LastSegmented = CurTime()
 			local curgoal = bot.LastPath[bot.CurSegment + 1]
 			if !curgoal then return end
-			bot:LookatPosXY( cmd, curgoal.pos )
+			bot:LookatPosXY( cmd, curgoal.pos + Vector(0, 0, 150) )
+			debugoverlay.Line(bot:GetPos(), curgoal.pos + Vector(0, 0, 150), 1.1, Color(255, 255, 255), true)
 			cmd:SetForwardMove( 1000 )
 		end
+
 		--print(bot.CurSegment)
 	end
 end)

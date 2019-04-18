@@ -11,8 +11,8 @@ function ENT:Initialize()
 	self.Pos = pos
 	SetGlobalFloat("tf_ctf_red", 0)
 	SetGlobalFloat("tf_ctf_blu", 0)
-	SetGlobalFloat("tf_ctf_red_lastcap", CurTime() - 120)
-	SetGlobalFloat("tf_ctf_blu_lastcap", CurTime() - 120)
+	--SetGlobalFloat("tf_ctf_red_lastcap", CurTime() - 120)
+	--SetGlobalFloat("tf_ctf_blu_lastcap", CurTime() - 120)
 end
 
 function ENT:KeyValue(key,value)
@@ -40,14 +40,17 @@ function ENT:StartTouch(ply)
 		--print(self.Team ~= v.te, v.Carrier == ply, v:GetPos():Distance(ply:GetPos()) <= 50)
 		if v.Carrier==ply and self.Team ~= v.te and v.Prop:GetPos():Distance(ply:GetPos()) <= 100 then
 			v:Capture()
+			--team.AddScore(v.TeamNum, 1)
 			if v.TeamNum == TEAM_RED then
-				SetGlobalFloat("tf_ctf_blu", GetGlobalFloat("tf_ctf_blu") + 1)
+				team.AddScore(TEAM_BLU, 1)
+				--SetGlobalFloat("tf_ctf_blu", GetGlobalFloat("tf_ctf_blu") + 1)
 			else
-				SetGlobalFloat("tf_ctf_red", GetGlobalFloat("tf_ctf_red") + 1)
+				team.AddScore(TEAM_RED, 1)
+				--SetGlobalFloat("tf_ctf_red", GetGlobalFloat("tf_ctf_red") + 1)
 			end
 
-			SetGlobalFloat("tf_ctf_red_lastcap", CurTime())
-			SetGlobalFloat("tf_ctf_blu_lastcap", CurTime())
+			--SetGlobalFloat("tf_ctf_red_lastcap", CurTime())
+			--SetGlobalFloat("tf_ctf_blu_lastcap", CurTime())
 
 			for _, ply in pairs(player.GetAll()) do
 				if ply:Team() ~= v.TeamNum then

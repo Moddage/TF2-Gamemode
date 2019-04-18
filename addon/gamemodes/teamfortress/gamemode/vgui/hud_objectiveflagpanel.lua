@@ -47,7 +47,7 @@ function PANEL:Paint()
 	
 	-- Blue score
 	param = {
-		text=GetGlobalFloat("tf_ctf_blu"),
+		text=team.GetScore(TEAM_BLU),
 		font="HudFontBig",
 		pos={320*WScale-128*Scale, (480-46+17.5)*Scale},
 		color=Colors.Black,
@@ -62,7 +62,7 @@ function PANEL:Paint()
 	
 	-- Red score
 	param = {
-		text=GetGlobalFloat("tf_ctf_red"),
+		text=team.GetScore(TEAM_RED),
 		font="HudFontBig",
 		pos={320*WScale+132*Scale, (480-46+17.5)*Scale},
 		color=Colors.Black,

@@ -7,8 +7,6 @@ ENT.Model = "models/flag/briefcase.mdl"
 
 local FlagReturnTime = 60
 
-print("HI")
-
 if SERVER then
 
 hook.Add("DoPlayerDeath", "IntelSafeHelp", function(ply)
@@ -111,8 +109,24 @@ function ENT:Think()
 	self:SetNWEntity("carrier", self.Carrier)
 
 	for k, v in pairs(player.GetAll()) do
-		if v:GetPos():Distance(self:GetPos()) <= 80 and self:CanPickup(v) and not self.PickupLock[v] and util.QuickTrace(self:GetPos(), v:GetPos() - self:GetPos(), self.Prop).Entity == self then
+				local trace = util.QuickTrace(self:GetPos(), v:EyePos() - self:GetPos(), self.Prop)
+		if self:GetSkin() == 1 and v:IsBot() and !v:IsHL2() then
+			local color = Color(255, 0, 0)
+			if trace.Entity == v then
+				color = Color(0, 255, 255)
+			end
+			debugoverlay.Line(trace.StartPos, trace.HitPos, 1.1, color, true)
+			--print(trace.Entity)
+		end
+
+		if v:GetPos():Distance(self:GetPos()) <= 80 and self:CanPickup(v) and util.QuickTrace(self:GetPos(), v:EyePos() - self:GetPos(), self.Prop).Entity == v then
 			self:PlayerTouched(v)
+		end
+
+		--print(self.PickupLock[v])
+
+		if v:GetPos():Distance(self:GetPos()) >= 80 and self.PickupLock[v] then
+			self.PickupLock[v] = nil
 		end
 	end
 
@@ -131,7 +145,7 @@ function ENT:Think()
 end
 
 function ENT:CanPickup(ply)
-	return ply:Team()~=self.TeamNum
+	return ply:Team()~=self.TeamNum and not self.PickupLock[v]
 end
 
 function ENT:StartTouch(ent)
