@@ -57,8 +57,9 @@ end
 function PANEL:PaintBackground()
 	-- If we don't have a Bg image, use the foreground
 	local tex = self.BackgroundTexture or self.ForegroundTexture
+	local color = self.BackgroundColor or Color(0, 0, 0)
 	surface.SetTexture(tex)
-	surface.SetDrawColor(self.BackgroundColor)
+	surface.SetDrawColor(color)
 	
 	local wide, tall = self:GetSize()
 	

@@ -8,7 +8,7 @@ local names = {"A Professional With Standards", "AimBot", "AmNot", "Aperture Sci
 local classtb = {"scout", "soldier", "pyro", "demoman", "heavy", "medic", "sniper"}
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
---local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
+local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
 local tf_bot_melee_only = CreateConVar("tf_bot_melee_only", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 
 function LBAddProfile(tab) 
@@ -137,7 +137,7 @@ hook.Add("PlayerDisconnected", "leadbot_removed", function(ply)
 end)
 
 hook.Add("Think", "leadbot_think", function()
-	for _, bot in pairs(player.GetBots()) do
+	--for _, bot in pairs(player.GetBots()) do
 		--print(bot)
 		--[[for m, n in pairs(ents.FindByClass("prop_buys")) do
 			if n:GetPos():Distance(bot:GetPos()) < 120 then
@@ -147,12 +147,12 @@ hook.Add("Think", "leadbot_think", function()
 		--[[if bot:Team() == TEAM_SPECTATOR then
 			bot:SetTeam(TEAM_PLAYERS)
 		end]]
-		if bot.LKBot then
+		--[[if bot.LKBot then
 			if IsValid(bot:GetActiveWeapon()) then
 				local wep = bot:GetActiveWeapon()
 				local ammoty = wep:GetPrimaryAmmoType() or wep.Primary.Ammo
 				--bot:SetAmmo(32, ammoty)
-			end
+			end]]
 
 			--[[if nzRound:InState(ROUND_WAITING) and !IsValid(bot:GetActiveWeapon()) then
 				bot:KillSilent()
@@ -164,8 +164,8 @@ hook.Add("Think", "leadbot_think", function()
 					--bot:Give(Entity(1):GetActiveWeapon():GetClass())
 				--end
 			--end
-		end
-	end
+		--end
+	--end
 end)
 
 hook.Add("OnPlayerReady", "leadbot_ready", function()
@@ -280,7 +280,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			bot:ConCommand("build", "3")
 		end]]
 
-		if bot:GetPlayerClass() == "medic" and (!IsValid(intel) or (IsValid(intel) and intel.Carrier ~= bot)) then
+		--[[if bot:GetPlayerClass() == "medic" and (!IsValid(intel) or (IsValid(intel) and intel.Carrier ~= bot)) then
 				--print(intel)
 			local targetply = player.GetAll()[1]
 			for k, v in pairs(player.GetAll()) do
@@ -307,9 +307,29 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 					bot.TargetEnt = nil
 				end
 			end
+		end]]
+
+		--PrintTable(Entity(2):GetAttachments())
+
+		for k, v in pairs(player.GetAll()) do
+			if v:Team() ~= bot:Team() then
+				local att
+				if !v:IsHL2() then
+					att = v:GetAttachment(v:LookupAttachment("head")).Pos
+				else
+					att = v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1"))
+				end
+				local trace = util.QuickTrace(bot:EyePos(), att - bot:EyePos(), bot)
+				if trace.Entity == v then
+					debugoverlay.Text(bot:EyePos() + Vector(0, 0, 15), "I can see you "..v:Nick().."!", 0.03, false)
+					bot.TargetEnt = v
+				end
+			end
 		end
 
-		if !IsValid(bot.TargetEnt) and (bot:GetPlayerClass() ~= "medic" or (bot:GetPlayerClass() == "medic" and bot:GetActiveWeapon() and bot:GetActiveWeapon():GetClass() ~= "tf_weapon_medigun")) then
+		local BotCanTarget = tf_bot_notarget:GetBool()
+
+		--[[if BotCanTarget and !IsValid(bot.TargetEnt) and (bot:GetPlayerClass() ~= "medic" or (bot:GetPlayerClass() == "medic" and bot:GetActiveWeapon() and bot:GetActiveWeapon():GetClass() ~= "tf_weapon_medigun")) then
 			for k, v in pairs(ents.GetAll()) do
 				if (v:IsNPC() or v:GetClass() == "obj_sentrygun" or v:IsPlayer())
 				and (GAMEMODE:EntityTeam(v) ~= bot:Team() or GAMEMODE:EntityTeam(v) == TEAM_NEUTRAL)
@@ -322,7 +342,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 					--print(headbone)
 					if headbone then
 						targetpos = v:GetBonePosition(headbone)
-					end
+					end]]
 					--[[for i=0, v:GetBoneCount()-1 do
 						print(v:GetBoneName(i))
 					end]]
@@ -335,19 +355,19 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 								end
 							end
 						})]]
-						local newpos = v:EyePos() or v:GetPos()
+						--[[local newpos = v:EyePos() or v:GetPos()
 						local trace = util.QuickTrace(bot:EyePos(), newpos - bot:EyePos(), bot)
 						local color = Color(255, 0, 0)
-						debugoverlay.Line(trace.StartPos, trace.HitPos, 0.03, color)
+						-- debugoverlay.Line(trace.StartPos, trace.HitPos, 0.03, color)
 					if trace.Entity == v then
 						bot.TargetEnt = v
 						--print(v)
 					end
 				end
 			end
-		end
+		end]]
 
-		if bot:Health() < bot:GetMaxHealth() / 3 and !IsValid(bot.TargetEnt) then
+		--[[if bot:Health() < bot:GetMaxHealth() / 3 and !IsValid(bot.TargetEnt) then
 			if math.random(2) == 1 then
 				local args = {"TLK_PLAYER_MEDIC"}
 				if bot:Speak(args[1]) then
@@ -359,7 +379,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 					umsg.End()
 				end
 			end
-		end
+		end]]
 
 		if IsValid(bot.TargetEnt) then
 			--for i=0, bot.TargetEnt:GetBoneCount()-1 do
@@ -379,7 +399,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				--print("SHOOT!!!")
 				--bot:GetActiveWeapon():PrimaryAttack()
 				--cmd:SetButtons(IN_CANCEL)
-			if math.random(2) == 1 or (bot:GetPlayerClass() == "pyro" or bot:GetPlayerClass() == "heavy"--[[or bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base"]]) then
+			if math.random(2) == 1 or (bot:GetPlayerClass() == "pyro" or bot:GetPlayerClass() == "heavy") --[[or bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base")]] then
 				cmd:SetButtons(IN_ATTACK)
 			end
 				--bot:GetActiveWeapon():SetClip1(100)
@@ -461,9 +481,9 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 		bot.LastSegmented = bot.LastSegmented or CurTime()
 
-		debugoverlay.Text(bot:GetPos(), bot:Nick().." LAST: "..bot.LastSegmented - CurTime().." DISTANCE: "..bot:GetPos():Distance( curgoal.pos ), 0.001, false)
-		debugoverlay.Sphere(bot:GetPos(), 10, 0.05, gamemode.Call("GetTeamColor", bot), true)
-		debugoverlay.Line(bot:GetPos(), curgoal.pos, 1.1, Color(0, 255, 0), true)
+		--debugoverlay.Text(bot:GetPos(), bot:Nick().." LAST: "..bot.LastSegmented - CurTime().." DISTANCE: "..bot:GetPos():Distance( curgoal.pos ), 0.001, false)
+		--debugoverlay.Sphere(bot:GetPos(), 10, 0.05, gamemode.Call("GetTeamColor", bot), true)
+		--debugoverlay.Line(bot:GetPos(), curgoal.pos, 1.1, Color(0, 255, 0), true)
 
 
 		--[[bot:SetEyeAngles((curgoal.pos - bot:GetShootPos()):Angle())
@@ -472,16 +492,16 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			bot:SetEyeAngles((targetpos2 - bot:GetShootPos()):Angle())
 		end]]
 
-		debugoverlay.Text(bot:EyePos() - Vector(0, 0, 15), math.abs(bot.LastSegmented - CurTime()), 0.005, false)
+		--debugoverlay.Text(bot:EyePos() - Vector(0, 0, 15), math.abs(bot.LastSegmented - CurTime()), 0.005, false)
 		
 		if math.abs(bot.LastSegmented - CurTime()) > 5 then -- ai fault check (buggy)
-			debugoverlay.Text(bot:EyePos(), "yikes!", 1, false)
+			--debugoverlay.Text(bot:EyePos(), "yikes!", 1, false)
 			bot.CurSegment = bot.CurSegment + 1
 			bot.LastSegmented = CurTime()
 			local curgoal = bot.LastPath[bot.CurSegment + 1]
 			if !curgoal then return end
 			bot:LookatPosXY( cmd, curgoal.pos + Vector(0, 0, 150) )
-			debugoverlay.Line(bot:GetPos(), curgoal.pos + Vector(0, 0, 150), 1.1, Color(255, 255, 255), true)
+			--debugoverlay.Line(bot:GetPos(), curgoal.pos + Vector(0, 0, 150), 1.1, Color(255, 255, 255), true)
 			cmd:SetForwardMove( 1000 )
 		end
 

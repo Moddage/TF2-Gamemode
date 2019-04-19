@@ -53,19 +53,7 @@ function ENT:Initialize()
 	self.Prop:SetPlaybackRate(1)
 	self.Prop:SetCycle(1)
 	
-	if self.TeamNum==0 then
-		self:SetSkin(2)
-		self.Prop:SetSkin(2)
-	elseif self.TeamNum==TEAM_RED then
-		self:SetSkin(0)
-		self.Prop:SetSkin(0)
-	elseif self.TeamNum==TEAM_BLU then
-		self:SetSkin(1)
-		self.Prop:SetSkin(1)
-	end
-	
 	self.State = 0
-	
 	
 	self.Trail = ents.Create("info_particle_system")
 	self.Trail:SetPos(self:GetPos())
@@ -108,8 +96,34 @@ end
 function ENT:Think()
 	self:SetNWEntity("carrier", self.Carrier)
 
+	if self.TeamNum==0 then -- this feels unoptimized...
+		if self.Carrier then
+			self:SetSkin(2)
+			self.Prop:SetSkin(2)
+		else
+			self:SetSkin(5)
+			self.Prop:SetSkin(5)
+		end
+	elseif self.TeamNum==TEAM_RED then
+		if self.Carrier then
+			self:SetSkin(3)
+			self.Prop:SetSkin(3)
+		else
+			self:SetSkin(0)
+			self.Prop:SetSkin(0)
+		end
+	elseif self.TeamNum==TEAM_BLU then
+		if self.Carrier then
+			self:SetSkin(4)
+			self.Prop:SetSkin(4)
+		else
+			self:SetSkin(1)
+			self.Prop:SetSkin(1)
+		end
+	end
+
 	for k, v in pairs(player.GetAll()) do
-				local trace = util.QuickTrace(self:GetPos(), v:EyePos() - self:GetPos(), self.Prop)
+		local trace = util.QuickTrace(self:GetPos(), v:EyePos() - self:GetPos(), self.Prop)
 		if self:GetSkin() == 1 and v:IsBot() and !v:IsHL2() then
 			local color = Color(255, 0, 0)
 			if trace.Entity == v then

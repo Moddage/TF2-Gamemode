@@ -340,7 +340,7 @@ end
 end]]
 
 function LoadGameItems(path)
-	MsgFN("Loading items script '%s' ...", path)
+	MsgN("Loading items script '%s' ...", path)
 	
 	local data
 	
