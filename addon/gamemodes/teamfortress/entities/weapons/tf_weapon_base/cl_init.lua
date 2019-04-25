@@ -10,7 +10,7 @@ SWEP.DrawCrosshair		= true
 SWEP.DrawWeaponInfoBox	= false
 SWEP.BounceWeaponIcon   = false
 SWEP.WepSelectIcon = surface.GetTextureID( "weapons/swep" )
-SWEP.SwayScale			= 0.5
+SWEP.SwayScale			= 0 -- 0.5
 SWEP.BobScale			= 0.5
 
 SWEP.RenderGroup 		= RENDERGROUP_OPAQUE

@@ -7,7 +7,9 @@ SWEP.Instructions	= ""
 SWEP.Spawnable			= false
 SWEP.AdminSpawnable		= false
 
+if SERVER then
 	CreateConVar( "tf_caninspect", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE, FCVAR_REPLICATED}, "Whether or not players can inspect weapons." )
+end
 
 -- Viewmodel FOV should be constant, don't change this
 SWEP.ViewModelFOV	= GetConVar( "viewmodel_fov" )
@@ -99,7 +101,7 @@ SWEP.LastClass = "scout"
 CreateClientConVar("viewmodel_fov_tf", "54", true, false)
 CreateClientConVar("tf_use_viewmodel_fov", "1", true, false)
 CreateClientConVar("tf_righthand", "1", true, true)
-CreateClientConVar("tf_sprintinspect", "0", true, true)
+CreateClientConVar("tf_sprintinspect", "1", true, true)
 CreateClientConVar("tf_reloadinspect", "1", true, true)
 
 -- Initialize the weapon as a TF item
@@ -363,41 +365,6 @@ function SWEP:Inspect()
 			inspecting = false 
 			timer.Create("PostInspection", self:SequenceDuration(), 1, function()
 				if !self:GetOwner():KeyDown( IN_SPEED ) then
-					self:SendWeaponAnim( self.VM_IDLE )
-				end
-			end )
-		end
-
-		if ( self:GetOwner():KeyPressed( IN_RELOAD ) and ((self.Base ~= "tf_weapon_melee_base" and self:Clip1() == self:GetMaxClip1()) or self.Base == "tf_weapon_melee_base") and inspecting == false and inspectionconvar and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
-			inspecting = true
-			self:SendWeaponAnim( self.VM_INSPECT_START )
-			print(self:SequenceDuration())
-			timer.Create("StartInspection", self:SequenceDuration(), 1,function()
-				if self:GetOwner() then 
-					self:SendWeaponAnim( self.VM_INSPECT_IDLE )
-					inspecting_idle = true
-					print("AntiIdle")
-				else
-					self:SendWeaponAnim( self.VM_INSPECT_END )
-					inspecting_post = false
-					inspecting = false
-					timer.Create("PostInspection", self:SequenceDuration(), 1, function()
-						if !self:GetOwner():KeyDown( IN_RELOAD ) then
-							self:SendWeaponAnim( self.VM_IDLE )
-						end
-					end )
-				end
-			end )
-		end
-		
-		if ( self:GetOwner():KeyReleased( IN_RELOAD ) and inspecting_idle == true ) then
-			
-			self:SendWeaponAnim( self.VM_INSPECT_END )
-			inspecting_post = false
-			inspecting_idle = false
-			inspecting = false 
-			timer.Create("PostInspection", self:SequenceDuration(), 1, function()
-				if !self:GetOwner():KeyDown( IN_RELOAD ) then
 					self:SendWeaponAnim( self.VM_IDLE )
 				end
 			end )

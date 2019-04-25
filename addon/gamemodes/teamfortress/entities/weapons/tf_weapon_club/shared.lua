@@ -10,7 +10,7 @@ end
 SWEP.Base				= "tf_weapon_melee_base"
 
 SWEP.ViewModel			= "models/weapons/v_models/v_machete_sniper.mdl"
-SWEP.WorldModel			= "models/weapons/w_models/w_machete.mdl"
+SWEP.WorldModel			= "models/weapons/c_models/c_machete/c_machete.mdl" --"models/weapons/w_models/w_machete.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
 SWEP.Spawnable = true

@@ -46,6 +46,7 @@ usermessage.Hook("SetZoomStatus",function(msg)
 		end
 		
 		self.ChargeTimerStart = nil
+		self.ChargeSoundPlayed = nil
 		self.DrawCrosshair = true
 	end
 end)
@@ -89,6 +90,11 @@ function SWEP:DrawHUD()
 			
 			charge = math.Clamp(100*charge/chargetime, 0, 100)
 			HudSniperChargeMeter:SetProgress(charge)
+		end
+
+		if charge == 100 and !self.ChargeSoundPlayed then
+			surface.PlaySound("player/recharged.wav")
+			self.ChargeSoundPlayed = true
 		end
 		
 		local tex

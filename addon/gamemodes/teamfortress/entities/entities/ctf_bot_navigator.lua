@@ -6,21 +6,21 @@ ENT.Base = "base_nextbot"
 ENT.Type = "nextbot"
 
 function ENT:Initialize()
-	self:SetModel( "models/gman.mdl" )
-	self:SetNoDraw( false )
+	self:SetModel("models/gman.mdl")
+	self:SetNoDraw(true)
 	self:SetSolid( SOLID_NONE )
 	self.PosGen = nil
 end
 
 function ENT:ChasePos( options )
-	self.P = Path( "Follow" )
+	self.P = Path("Follow")
 	self.P:SetMinLookAheadDistance(300)
 	self.P:SetGoalTolerance(20)
 	self.P:Compute(self, self.PosGen)
 	
 	if !self.P:IsValid() then return end
 	while self.P:IsValid() do
-		if self.P:GetAge() > 0.1 then
+		if self.P:GetAge() > 0.3 then
 			self.P:Compute(self, self.PosGen)
 		end
 		if GetConVar("developer"):GetFloat() > 0 then
@@ -45,11 +45,11 @@ function ENT:OnKilled()
 end
 
 function ENT:RunBehaviour()
-	while ( true ) do
+	while (true) do
 		if self.PosGen then
-			self:ChasePos( {} )
+			self:ChasePos({})
 		end
-			--print("Recomputing...")
+		--print("Recomputing...")
 		coroutine.wait(1)
 		
 		coroutine.yield()

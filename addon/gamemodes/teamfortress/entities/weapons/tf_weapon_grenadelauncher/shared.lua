@@ -97,25 +97,6 @@ self.VM_INSPECT_END = ACT_PRIMARY_VM_INSPECT_END
 			timer.Create("PlaySpin", 1.07, 1, function() surface.PlaySound( "player/taunt_clip_spin_long.wav" ) end)
 		end
 	end
-
-	if ( self:GetOwner():KeyPressed( IN_RELOAD ) and self:Clip1() == self:GetMaxClip1() and inspecting == false and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
-		timer.Create("StartInspection", self:SequenceDuration(), 1,function()
-			if self:GetOwner():KeyDown( IN_RELOAD ) then 
-				inspecting_idle = true
-			else
-				if CLIENT then
-					timer.Create("PlaySpin", 1.07, 1, function() surface.PlaySound( "player/taunt_clip_spin_long.wav" ) end)
-				end
-				inspecting_idle = false
-			end
-		end )
-	end
-
-	if ( self:GetOwner():KeyReleased( IN_RELOAD ) and self:Clip1() == self:GetMaxClip1() and inspecting_idle == true and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
-		if CLIENT then
-			timer.Create("PlaySpin", 1.07, 1, function() surface.PlaySound( "player/taunt_clip_spin_long.wav" ) end)
-		end
-	end
 	
 	--[[	if ( self:GetOwner():GetNWString("inspect") == "inspecting_released" and inspecting_post == false and GetConVar("tf_caninspect"):GetBool() and self.SpinSound == true and !(self.Owner:GetMoveType()==MOVETYPE_NOCLIP) ) then
 		if CLIENT then
