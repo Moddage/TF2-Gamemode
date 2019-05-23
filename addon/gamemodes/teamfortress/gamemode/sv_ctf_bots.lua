@@ -5,7 +5,7 @@ local bots = {}
 
 --local names = {"LeadKiller", "A Random Person", "Foxie117", "G.A.M.E.R v24", "Agent Agrimar"}
 local names = {"A Professional With Standards", "AimBot", "AmNot", "Aperture Science Prototype XR7", "Archimedes!", "BeepBeepBoop", "Big Mean Muther Hubbard", "Black Mesa", "BoomerBile", "Cannon Fodder", "CEDA", "Chell", "Chucklenuts", "Companion Cube", "Crazed Gunman", "CreditToTeam", "CRITRAWKETS", "Crowbar", "CryBaby", "CrySomeMore", "C++", "DeadHead", "Delicious Cake", "Divide by Zero", "Dog", "Force of Nature", "Freakin' Unbelievable", "Gentlemanne of Leisure", "GENTLE MANNE of LEISURE ", "GLaDOS", "Glorified Toaster with Legs", "Grim Bloody Fable", "GutsAndGlory!", "Hat-Wearing MAN", "Headful of Eyeballs", "Herr Doktor", "HI THERE", "Hostage", "Humans Are Weak", "H@XX0RZ", "I LIVE!", "It's Filthy in There!", "IvanTheSpaceBiker", "Kaboom!", "Kill Me", "LOS LOS LOS", "Maggot", "Mann Co.", "Me", "Mega Baboon", "Mentlegen", "Mindless Electrons", "MoreGun", "Nobody", "Nom Nom Nom", "NotMe", "Numnutz", "One-Man Cheeseburger Apocalypse", "Poopy Joe", "Pow!", "RageQuit", "Ribs Grow Back", "Saxton Hale", "Screamin' Eagles", "SMELLY UNFORTUNATE", "SomeDude", "Someone Else", "Soulless", "Still Alive", "TAAAAANK!", "Target Practice", "ThatGuy", "The Administrator", "The Combine", "The Freeman", "The G-Man", "THEM", "Tiny Baby Man", "Totally Not A Bot", "trigger_hurt", "WITCH", "ZAWMBEEZ", "Ze Ubermensch", "Zepheniah Mann", "0xDEADBEEF", "10001011101"}
-local classtb = {"scout", "soldier", "pyro", "demoman", "heavy", "medic", "sniper"}
+local classtb = {"scout", "soldier", "pyro", "heavy"} -- "scout", "soldier", "pyro", "engineer", "heavy", "demoman", "sniper", "medic", "spy"
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
 local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
@@ -311,23 +311,27 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 		--PrintTable(Entity(2):GetAttachments())
 
-		for k, v in pairs(player.GetAll()) do
-			if v:Team() ~= bot:Team() then
-				local att
-				if !v:IsHL2() then
-					att = v:GetAttachment(v:LookupAttachment("head")).Pos
-				else
-					att = v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1"))
-				end
-				local trace = util.QuickTrace(bot:EyePos(), att - bot:EyePos(), bot)
-				if trace.Entity == v then
-					debugoverlay.Text(bot:EyePos() + Vector(0, 0, 15), "I can see you "..v:Nick().."!", 0.03, false)
-					bot.TargetEnt = v
+		local BotCanTarget = tf_bot_notarget:GetBool()
+
+		if !BotCanTarget then
+			for k, v in pairs(player.GetAll()) do
+				if v:Team() ~= bot:Team() and v:Alive() and v:Team() ~= TEAM_SPECTATOR then
+					local att
+					if !v:IsHL2() then
+						att = v:GetAttachment(v:LookupAttachment("head")).Pos
+					else
+						att = v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1"))
+					end
+					local trace = util.QuickTrace(bot:EyePos(), att - bot:EyePos(), team.GetPlayers(bot:Team()))
+					if trace.Entity == v then
+						debugoverlay.Text(bot:EyePos() + Vector(0, 0, 15), "I can see you "..v:Nick().."!", 0.03, false)
+						bot.TargetEnt = v
+					end
 				end
 			end
 		end
 
-		local BotCanTarget = tf_bot_notarget:GetBool()
+		
 
 		--[[if BotCanTarget and !IsValid(bot.TargetEnt) and (bot:GetPlayerClass() ~= "medic" or (bot:GetPlayerClass() == "medic" and bot:GetActiveWeapon() and bot:GetActiveWeapon():GetClass() ~= "tf_weapon_medigun")) then
 			for k, v in pairs(ents.GetAll()) do
@@ -381,6 +385,8 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			end
 		end]]
 
+		cmd:SetForwardMove(1000)
+
 		if IsValid(bot.TargetEnt) then
 			--for i=0, bot.TargetEnt:GetBoneCount()-1 do
 					--print(bot.TargetEnt:GetBoneName(i))
@@ -393,14 +399,19 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				cmd:SetForwardMove( -250 )
 			else]]
 			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 then
-				cmd:SetForwardMove( -250 )
+				cmd:SetForwardMove(-250)
+				if bot:GetPlayerClass() == "pyro" then
+					cmd:SetButtons(IN_ATTACK)
+				end
 			end
 			--if IsValid(bot:GetActiveWeapon()) and bot:GetActiveWeapon():Clip1() ~= 0 then
 				--print("SHOOT!!!")
 				--bot:GetActiveWeapon():PrimaryAttack()
 				--cmd:SetButtons(IN_CANCEL)
-			if math.random(2) == 1 or (bot:GetPlayerClass() == "pyro" or bot:GetPlayerClass() == "heavy") --[[or bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base")]] then
-				cmd:SetButtons(IN_ATTACK)
+			if bot:GetPlayerClass() ~= "pyro" then
+				if math.random(2) == 1 or bot:GetPlayerClass() == "heavy" then --[[or bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base")]]
+					cmd:SetButtons(IN_ATTACK)
+				end
 			end
 				--bot:GetActiveWeapon():SetClip1(100)
 			--end
@@ -459,7 +470,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 		elseif bot:GetPos():Distance(bot.ControllerBot.PosGen) < 100 and !ignoreback then
 			cmd:SetForwardMove( -250 )
 		else]]
-			cmd:SetForwardMove( 1000 )
+			
 		--end
 
 		if bot.ControllerBot.P then
@@ -476,8 +487,32 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 		
 		if !bot.LastPath then return end
 		local curgoal = bot.LastPath[bot.CurSegment]
-		if !curgoal then return end
-		bot:LookatPosXY( cmd, curgoal.pos )
+		if !curgoal then return end -- why tf does this not work??
+
+		if bot:GetPos():Distance(curgoal.pos) < 50 then
+			bot.LastSegmented = CurTime()
+			if bot.LastPath[bot.CurSegment + 1] then
+				curgoal = bot.LastPath[bot.CurSegment + 1] 
+			end
+		end
+		--debugoverlay.Text(curgoal.pos, bot:Nick().."'s goal", 0.03, false)
+		--bot:LookatPosXY( cmd, curgoal.pos )
+		--bot:SetEyeAngles((curgoal.pos - bot:GetShootPos()):Angle())
+
+		local lerp = 0.3
+		if bot.Difficulty == 0 then
+			lerp = 0.2
+		elseif bot.Difficulty == 2 then
+			lerp = 0.5
+		elseif bot.Difficulty == 3 then
+			lerp = 0.7
+		end
+
+		if IsValid(bot.TargetEnt) then
+			bot:SetEyeAngles(LerpAngle(lerp, bot:EyeAngles(), (bot.TargetEnt:EyePos() - bot:GetShootPos()):Angle()))
+		elseif curgoal and bot:GetPos():Distance(curgoal.pos) > 20 then
+			bot:SetEyeAngles(LerpAngle(0.25, bot:EyeAngles(), ((curgoal.pos + Vector(0, 0, 65)) - bot:GetShootPos()):Angle()))
+		end
 
 		bot.LastSegmented = bot.LastSegmented or CurTime()
 
@@ -494,16 +529,18 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 		--debugoverlay.Text(bot:EyePos() - Vector(0, 0, 15), math.abs(bot.LastSegmented - CurTime()), 0.005, false)
 		
-		if math.abs(bot.LastSegmented - CurTime()) > 5 then -- ai fault check (buggy)
+		--if bot.LastSegmented - CurTime() < -5 and !IsValid(bot.TargetEnt) and !util.IsInWorld(curgoal.pos) then -- ai fault check (buggy)
 			--debugoverlay.Text(bot:EyePos(), "yikes!", 1, false)
-			bot.CurSegment = bot.CurSegment + 1
+			--[[bot.CurSegment = bot.CurSegment + 1
 			bot.LastSegmented = CurTime()
 			local curgoal = bot.LastPath[bot.CurSegment + 1]
 			if !curgoal then return end
 			bot:LookatPosXY( cmd, curgoal.pos + Vector(0, 0, 150) )
 			--debugoverlay.Line(bot:GetPos(), curgoal.pos + Vector(0, 0, 150), 1.1, Color(255, 255, 255), true)
-			cmd:SetForwardMove( 1000 )
-		end
+			cmd:SetForwardMove( 1000 )]]
+			--bot:SetPos(curgoal.pos)
+			--bot.LastSegmented = CurTime()
+		--end
 
 		--print(bot.CurSegment)
 	end
@@ -596,6 +633,8 @@ concommand.Add("tf_bot_scramble", function(_, _, args) for k, v in pairs(player.
 --:SpectateEntity(table.Random(player.GetBots()))
 concommand.Add("tf_spectate_bot", function(ply, _, args) if args[1] == "2" then ply:Spectate(OBS_MODE_CHASE) return elseif args[1] == "1" then ply:Spectate(OBS_MODE_IN_EYE) return elseif args[1] == "3" then ply:Spectate(OBS_MODE_ROAMING) return end ply:StripWeapons() local bot = table.Random(player.GetBots()) ply:SpectateEntity(bot) ply:Spectate(OBS_MODE_IN_EYE) end)
 concommand.Add("tf_unspectate_bot", function(ply) ply:UnSpectate() ply:KillSilent() ply:Spawn() end)
+
+concommand.Add("tf_bot_takecontrol", function(ply) local bot = ply:GetObserverTarget() ply:UnSpectate() ply:SetMoveType(MOVETYPE_WALK) ply:KillSilent() ply:Spawn() ply:SetTeam(bot:Team()) ply:SetPlayerClass(bot:GetPlayerClass()) timer.Simple(0.1, function() ply:UnSpectate() ply:SetPlayerClass(bot:GetPlayerClass()) timer.Simple(0.1, function() ply:SetHealth(bot:Health()) ply:SetPos(bot:GetPos()) ply:SetEyeAngles(bot:EyeAngles()) ply:SendLua([[surface.PlaySound("misc/freeze_cam.wav")]]) bot:Kill() end) end) end)
 
 --[[concommand.Add("tf_bot_difficulty", function(_, _, args)
 	if !args[1] then MsgN("Defines the skill of bots joining the game.") return

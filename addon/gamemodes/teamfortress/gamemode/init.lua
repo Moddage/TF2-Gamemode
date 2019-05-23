@@ -60,13 +60,8 @@ concommand.Add("changeclass", function(pl, cmd, args)
 	if pl:Team()==TEAM_SPECTATOR then return end
 	if pl:GetObserverMode() ~= OBS_MODE_NONE then pl:Spectate(OBS_MODE_NONE) end
 	if pl:Alive() and GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:Kill() end	
-	if GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:SetPlayerClass("gmodplayer") end
+	--if GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:SetPlayerClass("gmodplayer") end
 	pl:SetPlayerClass(args[1])
-	timer.Simple(0.1, function()
-		if IsValid(pl) then
-			pl:SetPlayerClass(args[1])
-		end
-	end)
 end, function() return GAMEMODE.PlayerClassesAutoComplete end)
 
 concommand.Add( "changeteam", function( pl, cmd, args )
@@ -246,8 +241,8 @@ function GM:PlayerSpawn(ply)
 	if ply:GetPlayerClass()=="" then
 		ply:ConCommand("tf_changeclass")
 		ply:SetPlayerClass("gmodplayer")
-		ply:Spectate(OBS_MODE_FIXED)
-		ply:StripWeapons()
+		--ply:Spectate(OBS_MODE_FIXED)
+		--ply:StripWeapons()
 	--[[elseif ply:GetPlayerClass()=="sniper" then -- dumb hack wtf??
 		ply:SetPlayerClass("scout")
 		timer.Simple(0.1, function()
@@ -258,8 +253,17 @@ function GM:PlayerSpawn(ply)
 		if ply:GetObserverMode() ~= OBS_MODE_NONE then
 			ply:UnSpectate()
 		end]]
+	elseif ply:GetPlayerClass()=="sniper" then
+		ply:SetPlayerClass("scout")
+		ply:SetPlayerClass("sniper")
+		timer.Simple(0.1, function()
+			ply:SetPlayerClass("sniper")
+		end)
 	else
-		ply:SetPlayerClass(ply:GetPlayerClass())
+		timer.Simple(0.1, function() -- god i'm such a timer whore
+			ply:SetPlayerClass(ply:GetPlayerClass())
+		end)
+
 		if ply:GetObserverMode() ~= OBS_MODE_NONE then
 			ply:UnSpectate()
 		end

@@ -148,14 +148,14 @@ function PANEL:Paint()
 		
 		PlayerPing.color = col
 		PlayerPing.pos[2] = ypos
-		if GetConVar("tf_scoreboard_text_ping"):GetBool() then
-			if pl:IsBot() then
-				PlayerPing.text = "BOT"
-			else
-				PlayerPing.text = pl:Ping()
-			end
-			draw.Text(PlayerPing)
+		--if GetConVar("tf_scoreboard_text_ping"):GetBool() then
+		if pl:IsBot() then
+			PlayerPing.text = "BOT"
 		else
+			PlayerPing.text = pl:Ping()
+		end
+		draw.Text(PlayerPing)
+		--[[else
 		local ping = pl:Ping()
 		surface.SetTexture(surface.GetTextureID("hud/scoreboard_ping_low"))
 		if ping >= 60 and ping < 90 then
@@ -179,7 +179,7 @@ function PANEL:Paint()
 		end
 
 		surface.DrawTexturedRect(PlayerPing.pos[1] - 25, PlayerPing.pos[2] - 10, 25, 20)
-		end
+		end]]
 		
 		if pl:GetFriendStatus() == "friend" then
 			surface.SetTexture(ico_friend_indicator_scoreboard)

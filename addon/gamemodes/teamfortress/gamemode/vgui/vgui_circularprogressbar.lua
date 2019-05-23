@@ -103,6 +103,8 @@ function PANEL:DrawCircleSegment(c, endProgress, clockwise)
 	if not self.ForegroundTexture then
 		return
 	end
+
+	c = c or Color(0, 0, 0)
 	
 	local wide, tall = self:GetSize()
 	local halfWide, halfTall = wide/2, tall/2

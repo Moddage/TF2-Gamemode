@@ -233,7 +233,8 @@ function PANEL:Paint()
 	draw.Text(ServerTimeLeft)
 	
 	tab = team.GetPlayers(TEAM_SPECTATOR)
-	table.Add(tab, team.GetPlayers(TEAM_NEUTRAL))
+	local tab2 = team.GetPlayers(TEAM_NEUTRAL)
+	-- table.Add(tab, team.GetPlayers(TEAM_NEUTRAL))
 	num = #tab
 	if num > 0 then
 		local t = {}
@@ -251,24 +252,37 @@ function PANEL:Paint()
 		draw.Text(Spectators)
 	end
 	
-	--[[
-	tab = team.GetPlayers(TEAM_NEUTRAL)
-	num = #tab
+	
+	tab2 = team.GetPlayers(TEAM_NEUTRAL)
+	num2 = #tab2
+
 	if num > 0 then
+		SpectatorsInQueue.pos = {115*Scale, 358*Scale}
+	else
+		SpectatorsInQueue.pos = {111*Scale, 367*Scale}
+	end
+
+	if num2 > 0 then
 		local t = {}
-		for k,v in ipairs(tab) do
+		for k,v in ipairs(tab2) do
 			t[k] = v:GetName()
 		end
 		t = string.Implode(", ", t)
 		
-		if num == 1 then
+		--[[if num == 1 then
 			SpectatorsInQueue.text = tf_lang.GetFormatted("#TF_Arena_ScoreBoard_Spectator", num, t)
 		else
 			SpectatorsInQueue.text = tf_lang.GetFormatted("#TF_Arena_ScoreBoard_Spectators", num, t)
+		end]]
+
+		if num2 == 1 then
+			SpectatorsInQueue.text = "1 neutral: "..t
+		else
+			SpectatorsInQueue.text = "Neutral: "..t
 		end
 		
 		draw.Text(SpectatorsInQueue)
-	end]]
+	end
 	
 	PlayerName.color = team.GetColor(playerteam)
 	PlayerName.text = LocalPlayer():GetName()
