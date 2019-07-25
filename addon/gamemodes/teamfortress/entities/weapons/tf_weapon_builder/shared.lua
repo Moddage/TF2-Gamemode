@@ -2,6 +2,8 @@ if SERVER then
 
 AddCSLuaFile("shared.lua")
 
+CreateConVar("tf_unlimited_buildings", 0, {FCVAR_NOTIFY, FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE, FCVAR_CHEAT})
+
 end
 
 if CLIENT then
@@ -197,6 +199,55 @@ local old_group_translate = {
 	[3] = {2,0},
 	[4] = {3,0},
 }
+
+local builds = {}
+builds[2] = "obj_sentrygun"
+builds[0] = "obj_dispenser"
+builds[1] = "obj_teleporter"
+
+concommand.Add("destroy", function(pl, cmd, args)
+	local group = tonumber(args[1])
+	local sub = tonumber(args[2])
+	
+	local builder = pl:GetWeapon("tf_weapon_builder")
+	
+	if not IsValid(builder) then return end
+	if not group then return end
+	
+	if not sub then
+		if not old_group_translate[group] then return end
+		
+		group, sub = unpack(old_group_translate[group])
+	end
+	
+	if builds[group] then
+		local tab = ents.FindByClass(builds[group])
+		for k, v in pairs(tab) do
+			if v.Player == pl and builds[group] ~= "obj_teleporter" then
+				v:Explode()
+			elseif v.Player == pl and builds[group] == "obj_teleporter" then
+				for i, o in pairs(tab) do
+					if (sub == 0 and v:IsEntrance() and o:IsEntrance()) or (sub == 1 and v:IsExit() and o:IsExit()) then
+						v:Explode()
+					end
+				end
+			end
+		end
+	end
+	
+	local current = pl:GetActiveWeapon()
+	if current.IsPDA then
+		local last = pl:GetWeapon(pl.LastWeapon)
+		if not IsValid(last) or last.IsPDA then
+			last = pl:GetWeapons()[1]
+		end
+		builder.LastWeapon = last:GetClass()
+		pl:SelectWeapon(last:GetClass())
+	else
+		builder.LastWeapon = current:GetClass()
+	end
+end)
+
 concommand.Add("build", function(pl, cmd, args)
 	local group = tonumber(args[1])
 	local sub = tonumber(args[2])
@@ -210,6 +261,21 @@ concommand.Add("build", function(pl, cmd, args)
 		if not old_group_translate[group] then return end
 		
 		group, sub = unpack(old_group_translate[group])
+	end
+	
+	if builds[group] and (!GetConVar("tf_unlimited_buildings"):GetBool() or GetConVar("tf_competitive"):GetBool()) then
+		local tab = ents.FindByClass(builds[group])
+		for k, v in pairs(tab) do
+			if v.Player == pl and builds[group] ~= "obj_teleporter" then
+				return
+			elseif v.Player == pl and builds[group] == "obj_teleporter" then
+				for i, o in pairs(tab) do
+					if (sub == 0 and v:IsEntrance() and o:IsEntrance()) or (sub == 1 and v:IsExit() and o:IsExit()) then
+						return
+					end
+				end
+			end
+		end
 	end
 	
 	local current = pl:GetActiveWeapon()

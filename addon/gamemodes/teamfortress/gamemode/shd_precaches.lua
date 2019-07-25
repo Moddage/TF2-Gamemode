@@ -35,3 +35,6 @@ PrecacheParticleSystem("rocketjump_smoke")
 PrecacheParticleSystem("burningplayer_flyingbits")
 PrecacheParticleSystem("particle_nemesis_red")
 PrecacheParticleSystem("particle_nemesis_blue")
+
+PrecacheParticleSystem("muzzle_raygun_red")
+PrecacheParticleSystem("bullet_tracer_raygun_red")

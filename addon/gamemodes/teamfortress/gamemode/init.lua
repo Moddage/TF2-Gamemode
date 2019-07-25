@@ -8,6 +8,7 @@ include("sv_gamelogic.lua")
 include("sv_damage.lua")
 include("sv_death.lua")
 include("sv_ctf_bots.lua")
+include("sv_chat.lua")
 include("shd_taunts.lua")
 
 local LOGFILE = "teamfortress/log_server.txt"
@@ -22,7 +23,6 @@ response_rules.Load("talker/tf_response_rules.txt")
 response_rules.Load("talker/demoman_custom.txt")
 response_rules.Load("talker/heavy_custom.txt")
 
-CreateConVar( "tf_npc_friendlyfire", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "NPC Friendly Fire" )
 CreateConVar( "tf_use_hl_hull_size", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players use the HL2 hull size found on coop." )
 CreateConVar( "tf_kill_on_change_class", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will die if they change class." )
 CreateConVar( "tf_flashlight", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will have a flashlight as a TF2 Class" )

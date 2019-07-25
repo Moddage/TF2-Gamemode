@@ -3,6 +3,8 @@ hook.Add("Move", "TFMove", function(pl, move)
 		pl.TempAttributes = {}
 	end
 	
+	if pl:IsHL2() then return end
+	
 	-- Players run 10% slower when moving backwards
 	local fwd = move:GetForwardSpeed()
 	if fwd<0 and not pl:IsHL2() then
@@ -68,6 +70,8 @@ hook.Add("Move", "TFMove", function(pl, move)
 end)
 
 hook.Add("SetupMove", "TFSetupMove", function(pl, move)
+	if pl:IsHL2() then return end
+
 	-- Can't move when crouched in the loser state
 	if pl:Crouching() then
 		if pl:IsLoser() then

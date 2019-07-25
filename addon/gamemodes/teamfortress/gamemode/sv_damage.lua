@@ -36,7 +36,7 @@ end
 function GM:GetFallDamage(pl, sp)
 	if mp_falldamage:GetBool() then
 		if sp <= 550 then return 0 end
-		
+
 		return math.sqrt(sp-550)*3.47
 	else
 		return 10
@@ -45,35 +45,35 @@ end
 
 function GM:PreScaleDamage(ent, hitgroup, dmginfo)
 	local inf, att = dmginfo:GetInflictor(), dmginfo:GetAttacker()
-	
+
 	ApplyAttributesFromEntity(dmginfo:GetInflictor(), "pre_damage", ent, hitgroup, dmginfo)
-	
+
 	if att:IsPlayer() then
 		ApplyGlobalAttributesFromPlayer(att, "pre_damage", ent, hitgroup, dmginfo)
 	end
-	
+
 	if ent:IsPlayer() then
 		ApplyAttributesFromEntity(ent:GetActiveWeapon(), "pre_damage_received", ent, hitgroup, dmginfo)
 		ApplyGlobalAttributesFromPlayer(ent, "pre_damage_received", ent, hitgroup, dmginfo)
 	end
-	
+
 	if att:IsNPC() then
 		att:CallNPCEvent("pre_damage", ent, hitgroup, dmginfo)
 	end
-	
+
 	-- Used for recalculating custom damage falloff
 	-- (especially for the Direct Hit which does not do enough damage due to its poor blast radius)
 	--[[if inf.ModifyInitialDamage then
 		dmginfo:SetDamage(inf:ModifyInitialDamage(ent, dmginfo))
 	end]]
-	
+
 	if dmginfo:GetAttacker() ~= ent and inf.ExplosionRadiusMultiplier and inf.ExplosionRadiusMultiplier < 1 then
 		local frac = dmginfo:GetDamage() * 0.01
 		local saturate = 1 / inf.ExplosionRadiusMultiplier
 		local range_reduce = 1 - inf.ExplosionRadiusMultiplier
-		
+
 		frac = math.Clamp(saturate * (frac - range_reduce) / (1 - range_reduce), 0, 1)
-		
+
 		if frac * 100 < 1 then
 			dmginfo:SetDamage(0)
 		else
@@ -84,22 +84,22 @@ end
 
 function GM:PostScaleDamage(ent, hitgroup, dmginfo)
 	local att = dmginfo:GetAttacker()
-	
+
 	ApplyAttributesFromEntity(dmginfo:GetInflictor(), "post_damage", ent, hitgroup, dmginfo)
-	
+
 	if att:IsPlayer() then
 		ApplyGlobalAttributesFromPlayer(att, "post_damage", ent, hitgroup, dmginfo)
 	end
-	
+
 	if ent:IsPlayer() then
 		ApplyAttributesFromEntity(ent:GetActiveWeapon(), "post_damage_received", ent, hitgroup, dmginfo)
 		ApplyGlobalAttributesFromPlayer(ent, "post_damage_received", ent, hitgroup, dmginfo)
 	end
-	
+
 	if att:IsNPC() then
 		att:CallNPCEvent("post_damage", ent, hitgroup, dmginfo)
 	end
-	
+
 	if dmginfo:GetDamage() > 0 and ent:IsTFPlayer() and not ent:IsBuilding()
 	and att:IsTFPlayer() and not att:IsBuilding() and ent:HasPlayerState(PLAYERSTATE_MILK) then
 		GAMEMODE:HealPlayer(nil, att, dmginfo:GetDamage() * 0.75, true, false)
@@ -114,56 +114,56 @@ function GM:CommonScaleDamage(ent, hitgroup, dmginfo)
 	if ent:IsTFPlayer() and ent:Health() <= 0 then
 		return
 	end
-	
+
 	--ent.DoneScaleDamage = true
-	
+
 	local dontscaledamage = false
-	
+
 	local att, inf = dmginfo:GetAttacker(), dmginfo:GetInflictor()
-	
+
 	-- HL2 guns and melee weapons use the owner as the inflictor, get the real inflictor by retrieving the owner's current weapon
-	if inf==att and att:IsPlayer() then
+	if inf == att and att:IsPlayer() then
 		inf = att:GetActiveWeapon()
 	end
-	
+
 	-- Damage from fire produces this annoying burn pain sound that we don't want
 	-- Just turn it into something else
 	if dmginfo:IsDamageType(DMG_BURN) and ent:IsPlayer() then
-		dmginfo:SetDamageType(bit.band(dmginfo:GetDamageType(), (65535-DMG_BURN)))
+		dmginfo:SetDamageType(bit.band(dmginfo:GetDamageType(), 65535-DMG_BURN))
 	end
-	
+
 	-- Projectiles such as grenades don't do physical damage
 	if inf.Explosive and not dmginfo:IsExplosionDamage() then
 		dmginfo:SetDamage(0)
 		return true
 	end
-	
+
 	-- For projectiles or weapons that have a special way to deal damage (jarate)
 	if inf.DoSpecialDamage then
 		inf:DoSpecialDamage(ent, dmginfo)
 	end
-	
+
 	-- Friendly fire
 	if not att:CanDamage(ent) then
 		dmginfo:SetDamage(0)
 		dmginfo:SetDamageType(DMG_GENERIC)
 		return true
 	end
-	
+
 	-- Self damage
-	if ent==att then
+	if ent == att then
 		dontscaledamage = true
 	end
-	
+
 	-- Critical and mini critical hits
-	
+
 	gamemode.Call("PreScaleDamage", ent, hitgroup, dmginfo)
-	
+
 	local is_normal_damage = true
-	
+
 	-- if the entity can receive crits
 	if gamemode.Call("ShouldCrit", ent, inf, att, hitgroup, dmginfo) then
-		if att==ent then
+		if att == ent then
 			-- Self damage, don't scale the damage, but still notify the player that they critted themselves
 			if ent:IsPlayer() then
 				SendUserMessage("CriticalHitReceived", ent)
@@ -178,21 +178,21 @@ function GM:CommonScaleDamage(ent, hitgroup, dmginfo)
 				else
 					dmginfo:SetDamage(inf.BaseDamage * inf.CritDamageMultiplier)
 				end
-				
+
 				dontscaledamage = true
 			else
 				dmginfo:ScaleDamage(3)
 			end
-			
+
 			DispatchCritEffect(ent, inf, att, false)
-			
+
 			is_normal_damage = false
 		end
-		
+
 		ent.LastDamageWasCrit = true
 	elseif gamemode.Call("ShouldMiniCrit", ent, inf, att, hitgroup, dmginfo) then
 		local mul
-		
+
 		if att:IsNPC() then
 			-- NPCs do doubled damage against other NPCs and 50% times more damage on players
 			if ent:IsPlayer() then
@@ -203,7 +203,7 @@ function GM:CommonScaleDamage(ent, hitgroup, dmginfo)
 		else
 			mul = 1.35
 		end
-		
+
 		-- Modify the damage
 		-- (apparently, minicrits don't suffer from damage spread either)
 		if inf.BaseDamage and inf.CritDamageMultiplier then
@@ -214,7 +214,7 @@ function GM:CommonScaleDamage(ent, hitgroup, dmginfo)
 				--dmginfo:SetDamage(inf.BaseDamage * mul)
 				dmginfo:SetDamage(math.max(dmginfo:GetDamage(), inf.BaseDamage * mul))
 			end
-			
+
 			dontscaledamage = true
 		else
 			dmginfo:ScaleDamage(mul)
@@ -382,7 +382,7 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 	
 	-- Friendly fire
 	local t1, t2 = attacker:EntityTeam(), ent:EntityTeam()
-	if attacker~=ent and attacker:IsTFPlayer() and (t1==TEAM_RED or t1==TEAM_BLU) and t1==t2 then
+	if attacker~=ent and attacker:IsTFPlayer() and (t1==TEAM_RED or t1==TEAM_BLU) and t1==t2 and !GetConVar("mp_friendlyfire"):GetBool() then
 		dmginfo:SetDamage(0)
 		dmginfo:SetDamageType(DMG_GENERIC)
 		return true

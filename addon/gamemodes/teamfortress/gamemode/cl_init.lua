@@ -6,9 +6,7 @@ local load_time = SysTime()
 local blacklist = {["Frying Pan"] = true, ["Golden Frying Pan"] = true, ["The PASSTIME Jack"] = true, ["TTG Max Pistol"] = true, ["Sexo de Pene Gay"] = true, ["Team Spirit"] = true,} -- Items that should NEVER show, must be their item.name if a hat/weapon!
 local name_blacklist = {["The AK47"] = true,} -- Weapons that have names of other weapons must have their item.name put in here
 
-include("tf_lang_module.lua")
 include("shd_items.lua")
-tf_lang.Load("tf_english.txt")
 
 include("cl_proxies.lua")
 include("cl_pickteam.lua")
@@ -293,7 +291,7 @@ local load_time = SysTime()
 
 function GetImprovedItemName(name)
 for k, v in pairs(tf_items.ReturnItems()) do
-	if v and istable(v) and v["used_by_classes"] and v["name"] and v["name"] == name and v["used_by_classes"][LocalPlayer():GetPlayerClass()] and v["item_slot"] and not blacklist[v["name"]] then
+	if v and istable(v) and v["used_by_classes"] and v["name"] and v["name"] == name and v["used_by_classes"][LocalPlayer():GetPlayerClass()] and v["item_slot"] and not blacklist[v["name"]] and v["prefab"] ~= "tournament_medal" then
 		if (v["item_slot"] == "primary" or v["item_slot"] == "secondary" or v["item_slot"] == "melee") then
 			if name_blacklist[v["name"]] then
 				return "wep"..v["name"]
@@ -304,7 +302,7 @@ for k, v in pairs(tf_items.ReturnItems()) do
 			else
 				return "wep"..tf_lang.GetRaw(v["item_name"]) or v["name"]
 			end
-		elseif v and v["item_slot"] and v["item_slot"] == "head" and ((v["model_player"] and util.GetModelInfo(v["model_player"]) and util.GetModelInfo(v["model_player"])["KeyValues"]) or (v["model_player_per_class"] and util.GetModelInfo(v["model_player_per_class"][LocalPlayer():GetPlayerClass()]) and util.GetModelInfo(v["model_player_per_class"][LocalPlayer():GetPlayerClass()])["KeyValues"])) then
+		elseif v and v["item_slot"] and v["item_slot"] == "head" then
 			return "hat"..v["name"]
 		elseif v and v["item_slot"] and v["item_slot"] == "misc" then
 			return "hat"..v["name"]
@@ -761,7 +759,10 @@ for k, v in pairs(tf_items.ReturnItems()) do
 
 		t.text = string.sub(GetImprovedItemName(v["name"]), 4)
 		--t.text = tf_lang.GetRaw(v["item_name"]) or v["name"]
-		local quality = string.upper(string.sub(v["item_quality"], 1, 1)) .. string.sub(v["item_quality"], 2)
+		local quality = 0
+		if v["item_quality"] then
+			quality = string.upper(string.sub(v["item_quality"], 1, 1)) .. string.sub(v["item_quality"], 2)
+		end
 		t:SetQuality(quality)
 
 		t.model_xpos = 0

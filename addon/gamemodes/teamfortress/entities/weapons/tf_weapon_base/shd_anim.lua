@@ -29,7 +29,12 @@ function SWEP:SetupCModelActivities(item, noreplace)
 	tf_util.ReadActivitiesFromModel(self)
 	
 	if item then
-		local hold = string.upper(item.anim_slot or item.item_slot)
+		local hold = "PRIMARY"
+		if item.anim_slot then
+			hold = string.upper(item.anim_slot)
+		elseif item.item_slot then
+			hold = string.upper(item.item_slot)
+		end
 		--MsgN(Format("SetupCModelActivities %s", tostring(self)))
 		
 		self.VM_DRAW			= _G["ACT_"..hold.."_VM_DRAW"]

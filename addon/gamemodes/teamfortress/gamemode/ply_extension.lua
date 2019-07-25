@@ -198,11 +198,11 @@ function meta:GetCrouchedWalkSpeed()
 end
 
 function meta:GetWalkSpeed()
-	return self:GetNWFloat("WalkSpeed")
+	return 1
 end
 
 function meta:GetRunSpeed()
-	return self:GetNWFloat("SprintSpeed")
+	return 1
 end
 
 function meta:GetDuckSpeed()

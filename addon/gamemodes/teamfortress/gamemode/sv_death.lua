@@ -55,6 +55,14 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 		ent:AddDeaths(1)
 	end
 	
+	if attacker:IsWeapon() then
+		attacker = attacker:GetOwner()
+	end
+	
+	if attacker:IsVehicle() and IsValid(attacker:GetDriver()) then
+		attacker = attacker:GetDriver()
+	end
+	
 	if attacker:IsPlayer() and attacker ~= ent then
 		local score = inflictor.Score or 1
 		if attacker.customdeath == "headshot" then
@@ -177,13 +185,16 @@ function GM:PostTFPlayerDeath(ent, attacker, inflictor)
 	local cooperator = self:GetDisplayedAssistant(ent, attacker) or NULL
 	--print("Displayed assistant")
 	--print(cooperator)
-	
-	local killer = attacker
-	print(attacker, "is a killer!")
+
 	if attacker:IsWeapon() then
 		attacker = attacker:GetOwner()
 	end
-	print(attacker, "is a killer!")
+	
+	if attacker:IsVehicle() and IsValid(attacker:GetDriver()) then
+		attacker = attacker:GetDriver()
+	end
+	
+	local killer = attacker
 	
 	--[[if inflictor.KillCreditAsInflictor then
 		killer = inflictor
@@ -197,9 +208,6 @@ function GM:PostTFPlayerDeath(ent, attacker, inflictor)
 			umsg.Short(GAMEMODE:EntityID(ent))
 		umsg.End()
 	elseif attacker == ent then
-		if attacker:IsWeapon() then
-			attacker = ent:GetOwner()
-		end
 		-- Suicide
 		if IsValid(cooperator) and GAMEMODE:EntityTeam(cooperator)~=TEAM_HIDDEN then
 			-- Y finished off X

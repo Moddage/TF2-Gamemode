@@ -321,6 +321,9 @@ hook.Add("CalcView", "TFCalcView", function(pl, pos, ang, fov)
 		ang = Angle(Angle(math.Clamp(ang.p, -80, 80), ang.y, ang.r))
 		local angle = (util.QuickTrace(pos, ang:Forward() * 5024, pl).HitPos - pl:GetShootPos()):Angle()
 		pl:SetEyeAngles(Angle(angle.p, angle.y, ang.r))
+		if !pl.FirstReality and !pl.SimulatedCamera then
+			pos = pl:GetPos() + pl:GetViewOffset() + ang:Forward() * 75 + ang:Right() * 25
+		end
 	end
 
 	if pl.NextEndThirdperson then

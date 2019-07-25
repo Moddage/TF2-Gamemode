@@ -63,7 +63,7 @@ function ENT:HUDAlertStatus()
 end
 
 function ENT:SetAutomaticFrameAdvance(bUsingAnim)
-	self.AutomaticFrameAdvance = bUsingAnim
+	self.AutomaticFrameAdvance = true
 end
 
 function ENT:SetupDataTables()

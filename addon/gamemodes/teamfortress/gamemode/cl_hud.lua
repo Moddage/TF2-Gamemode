@@ -68,6 +68,7 @@ local VGUIFiles = {
 	"hud_cptest";
 	"hud_roundtimer";
 	"hud_menuengybuild";
+	"hud_menuengydestroy";
 	"hud_voicemenu";
 	
 	"menu_charinfopanel";
@@ -289,12 +290,15 @@ end
 -- Using a custom TargetID system
 
 function GM:HUDDrawTargetID()
+	if LocalPlayer():IsHL2() then
+		return self.BaseClass:HUDDrawTargetID()
+	end
      return false
 end
 
 local function targetid_trace_condition(tr, ply)
 	ply = ply or LocalPlayer()
-	return IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:IsNPC()) and (GAMEMODE:EntityTeam(tr.Entity)==ply:Team() or hud_targetid_anyteam:GetBool())
+	return !ply:IsHL2() and IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:IsNPC()) and (GAMEMODE:EntityTeam(tr.Entity)==ply:Team() or hud_targetid_anyteam:GetBool())
 end
 
 function GM:TargetIDThink()

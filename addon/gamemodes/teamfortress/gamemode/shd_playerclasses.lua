@@ -13,8 +13,19 @@ local DefaultHullDuck = {Vector(-16, -16, 0), Vector(16,  16,  36)}
 
 local randomizer = CreateConVar( "tf_randomizer", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
 local randomizerit = CreateConVar( "tf_randomizer_class_specific", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
-local dgmod = CreateConVar( "tf_disable_fun_classes", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
+local dgmod = CreateConVar( "tf_disable_fun_classes", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
 local botrobot = CreateConVar( "tf_bots_are_robots", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE} )
+
+cvars.AddChangeCallback("tf_disable_fun_classes", function(_, _, val)
+	if SERVER and val == "1" then
+		for k, v in pairs(player.GetAll()) do
+			if v:GetPlayerClass() == "gmodplayer" then
+				v:SetPlayerClass("scout")
+				v:Kill()
+			end
+		end
+	end
+end)
 
 function GM:RegisterPlayerClass(name, tbl)
 	for k,v in pairs(tbl.Gibs or {}) do
@@ -219,6 +230,10 @@ function meta:SetClassSpeed(sp)
 	elseif self:IsHL2() then
 		self:SetWalkSpeed(200)
 		self:SetRunSpeed(400)
+		self:SetCrouchedWalkSpeed(0.3)
+		self:SetJumpPower(200)
+		self:SetDuckSpeed(0.1)
+		self:SetUnDuckSpeed(0.1)
 	end
 end
 

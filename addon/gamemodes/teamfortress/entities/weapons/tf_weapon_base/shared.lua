@@ -103,6 +103,7 @@ CreateClientConVar("tf_use_viewmodel_fov", "1", true, false)
 CreateClientConVar("tf_righthand", "1", true, true)
 CreateClientConVar("tf_sprintinspect", "1", true, true)
 CreateClientConVar("tf_reloadinspect", "1", true, true)
+CreateClientConVar("tf_use_min_viewmodels", "0", true, false)
 
 -- Initialize the weapon as a TF item
 tf_item.InitializeAsBaseItem(SWEP)
@@ -371,6 +372,23 @@ function SWEP:Inspect()
 		end
 		end
 	end
+end
+
+function SWEP:CalcViewModelView(vm, oldpos, oldang, newpos, newang)
+	if not self.VMMinOffset and self:GetItemData() then
+		local data = self:GetItemData()
+		if data.static_attrs and data.static_attrs.min_viewmodel_offset then
+			self.VMMinOffset = Vector(data.static_attrs.min_viewmodel_offset)
+		end
+	end
+
+	if GetConVar("tf_use_min_viewmodels"):GetBool() then -- TODO: Check for inspecting
+		newpos = newpos + (newang:Forward() * self.VMMinOffset.x)
+		newpos = newpos + (newang:Right() * self.VMMinOffset.y)
+		newpos = newpos + (newang:Up() * self.VMMinOffset.z)
+	end
+
+	return newpos, newang
 end
 
 --[[function SWEP:Inspect()

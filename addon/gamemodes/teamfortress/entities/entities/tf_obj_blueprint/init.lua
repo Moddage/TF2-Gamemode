@@ -65,6 +65,7 @@ function ENT:Build()
 	if not IsValid(ent) then return end
 	
 	ent.Player = self.Player
+	ent:SetNWEntity("Player", self.Player)
 	ent:SetPos(pos)
 	ent:SetAngles(ang)
 	ent:SetTeam(self.Player:EntityTeam())

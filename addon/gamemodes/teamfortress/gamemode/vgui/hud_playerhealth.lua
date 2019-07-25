@@ -111,7 +111,7 @@ function PANEL:Paint()
 			draw.Text{
 				text=maxhealth,
 				font="HudClassHealthMax",
-				pos={(75+25)*Scale, (20+9)*Scale},
+				pos={(75+26)*Scale, (20+9)*Scale},
 				color=Colors.TanDark,
 				xalign=TEXT_ALIGN_CENTER,
 				yalign=TEXT_ALIGN_CENTER,

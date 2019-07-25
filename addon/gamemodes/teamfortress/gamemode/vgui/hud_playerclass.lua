@@ -10,6 +10,7 @@ local character_bg = {
 }
 local character_default = surface.GetTextureID("hud/class_scoutred")
 local character3d_default = "models/player/spy.mdl"
+local convar = CreateClientConVar("cl_hud_playerclass_use_playermodel", "0", true, false)
 
 function PANEL:Init()
 	self:SetPaintBackgroundEnabled(false)
@@ -20,6 +21,12 @@ end
 function PANEL:PerformLayout()
 	self:SetPos(0,0)
 	self:SetSize(W,H)
+end
+
+function PANEL:OnRemove()
+	if self.ClassModel then
+		self.ClassModel:Remove()
+	end
 end
 
 function PANEL:Paint()
@@ -78,19 +85,36 @@ function PANEL:Paint()
 		self.ClassPanel = p
 
 		--print("ACT_MP_STAND_"..LocalPlayer():GetActiveWeapon().HoldType)]]
-	
+	local w, h = self:LocalToScreen( self:GetWide(), self:GetTall() - 30 )
 	local tex = character_bg[t] or character_bg[1]
 	surface.SetTexture(tex)
 	surface.SetDrawColor(255,255,255,255)
 	surface.DrawTexturedRect(9*Scale, (480-60)*Scale, 100*Scale, 50*Scale)
-	
-	tex = character_default
-	if tbl and tbl.CharacterImage and tbl.CharacterImage[1] then
-		tex = tbl.CharacterImage[t] or tbl.CharacterImage[1]
+	if convar:GetBool() then
+		if !IsValid(self.ClassModel) then
+			self.ClassModel = vgui.Create("DModelPanel", self, "TF_3DClassModel")
+			self.ClassModel.PreDrawModel = function() render.SetScissorRect(0, 0, w, h, true) end
+			self.ClassModel.PostDrawModel = function() render.SetScissorRect(0, 0, 0, 0, false) end
+		end
+		self.ClassModel:SetPos(9*Scale, (480-100)*Scale)
+		self.ClassModel:SetSize(125*Scale, 100*Scale)
+		self.ClassModel:SetFOV(60)
+		self.ClassModel:SetAnimated(true)
+		self.ClassModel:SetLookAng(Angle(170, -30, 180))
+		self.ClassModel:SetCamPos(Vector(75, -30, 60))
+		self.ClassModel:SetModel(LocalPlayer():GetModel())
+		self.ClassModel.Entity:SetSequence(LocalPlayer():GetSequence())
+		self.ClassModel.LayoutEntity = function() end
+	else
+		if self.ClassModel then self.ClassModel:Remove() end
+		tex = character_default
+		if tbl and tbl.CharacterImage and tbl.CharacterImage[1] then
+			tex = tbl.CharacterImage[t] or tbl.CharacterImage[1]
+		end
+		surface.SetTexture(tex)
+		surface.SetDrawColor(255,255,255,255)
+		surface.DrawTexturedRect(25*Scale, (480-88)*Scale, 75*Scale, 75*Scale)
 	end
-	surface.SetTexture(tex)
-	surface.SetDrawColor(255,255,255,255)
-	surface.DrawTexturedRect(25*Scale, (480-88)*Scale, 75*Scale, 75*Scale)
 end
 
 if HudPlayerClass then HudPlayerClass:Remove() end

@@ -167,6 +167,14 @@ end
 function SWEP:Think()
 	self:TFViewModelFOV()
 
+	if GetConVar("tf_righthand") then
+		if GetConVar("tf_righthand"):GetInt() == 1 then
+			self.ViewModelFlip = true
+		else
+			self.ViewModelFlip = false
+		end
+	end
+
 	if SERVER and self.NextReplayDeployAnim then
 		if CurTime() > self.NextReplayDeployAnim then
 			--MsgFN("Replaying deploy animation %d", self.VM_DRAW)

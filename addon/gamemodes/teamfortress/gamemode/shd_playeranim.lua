@@ -57,7 +57,7 @@ function GM:HandlePlayerDucking(pl, vel)
 		return self.BaseClass:HandlePlayerDucking(pl, vel)
 	end
 	
-	if pl:Crouching() then
+	if pl:Crouching() and !pl:IsHL2() then
 		local len2d = vel:Length2D()
 		
 		-- fucking shit garry, you broke GetCrouchedWalkSpeed
@@ -248,6 +248,8 @@ function GM:DoAnimationEvent(pl, event, data, taunt)
 	if pl:IsHL2() then
 		return self.BaseClass:DoAnimationEvent(pl, event, data)
 	end
+	
+	print(event, data)
 	
 	local w = pl:GetActiveWeapon()
 	if event == PLAYERANIMEVENT_ATTACK_PRIMARY then
