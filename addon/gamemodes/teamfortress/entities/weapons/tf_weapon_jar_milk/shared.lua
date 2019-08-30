@@ -43,7 +43,7 @@ SWEP.ShootCritSound = ""
 
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.Ammo			= TF_GRENADES1
-SWEP.Primary.Delay          = 1
+SWEP.Primary.Delay          = 0.8
 
 SWEP.ReloadSingle = false
 
@@ -60,6 +60,15 @@ SWEP.AddPitch = -4
 SWEP.VM_DRAW = ACT_ITEM1_VM_DRAW
 SWEP.VM_IDLE = ACT_ITEM1_VM_IDLE
 SWEP.VM_PRIMARYATTACK = ACT_ITEM1_VM_PRIMARYATTACK
+
+function SWEP:InspectAnimCheck()
+	self:CallBaseFunction("InspectAnimCheck")
+	if self:GetItemData().model_player == "models/weapons/c_models/c_breadmonster/c_breadmonster_milk.mdl" then
+	self.VM_DRAW = ACT_BREADMONSTER_VM_DRAW
+	self.VM_IDLE = ACT_BREADMONSTER_VM_IDLE
+	self.VM_PRIMARYATTACK = ACT_BREADMONSTER_VM_PRIMARYATTACK
+	end
+end
 
 function SWEP:PredictCriticalHit()
 end
@@ -92,6 +101,14 @@ function SWEP:MeleeAttack()
 		
 		grenade:GetPhysicsObject():AddAngleVelocity(Vector(math.random(-2000,2000),math.random(-2000,2000),math.random(-2000,2000)))
 		grenade:GetPhysicsObject():ApplyForceCenter(vel)
+		if self:GetItemData().model_player == "models/weapons/c_models/c_breadmonster/c_breadmonster_milk.mdl" then
+			grenade:SetModel("models/weapons/c_models/c_breadmonster/c_breadmonster_milk.mdl")
+			self:SetHoldType("MELEE_ALLCLASS")
+			self.Owner:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_BOLT,true)
+			self.ShootSound = Sound("Weapon_bm_throwable.throw")
+			self.ShootCritSound = Sound("Weapon_bm_throwable.throw")
+			self.Owner:EmitSound(self.ShootSound)
+		end
 	end
 end
 
@@ -103,7 +120,9 @@ function SWEP:PrimaryAttack()
 	end
 	
 	self:SendWeaponAnim(self.VM_PRIMARYATTACK)
-	self.Owner:SetAnimation(PLAYER_ATTACK1)
+	if self:GetItemData().model_player != "models/weapons/c_models/c_breadmonster/c_breadmonster_milk.mdl" then
+		self.Owner:SetAnimation(PLAYER_ATTACK1)
+	end
 	
 	self:TakePrimaryAmmo(1)
 	

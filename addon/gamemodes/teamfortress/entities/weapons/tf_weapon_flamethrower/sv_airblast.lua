@@ -3,7 +3,7 @@ local function minicrit_true() return true end
 
 local AirblastFunc = {
 	["grenade_spit"] = function(self, ent, dir)
-		ent:SetLocalVelocity(dir * ent:GetVelocity():Length())
+		ent:SetLocalVelocity(dir * 2000)
 		ent:SetOwner(self.Owner)
 		ent.AttackerOverride = self.Owner
 		ent.NameOverride = "grenade_spit_deflect"
@@ -12,7 +12,7 @@ local AirblastFunc = {
 		return true
 	end,
 	["grenade_ar2"] = function(self, ent, dir)
-		ent:SetLocalVelocity(dir * ent:GetVelocity():Length())
+		ent:SetLocalVelocity(dir * 2000)
 		ent:SetOwner(self.Owner)
 		ent.AttackerOverride = self.Owner
 		ent.NameOverride = "grenade_ar2_deflect"
@@ -21,7 +21,7 @@ local AirblastFunc = {
 		return true
 	end,
 	["crossbow_bolt"] = function(self, ent, dir)
-		ent:SetLocalVelocity(dir * ent:GetVelocity():Length())
+		ent:SetLocalVelocity(dir * 2000)
 		ent:SetOwner(self.Owner)
 		ent.AttackerOverride = self.Owner
 		ent.NameOverride = "crossbow_bolt_deflect"
@@ -54,6 +54,7 @@ local AirblastFunc = {
 		ent:SetOwner(self.Owner)
 		ent:SetPhysicsAttacker(self.Owner)
 		ent.AttackerOverride = self.Owner
+		ent.MiniCrit = minicrit_true
 		ent.NameOverride = "prop_combine_ball_deflect"
 		ent:EmitSound(self.AirblastDeflectSound)
 		
@@ -69,9 +70,6 @@ local AirblastFunc = {
 	["rpg_missile"] = function(self, ent, dir)
 		ent:SetLocalVelocity(dir * 2000)
 		local dmginfo = DamageInfo()
-		dmginfo:SetDamage(1000)
-		dmginfo:SetDamageType(DMG_AIRBOAT)
-		ent:TakeDamageInfo(dmginfo)
 		ent:SetOwner(self.Owner)
 		ent.AttackerOverride = self.Owner
 		ent.NameOverride = "rpg_missile_deflect"
@@ -88,8 +86,81 @@ local AirblastFunc = {
 		ent:EmitSound(self.AirblastDeflectSound)
 		return true
 	end,
+	["soldierbot_rocket_launched"] = function(self, ent, dir)
+		ent:SetLocalVelocity(dir * 2000)
+		ent:SetOwner(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_projectile_rocket_deflect"
+		ent.MiniCrit = minicrit_true
+		ent:EmitSound(self.AirblastDeflectSound)
+		return true
+	end,	
+	["tf_projectile_rocket_fireball"] = function(self, ent, dir)
+		ent:SetLocalVelocity(dir * 2000)
+		ent:SetOwner(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_weapon_flamethrower"
+		ent.MiniCrit = minicrit_true
+		ent:EmitSound(self.AirblastDeflectSound)
+		return true
+	end,
+	["soldier_rocket_launched"] = function(self, ent, dir)
+		ent:SetLocalVelocity(dir * 2000)
+		ent:SetOwner(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_projectile_rocket_deflect"
+		ent.MiniCrit = minicrit_true
+		ent:EmitSound(self.AirblastDeflectSound)
+		return true
+	end,
+	["tf_projectile_rocket_airstrike"] = function(self, ent, dir)
+		ent:SetLocalVelocity(dir * 2000)
+		ent:SetOwner(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_projectile_rocket_deflect"
+		ent.MiniCrit = minicrit_true
+		ent:EmitSound(self.AirblastDeflectSound)
+		return true
+	end,
+	
+	["tf_projectile_sentryrocket"] = function(self, ent, dir)
+		ent:SetLocalVelocity(dir * 2000)
+		ent:SetOwner(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_projectile_rocket_deflect"
+		ent.MiniCrit = minicrit_true
+		ent:EmitSound(self.AirblastDeflectSound)
+		return true
+	end,
 	["tf_projectile_pipe"] = function(self, ent, dir)
-		ent:SetLocalVelocity(dir * ent:GetVelocity():Length())
+		ent:SetLocalVelocity(dir * 2000)
+		ent:SetOwner(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_projectile_pipe_deflect"
+		ent.MiniCrit = minicrit_true
+		ent:EmitSound(self.AirblastDeflectSound)
+		return true
+	end,
+	["tf_projectile_cleaver"] = function(self, ent, dir)
+		ent:SetLocalVelocity(dir * 2000)
+		ent:SetOwner(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_projectile_pipe_deflect"
+		ent.MiniCrit = minicrit_true
+		ent:EmitSound(self.AirblastDeflectSound)
+		return true
+	end,
+	["tf_projectile_flare"] = function(self, ent, dir)
+		ent:SetLocalVelocity(dir * 2000)
+		ent:SetOwner(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_projectile_pipe_deflect"
+		ent.MiniCrit = minicrit_true
+		ent:EmitSound(self.AirblastDeflectSound)
+		return true
+	end,
+	["tf_projectile_ball"] = function(self, ent, dir)
+		ent:SetLocalVelocity(dir * 2000)
 		ent:SetOwner(self.Owner)
 		ent.AttackerOverride = self.Owner
 		ent.NameOverride = "tf_projectile_pipe_deflect"
@@ -98,7 +169,12 @@ local AirblastFunc = {
 		return true
 	end,
 	["tf_projectile_pipe_remote"] = function(self, ent, dir)
-		ent:SetLocalVelocity(dir * ent:GetVelocity():Length())
+		ent:SetLocalVelocity(dir * 2000)
+		ent:Detach()
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_projectile_pipe_remote_deflect"
+		ent:SetOwner(self.Owner)
+		ent.MiniCrit = minicrit_true
 		ent:EmitSound(self.AirblastDeflectSound)
 		return true
 	end,

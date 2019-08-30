@@ -18,6 +18,7 @@ SWEP.HoldType = "MELEE"
 SWEP.Swing = Sound("")
 SWEP.SwingCrit = Sound("")
 SWEP.HitFlesh = Sound("")
+SWEP.HitRobot = Sound("MVM_Weapon_Default.HitFlesh")
 SWEP.HitWorld = Sound("")
 
 SWEP.MeleeAttackDelay = 0.25
@@ -90,6 +91,10 @@ function SWEP:OnMeleeAttack(tr)
 		end
 		if self:GetVisuals()["sound_melee_hit_world"] then
 			self.HitWorld = self:GetVisuals()["sound_melee_hit_world"]
+		elseif self:GetVisuals()["sound_melee_hit_mvm_robot"] then
+			self.HitRobot = self:GetVisuals()["sound_melee_hit_mvm_robot"]
+		elseif self:GetVisuals()["sound_melee_hit"] then
+			self.HitFlesh = self:GetVisuals()["sound_melee_hit"]
 		end
 		if self:GetVisuals()["sound_melee_burst"] then
 			self.SwingCrit = self:GetVisuals()["sound_melee_burst"]
@@ -119,7 +124,34 @@ function SWEP:MeleeHitSound(tr)
 			else
 				--self:EmitSound(self.HitFlesh)
 				--sound.Play(self.HitFlesh, tr.HitPos)
-				sound.Play(self.HitFlesh, self:GetPos())
+				if tr.Entity:IsPlayer() and not tr.Entity:IsHL2() and tr.Entity:GetInfoNum("tf_robot",0) == 1 then
+					
+					sound.Play(self.HitRobot, self:GetPos())
+					
+				elseif tr.Entity:IsPlayer() and not tr.Entity:IsHL2() and tr.Entity:GetInfoNum("tf_giant_robot",0) == 1 then
+					
+					sound.Play(self.HitRobot, self:GetPos())
+					
+
+				elseif tr.Entity:IsPlayer() and not tr.Entity:IsHL2() and tr.Entity:GetInfoNum("tf_sentrybuster",0) == 1 then
+					
+					sound.Play(self.HitRobot, self:GetPos())
+						
+
+				elseif tr.Entity:IsPlayer() and tr.Entity:IsHL2() then
+				
+					sound.Play(self.HitFlesh, self:GetPos())
+					
+				elseif tr.Entity:IsPlayer() and not tr.Entity:IsHL2() and tr.Entity:GetInfoNum("tf_robot",0) != 1 and tr.Entity:GetInfoNum("tf_giant_robot",0) != 1 and tr.Entity:GetInfoNum("tf_sentrybuster",0) != 1 then
+				
+					sound.Play(self.HitFlesh, self:GetPos())
+				
+				elseif tr.Entity:IsNPC() then
+				
+					sound.Play(self.HitFlesh, self:GetPos())
+					
+				end
+					
 			end
 		else
 			if not self.NoHitSound then
@@ -204,6 +236,31 @@ function SWEP:MeleeAttack(dummy)
 			mins = mins,
 			maxs = maxs,
 		}
+	end
+	if self.Owner:GetPlayerClass() == "spy" then
+		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" or self.Owner:GetModel() == "models/player/kleiner.mdl" then
+			if self.Owner:KeyDown( IN_ATTACK ) then
+				if self.Owner:GetInfoNum("tf_robot", 0) == 0 then
+					self.Owner:SetModel("models/player/spy.mdl") 
+				else
+					self.Owner:SetModel("models/bots/spy/bot_spy.mdl")
+				end
+				if IsValid( button) then 
+					button:Remove() 
+				end
+				for _,v in pairs(ents.GetAll()) do
+					if v:IsNPC() and not v:IsFriendly(self.Owner) then
+						v:AddEntityRelationship(self.Owner, D_HT, 99)
+					end
+				end
+				if self.Owner:Team() == TEAM_BLU then 
+					self.Owner:SetSkin(1) 
+				else 
+					self.Owner:SetSkin(0) 
+				end 
+				self.Owner:EmitSound("player/spy_disguise.wav", 65, 100) 
+			end
+		end
 	end
 	
 	if not dummy then

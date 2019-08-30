@@ -20,8 +20,9 @@ SWEP.Category = "Team Fortress 2"
 SWEP.Swing = Sound("Weapon_Bottle.Miss")
 SWEP.SwingCrit = Sound("Weapon_Bottle.MissCrit")
 
-SWEP.HitFlesh = Sound("Weapon_Bottle.IntactHitFlesh")
-SWEP.HitWorld = Sound("Weapon_Bottle.IntactHitWorld")
+SWEP.HitFlesh = Sound("Weapon_Bottle.HitFlesh")
+SWEP.HitRobot = Sound("MVM_Weapon_Bottle.HitFlesh")
+SWEP.HitWorld = Sound("Weapon_Bottle.HitWorld")
 
 SWEP.BrokenHitFlesh = Sound("Weapon_Bottle.BrokenHitFlesh")
 SWEP.BrokenHitWorld = Sound("Weapon_Bottle.BrokenHitWorld")
@@ -35,9 +36,12 @@ SWEP.MaxDamageFalloff = 0
 
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "none"
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 
 SWEP.HoldType = "MELEE"
+
+SWEP.HoldTypeHL2 = "melee"
 
 function SWEP:SetupDataTables()
 	self:CallBaseFunction("SetupDataTables")

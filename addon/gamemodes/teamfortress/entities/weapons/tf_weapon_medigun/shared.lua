@@ -80,7 +80,6 @@ end
 end
 
 if CLIENT then
-CreateClientConVar("tf_heal_without_holding", "0", true, true)
 
 SWEP.PrintName			= "Medigun"
 SWEP.Slot				= 1
@@ -183,10 +182,6 @@ SWEP.ViewModel			= "models/weapons/v_models/v_medigun_medic.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_medigun.mdl"
 SWEP.Crosshair = "tf_crosshair5"
 
-SWEP.Spawnable = true
-SWEP.AdminSpawnable = false
-SWEP.Category = "Team Fortress 2"
-
 SWEP.MuzzleEffect = "pyro_blast"
 
 SWEP.ShootSound = Sound("WeaponMedigun.Healing")
@@ -209,7 +204,34 @@ SWEP.MaxHealRate = 72
 SWEP.MinLastDamageTime = 10
 SWEP.MaxLastDamageTime = 15
 
-SWEP.UberchargeRate = 2.5
+SWEP.UberchargeRate = 5
+
+tf2heavyuberchargesound = {
+	"vo/heavy_specialcompleted05.mp3",
+	"vo/heavy_specialcompleted06.mp3",
+	"vo/heavy_specialcompleted03.mp3",
+	"vo/taunts/heavy_taunts01.mp3",	
+	"vo/taunts/heavy_taunts02.mp3",
+	"vo/taunts/heavy_taunts03.mp3",
+	"vo/taunts/heavy_taunts04.mp3"
+}
+
+tf2engineeruberchargesound = {
+	"vo/taunts/engineer_taunts01.mp3",
+	"vo/taunts/engineer_taunts01.mp3",
+	"vo/taunts/engineer_mvm_taunt01.mp3",
+	"vo/taunts/engineer_mvm_taunt02.mp3",
+	"vo/taunts/engineer_taunts02.mp3",
+	"vo/taunts/engineer_taunts03.mp3",
+	"vo/taunts/engineer_taunts04.mp3",
+	"vo/taunts/engineer_taunts05.mp3",
+	"vo/taunts/engineer_taunts06.mp3",
+	"vo/taunts/engineer_taunts08.mp3",
+}
+
+
+
+
 
 function SWEP:CreateSounds()
 	self.ShootSoundLoop = CreateSound(self, self.ShootSound)
@@ -219,21 +241,48 @@ end
 
 function SWEP:SetHealTarget(e)
 	self.Target = e
+
 	if SERVER then
 		self:SetMedigunEffect(1, e)
 		if IsValid(e) then
 			GAMEMODE:AddGlobalAssistant(e, self.Owner, 1, ASSIST_HEAL)
+				if charge == 1 then
+							e:RemoveFlags(FL_GODMODE) 
+
+	if e:IsPlayer() and e:Team() == TEAM_RED or e:Team() == TEAM_NEUTRAL then
+		e:SetSkin( 0 )
+	else
+		e:SetSkin( 1 )
+	end
+end
 		end
 	end
 end
 
 function SWEP:ClearHealTarget()
 	local e = self.Target
+						
+
+
 	self.Target = nil
 	if SERVER then
 		self:SetMedigunEffect(0)
-		if IsValid(e) then
+		if IsValid(e) and e:IsPlayer() then
 			GAMEMODE:RemoveGlobalAssistant(e, self.Owner, ASSIST_HEAL)
+			e:RemoveFlags(FL_GODMODE) 
+			if e:Team() == TEAM_RED or e:Team() == TEAM_NEUTRAL then
+				e:SetSkin( 0 )
+			else
+				e:SetSkin( 1 )
+			end
+				if charge == 1 then
+			e:RemoveFlags(FL_GODMODE) 
+			if e:Team() == TEAM_RED or e:Team() == TEAM_NEUTRAL then
+				e:SetSkin( 0 )
+			else
+				e:SetSkin( 1 )
+			end 
+				end
 		end
 	end
 end
@@ -245,29 +294,6 @@ local function medigun_trace_condition(tr, wep)
 		tr.Entity:EntityTeam()==wep.Owner:EntityTeam() and
 		tr.Entity:Health()>0 and
 		not tr.Entity:HasNPCFlag(NPC_CANNOTHEAL)
-end
-
-function SWEP:SecondaryAttack()
-	self.Owner:SetNWInt("Ubercharge", 0)
-
-	self:StopFiring()
-
-	if self.ShootSoundLoop and self.ChargedLoop then
-		self.ShootSoundLoop:Stop()
-		self.ChargedLoop:Stop()
-	end
-	
-	self.Firing = false
-	
-	if SERVER then
-		self:ClearHealTarget()
-		self:SetMedigunMuzzleEffect(0)
-	else
-		if self.Owner == LocalPlayer() then
-			HudHealingTargetID:SetVisible(false)
-			self.LastTargetEntity = nil
-		end
-	end
 end
 
 function SWEP:PrimaryAttack()
@@ -288,8 +314,16 @@ function SWEP:PrimaryAttack()
 			self.Firing = true
 			self:SetHealTarget(tr.Entity)
 			
-			self:SendWeaponAnim(ACT_MP_ATTACK_STAND_PREFIRE)
-			self.Owner:SetAnimation(ACT_MP_ATTACK_STAND_PREFIRE)
+			
+			timer.Create("LoopPlayerAttack1", 0.2, 0, function()
+			if self.Owner:IsValid() and !self.Owner:KeyDown(IN_ATTACK) then self.Owner:AnimRestartGesture( GESTURE_SLOT_CUSTOM , ACT_MP_ATTACK_STAND_PREFIRE, true ) timer.Stop("LoopPlayerAttack1") return end
+			timer.Simple(0.01, function()
+				if self.Owner:IsValid() and !self.Owner:KeyDown(IN_ATTACK) then self.Owner:AnimRestartGesture( GESTURE_SLOT_CUSTOM , ACT_MP_ATTACK_STAND_PREFIRE, true ) timer.Stop("LoopPlayerAttack1") return end
+				self.Owner:SetAnimation(PLAYER_ATTACK1)
+			end)
+			end) 
+			self.Owner:AnimRestartGesture( GESTURE_SLOT_CUSTOM , ACT_MP_ATTACK_STAND_PREFIRE, true )
+			self:SendWeaponAnim(ACT_SECONDARY_ATTACK_STAND_PREFIRE)
 			self.ShootSoundLoop:Play()
 			self.NextIdle = nil
 			self.NextIdle2 = CurTime() + self:SequenceDuration()
@@ -297,11 +331,180 @@ function SWEP:PrimaryAttack()
 			self:EmitSound(self.ShootSound2)
 			self.NextDeniedSound = CurTime() + 0.5
 		end
-		--self:StopFiring()
 	end
 	
 	self:StopTimers()
 end
+
+--if self.Owner:GetNWInt("Ubercharge")>=100 then
+function SWEP:SecondaryAttack()
+self:SetNextSecondaryFire( 15 )
+if self.Owner:GetNWInt("Ubercharge")>=100 then
+charge = 1
+
+--self.Owner:EmitSound("weapons/weapon_crit_charged_on.wav") -- You can remove the arguments that have default values.
+self.ChargedASound = Sound("player/invulnerable_on.wav")
+self.ChargedOffSoundA = Sound("player/invulnerable_off.wav")
+	self.ChargedALoop = CreateSound(self, self.ChargedASound)
+	self.ChargedOffASound = CreateSound(self, self.ChargedOffSoundA)
+self.Owner:AddFlags(FL_GODMODE) 
+self.ChargedALoop:Play()
+	if self.Owner:Team() == TEAM_RED or self.Owner:Team() == TEAM_NEUTRAL then
+		self.Owner:SetSkin( 2 )
+	else
+		self.Owner:SetSkin( 3 )
+	end
+	timer.Create("NowGo!", 0.4, 1, function()
+		self:EmitSound( "vo/medic_specialcompleted0"..math.random(4,7)..".mp3", 80, 100, 1, CHAN_VOICE)
+	end)
+timer.Create("IamBulletproof!", 4.5, 1, function()
+	if self.Target:GetPlayerClass() == "heavy" then
+		self.Target:EmitSound( table.Random( tf2heavyuberchargesound ), 80, 100, 1, CHAN_VOICE)
+	elseif self.Target:GetPlayerClass() == "scout" then
+		self.Target:EmitSound( "vo/taunts/scout_taunts0"..math.random(4,9)..".mp3", 80, 100, 1, CHAN_VOICE)
+	elseif self.Target:GetPlayerClass() == "engineer" then
+		self.Target:EmitSound( table.Random( tf2engineeruberchargesound ), 80, 100, 1, CHAN_VOICE)
+	elseif self.Target:GetPlayerClass() == "soldier" then
+		self.Target:EmitSound( "vo/taunts/soldier_taunts0"..math.random(6,8)..".mp3", 80, 100, 1, CHAN_VOICE)
+	elseif self.Target:IsHL2() then
+		self.Target:EmitSound( "vo/taunts/sniper_taunts0"..math.random(4,7)..".mp3", 80, 100, 1, CHAN_VOICE)
+	end
+end)
+--surface.PlaySound( "weapons/weapon_crit_charged_on.wav" )
+
+--[[timer.Create("Test", 0.1, 90,function()
+	e = self.Target
+			if IsValid(e) and e:IsPlayer() and e:Alive() then
+				--blegh = self.LastTargetEntity
+				--if self.Target:IsPlayer() ~= true then return end
+				--[[				if IsValid(self.dt.BeamEntity) and IsValid(self.dt.TargetEntity) then
+					HudHealingTargetID:SetTargetEntity(self.dt.TargetEntity)
+					HudHealingTargetID:SetVisible(true)
+				else
+					HudHealingTargetID:SetVisible(false)
+				end
+				self.LastTargetEntity = self.dt.TargetEntity
+				e = ""
+				if charge == 1 then
+				self.Target:AddFlags(FL_GODMODE) 
+
+	if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
+		self.Target:SetSkin( 2 )
+	else
+		self.Target:SetSkin( 3 )
+	end	
+else
+					self.Target:RemoveFlags(FL_GODMODE) 
+
+	if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
+		self.Target:SetSkin( 0 )
+	else
+		self.Target:SetSkin( 1 )
+	end
+end
+--[[if self.Target == nil then 
+					blegh:RemoveFlags(FL_GODMODE) 
+
+	blegh:SetSkin( 0 ) 
+end
+else
+
+end
+
+	end)]]--
+	timer.Create( "UniqueName1", 1, 9, function()
+
+		if self.Owner:GetNWInt("Ubercharge")>=-1 then
+			ch = self.Owner:GetNWInt("Ubercharge")
+					ch = math.Clamp(ch - 14, 0, 100)
+						self.Owner:SetNWInt("Ubercharge", ch)
+			print(ch)
+
+				
+			--if IsValid(e) and e:IsPlayer() and e:Alive() then
+				--blegh = self.LastTargetEntity
+				--if self.Target:IsPlayer() ~= true then return end
+				--[[				if IsValid(self.dt.BeamEntity) and IsValid(self.dt.TargetEntity) then
+					HudHealingTargetID:SetTargetEntity(self.dt.TargetEntity)
+					HudHealingTargetID:SetVisible(true)
+				else
+					HudHealingTargetID:SetVisible(false)
+				end
+				self.LastTargetEntity = self.dt.TargetEntity]]
+				
+				if self.Target ~= nil then
+				if charge == 1 then
+					e = self.Target
+				self.Target:AddFlags(FL_GODMODE) 
+
+	if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
+		self.Target:SetSkin( 2 )
+	else
+		self.Target:SetSkin( 3 )
+	end
+else
+					self.Target:RemoveFlags(FL_GODMODE) 
+
+	if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
+		self.Target:SetSkin( 0 )
+	else
+		self.Target:SetSkin( 1 )
+	end 
+end
+else
+						e:RemoveFlags(FL_GODMODE) 
+
+	if e:Team() == TEAM_RED or e:Team() == TEAM_NEUTRAL then
+		e:SetSkin( 0 )
+	else
+		e:SetSkin( 1 )
+	end  
+end
+--[[if self.Target == nil then 
+					blegh:RemoveFlags(FL_GODMODE) 
+
+	if blegh:Team() == TEAM_RED or blegh:Team() == TEAM_NEUTRAL then
+		blegh:SetSkin( 0 )
+	else
+		blegh:SetSkin( 1 )
+	end 
+end]]
+
+--end
+
+			if ch == 0 then
+				charge = 0
+				self:SetMedigunMuzzleEffect(0)
+				self.ChargedLoop:Stop()
+				if self.Owner:Team() == TEAM_RED or self.Owner:Team() == TEAM_NEUTRAL then
+					self.Owner:SetSkin( 0 )
+				else
+					self.Owner:SetSkin( 1 )
+				end
+				self.Owner:RemoveFlags(FL_GODMODE)
+				--self.Owner:EmitSound("weapons/weapon_crit_charged_off.wav") 
+				self.ChargedOffASound:Play()
+				self.ChargedALoop:Stop()
+				--self:SetMedigunMuzzleEffect(0)
+				--self.Owner:SendLua( surface.PlaySound( "weapons/weapon_crit_charged_off.wav" ) )
+				if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
+					self.Target:SetSkin( 0 )
+				else
+					self.Target:SetSkin( 1 )
+				end 
+				
+			end
+			--self.Owner:GetNWInt("Ubercharge") = self.Owner:GetNWInt("Ubercharge") - 1
+		print( "uberdrop" )
+	else
+		print("Whewh, Thanks doc!")
+		charge = 0
+	end
+
+		end )
+end
+	end
+	
 
 function SWEP:Reload()
 end
@@ -317,8 +520,8 @@ function SWEP:StopFiring()
 	self.CanInspect = true
 	
 	self.ShootSoundLoop:Stop()
-	self:SendWeaponAnim(ACT_MP_ATTACK_STAND_POSTFIRE)
-	self.Owner:SetAnimation(ACT_MP_ATTACK_STAND_POSTFIRE)
+	self:SendWeaponAnim(ACT_SECONDARY_ATTACK_STAND_POSTFIRE)
+	self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_POSTFIRE)
 	self.NextIdle = CurTime() + self:SequenceDuration()
 end
 
@@ -357,26 +560,8 @@ function SWEP:Think()
 	end
 	
 	if self.Firing and SERVER then
-		if (not self.Owner:KeyDown(IN_ATTACK) and self.Owner:GetInfoNum("tf_heal_without_holding", 0) == 0) or (self.Owner:KeyDown(IN_ATTACK) and self.Owner:GetInfoNum("tf_heal_without_holding", 0) == 1) or not IsValid(self.Target) or self.Target:Health()<=0 then
-		if self.Owner:KeyDown(IN_ATTACK) and self.Owner:GetInfoNum("tf_heal_without_holding", 0) == 1 then
-			local start = self.Owner:GetShootPos()
-			local endpos = start + self.Owner:GetAimVector() * self.Range
-			local tr = tf_util.MixedTrace({
-				start = start,
-				endpos = endpos,
-				filter = self.Owner,
-				mins = Vector(-5, -5, -5),
-				maxs = Vector(5, 5, 5),
-			}, medigun_trace_condition, self)
-		
-			self.CanInspect = false
-		
-			if !medigun_trace_condition(tr, self) then
-				self:StopFiring()
-			end
-		else
+		if not self.Owner:KeyDown(IN_ATTACK) or not IsValid(self.Target) or self.Target:Health()<=0 then
 			self:StopFiring()
-		end
 			return
 		elseif not self.NextRangeCheck or CurTime()>self.NextRangeCheck then
 			self.NextRangeCheck = CurTime() + 0.2

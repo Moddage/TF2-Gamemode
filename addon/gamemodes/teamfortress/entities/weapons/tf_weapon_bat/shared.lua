@@ -32,3 +32,16 @@ SWEP.Primary.Ammo			= "none"
 SWEP.Primary.Delay          = 0.5
 
 SWEP.HoldType = "MELEE"
+SWEP.HoldTypeHL2 = "melee2"
+
+function SWEP:Deploy()
+	if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl" then
+		if SERVER then
+			self:EmitSound("Weapon_BatSaber.Draw")
+		end
+		
+		self.Swing = Sound("Weapon_BatSaber.Swing")
+		self.SwingCrit = Sound("Weapon_BatSaber.SwingCrit")
+	end
+	return self.BaseClass.Deploy(self)
+end

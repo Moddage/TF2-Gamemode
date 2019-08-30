@@ -13,6 +13,13 @@ SWEP.HoldType = "PDA"
 SWEP.IsPDA = true
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "none"
+SWEP.HasCModel = true
+
+function SWEP:InspectAnimCheck()
+	self:CallBaseFunction("InspectAnimCheck")
+	self.VM_DRAW = ACT_ENGINEER_PDA2_VM_DRAW
+	self.VM_IDLE = ACT_ENGINEER_PDA2_VM_IDLE
+end
 
 if CLIENT then
 

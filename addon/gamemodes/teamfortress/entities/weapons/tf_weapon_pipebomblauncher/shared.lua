@@ -47,11 +47,13 @@ SWEP.Primary.ClipSize		= 8
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_SECONDARY
 SWEP.Primary.Delay          = 0.6
+SWEP.ReloadTime = 0.7
 
 SWEP.IsRapidFire = false
 SWEP.ReloadSingle = true
 
 SWEP.HoldType = "PRIMARY"
+SWEP.HoldTypeHL2 = "ar2qs"
 
 SWEP.MaxBombs = 8
 SWEP.Bombs = {}
@@ -162,6 +164,74 @@ function SWEP:Think()
 		end
 	end
 	
+	
+	if self.NextReload and CurTime()>=self.NextReload then
+		self:SetClip1(self:Clip1() + self.AmmoAdded)
+		
+		if not self.ReloadSingle and self.ReloadDiscardClip then
+			self.Owner:RemoveAmmo(self.Primary.ClipSize, self.Primary.Ammo, false)
+		else
+			self.Owner:RemoveAmmo(self.AmmoAdded, self.Primary.Ammo, false)
+		end
+		
+		self.Delay = -1
+		self.QuickDelay = -1
+		
+		if self:Clip1()>=self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo)==0 then
+			-- Stop reloading
+			self.Reloading = false
+			self.CanInspect = true
+			if self.ReloadSingle then
+				--self:SendWeaponAnim(ACT_RELOAD_FINISH)
+				self.Owner:DoAnimationEvent(ACT_SMG2_DRYFIRE2, true)	 
+				self:SendWeaponAnim(self.VM_RELOAD_FINISH)
+				self.CanInspect = true
+				--self.Owner:SetAnimation(10001) -- reload finish
+				self.NextIdle = CurTime() + self:SequenceDuration()
+			else
+				self.Owner:DoAnimationEvent(ACT_SMG2_DRYFIRE2, true)	
+				self:SendWeaponAnim(self.VM_IDLE)
+				self.NextIdle = nil
+			end
+			self.NextReload = nil
+		else
+			self:SendWeaponAnim(self.VM_RELOAD)
+			--self.Owner:SetAnimation(10000)		
+			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+			if self.ReloadTime == 0.2 then
+				self.Owner:GetViewModel():SetPlaybackRate(2)
+			end
+			self.NextReload = CurTime() + (self.ReloadTime)
+				
+			if self.ReloadSound and SERVER then
+				umsg.Start("PlayTFWeaponWorldReload")
+					umsg.Entity(self)
+				umsg.End()
+			end
+			
+		end
+	end
+	
+	if self.NextReloadStart and CurTime()>=self.NextReloadStart then
+		self:SendWeaponAnim(self.VM_RELOAD)
+		--self.Owner:SetAnimation(10000) -- reload loop
+		self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+		if self.ReloadTime == 0.2 then
+			self.Owner:GetViewModel():SetPlaybackRate(2)
+		end
+		self.NextReload = CurTime() + (self.ReloadTime)
+		
+		self.AmmoAdded = 1
+		
+		if self.ReloadSound and SERVER then
+			umsg.Start("PlayTFWeaponWorldReload")
+				umsg.Entity(self)
+			umsg.End()
+		end
+		
+		self.NextReloadStart = nil
+	end
+	
 	if self.Charging then
 		if (not self.Owner:KeyDown(IN_ATTACK) or CurTime() - self.ChargeStartTime > 4) then
 			self.Charging = false
@@ -232,11 +302,14 @@ function SWEP:ShootProjectile()
 		self:InitProjectileAttributes(grenade)
 		
 		grenade:Spawn()
-		
 		if self.Safe == true then
 			grenade:SetModel("models/weapons/w_models/w_stickybomb2.mdl")
 		end
-		
+
+		if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_kingmaker_sticky/c_kingmaker_sticky.mdl" then
+			grenade:SetModel("models/workshop/weapons/c_models/c_kingmaker_sticky/w_kingmaker_stickybomb.mdl")
+			grenade.ExplosionSound = Sound("Weapon_TackyGrendadier.Explode")
+		end
 		local force = Lerp((CurTime() - self.ChargeStartTime) / 4, self.MinForce, self.MaxForce)
 		
 		local vel = self.Owner:GetAimVector():Angle()
@@ -252,6 +325,9 @@ function SWEP:ShootProjectile()
 		end
 		
 		self.Owner:SetNWInt("NumBombs", #self.Owner.Bombs)
+		if self:GetItemData().model_player == "models/weapons/c_models/c_sticky_jumper/c_sticky_jumper.mdl" then
+			grenade.ExplosionSound = Sound("weapons/sticky_jumper_explode1.wav")
+		end
 		end
 	self:ShootEffects()
 	self.Owner:ViewPunch( self.PunchView )
@@ -293,7 +369,7 @@ function SWEP:DetonateProjectiles(nosound, noexplode)
 		end
 		
 		if det and not nosound then
-			self:EmitSound(self.DetonateSound, 100, 100)
+			self.Owner:EmitSound(self.DetonateSound, 100, 100)
 		end
 		
 		owner:SetNWInt("NumBombs", #owner.Bombs)

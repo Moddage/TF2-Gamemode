@@ -155,10 +155,10 @@ SWEP.MuzzleEffect = "muzzle_minigun_constant"
 SWEP.MuzzleOffset = Vector(20, 3, -10)
 SWEP.TracerEffect = "bullet_tracer01"
 
-SWEP.BaseDamage = 9
+SWEP.BaseDamage = 1.9
 SWEP.DamageRandomize = 0
-SWEP.MaxDamageRampUp = 0.5
-SWEP.MaxDamageFalloff = 0.5
+SWEP.MaxDamageRampUp = 0.9
+SWEP.MaxDamageFalloff = 0.2
 
 SWEP.BulletsPerShot = 4
 SWEP.BulletSpread = 0.08
@@ -258,7 +258,7 @@ end
 function SWEP:CanPrimaryAttack()
 	if self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
 	
-		self:EmitSound( "Weapon_Pistol.Empty" )
+		self:EmitSound("weapons/shotgun_empty.wav", 80, 100)
 		self:SetNextPrimaryFire( CurTime() + 0.2 )
 		self:Reload()
 		return false
@@ -382,10 +382,14 @@ function SWEP:Think()
 	
 	if SERVER then
 		if self.Spinning then
+			if self.Owner:GetInfoNum("tf_giant_robot",0) != 1 then
 			self.Owner:SetClassSpeed(37 * (self.DeployMoveSpeedMultiplier or 1))
 			self.Owner:SetCrouchedWalkSpeed(0)
+			end
 		else
+			if self.Owner:GetInfoNum("tf_giant_robot",0) != 1 then
 			self.Owner:ResetClassSpeed()
+			end
 		end
 	end
 	

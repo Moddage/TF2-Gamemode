@@ -51,6 +51,8 @@ function SWEP:PrimaryAttack()
 
 	if not self:CallBaseFunction("PrimaryAttack") then return false end
 	
+	if self.Owner:GetMaterial() == "models/shadertest/predator" then return end
+	
 	auto_reload = self.Owner:GetInfoNum("tf_righthand", 1)
 	
 	self:SendWeaponAnim(self.VM_PRIMARYATTACK)
@@ -71,6 +73,32 @@ function SWEP:PrimaryAttack()
 		self:Reload()
 	end
 	
+	if self.Owner:GetPlayerClass() == "spy" then
+		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl"	 or self.Owner:GetModel() == "models/player/kleiner.mdl" then
+			if self.Owner:KeyDown( IN_ATTACK ) then
+				if self.Owner:GetInfoNum("tf_robot", 0) == 0 then
+					self.Owner:SetModel("models/player/spy.mdl") 
+				else
+					self.Owner:SetModel("models/bots/spy/bot_spy.mdl")
+				end
+				if IsValid( button) then 
+					button:Remove() 
+				end
+				for _,v in pairs(ents.GetAll()) do
+					if v:IsNPC() and not v:IsFriendly(self.Owner) then
+						v:AddEntityRelationship(self.Owner, D_HT, 99)
+					end
+				end
+				if self.Owner:Team() == TEAM_BLU then 
+					self.Owner:SetSkin(1) 
+				else 
+					self.Owner:SetSkin(0) 
+				end 
+				self.Owner:EmitSound("player/spy_disguise.wav", 65, 100) 
+			end
+		end
+	end
+	
 	self:RollCritical() -- Roll and check for criticals first
 	
 	self.Owner:ViewPunch( self.PunchView )
@@ -86,6 +114,9 @@ end
 
 function SWEP:ShootProjectile(num_bullets, aimcone)
 	self:StopTimers()
+	
+	if self.Owner:GetMaterial() == "models/shadertest/predator" then return end
+	
 	--local b = force_bullets_lagcomp:GetBool()
 	
 	--if b then
@@ -122,6 +153,8 @@ function SWEP:ShootProjectile(num_bullets, aimcone)
 end
 
 function SWEP:ShootEffects()
+
+	if self.Owner:GetMaterial() == "models/shadertest/predator" then return end
 	if self:GetVisuals() and self:GetVisuals()["sound_single_shot"] then
 		self.ShootSound = self:GetVisuals()["sound_single_shot"]
 		self.ShootCritSound = self:GetVisuals()["sound_burst"]

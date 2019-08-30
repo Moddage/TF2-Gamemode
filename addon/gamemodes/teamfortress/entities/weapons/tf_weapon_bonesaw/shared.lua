@@ -21,6 +21,7 @@ SWEP.Swing = Sound("Weapon_Bonesaw.Miss")
 SWEP.SwingCrit = Sound("Weapon_Bonesaw.MissCrit")
 SWEP.HitFlesh = Sound("Weapon_Bonesaw.HitFlesh")
 SWEP.HitWorld = Sound("Weapon_Bonesaw.HitWorld")
+SWEP.CustomSound1 = Sound("Weapon_Ubersaw.HitFlesh")
 
 SWEP.BaseDamage = 65
 SWEP.DamageRandomize = 0.1
@@ -29,9 +30,11 @@ SWEP.MaxDamageFalloff = 0
 
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "none"
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 
 SWEP.HoldType = "MELEE"
+SWEP.HoldTypeHL2 = "melee"
 
 if CLIENT then
 
@@ -54,7 +57,9 @@ end
 end
 
 function SWEP:MeleeHitSound(tr)
-	if self.CustomSound1 and tr.Entity:IsTFPlayer() and not tr.Entity:IsBuilding() then
+	if self:GetItemData().model_player == "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl" and tr.Entity:IsTFPlayer() and not tr.Entity:IsBuilding() then
+		self:EmitSound(self.CustomSound1)
+	elseif self:GetItemData().model_player == "models/weapons/c_models/c_uberneedle/c_uberneedle.mdl" and tr.Entity:IsTFPlayer() and not tr.Entity:IsBuilding() then
 		self:EmitSound(self.CustomSound1)
 	else
 		self:BaseCall(tr)

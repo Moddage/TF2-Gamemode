@@ -30,6 +30,7 @@ SWEP.Category = "Team Fortress 2"
 SWEP.Swing = Sound("Weapon_Knife.Miss")
 SWEP.SwingCrit = Sound("Weapon_Knife.MissCrit")
 SWEP.HitFlesh = Sound("Weapon_Knife.HitFlesh")
+SWEP.HitRobot = Sound("MVM_Weapon_Knife.HitFlesh")
 SWEP.HitWorld = Sound("Weapon_Knife.HitWorld")
 
 SWEP.BaseDamage = 40
@@ -41,16 +42,23 @@ SWEP.CriticalChance = 0
 
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "none"
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 
 SWEP.HoldType = "MELEE"
+
+SWEP.HoldTypeHL2 = "knife"
 SWEP.HasThirdpersonCritAnimation = true
 
 SWEP.MeleePredictTolerancy = 0.1
 SWEP.MeleeAttackDelay = 0
 SWEP.BackstabAngle = 180
-
+SWEP.ShouldOccurFists = true
 -- ACT_MELEE_VM_STUN
+
+function SWEP:Deploy()
+	self:CallBaseFunction("Deploy")
+end
 
 function SWEP:ShouldBackstab(ent)
 	if not ent then
@@ -85,6 +93,26 @@ function SWEP:Critical(ent,dmginfo)
 	return self:CallBaseFunction("Critical", ent, dmginfo)
 end
 
+function SWEP:OnMeleeHit(tr)
+	if CLIENT then return end
+	
+	local ent = tr.Entity
+	
+	if self.ShouldBackstab and self:ShouldBackstab(ent) then
+		if self:GetItemData().model_player == "models/weapons/c_models/c_eternal_reward/c_eternal_reward.mdl" then
+			if ent:IsPlayer() and !ent:IsHL2() and not ent:IsFriendly(self.Owner) and not ent:HasGodMode() then
+				ent:SetMaterial("models/shadertest/predator")
+				ent:GetRagdollEntity():SetMaterial("models/shadertest/predator")
+				ent:TakeDamage(ent:Health() * 2, self.Owner, self)
+				timer.Simple(0.2, function()
+					self.Owner:SetModel(ent:GetModel())
+					self.Owner:SetSkin(ent:GetSkin())
+				end)
+			end
+		end
+	end
+end
+
 function SWEP:PredictCriticalHit()
 	if self:ShouldBackstab() then
 		return true
@@ -93,7 +121,22 @@ end
 
 function SWEP:Think()
 	self:CallBaseFunction("Think")
-	
+	if self.Owner:KeyDown(IN_ATTACK) or self.Owner:KeyDown(IN_ATTACK2) then
+		if self.ShouldOccurFists == true then
+			if SERVER then
+				if self.Owner:GetPlayerClass() == "spy" and self.Owner:GetInfoNum("hahahahahahahahaowneronly_ragespy", 0) == 1 then
+					self.Owner:EmitSound("vo/spy_paincrticialdeath0"..math.random(1,3)..".mp3", 80, math.random(80,130))
+					self.ShouldOccurFists = false 
+					self.Primary.Delay = 0.1					
+					self.HitFlesh = Sound("NPC_AttackHelicopter.Crash")
+					self.BaseDamage = 1000000000000000000000000000000000000000000000000
+					timer.Simple(0.1, function()
+						self.ShouldOccurFists = true
+					end)
+				end
+			end
+		end
+	end
 	if CLIENT and self.IsDeployed then
 		if not self.NextAllowBackstabAnim or CurTime() >= self.NextAllowBackstabAnim then
 			local shouldbackstab = self:ShouldBackstab()
@@ -117,6 +160,57 @@ function SWEP:Think()
 	end
 end
 
+function SWEP:Holster()
+	self:StopTimers()
+	if IsValid(self.Owner) then
+		timer.Simple(0.1, function()
+			if IsValid(self.CModel3) then
+				self.CModel3:Remove()
+			end
+		end)
+		if self:GetItemData().hide_bodygroups_deployed_only then
+			local visuals = self:GetVisuals()
+			local owner = self.Owner
+			
+			if visuals.hide_player_bodygroup_names then
+				for _,group in ipairs(visuals.hide_player_bodygroup_names) do
+					local b = PlayerNamedBodygroups[owner:GetPlayerClass()]
+					if b and b[group] then
+						owner:SetBodygroup(b[group], 0)
+					end
+					
+					b = PlayerNamedViewmodelBodygroups[owner:GetPlayerClass()]
+					if b and b[group] then
+						if IsValid(owner:GetViewModel()) then
+							owner:GetViewModel():SetBodygroup(b[group], 0)
+						end
+					end
+				end
+			end
+		end
+	
+		for k,v in pairs(self:GetVisuals()) do
+			if k=="hide_player_bodygroup" then
+				self.Owner:SetBodygroup(v,0)
+			end
+		end
+	end
+	
+	self.NextIdle = nil
+	self.NextReloadStart = nil
+	self.NextReload = nil
+	self.Reloading = nil
+	self.RequestedReload = nil
+	self.NextDeployed = nil
+	self.IsDeployed = nil
+	
+	if IsValid(self.Owner) then
+		self.Owner.LastWeapon = self:GetClass()
+	end
+	
+	return true
+end
+
 function SWEP:PrimaryAttack()
 	if not self:CallBaseFunction("PrimaryAttack") then return false end
 	
@@ -133,9 +227,114 @@ if SERVER then
 
 hook.Add("PreScaleDamage", "BackstabSetDamage", function(ent, hitgroup, dmginfo)
 	local inf = dmginfo:GetInflictor()
-	if inf.ShouldBackstab and inf:ShouldBackstab(ent) then
+	if ent:IsNPC() and ent:GetClass() == "npc_antlion" then
+		ent:EmitSound("npc/antlion/shell_impact"..math.random(1,4)..".wav", 80, 100)
+	elseif ent:IsNPC() and ent:GetClass() == "npc_antlionguard" then
+		ent:EmitSound("npc/antlion/shell_impact"..math.random(1,4)..".wav", 80, 100)
+	end
+	if inf.ShouldBackstab and inf:ShouldBackstab(ent) and inf:GetClass() != "tf_weapon_knife_icicle" then
 		inf.ResetBaseDamage = inf.BaseDamage
-		inf.BaseDamage = ent:Health() * 2
+		if ent:IsPlayer() and ent:GetInfoNum("tf_hhh", 0) == 1 then
+			inf.BaseDamage = 20
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN) 
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end) 
+		elseif ent:IsPlayer() and ent:GetInfoNum("hahahahahahahahaowneronly_ragespy", 0) == 1 then
+			inf.BaseDamage = 1
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			ent:EmitSound("vo/test_two.mp3", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN) 
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsPlayer() and ent:GetInfoNum("tf_vagineer", 0) == 1 then
+			inf.BaseDamage = 20
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsPlayer() and ent:GetInfoNum("tf_giant_robot", 0) == 1 then
+			inf.BaseDamage = 20
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsPlayer() and ent:GetPlayerClass() == "giantpyro" then
+			inf.BaseDamage = 20
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsPlayer() and ent:GetPlayerClass() == "giantheavy" then
+			inf.BaseDamage = 20
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsPlayer() and ent:GetPlayerClass() == "giantdemoman" then
+			inf.BaseDamage = 20
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsPlayer() and ent:GetPlayerClass() == "giantsoldier" then
+			inf.BaseDamage = 20
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsPlayer() and ent:GetInfoNum("tf_sentrybuster", 0) == 1 then
+			inf.BaseDamage = 20
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsPlayer() and ent:GetInfoNum("tf_merasmus", 0) == 1 then
+			inf.BaseDamage = 20
+			inf.Owner:EmitSound("player/spy_shield_break.wav", 80, 100)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsPlayer() and ent:GetInfoNum("tf_giant_robot", 0) == 1 then
+			inf.BaseDamage = 65
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)
+				inf.Owner:GetViewModel():SetPlaybackRate(0.5)
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		elseif ent:IsNPC() and ent:GetClass() == "npc_antlionguard" then
+			inf.BaseDamage = 25 * 1
+			inf.Owner:EmitSound("physics/body/body_medium_break2.wav", 120, math.random(50,60))
+			ent:EmitSound("npc/antlion_guard/antlion_guard_pain"..math.random(1,2)..".wav", 100, math.random(93, 102))
+			inf.Owner:GetViewModel():SetPlaybackRate(1)
+			timer.Simple(0.04, function()
+				inf:SendWeaponAnimEx(ACT_MELEE_VM_STUN)	 	 
+				inf:SetNextPrimaryFire(CurTime() + 2)
+			end)
+		else
+			inf.BaseDamage = ent:Health() * 2
+			ent:AddDeathFlag(DF_BACKSTAB)
+		end
 		inf.NameOverride = "tf_weapon_knife_backstab"
 		dmginfo:SetDamage(inf.BaseDamage)
 	end
@@ -143,6 +342,14 @@ end)
 
 hook.Add("PostScaleDamage", "BackstabResetDamage", function(ent, hitgroup, dmginfo)
 	local inf = dmginfo:GetInflictor()
+	if inf:GetClass() == "tf_weapon_shotgun_imalreadywidowmaker" then
+		
+		inf.Owner:GiveTFAmmo(25, TF_METAL) 
+		umsg.Start("PlayerMetalBonus", inf.Owner)
+			umsg.Short(25)
+		umsg.End()
+	
+	end
 	if inf.ResetBaseDamage then
 		inf.BaseDamage = inf.ResetBaseDamage
 	end

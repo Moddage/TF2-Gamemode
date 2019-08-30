@@ -29,7 +29,8 @@ SWEP.MaxDamageRampUp = 0
 SWEP.MaxDamageFalloff = 0
 SWEP.IsRoboArm = true
 
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 
 SWEP.HoldType = "ITEM2"
 
@@ -68,18 +69,23 @@ function SWEP:OnMeleeHit(tr)
 			local ent = tr.Entity
 			
 			if ent.IsTFBuilding and ent:IsFriendly(self.Owner) then
+				if ent.Sapped == true then
+					self.Owner:EmitSound("Weapon_Sapper.Removed")
+					ent.Sapped = false
+				end
 				if SERVER then
+
 					local m = ent:AddMetal(self.Owner, self.Owner:GetAmmoCount(TF_METAL))
 					if m > 0 then
-						self:EmitSound(self.HitBuildingSuccess)
+						self.Owner:EmitSound(self.HitBuildingSuccess)
 						self.Owner:RemoveAmmo(m, TF_METAL)
 						umsg.Start("PlayerMetalBonus", self.Owner)
 							umsg.Short(-m)
 						umsg.End()
 					elseif ent:GetState() == 1 then
-						self:EmitSound(self.HitBuildingSuccess)
+						self.Owner:EmitSound(self.HitBuildingSuccess)
 					else
-						self:EmitSound(self.HitBuildingFailure)
+						self.Owner:EmitSound(self.HitBuildingFailure)
 					end
 				end
 			else
@@ -145,3 +151,56 @@ function SWEP:Think()
 	
 	self:CallBaseFunction("Think")
 end
+
+
+function SWEP:SecondaryAttack()
+	self:SetNextSecondaryFire(CurTime() + 0.5)
+	for k,v in pairs(ents.FindInSphere(self.Owner:GetPos(), 75)) do
+		if v:IsBuilding() and v:GetBuilder() == self.Owner then
+			if v:GetClass() == "obj_sentrygun" then
+				if SERVER then
+					if v:GetLevel() == 3 then
+						self.DeployedBuildingLevel = 3
+					elseif v:GetLevel() == 2 then
+						self.DeployedBuildingLevel = 2
+					end
+					v:Fire("Kill")
+					self.Owner:ConCommand("move 2 0")
+				end
+			elseif v:GetClass() == "obj_dispenser" then
+				if SERVER then
+					if v:GetLevel() == 3 then
+						self.DeployedBuildingLevel = 3
+					elseif v:GetLevel() == 2 then
+						self.DeployedBuildingLevel = 2
+					end
+					v:Fire("Kill")
+					self.Owner:ConCommand("move 0 0")
+				end
+			elseif v:GetClass() == "obj_teleporter" and self:IsExit() != true then
+				if SERVER then
+					if v:GetLevel() == 3 then
+						self.DeployedBuildingLevel = 3
+					elseif v:GetLevel() == 2 then
+						self.DeployedBuildingLevel = 2
+					end
+					v:Fire("Kill")
+					self.Owner:ConCommand("move 1 0")
+				end
+			elseif v:GetClass() == "obj_teleporter" and self:IsExit() != false then
+				if SERVER then
+					if v:GetLevel() == 3 then
+						self.DeployedBuildingLevel = 3
+					elseif v:GetLevel() == 2 then
+						self.DeployedBuildingLevel = 2
+					end
+					v:Fire("Kill")
+					self.Owner:ConCommand("move 1 1")
+				end
+			end
+		end
+	end
+end 	
+
+
+

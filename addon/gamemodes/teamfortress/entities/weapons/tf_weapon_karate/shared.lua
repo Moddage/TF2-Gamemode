@@ -31,3 +31,4 @@ SWEP.Primary.Delay          = 0.3
 SWEP.m_WeaponDeploySpeed = 2
 
 SWEP.HoldType = "MELEE"
+SWEP.HoldTypeHL2 = "fist"

@@ -107,10 +107,10 @@ PrecacheParticleSystem("bullet_tracer01_red_crit")
 PrecacheParticleSystem("bullet_tracer01_blue")
 PrecacheParticleSystem("bullet_tracer01_blue_crit")
 
-SWEP.BaseDamage = 9
+SWEP.BaseDamage = 5
 SWEP.DamageRandomize = 0
-SWEP.MaxDamageRampUp = 0.5
-SWEP.MaxDamageFalloff = 0.5
+SWEP.MaxDamageRampUp = 1
+SWEP.MaxDamageFalloff = 0.2
 
 SWEP.BulletsPerShot = 4
 SWEP.BulletSpread = 0.08
@@ -124,6 +124,7 @@ SWEP.Secondary.Delay          = 0.1
 SWEP.IsRapidFire = true
 
 SWEP.HoldType = "PRIMARY"
+SWEP.HoldTypeHL2 = "crossbow"
 
 SWEP.ReloadSound = Sound("Weapon_Minigun.Reload")
 SWEP.EmptySound = Sound("Weapon_Minigun.ClipEmpty")
@@ -132,6 +133,7 @@ SWEP.SpecialSound1 = Sound("Weapon_Minigun.WindUp")
 SWEP.SpecialSound2 = Sound("Weapon_Minigun.WindDown")
 SWEP.SpecialSound3 = Sound("Weapon_Minigun.Spin")
 SWEP.ShootCritSound = Sound("Weapon_Minigun.FireCrit")
+SWEP.DeploySound = Sound("weapons/draw_default.wav")
 
 function SWEP:CreateSounds()
 	self.SpinUpSound = CreateSound(self.Owner, self.SpecialSound1)
@@ -169,6 +171,9 @@ function SWEP:SpinUp()
 	self.SpinDownSound:Stop()
 	self.SpinSound:Stop()
 	self.SpinUpSound:Play()
+	if self.Primary.Delay == 0.06 then
+		self.SpinUpSound:ChangePitch(120)
+	end
 end
 
 function SWEP:SpinDown()
@@ -190,6 +195,9 @@ function SWEP:SpinDown()
 	self.SpinUpSound:Stop()
 	self.SpinSound:Stop()
 	self.SpinDownSound:Play()
+	if self.Primary.Delay == 0.06 then
+		self.SpinDownSound:ChangePitch(120)
+	end
 end
 
 function SWEP:ShootEffects()
@@ -212,7 +220,7 @@ end
 function SWEP:CanPrimaryAttack()
 	if self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
 	
-		self:EmitSound( "Weapon_Pistol.Empty" )
+		self:EmitSound("weapons/shotgun_empty.wav", 80, 100)
 		self:SetNextPrimaryFire( CurTime() + 0.2 )
 		self:Reload()
 		return false
@@ -262,6 +270,9 @@ function SWEP:PrimaryAttack(vampire)
 			self.SpinSound:Stop()
 			self.ShootSoundLoop:Stop()
 			self.ShootCritSoundLoop:Play()
+			if self.Primary.Delay == 0.06 then
+				self.ShootCritSoundLoop:ChangePitch(120)
+			end
 			self.Firing = true
 		end
 		self.Critting = true
@@ -271,6 +282,9 @@ function SWEP:PrimaryAttack(vampire)
 			self.SpinSound:Stop()
 			self.ShootCritSoundLoop:Stop()
 			self.ShootSoundLoop:Play()
+			if self.Primary.Delay == 0.06 then
+				self.ShootSoundLoop:ChangePitch(120)
+			end
 			self.Firing = true
 		end
 		self.Critting = false
@@ -316,10 +330,14 @@ function SWEP:Think()
 	 
 	if SERVER then
 		if self.Spinning then
+			if self.Owner:GetInfoNum("tf_giant_robot",0) != 1 then
 			self.Owner:SetClassSpeed(37 * (self.DeployMoveSpeedMultiplier or 1))
 			self.Owner:SetCrouchedWalkSpeed(0)
+			end
 		else
+			if self.Owner:GetInfoNum("tf_giant_robot",0) != 1 then
 			self.Owner:ResetClassSpeed()
+			end
 		end
 	end
 	
@@ -336,6 +354,9 @@ function SWEP:Think()
 	if self.NextEndSpinUpSound and CurTime()>=self.NextEndSpinUpSound then
 		self.SpinUpSound:Stop()
 		self.SpinSound:Play()
+		if self.Primary.Delay == 0.06 then
+			self.SpinSound:ChangePitch(120)
+		end
 		self.NextEndSpinUpSound = nil
 	end
 	

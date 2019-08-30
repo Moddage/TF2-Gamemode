@@ -20,7 +20,7 @@ SWEP.MuzzleEffect = "muzzle_pistol"
 
 SWEP.ShootSound = Sound("weapons/nail_gun_shoot.wav")
 SWEP.ShootCritSound = Sound("weapons/nail_gun_shoot_crit.wav")
-SWEP.ReloadSound = Sound("weapons/nail_gun_worldreload.wav")
+SWEP.ReloadSound = Sound("weapons/syringegun_worldreload.wav")
 
 SWEP.Primary.ClipSize		= 40
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
@@ -32,7 +32,9 @@ SWEP.BulletSpread = 0.01
 SWEP.IsRapidFire = true
 SWEP.ReloadSingle = false
 
-SWEP.HoldType = "SECONDARY"
+SWEP.ReloadTime = 1.5	
+
+SWEP.HoldType = "SECONDARY2"
 
 SWEP.ProjectileShootOffset = Vector(0, 8, -5)
 

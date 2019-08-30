@@ -15,8 +15,8 @@ SWEP.Crosshair = "tf_crosshair3"
 
 SWEP.Swing = Sound("Weapon_Bat.Miss")
 SWEP.SwingCrit = Sound("Weapon_Bat.MissCrit")
-SWEP.HitFlesh = Sound("Weapon_Bat.HitFlesh")
-SWEP.HitWorld = Sound("Weapon_Bat.HitWorld")
+SWEP.HitFlesh = Sound("Weapon_HolyMackerel.HitFlesh")
+SWEP.HitWorld = Sound("Weapon_HolyMackerel.HitWorld")
 
 SWEP.BaseDamage = 35
 SWEP.DamageRandomize = 0.1

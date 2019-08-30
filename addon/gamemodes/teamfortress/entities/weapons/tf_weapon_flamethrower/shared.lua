@@ -28,7 +28,7 @@ function SWEP:SetFlamethrowerEffect(i)
 	local t = GAMEMODE:EntityTeam(self.Owner)
 	
 	if i==1 then
-		effect = "flamethrower_blue"
+		effect = "flamethrower_new"
 	elseif i>1 then
 		if t==2 then
 			effect = "flamethrower_crit_blue"
@@ -73,7 +73,7 @@ end
 
 PrecacheParticleSystem("flamethrower_fire_1")
 PrecacheParticleSystem("flamethrower_crit_red")
-PrecacheParticleSystem("flamethrower_blue")
+PrecacheParticleSystem("flamethrower_new")
 PrecacheParticleSystem("flamethrower_crit_blue")
 PrecacheParticleSystem("pyro_blast")
 PrecacheParticleSystem("pyro_blast_flash")
@@ -83,8 +83,8 @@ PrecacheParticleSystem("pyro_blast_warp2")
 
 SWEP.Base				= "tf_weapon_gun_base"
 
-SWEP.ViewModel			= "models/weapons/v_models/v_flamethrower_pyro.mdl"
-SWEP.WorldModel			= "models/weapons/c_models/c_flamethrower.mdl"
+SWEP.ViewModel			= "models/weapons/c_models/c_pyro_arms.mdl"
+SWEP.WorldModel			= "models/weapons/c_models/c_flamethrower/c_flamethrower.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
 SWEP.Spawnable = true
@@ -108,7 +108,7 @@ SWEP.Primary.Ammo			= TF_PRIMARY
 SWEP.Primary.Delay          = 0.04
 
 SWEP.Secondary.Automatic	= true
-SWEP.Secondary.Delay		= 1.1
+SWEP.Secondary.Delay		= 0.8
 SWEP.AirblastRadius = 80
 
 SWEP.BulletSpread = 0.06
@@ -117,6 +117,7 @@ SWEP.IsRapidFire = true
 SWEP.ReloadSingle = false
 
 SWEP.HoldType = "PRIMARY"
+SWEP.HoldTypeHL2 = "crossbow"
 
 SWEP.ProjectileShootOffset = Vector(3, 8, -5)
 
@@ -129,12 +130,13 @@ function SWEP:CreateSounds(owner)
 	self.FireCritSound = CreateSound(owner, self.ShootCritSound)
 	self.PilotSound = CreateSound(owner, self.PilotLoop)
 	
-	self.SoundsCreated = true
+	self.SoundsCreated = true 
 end
 
 function SWEP:PrimaryAttack()
 	if not self.IsDeployed then return false end
 	
+	if self.Owner:GetMaterial() == "models/shadertest/predator" then return false end
 	if self:Ammo1()<=0 then
 		return
 	end
@@ -149,12 +151,18 @@ function SWEP:PrimaryAttack()
 		--self.Owner:SetAnimation(PLAYER_PREFIRE)
 		self.SpinDownSound:Stop()
 		self.SpinUpSound:Play()
+		if self.Primary.Delay == 0.015 then
+			self.SpinUpSound:ChangePitch(120)
+		end
 		self.NextEndSpinUp = CurTime() + 3
 	end
 	
 	if self.NextEndSpinUp and CurTime()>self.NextEndSpinUp then
 		self.SpinUpSound:Stop()
 		self.FireSound:Play()
+		if self.Primary.Delay == 0.015 then
+			self.FireSound:ChangePitch(120)
+		end
 		self.NextEndSpinUp = nil
 	end
 	
@@ -164,6 +172,9 @@ function SWEP:PrimaryAttack()
 			self:SetFlamethrowerEffect(2)
 			self.FireSound:Stop()
 			self.FireCritSound:Play()
+			if self.Primary.Delay == 0.015 then
+				self.FireCritSound:ChangePitch(120)
+			end
 			self.Firing = true
 		end
 		self.Critting = true
@@ -172,6 +183,9 @@ function SWEP:PrimaryAttack()
 			self:SetFlamethrowerEffect(1)
 			self.FireCritSound:Stop()
 			self.FireSound:Play()
+			if self.Primary.Delay == 0.015 then
+				self.FireSound:ChangePitch(120)
+			end
 			self.Firing = true
 		end
 		self.Critting = false
@@ -245,7 +259,7 @@ function SWEP:SecondaryAttack()
 	
 	// This is the VM airblast animation. It's broken.
 	--self.SendWeaponAnim(self.VM_SECONDARYATTACK) // old implementation, doesn't work
-	self.SendWeaponAnim(ACT_VM_SECONDARYATTACK) // new implementation, works? VM glitches, community primary weapons fail?
+	self:SendWeaponAnim(ACT_PRIMARY_VM_SECONDARYATTACK) // new implementation, works? VM glitches, community primary weapons fail?
 	--self.Owner:SetAnimation(PLAYER_ATTACK1)
 	self.NextIdle = CurTime() + self:SequenceDuration() // culprit?
 	
@@ -264,6 +278,9 @@ function SWEP:StopFiring()
 	self:SetFlamethrowerEffect(0)
 	self.SpinUpSound:Stop()
 	self.SpinDownSound:Play()
+	if self.Primary.Delay == 0.06 then
+		self.SpinDownSound:ChangePitch(120)
+	end
 	self.FireSound:Stop()
 	self.FireCritSound:Stop()
 	self.Owner:SetAnimation(ACT_MP_ATTACK_STAND_POSTFIRE)
