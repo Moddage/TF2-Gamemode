@@ -14,7 +14,7 @@ if CLIENT then
 end
 
 CLASS.Loadout = {"tf_weapon_flamethrower", "tf_weapon_shotgun_pyro", "tf_weapon_fireaxe"}
-CLASS.DefaultLoadout = {"TF_WEAPON_FLAMETHROWER","TF_WEAPON_SHOTGUN_PYRO","TF_WEAPON_FIREAXE"}
+CLASS.DefaultLoadout = {"Backburner","TF_WEAPON_SHOTGUN_PYRO","TF_WEAPON_FIREAXE"}
 CLASS.ModelName = "pyro"
 CLASS.Fireproof = true
 

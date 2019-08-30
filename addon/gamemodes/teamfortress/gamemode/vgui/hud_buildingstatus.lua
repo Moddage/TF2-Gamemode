@@ -91,7 +91,7 @@ function PANEL:Think()
 			self.WarningBeepsRemaining = self.WarningBeepsRemaining - 1
 			self.NextWarningBeep = RealTime() + self.WarningBeepsPeriod
 			if not self.AlertSoundPatch then
-				self.AlertSoundPatch = CreateSound(LocalPlayer(), "Hud.Warning")
+				self.AlertSoundPatch = CreateSound(LocalPlayer(), "misc/hud_warning.wav")
 			end
 			self.AlertSoundPatch:Stop()
 			self.AlertSoundPatch:Play()

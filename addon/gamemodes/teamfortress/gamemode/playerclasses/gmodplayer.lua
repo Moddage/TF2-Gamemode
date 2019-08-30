@@ -43,6 +43,18 @@ CLASS.ModelName = "scout"
 
 CLASS.IsHL2 = true
 
+CLASS.Gibs = {
+	[GIB_LEFTLEG]		= GIBS_HEAVY_START,
+	[GIB_RIGHTLEG]		= GIBS_HEAVY_START+1,
+	[GIB_RIGHTARM]		= GIBS_HEAVY_START+4,
+	[GIB_TORSO]			= GIBS_HEAVY_START+5,
+	[GIB_TORSO2]		= GIBS_HEAVY_START+3,
+	[GIB_EQUIPMENT1]	= GIBS_HEAVY_START+2,
+	[GIB_EQUIPMENT2]	= GIBS_HEAVY_START+2,
+	[GIB_HEAD]			= GIBS_HEAVY_START+6,
+	[GIB_ORGAN]			= GIBS_ORGANS_START,
+}
+
 if SERVER then
 
 function CLASS:Initialize()
@@ -59,3 +71,12 @@ function CLASS:Initialize()
 end
 
 end
+
+
+CLASS.AmmoMax = {
+	[TF_PRIMARY]	= 1000000,		-- primary
+	[TF_SECONDARY]	= 1000000,		-- secondary
+	[TF_METAL]		= 1000000,		-- metal
+	[TF_GRENADES1]	= 1000000,		-- grenades1
+	[TF_GRENADES2]	= 1000000,		-- grenades2
+}
