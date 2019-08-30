@@ -30,7 +30,9 @@ function EFFECT:Init(data)
 	if not c or not c.Gibs then return end
 	
 	local exclude = {}
-	
+
+	if pl:IsPlayer then
+
 	for _,v in pairs(pl:GetTFItems()) do
 		if v then
 		if v:GetVisuals() ~= nil then
@@ -50,6 +52,8 @@ function EFFECT:Init(data)
 		end
 	end
 	
+	end
+
 	for k,v in pairs(c.Gibs) do
 		if not exclude[k] then
 			local effectdata = EffectData()

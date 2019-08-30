@@ -110,7 +110,7 @@ function EFFECT:Think()
 	
 	if diff<self.FadeTime then
 		local a = math.Clamp(255*diff/self.FadeTime, 0, 255)
-		--self:SetColor(255,255,255,a)
+		--self:SetColor(Color(255,255,255,a))
 		self.Ragdoll:SetColor(255,255,255,a)
 	end
 	
