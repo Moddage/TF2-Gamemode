@@ -52,14 +52,14 @@ AddCSLuaFile( "shared.lua" )
 ENT.Model = Model("models/weapons/w_models/w_rocket.mdl")
 ENT.ModelNuke = Model("models/props_trainyard/cart_bomb_separate.mdl")
 
-ENT.ExplosionSound = Sound("Weapon_Grenade_Pipebomb.Explode")
+ENT.ExplosionSound = Sound("BaseExplosionEffect.Sound")
 ENT.ExplosionSoundFast = Sound("Weapon_RPG_DirectHit.Explode")
 ENT.ExplosionSoundNuke = Sound("Cart.Explode")
 ENT.BounceSound = Sound("Weapon_Grenade_Pipebomb.Bounce")
 
-ENT.BaseDamage = 90
+ENT.BaseDamage = 95
 ENT.DamageRandomize = 0.1
-ENT.MaxDamageRampUp = 0.25
+ENT.MaxDamageRampUp = 0.35
 ENT.MaxDamageFalloff = 0.53
 ENT.DamageModifier = 1
 
@@ -263,7 +263,7 @@ function ENT:DoExplosion(ent)
 		util.BlastDamage(self, owner, self:GetPos(), range*6, 100)
 	else
 		--util.BlastDamage(self, owner, self:GetPos(), range, damage)
-		util.BlastDamage(self, owner, self:GetPos(), range, 100)
+		util.BlastDamage(self, owner, self:GetPos(), range*1, 100)
 	end
 	
 	if ForceDamageClasses[ent:GetClass()] then
@@ -297,7 +297,7 @@ function ENT:ModifyInitialDamage(ent, dmginfo)
 end]]
 
 function ENT:Touch(ent)
-	if not ent:IsTrigger() then
+	if not ent:IsTrigger() and ent:IsSolid() then
 		self:DoExplosion(ent)
 	end
 end

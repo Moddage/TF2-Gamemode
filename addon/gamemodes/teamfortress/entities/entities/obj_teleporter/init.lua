@@ -33,6 +33,10 @@ ENT.MinRechargingSpinSpeed = 0.2
 
 ENT.Acceleration = 0
 
+ENT.Spawnpoint = false
+
+ENT.Sapped = false
+
 ENT.Gibs = {
 Model("models/buildables/Gibs/teleporter_gib1.mdl"),
 Model("models/buildables/Gibs/teleporter_gib2.mdl"),
@@ -67,18 +71,30 @@ function ENT:PostEnable(laststate)
 		self.SpinSpeed = 0
 		self:SetPlaybackRate(0)
 	end
+	if self.Spawnpoint == true then
+		self:SetLinkedTeleporter(self)
+		self:OnLink(self)
+		self.SpinSpeed = 0
+		self:SetPlaybackRate(0)
+		for k,v in pairs(player.GetAll()) do
+			if !v:IsFriendly(self) then
+				v:SendLua([[surface.PlaySound("vo/announcer_mvm_eng_tele_activated0"..math.random(1,4)..".mp3")]])
+			end
+			v:SendLua([[surface.PlaySound("mvm/mvm_tele_activate.wav")]])
+		end
+	end
 end
 
 function ENT:OnLink(ent)
 	if self.Spin_Sound then
 		self.Spin_Sound:Stop()
 	end
-	
 	self.Spin_Sound = CreateSound(self, self.Sound_Spin1)
 	self.Spin_Sound:Play()
 	
 	self:SetAcceleration(0.005)
 	self:SetChargePercentage(1)
+
 end
 
 function ENT:OnUnlink(ent)
@@ -119,7 +135,6 @@ function ENT:Teleport(pl)
 	if not IsValid(exit) then return end
 	
 	self:EmitSound(self.Sound_Send)
-	exit:EmitSound(self.Sound_Receive)
 	
 	self:SetChargePercentage(0)
 	self.SpinSpeed = 0.9
@@ -130,21 +145,31 @@ function ENT:Teleport(pl)
 	exit.SpinSpeed = 0.9
 	exit:SetAcceleration(-0.002)
 	exit.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime
-	
-	pl:SetPos(exit:GetExitPosition())
-	local y = self:GetAngles().y
 	if pl:IsPlayer() then
-		local ang = pl:EyeAngles()
-		ang.y = y
-		pl:SetEyeAngles(ang)
-		umsg.Start("TFTeleportEffect", pl)
-		umsg.End()
-	else
-		local ang = pl:GetAngles()
-		ang.y = y
-		pl:SetAngles(ang)
+		pl:SetFOV(50, 0.7)
+		ParticleEffect("teleportedin_red", self:GetPos(), self:GetAngles(), pl)
+		pl:ScreenFade( SCREENFADE.OUT, Color( 255, 255, 255, 150 ), 0.5, 0.65 )
+		timer.Simple(0.7, function()
+			pl:SetFOV(0, 1.5)
+		end)
 	end
-	
+	timer.Simple(0.6, function()
+		pl:SetPos(exit:GetExitPosition())
+		ParticleEffect("teleportedin_red", exit:GetPos(), exit:GetAngles(), pl)
+		exit:EmitSound(self.Sound_Receive)
+		local y = self:GetAngles().y
+		if pl:IsPlayer() then
+			local ang = pl:EyeAngles()
+			ang.y = y
+			pl:SetEyeAngles(ang)
+			umsg.Start("TFTeleportEffect", pl)
+			umsg.End()
+		else
+			local ang = pl:GetAngles()
+			ang.y = y
+			pl:SetAngles(ang)
+		end
+	end)
 	self.DoneInitialWarmup = true
 end
 
@@ -152,8 +177,11 @@ function ENT:OnThinkActive()
 	if self:IsEntrance() and IsValid(self:GetLinkedTeleporter()) then
 		self:SetBodygroup(2, 1)
 		self:SetPoseParameter("direction", self:GetAngles().y-(self:GetPos()-self:GetLinkedTeleporter():GetPos()):Angle().y)
+		self.Model:SetBodygroup(2, 1)
+		self.Model:SetPoseParameter("direction", self:GetAngles().y-(self:GetPos()-self:GetLinkedTeleporter():GetPos()):Angle().y)
 	else
 		self:SetBodygroup(2, 0)
+		self.Model:SetBodygroup(2, 0)
 	end
 	
 	if self.NextRecharge then

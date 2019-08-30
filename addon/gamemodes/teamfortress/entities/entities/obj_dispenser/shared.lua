@@ -3,7 +3,7 @@ ENT.Base = "obj_base"
 ENT.Type = "ai"  
 
 ENT.AutomaticFrameAdvance = true
-
+ENT.Sapped = false
 ENT.ObjectHealth = 150
 ENT.MaxMetal = 400
 

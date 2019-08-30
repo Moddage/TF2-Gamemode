@@ -1,6 +1,8 @@
 
 include("shared.lua")
 
+ENT.RenderGroup 		= RENDERGROUP_BOTH
+
 local TeleporterParticles = {
 	{
 		arms = "teleporter_arms_circle_red",

@@ -226,7 +226,6 @@ function ENT:Hit(ent)
 				if b==0 then break end
 				
 				local pos = ent:GetBonePosition(b)
-				if !pos then return end
 				local d = self:GetPos():Distance(pos)
 				if not dist or d<dist then
 					bone, dist, bpos = b, d, pos

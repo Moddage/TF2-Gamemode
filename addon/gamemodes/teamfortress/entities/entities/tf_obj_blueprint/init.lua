@@ -15,7 +15,7 @@ function ENT:Initialize()
 		self:Remove() return
 	end
 	
-	local obj = owner:GetBuilding()
+	local obj = owner:GetBuilding() 
 	if not obj then
 		self:Remove() return
 	end
@@ -37,7 +37,12 @@ function ENT:Initialize()
 	else
 		self:SetSkin(0)
 	end
-	
+	if obj.class_name == "obj_dispenser" and self.Player.TempAttributes.BuildsMiniSentries then
+		self:SetModel("models/buildables/mdispenser_blueprint.mdl")
+	end
+	if obj.class_name == "obj_dispenser" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
+		self:SetModel("models/buildables/repair_level1.mdl")
+	end
 	self.CurrentYaw = 0
 	self.TargetYaw = 0
 	self.Rotation = 0
@@ -65,16 +70,104 @@ function ENT:Build()
 	if not IsValid(ent) then return end
 	
 	ent.Player = self.Player
-	ent:SetNWEntity("Player", self.Player)
 	ent:SetPos(pos)
 	ent:SetAngles(ang)
 	ent:SetTeam(self.Player:EntityTeam())
 	ent:Spawn()
 	ent:SetAngles(ang)
+	if self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 2 and obj.class_name == "obj_sentrygun" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
+
+		timer.Create("SEtModel", 0.1, 40, function()
+		ent:SetModel("models/buildables/sentry2.mdl")
+		ent.Model:SetModel("models/buildables/sentry2.mdl")
+		ent.FireRate = 0.125
+		ent.Shoot_Sound = ent.Sound_Fire2
+		ent.Idle_Sound = CreateSound(ent, ent.Sound_Idle2)
+		ent.NameOverride = "obj_sentrygun2"
+		
+		local health_frac = ent:Health() / ent:GetMaxHealth()
+		ent:SetMaxHealth(ent:GetObjectHealth())
+		ent:SetHealth(ent:GetObjectHealth() * health_frac)
+		
+		ent.MaxAmmo1 = 120
+		ent.MaxAmmo2 = 0
+		ent:SetAmmo1(ent.MaxAmmo1)
+		ent:SetAmmo2(ent.MaxAmmo2)
+		ent:SetLevel(2)
+		end)
+	elseif self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 2 and obj.class_name == "obj_sentrygun" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
+
+		timer.Create("SEtModel", 0.1, 40, function()
+		ent:SetModel("models/buildables/sentry2.mdl")
+		ent.Model:SetModel("models/buildables/sentry2.mdl")
+		ent.FireRate = 0.125
+		ent.Shoot_Sound = ent.Sound_Fire2
+		ent.Idle_Sound = CreateSound(ent, ent.Sound_Idle2)
+		ent.NameOverride = "obj_sentrygun2"
+		
+		local health_frac = ent:Health() / ent:GetMaxHealth()
+		ent:SetMaxHealth(ent:GetObjectHealth())
+		ent:SetHealth(ent:GetObjectHealth() * health_frac)
+		
+		ent.MaxAmmo1 = 120
+		ent.MaxAmmo2 = 0
+		ent:SetAmmo1(ent.MaxAmmo1)
+		ent:SetAmmo2(ent.MaxAmmo2)
+		ent:SetLevel(2)
+		end)
+	elseif self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 2 and obj.class_name == "obj_dispenser" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
+
+		timer.Create("SEtModel", 0.1, 40, function()
+		ent:SetModel("models/buildables/dispenser_lvl2_light.mdl")
+		ent.Model:SetModel("models/buildables/dispenser_lvl2_light.mdl")
+
+		ent.MetalPerGeneration = 50
+		ent.HealRate = 0.066
+		ent.AmmoPerSupply = 50
+		ent:SetLevel(2)
+		end)
+	elseif self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 3 and obj.class_name == "obj_dispenser" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
+
+		timer.Create("SEtModel", 0.1, 40, function()
+		ent:SetModel("models/buildables/dispenser_lvl3_light.mdl")
+		ent.Model:SetModel("models/buildables/dispenser_lvl3_light.mdl")
+
+		ent.MetalPerGeneration = 60
+		ent.HealRate = 0.05
+		ent.AmmoPerSupply = 60
+		ent:SetLevel(3)
+		end)
+	elseif self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 3 and obj.class_name == "obj_sentrygun" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
+
+		timer.Create("SEtModel", 0.1, 40, function()
+		ent:SetModel("models/buildables/sentry3.mdl")
+		ent.Model:SetModel("models/buildables/sentry3.mdl")
+		ent.FireRate = 0.125
+		ent.Shoot_Sound = ent.Sound_Fire3
+		ent.Idle_Sound = CreateSound(ent, ent.Sound_Idle3)
+		ent.NameOverride = "obj_sentrygun3"
+		
+		local health_frac = ent:Health() / ent:GetMaxHealth()
+		ent:SetMaxHealth(ent:GetObjectHealth())
+		ent:SetHealth(ent:GetObjectHealth() * health_frac)
+		
+		ent.MaxAmmo1 = 144
+		ent.MaxAmmo2 = 20
+		ent:SetAmmo1(ent.MaxAmmo1)
+		ent:SetAmmo2(ent.MaxAmmo2)
+		ent:SetLevel(3)
+		end)
+	end
 	if obj.class_name == "obj_sentrygun" and self.Player.TempAttributes.BuildsMiniSentries then
 		ent:SetBuildingType(1)
+	elseif obj.class_name == "obj_dispenser" and self.Player.TempAttributes.BuildsMiniSentries then
+		ent:SetBuildingType(1)
+	elseif obj.class_name == "obj_dispenser" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
+		ent:SetBuildingType(2)
 	elseif obj.class_name == "obj_sentrygun" and self.Player.TempAttributes.BuildsMegaSentries then
 		ent:SetBuildingType(2)
+	elseif obj.class_name == "obj_teleporter" and self.Player:GetInfoNum("tf_robot", 0) == 1 and self.Player:Team() == TEAM_BLU then
+		ent.Spawnpoint = true
 	end
 	ent:SetBuildGroup(self:GetOwner():GetBuildGroup())
 	ent:SetBuildMode(self:GetOwner():GetBuildMode())

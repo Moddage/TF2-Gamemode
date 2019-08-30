@@ -32,7 +32,7 @@ AddCSLuaFile( "shared.lua" )
 
 ENT.Model = Model("models/buildables/sentry3_rockets.mdl")
 
-ENT.ExplosionSound = Sound("Weapon_Grenade_Pipebomb.Explode")
+ENT.ExplosionSound = Sound("BaseExplosionEffect.Sound")
 
 ENT.BaseDamage = 100
 ENT.DamageRandomize = 0
@@ -188,7 +188,7 @@ function ENT:DoExplosion(ent)
 end
 
 function ENT:Touch(ent)
-	if not ent:IsTrigger() then
+	if ent:IsSolid() then
 		self:DoExplosion(ent)
 	end
 end

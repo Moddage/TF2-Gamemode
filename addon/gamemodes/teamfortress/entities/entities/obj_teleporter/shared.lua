@@ -30,7 +30,7 @@ ENT.ObjectHealth = 150
 
 ENT.CollisionBox = {Vector(-24,-24,0), Vector(24,24,12)}
 ENT.BuildHull = {Vector(-28,-28,0), Vector(28,28,95)}
-
+ENT.Sapped = false
 ENT.ObjectName = "#TF_Object_Tele"
 
 function ENT:SetupDataTables()

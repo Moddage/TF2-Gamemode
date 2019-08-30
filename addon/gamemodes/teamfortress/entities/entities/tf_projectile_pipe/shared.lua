@@ -22,7 +22,7 @@ ENT.Model2 = "models/weapons/w_models/w_stickybomb2.mdl"
 ENT.ExplosionSound = Sound("Weapon_Grenade_Pipebomb.Explode")
 ENT.BounceSound = Sound("Weapon_Grenade_Pipebomb.Bounce")
 
-ENT.BaseDamage = 90
+ENT.BaseDamage = 100
 ENT.DamageRandomize = 0.3
 ENT.MaxDamageRampUp = 0
 ENT.MaxDamageFalloff = 0

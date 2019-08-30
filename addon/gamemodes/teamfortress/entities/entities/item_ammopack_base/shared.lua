@@ -24,4 +24,6 @@ function ENT:PlayerTouched(pl)
 	GAMEMODE:GiveAmmoPercent(pl, a)
 end
 
+
+
 end

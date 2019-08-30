@@ -12,8 +12,8 @@ if SERVER then
 hook.Add("DoPlayerDeath", "IntelSafeHelp", function(ply)
 	for _,v in pairs(ents.FindByClass("item_teamflag")) do
 		if v.Carrier==ply then
-			v:Drop()
-		end
+			v:Drop() 
+		end 
 	end
 end)
 
@@ -24,7 +24,7 @@ concommand.Add("drop_flag", function(pl)
 		end
 	end
 end)
-
+ 
 function ENT:Initialize()
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetModel(self.Model)
@@ -39,7 +39,11 @@ function ENT:Initialize()
 	self.Prop = ents.Create("prop_dynamic")
 	self.Prop:SetMoveType(MOVETYPE_NONE)
 	self.Prop:SetSolid(SOLID_NONE)
-	self.Prop:SetModel(self.Model)
+	if game.GetMap() == "mvm_terroristmission_v7_1" then
+		self.Prop:SetModel("models/weapons/w_c4_planted.mdl")
+	else
+		self.Prop:SetModel(self.Model)
+	end
 	self.Prop:SetPos(self:GetPos())
 	self.Prop:SetAngles(self:GetAngles())
 	self.Prop:Spawn()
@@ -53,7 +57,19 @@ function ENT:Initialize()
 	self.Prop:SetPlaybackRate(1)
 	self.Prop:SetCycle(1)
 	
+	if self.TeamNum==0 then
+		self:SetSkin(2)
+		self.Prop:SetSkin(2)
+	elseif self.TeamNum==TEAM_RED then
+		self:SetSkin(0)
+		self.Prop:SetSkin(0)
+	elseif self.TeamNum==TEAM_BLU then
+		self:SetSkin(1)
+		self.Prop:SetSkin(1)
+	end
+	
 	self.State = 0
+	
 	
 	self.Trail = ents.Create("info_particle_system")
 	self.Trail:SetPos(self:GetPos())
@@ -96,34 +112,8 @@ end
 function ENT:Think()
 	self:SetNWEntity("carrier", self.Carrier)
 
-	if self.TeamNum==0 then -- this feels unoptimized...
-		if self.Carrier then
-			self:SetSkin(2)
-			self.Prop:SetSkin(2)
-		else
-			self:SetSkin(5)
-			self.Prop:SetSkin(5)
-		end
-	elseif self.TeamNum==TEAM_RED then
-		if self.Carrier then
-			self:SetSkin(3)
-			self.Prop:SetSkin(3)
-		else
-			self:SetSkin(0)
-			self.Prop:SetSkin(0)
-		end
-	elseif self.TeamNum==TEAM_BLU then
-		if self.Carrier then
-			self:SetSkin(4)
-			self.Prop:SetSkin(4)
-		else
-			self:SetSkin(1)
-			self.Prop:SetSkin(1)
-		end
-	end
-
 	for k, v in pairs(player.GetAll()) do
-		local trace = util.QuickTrace(self:GetPos(), v:EyePos() - self:GetPos(), self.Prop)
+				local trace = util.QuickTrace(self:GetPos(), v:EyePos() - self:GetPos(), self.Prop)
 		if self:GetSkin() == 1 and v:IsBot() and !v:IsHL2() then
 			local color = Color(255, 0, 0)
 			if trace.Entity == v then
@@ -156,15 +146,54 @@ function ENT:Think()
 	else
 		self.NextClientUpdateTimer = nil
 	end
+	
+	if IsValid(self.Carrier) and isstring(self.Carrier.Team) and (self.Carrier.Team == "RED" or self.Carrier.Team == "BLU" ) then
+		local intel = nil
+		local fintel = nil
+		local intelcap = nil
+		local fintelcap = nil
+		if self.Carrier:Health() <= 1 then
+			self:Drop()
+		elseif !IsValid(self.Carrier) then
+			self:Drop()
+		end
+		if self.Carrier:Health() >= 1 then
+			for k, v in pairs(ents.FindByClass("item_teamflag")) do
+				if v.TeamNum ~= GAMEMODE:EntityTeam(self.Carrier) then
+					intel = v
+				else
+					fintel = v
+				end
+			end
+	
+			for k, v in pairs(ents.FindByClass("func_capturezone")) do
+				if v.TeamNum ~= GAMEMODE:EntityTeam(self.Carrier) then
+					intelcap = v
+				else
+					fintelcap = v
+				end
+			end
+
+			self.Carrier:RunToPos(fintel:GetPos(), {tolerance = 60}	)
+		end
+	end
+
 end
 
 function ENT:CanPickup(ply)
-	return ply:Team()~=self.TeamNum and not self.PickupLock[v]
+	return ply:Team()~=self.TeamNum or GAMEMODE:EntityTeam(ply)~=self.TeamNum and not self.PickupLock[v]
 end
 
 function ENT:StartTouch(ent)
 	if ent:IsPlayer() and self:CanPickup(ent) and not self.PickupLock[ent] then
 		self:PlayerTouched(ent)
+	end 
+	if isstring(ent.Team) and (ent.Team == "RED" or ent.Team == "BLU" ) then
+		if ent.Team == "BLU" and self.TeamNum == TEAM_RED then
+			self:PlayerTouched(ent)
+		elseif ent.Team == "RED" and self.TeamNum == TEAM_BLU then
+			self:PlayerTouched(ent)
+		end
 	end
 end
 
@@ -230,7 +259,7 @@ function ENT:Pickup(ply)
 		self:SetTrigger(false)
 		self:SetParent(ply)
 		self:Fire("SetParentAttachment", "flag", 0)
-		if ply:IsHL2() then
+		if ply:IsPlayer() and ply:IsHL2() then
 			self:Fire("SetParentAttachment", "chest", 0)
 		end
 		self:TriggerOutput("OnPickup", ply)

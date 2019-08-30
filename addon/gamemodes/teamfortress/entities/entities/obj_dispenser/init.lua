@@ -4,6 +4,8 @@ AddCSLuaFile("cl_init.lua")
 
 include("shared.lua")
 
+local tf_minidispenser_allow_upgrade = CreateConVar("tf_minidispenser_allow_upgrade", "0", {FCVAR_CHEAT})
+
 ENT.NPCCallRange = 512
 ENT.NPCCallHealthFraction = 0.75
 ENT.NPCCallProbability = 0.5
@@ -34,6 +36,8 @@ Model("models/buildables/Gibs/dispenser_gib5.mdl"),
 }
 ENT.Sound_Explode = Sound("Building_Dispenser.Explode")
 
+ENT.Sapped = false
+
 ENT.Range = 100
 
 function ENT:StartSupply(pl)
@@ -50,10 +54,14 @@ function ENT:StartSupply(pl)
 	target:SetParent(pl)
 	target:AttachToEntity(pl)
 	target:SetName(tostring(target))
-	
 	local e = ParticleSuffix(self:EntityTeam())
 	local effect = ents.Create("info_particle_system")
-	effect:SetKeyValue("effect_name", "dispenser_heal_"..e)
+	if self:GetBuildingType() == 2 then
+		self:SetModel("models/buildables/dispenser_light.mdl")
+		effect:SetKeyValue("effect_name", "medicgun_beam_"..e)
+	else
+		effect:SetKeyValue("effect_name", "dispenser_heal_"..e)
+	end
 	effect:SetKeyValue("cpoint1", target:GetName())
 	effect:SetKeyValue("start_active", "1" )
 	
@@ -87,6 +95,33 @@ end
 function ENT:OnStartBuilding()
 	self.Idle_Sound = CreateSound(self, self.Sound_Idle)
 	self.Heal_Sound = CreateSound(self, self.Sound_Heal)
+	if self:GetBuildingType() == 1 then
+		self.BuildRate = 1.5
+		self.NextAmmoSupply = CurTime() + 0.5
+		self:SetModel("models/buildables/mdispenser.mdl")
+		self.Model:SetModel("models/buildables/mdispenser.mdl")
+		self.Levels = {
+			{Model("models/buildables/mdispenser.mdl"), Model("models/buildables/mdispenser_light.mdl")},
+			{Model("models/buildables/mdispenser.mdl"), Model("models/buildables/mdispenser_light.mdl")},
+			{Model("models/buildables/mdispenser.mdl"), Model("models/buildables/mdispenser_light.mdl")}
+		}
+		self.Gibs = {
+			Model("models/buildables/gibs/mdispenser_gib1.mdl"),
+			Model("models/buildables/gibs/mdispenser_gib2.mdl"),
+			Model("models/buildables/Gibs/mdispenser_gib3.mdl"),
+			Model("models/buildables/Gibs/mdispenser_gib4.mdl"),
+			Model("models/buildables/Gibs/mdispenser_gib5.mdl"),
+		}
+	end
+	if self:GetBuildingType() == 2 then
+		self.Model:SetModel("models/buildables/repair_level1.mdl")	
+		self:SetModel("models/buildables/dispenser_light.mdl")
+		self.Levels = {
+			{Model("models/buildables/dispenser_light.mdl"), Model("models/buildables/repair_level1.mdl")},
+			{Model("models/buildables/dispenser_light.mdl"), Model("models/buildables/repair_level2.mdl")},
+			{Model("models/buildables/dispenser_light.mdl"), Model("models/buildables/repair_level3.mdl")}
+		}
+	end
 end
 
 function ENT:OnDoneBuilding()
@@ -104,6 +139,36 @@ function ENT:OnDoneBuilding()
 	
 	self:SetMetalAmount(25)
 	self.NextGenerate = CurTime() + 5
+	if self:GetBuildingType() == 1 then
+		self.NextAmmoSupply = CurTime() + 0.5
+		
+		self.BuildRate = 2
+		self.InitialHealth = self:GetObjectHealth()
+		self:SetMaxHealth(self:GetObjectHealth())
+		
+		if not tf_minidispenser_allow_upgrade:GetBool() then
+			self.RepairRate = 0
+			self.UpgradeRate = 0
+		end
+		timer.Simple(0.05, function()
+			self:SetModel("models/buildables/mdispenser_light.mdl")
+			self.Model:SetModel("models/buildables/mdispenser_light.mdl")
+		end)
+	elseif self:GetBuildingType() == 2 then 
+		
+		self.BuildRate = 2
+		self.InitialHealth = self:GetObjectHealth()
+		self:SetMaxHealth(self:GetObjectHealth())
+		
+		if not tf_minidispenser_allow_upgrade:GetBool() then
+			self.RepairRate = 15
+			self.UpgradeRate = 15
+		end
+		timer.Simple(0.05, function()
+			self:SetModel("models/buildables/dispenser_light.mdl")
+			self.Model:SetModel("models/buildables/repair_level1.mdl")
+		end)
+	end
 end
 
 function ENT:OnStartUpgrade()
@@ -113,10 +178,26 @@ function ENT:OnStartUpgrade()
 		self.MetalPerGeneration = 50
 		self.HealRate = 0.066
 		self.AmmoPerSupply = 50
+		timer.Simple(0.2, function()
+			self:SetModel("models/buildables/dispenser_light.mdl")
+		end)
+		timer.Simple(0.05, function()
+			if self:GetBuildingType() == 2 then
+			self.Model:SetModel("models/buildables/repair_level2.mdl")
+			end
+		end)
 	else if self.level==3 then
 		self.MetalPerGeneration = 60
 		self.HealRate = 0.05
 		self.AmmoPerSupply = 60
+		timer.Simple(0.2, function()
+			self:SetModel("models/buildables/dispenser_light.mdl")
+		end)
+		timer.Simple(0.05, function()
+			if self:GetBuildingType() == 2 then
+			self.Model:SetModel("models/buildables/repair_level3.mdl")
+			end
+		end)
 		end
 	end
 end
@@ -127,7 +208,11 @@ function ENT:OnThinkActive()
 		if self:AddMetalAmount(self.MetalPerGeneration)>0 and color.a>0 then
 			self:EmitSound(self.Sound_Generate, 100, 100)
 		end
-		self.NextGenerate = CurTime() + 5
+		if self:GetBuildingType() == 1 then
+			self.NextGenerate = CurTime() + 2.5
+		else
+			self.NextGenerate = CurTime() + 5
+		end
 	end
 	
 	if not self.NextSearch or CurTime()>=self.NextSearch then
@@ -135,6 +220,14 @@ function ENT:OnThinkActive()
 		for _,v in pairs(ents.FindInSphere(self:GetPos(), self.Range)) do
 			if (v:IsPlayer() or v:IsNPC()) and not v:IsBuilding() and (self:Team()==TEAM_NEUTRAL or GAMEMODE:EntityTeam(v)==self:Team()) then
 				if self.Clients[v] then
+					-- Don't remove that client
+					removedclients[v] = nil
+				else
+					self:StartSupply(v)
+				end 
+			end
+			if (self:GetBuildingType() == 2) and v:IsBuilding() and (self:Team()==TEAM_NEUTRAL or GAMEMODE:EntityTeam(v)==self:Team()) then
+				if self.Clients[v] then 
 					-- Don't remove that client
 					removedclients[v] = nil
 				else
@@ -167,12 +260,20 @@ function ENT:OnThinkActive()
 			end
 		end
 		self:AddMetalAmount(metal_after - metal_before)
-		self.NextAmmoSupply = CurTime() + 1
+		if self:GetBuildingType() == 1 then
+			self.NextAmmoSupply = CurTime() + 0.7
+		else
+			self.NextAmmoSupply = CurTime() + 1
+		end
 	end
 	
 	if not self.NextHeal or CurTime()>=self.NextHeal then
 		for k,_ in pairs(self.Clients) do
-			k:SetHealth(math.Clamp(k:Health() + 1, 0, k:GetMaxHealth()))
+			if self:GetBuildingType() == 2 then
+				k:SetHealth(math.Clamp(k:Health() + 1.5, 0, k:GetMaxHealth() + 140))
+			else
+				k:SetHealth(math.Clamp(k:Health() + 1, 0, k:GetMaxHealth()))
+			end
 			
 			if k:IsNPC() and not k:IsCurrentSchedule(SCHED_FORCED_GO_RUN) and not k.DoneWaitForHealingSchedule then
 				if IsValid(k:GetEnemy()) then

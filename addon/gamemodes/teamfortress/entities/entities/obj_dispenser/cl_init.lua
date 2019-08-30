@@ -18,6 +18,8 @@ function ENT:CalcAngle(m)
 	return Lerp(m, AngleStart, AngleEnd)
 end
 
+
+
 function ENT:Draw()
 	if self:GetState()<2 then return end
 	
@@ -57,6 +59,7 @@ function ENT:Draw()
 	local cp0_ll = self.Model:GetAttachment(self:LookupAttachment("controlpanel0_ll"))
 	local cp1_ll = self.Model:GetAttachment(self:LookupAttachment("controlpanel1_ll"))
 	
+	if self:GetBuildingType() != 1 and self:GetBuildingType() != 2 then
 	cam.Start3D2D(cp0_ll.Pos
 		+ Offset.x * cp0_ll.Ang:Forward()
 		+ Offset.y * cp0_ll.Ang:Right()
@@ -70,6 +73,7 @@ function ENT:Draw()
 		+ Offset.z * cp1_ll.Ang:Up(), cp1_ll.Ang, Scale)
 		self:DrawScreen()
 	cam.End3D2D()
+	end
 end
 
 function ENT:DrawScreen()

@@ -162,6 +162,22 @@ hook.Add("DoPlayerDeath", "TFHatDisable", function(pl)
 	end
 end)
 
+hook.Add("PlayerHurt", "TFHatDisable2", function(pl)
+	for k,v in pairs(ents.FindByClass("tf_weapon_invis_dringer")) do
+		if v.Owner == pl then
+			for _,v in pairs(ents.FindByClass("tf_hat")) do
+				if v:GetOwner()==pl then
+					v:SetKeyValue("effects", "0")
+					v:SetParent()
+					v:SetNoDraw(true)
+					v:DrawShadow(false)
+					v.Dead = true
+				end
+			end
+		end
+	end
+end)
+
 hook.Add("PlayerSpawn", "TFHatCleanup", function(pl)
 	for _,v in pairs(ents.FindByClass("tf_hat")) do
 		if v:GetOwner()==pl and v.Dead then

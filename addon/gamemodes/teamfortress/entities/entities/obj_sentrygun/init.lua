@@ -1,4 +1,3 @@
-
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("cl_init.lua")
 
@@ -19,10 +18,10 @@ ENT.NoUpgradedModel = false
 ENT.Sound_Idle = Sound("Building_Sentrygun.Idle")
 ENT.Sound_Idle2 = Sound("Building_Sentrygun.Idle2")
 ENT.Sound_Idle3 = Sound("Building_Sentrygun.Idle3")
-ENT.Sound_Alert = Sound("Building_Sentrygun.Alert")
+ENT.Sound_Alert = Sound("Building_Sentrygun.Alert") 
 
-ENT.Sound_Fire = Sound("Building_Sentrygun.Fire")
-ENT.Sound_Fire2 = Sound("Building_Sentrygun.Fire2")
+ENT.Sound_Fire = Sound("Building_Sentrygun.Fire") 
+ENT.Sound_Fire2 = Sound("Building_Sentrygun.Fire2") 
 ENT.Sound_Fire3 = Sound("Building_Sentrygun.Fire3")
 ENT.Sound_FireMini = Sound("Building_MiniSentrygun.Fire")
 
@@ -34,6 +33,10 @@ ENT.Sound_DoneBuilding = Sound("Building_Sentrygun.Built")
 
 ENT.MaxAmmo1 = 100
 ENT.MaxAmmo2 = 0
+
+ENT.Wrangled = false
+ENT.Sapped = false
+ENT.IsDoneBuilding = false
 
 local SentryGibs1 = {
 Model("models/buildables/Gibs/sentry1_Gib1.mdl"),
@@ -240,6 +243,7 @@ function ENT:OnStartBuilding()
 	elseif self:GetBuildingType() == 2 then
 		self.BaseDamage = 20
 		self.UpgradeRate = 15
+		self:SetBodygroup(2, 0)
 		self.Model:SetBuildingScale(1.2)
 	end
 end
@@ -257,7 +261,7 @@ function ENT:OnDoneBuilding()
 	self.DYaw = 0
 	
 	self.IdlePitchSpeed = 0.3
-	self.IdleYawSpeed = 0.6
+	self.IdleYawSpeed = 0.75
 	
 	if self:GetBuildingType() == 1 then
 		self.AimSpeedMultiplier = 1.35
@@ -297,6 +301,7 @@ function ENT:OnDoneBuilding()
 		self.Shoot_Sound = self.Sound_Fire
 		self.SoundPitch = 100
 	end
+	self.IsDoneBuilding = true
 end
 
 function ENT:SetSentryState(st)
@@ -369,72 +374,13 @@ function ENT:OnThink()
 			self.Model:SetBodygroup(2, 1)
 		end
 	end
-end
-
-function ENT:Think()
-	local state = self:GetState()
-	local deltatime = 0
-	
-	if self.LastThink then
-		deltatime = CurTime() - self.LastThink
-	end
-	self.LastThink = CurTime()
-	
-	self:OnThink()
-	if state==0 then
-		if CurTime()-self.StartTime>=self.TimeLeft then
-			self:Build()
-		end
-	elseif state==1 then
-		local time_added = deltatime
-		
-		if self.BuildBoost then
-			local total = 1
-			local mul = self.DefaultBuildRate / self.BuildRate
-			
-			for pl,data in pairs(self.BuildBoost) do
-				if CurTime() > data.endtime then
-					self.BuildBoost[pl] = nil
-				else
-					total = total + data.val * mul
-				end
-			end
-			
-			self.Model:SetPlaybackRate(self.BuildRate * total)
-			time_added = time_added * total
-		end
-		
-		self.BuildProgress = math.Clamp(self.BuildProgress + time_added, 0, self.BuildProgressMax)
-		self:SetBuildProgress(self.BuildProgress / self.BuildProgressMax)
-		
-		local health = math.Clamp((self.BuildProgress / self.BuildProgressMax) * self:GetMaxHealth(), self.InitialHealth, self:GetMaxHealth())
-		self:SetHealth(health - (self.BuildSubstractHealth or 0))
-		
-		if self.BuildProgress >= self.BuildProgressMax then
-			self:OnDoneBuilding()
-			self:SetHealth(self:GetMaxHealth() - (self.BuildSubstractHealth or 0))
-			self:Enable()
-		end
-	elseif state==2 then
-		if CurTime()-self.StartTime>=self.TimeLeft then
-			self:OnDoneUpgrade()
-			self:Enable()
-		end
-		
-		if not self.DisableDuringUpgrade then
-			self:OnThinkActive()
-		end
-	elseif state==3 then
-		self:OnThinkActive()
-	end
+	if self.Wrangled == false then
 	self:SetPoseParameter("aim_pitch", self.VisualTurretPitch)
 	self:SetPoseParameter("aim_yaw", self.TurretYaw)
 	self.Model:SetPoseParameter("aim_pitch", self.VisualTurretPitch)
 	self.Model:SetPoseParameter("aim_yaw", self.TurretYaw)
-	self:NextThink(CurTime())
-	return true
+	end
 end
-
 
 function ENT:StartFiring()
 	self.Firing = true
@@ -496,9 +442,16 @@ function ENT:ShootBullets()
 		if self:GetLevel() == 1 then
 			self.SoundCounter = 1
 			self.ShootSoundEnt:Play()
+		
+			if self.Wrangled != false then
+				self.ShootSoundEnt:ChangePitch(120)
+			end
 		else
 			self.SoundCounter = 2
 			self.ShootSoundEnt:PlayEx(1, self.SoundPitch)
+			if self.Wrangled != false then
+				self.ShootSoundEnt:ChangePitch(120)
+			end
 		end
 	end
 	
@@ -545,6 +498,9 @@ function ENT:ShootRocket()
 	end
 	self.RocketShootSoundEnt = CreateSound(self, self.RocketShoot_Sound)
 	self.RocketShootSoundEnt:PlayEx(1, self.SoundPitch)
+	if self.Wrangled != false then
+		self.RocketShootSoundEnt:ChangePitch(120) 
+	end
 	
 	local rocket = ents.Create("tf_projectile_sentryrocket")
 	rocket:SetPos(pos)
@@ -559,7 +515,91 @@ end
 function ENT:FindTarget(dbg)
 	local Target, MinDist, Method
 	for _,v in pairs(ents.FindInSphere(self:GetPos(), self.Range)) do
-		if (v:IsPlayer() or v:IsNPC()) and v:Health() > 0 and (self:Team()==TEAM_NEUTRAL or GAMEMODE:EntityTeam(v)~=self:Team()) then
+		if (v:IsPlayer() or v:IsNPC()) and ( v:Health() > 0 ) and (self:Team()==TEAM_NEUTRAL or GAMEMODE:EntityTeam(v)~=self:Team()) then
+			local d = self:GetPos():Distance(v:GetPos())
+			if not MinDist or d<MinDist then
+				local method = self:GetTargetMethod(v, true, dbg)
+				if method then				
+					if ( v:IsPlayer() and not v:IsFriendly(self) and v:GetPlayerClass() == "spy" ) then
+						if v:GetModel() == "models/player/scout.mdl" or  v:GetModel() == "models/player/soldier.mdl" or  v:GetModel() == "models/player/pyro.mdl" or  v:GetModel() == "models/player/demo.mdl" or  v:GetModel() == "models/player/heavy.mdl" or  v:GetModel() == "models/player/engineer.mdl" or  v:GetModel() == "models/player/medic.mdl" or  v:GetModel() == "models/player/sniper.mdl" or  v:GetModel() == "models/player/hwm/spy.mdl"  then return true end
+					end
+					if ( v:IsPlayer() and v:HasGodMode() != false ) then
+						return
+					end 
+					Target = v
+					MinDist = d
+					Method = method
+				end
+			end
+		end
+	end
+	for _,v in pairs(ents.FindByClass("npc_*_red")) do
+		if v.Team == "RED" and self:Team() == TEAM_BLU then
+			local d = self:GetPos():Distance(v:GetPos())
+			if not MinDist or d<MinDist then
+				local method = self:GetTargetMethod(v, true, dbg)
+				if method then
+					Target = v
+					MinDist = d
+					Method = method
+				end
+			end
+		end
+	end
+	for _,v in pairs(ents.FindByClass("npc_*_blue")) do
+		if v.Team == "BLU" and self:Team() == TEAM_RED then
+			local d = self:GetPos():Distance(v:GetPos())
+			if not MinDist or d<MinDist then
+				local method = self:GetTargetMethod(v, true, dbg)
+				if method then
+					Target = v
+					MinDist = d
+					Method = method
+				end
+			end
+		end
+	end
+	for _,v in pairs(ents.FindByClass("npc_*_mvm")) do
+		if v.Team == "GREY" and self:Team() == TEAM_RED or self:Team() == TEAM_BLU then
+			local d = self:GetPos():Distance(v:GetPos())
+			if not MinDist or d<MinDist then
+				local method = self:GetTargetMethod(v, true, dbg)
+				if method then
+					Target = v
+					MinDist = d
+					Method = method
+				end
+			end
+		end
+	end
+	for _,v in pairs(ents.FindByClass("npc_*_mvm_*")) do
+		if v.Team == "GREY" and self:Team() == TEAM_RED or self:Team() == TEAM_BLU then
+			local d = self:GetPos():Distance(v:GetPos())
+			if not MinDist or d<MinDist then
+				local method = self:GetTargetMethod(v, true, dbg)
+				if method then
+					Target = v
+					MinDist = d
+					Method = method
+				end
+			end
+		end
+	end
+	for _,v in pairs(ents.FindByClass("npc_demo_halloween")) do
+		if v.Team == "GREY" and self:Team() == TEAM_RED or self:Team() == TEAM_BLU then
+			local d = self:GetPos():Distance(v:GetPos())
+			if not MinDist or d<MinDist then
+				local method = self:GetTargetMethod(v, true, dbg)
+				if method then
+					Target = v
+					MinDist = d
+					Method = method
+				end
+			end
+		end
+	end
+	for _,v in pairs(ents.FindByClass("npc_mvm_tank")) do
+		if v.MvMBot == true and self:Team() == TEAM_RED or self:Team() == TEAM_BLU then
 			local d = self:GetPos():Distance(v:GetPos())
 			if not MinDist or d<MinDist then
 				local method = self:GetTargetMethod(v, true, dbg)
@@ -616,7 +656,68 @@ function ENT:ThinkIdle()
 		self.NextSearch = CurTime() + 0.5
 	end
 end
-
+if SERVER then
+function ENT:Think()
+	local state = self:GetState()
+	local deltatime = 0
+	
+	if self.LastThink then
+		deltatime = CurTime() - self.LastThink
+	end
+	self.LastThink = CurTime()
+	
+	self:OnThink()
+	if state==0 then
+		if CurTime()-self.StartTime>=self.TimeLeft then
+			self:Build()
+		end
+	elseif state==1 then
+		local time_added = deltatime
+		
+		if self.BuildBoost then
+			local total = 1
+			local mul = self.DefaultBuildRate / self.BuildRate
+			
+			for pl,data in pairs(self.BuildBoost) do
+				if CurTime() > data.endtime then
+					self.BuildBoost[pl] = nil
+				else
+					total = total + data.val * mul
+				end
+			end
+			
+			self.Model:SetPlaybackRate(self.BuildRate * total)
+			time_added = time_added * total
+		end
+		
+		self.BuildProgress = math.Clamp(self.BuildProgress + time_added, 0, self.BuildProgressMax)
+		self:SetBuildProgress(self.BuildProgress / self.BuildProgressMax)
+		
+		local health = math.Clamp((self.BuildProgress / self.BuildProgressMax) * self:GetMaxHealth(), self.InitialHealth, self:GetMaxHealth())
+		self:SetHealth(health - (self.BuildSubstractHealth or 0))
+		
+		if self.BuildProgress >= self.BuildProgressMax then
+			self:OnDoneBuilding()
+			self:SetHealth(self:GetMaxHealth() - (self.BuildSubstractHealth or 0))
+			self:Enable()
+		end
+	elseif state==2 then
+		if CurTime()-self.StartTime>=self.TimeLeft then
+			self:OnDoneUpgrade()
+			self:Enable()
+		end
+		
+		if not self.DisableDuringUpgrade then
+			self:OnThinkActive()
+		end
+	elseif state==3 then
+		self:OnThinkActive()
+	end
+	
+	self:NextThink(CurTime())
+	return true
+end
+end
 function ENT:ThinkTarget()
 	-- If the target gets too far away, forget about it
 	if IsValid(self.Target) and self.Target:Health()>0 and (not self.NextDistanceCheck or CurTime() > self.NextDistanceCheck) then
@@ -673,9 +774,11 @@ function ENT:ThinkTarget()
 			if self.ShootAnimCounter == 0 then
 				self.ShootAnimCounter = 4
 				if ok then
-					self:RestartGesture(ACT_RANGE_ATTACK1)
+					self.Model:RestartGesture(ACT_RANGE_ATTACK1, true)
+					self:RestartGesture(ACT_RANGE_ATTACK1, true)
 				elseif self:GetLevel() > 1 then
-					self:RestartGesture(ACT_RANGE_ATTACK1_LOW)
+					self.Model:RestartGesture(ACT_RANGE_ATTACK1_LOW, true)
+					self:RestartGesture(ACT_RANGE_ATTACK1_LOW, true)
 				end
 			end
 			
@@ -693,8 +796,11 @@ function ENT:ThinkTarget()
 				local ok = self:TakeAmmo2(1)
 				
 				if ok then
-					self:RestartGesture(ACT_RANGE_ATTACK2)
 					self:ShootRocket()
+					self:SetNoDraw(true)
+					self.Model:SetNoDraw(false)
+					self.Model:RestartGesture(ACT_RANGE_ATTACK2, true)
+					self:RestartGesture(ACT_RANGE_ATTACK2, true)
 					self.NextFireRocket = CurTime() + 3
 				end
 			end

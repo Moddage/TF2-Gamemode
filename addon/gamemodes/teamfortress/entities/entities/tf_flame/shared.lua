@@ -59,6 +59,7 @@ if SERVER then
 AddCSLuaFile( "shared.lua" )
 
 ENT.HitSound = Sound("Weapon_FlameThrower.FireHit")
+ENT.HitLoopSound = Sound("Weapon_FlameThrower.FireHitHard")
 
 ENT.MaxDamage = 7
 ENT.MinDamage = 2
@@ -153,6 +154,7 @@ function ENT:Hit(ent)
 	if ent:IsTFPlayer() or (ent:GetClass()=="prop_physics") then
 		if not ent.FlameBurnSound then
 			ent.FlameBurnSound = CreateSound(ent, self.HitSound)
+			ent.FlameBurnSound = CreateSound(ent, self.HitLoopSound)
 		end
 		
 		if not ent.NextStopBurnSound or CurTime()>ent.NextStopBurnSound then

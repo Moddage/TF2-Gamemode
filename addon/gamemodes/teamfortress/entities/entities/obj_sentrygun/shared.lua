@@ -1,5 +1,5 @@
 
-DEFINE_BASECLASS("obj_base")
+ENT.Base	= "obj_base"
 ENT.Type = "ai"  
 
 ENT.AutomaticFrameAdvance = true
@@ -9,7 +9,7 @@ ENT.Range = 1100
 
 ENT.CollisionBox = {Vector(-24,-24,0), Vector(24,24,66)}
 ENT.BuildHull = {Vector(-24,-24,0), Vector(24,24,86)}
-
+ENT.Sapped = false
 ENT.ObjectName = "#TF_Object_Sentry"
 
 function ENT:GetObjectHealth()
@@ -63,7 +63,7 @@ function ENT:HUDAlertStatus()
 end
 
 function ENT:SetAutomaticFrameAdvance(bUsingAnim)
-	self.AutomaticFrameAdvance = true
+	self.AutomaticFrameAdvance = bUsingAnim
 end
 
 function ENT:SetupDataTables()

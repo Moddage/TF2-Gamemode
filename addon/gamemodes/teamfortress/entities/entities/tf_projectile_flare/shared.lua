@@ -81,7 +81,7 @@ function ENT:Initialize()
 	self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
 	
 	self:SetLocalVelocity(self:GetForward() * (self.Force or 1650))
-	self:SetGravity(0.5)
+	self:SetGravity(0.3)
 	
 	if GAMEMODE:EntityTeam(self:GetOwner()) == TEAM_BLU then
 		self:SetSkin(1)
@@ -96,8 +96,11 @@ end
 
 function ENT:Hit(ent)
 	self.Touch = nil
-	
-	self:EmitSound(self.HitSound)
+	if ent:IsNPC() or ent:IsPlayer() then
+		self:EmitSound("player/pl_impact_flare"..math.random(1,3)..".wav", 85, 100)
+	else
+		self:EmitSound("physics/concrete/concrete_impact_flare"..math.random(1,4)..".wav", 85, 100)
+	end
 	
 	local explosion = ents.Create("info_particle_system")
 	explosion:SetKeyValue("effect_name", "flaregun_destroyed")
@@ -117,17 +120,6 @@ function ENT:Hit(ent)
 	if ent:IsTFPlayer() and ent:HasPlayerState(PLAYERSTATE_ONFIRE) then
 		self.minicrit = true
 	end
-	
-	self:FireBullets{
-		Src=self:GetPos(),
-		Attacker=owner,
-		Dir=dir,
-		Spread=Vector(0,0,0),
-		Num=1,
-		Damage=damage,
-		Tracer=0,
-		HullSize=self.HitboxSize*2,
-	}
 	
 	if ent:IsFlammable() then
 		GAMEMODE:IgniteEntity(ent, self, owner, 10)

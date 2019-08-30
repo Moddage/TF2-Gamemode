@@ -12,6 +12,8 @@ direction = teleporter direction pose param
 ENT.Base = "base_entity"
 ENT.Type = "anim"  
 
+ENT.AutomaticFrameAdvance = true
+
 function ENT:SetupDataTables()
 	self:NetworkVar("Entity", 0, "Builder")
 	self:NetworkVar("Float", 0, "Scale")

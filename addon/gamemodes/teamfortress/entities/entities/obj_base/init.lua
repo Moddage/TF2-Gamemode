@@ -17,6 +17,7 @@ ENT.BuildRate = ENT.DefaultBuildRate
 
 ENT.RepairRate = 25
 ENT.UpgradeRate = 25
+ENT.UpgradeAnimRate = 1
 
 ENT.InitialHealth = 1
 
@@ -108,18 +109,20 @@ function ENT:Upgrade()
 		self:SetCollisionBounds(unpack(self.CollisionBox))
 		
 		self:PreUpgradeAnim()
-		self:SetNPCState(NPC_STATE_SCRIPT)
 		self:SetNoDraw(true)
 		self.Model:SetNoDraw(false)
 		self.Model:ResetSequence(self:SelectWeightedSequence(ACT_OBJ_UPGRADING))
-		self.Model:SetCycle(0)
+		self.Model:SetCycle(0) 
 		self.Model:SetPlaybackRate(1)
+		self.Duration = self.Model:SequenceDuration()
+		self.TimeLeft = self.Model:SequenceDuration()
+		timer.Simple(self.Model:SequenceDuration() + 0.4, function()
+			self:EmitSound("Building_Sentrygun.Built")
+		end) 
 	end
 	
 	self:SetState(2)
 	self.StartTime = CurTime()
-	self.Duration = self.Model:SequenceDuration()
-	self.TimeLeft = self.Model:SequenceDuration()
 end
 
 function ENT:Enable()
@@ -181,7 +184,7 @@ function ENT:Explode()
 	explosion:Fire("Kill", "", 0.1)
 	
 	self:EmitSound(self.Sound_Explode, 100, 100)
-	
+	self:StopSound("Weapon_Sapper.Timer")
 	self:Remove()
 end
 

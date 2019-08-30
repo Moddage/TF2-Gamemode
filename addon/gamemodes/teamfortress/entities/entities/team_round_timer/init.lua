@@ -151,6 +151,12 @@ function ENT:Think()
 			self:RestartTimer(true)
 		elseif not self.RoundFinished then
 			self.RoundFinished = true
+			if game.GetMap() == "ctf_sawmill" or  game.GetMap() == "ctf_2fort" or  game.GetMap() == "ctf_landfall" then
+				RunConsoleCommand("tf_blu_wins")
+			end
+			if game.GetMap() == "gm_bigcity_improved" then
+				RunConsoleCommand("tf_red_wins")
+			end
 			self:TriggerOutput("OnFinished")
 		end
 		return

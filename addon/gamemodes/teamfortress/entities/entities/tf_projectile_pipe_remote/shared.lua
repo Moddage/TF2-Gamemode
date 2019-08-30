@@ -72,7 +72,7 @@ ENT.Model3 = "models/weapons/w_models/w_stickybomb2.mdl"
 ENT.Model4 = "models/weapons/w_models/w_stickybomb3.mdl"
 
 
-ENT.ExplosionSound = Sound("Weapon_Grenade_Pipebomb.Explode")
+ENT.ExplosionSound = ""
 --ENT.BounceSound = Sound("Weapon_Grenade_Pipebomb.Bounce")
 
 ENT.BaseDamage = 120
@@ -110,7 +110,6 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_CUSTOM)
 	self:SetHealth(1)
 	self:SetMoveCollide(MOVECOLLIDE_FLY_SLIDE)
-	
 	if GAMEMODE:EntityTeam(self:GetOwner()) == TEAM_BLU then
 		if self.DetonateMode==2 then
 			-- oh come on
@@ -203,7 +202,7 @@ end
 
 function ENT:DoExplosion()
 	if self.Dead then return end
-	--self:EmitSound(self.ExplosionSound, 100, 100)
+	self:EmitSound(self.ExplosionSound, 100, 100)
 	
 	--local flags = 0
 	local flags = 8
