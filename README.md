@@ -1,4 +1,4 @@
-## Unofficial Build Team Fortress 2 Gamemode
+## Unofficial Modified Build of Team Fortress 2 Gamemode
 The Gamemode that allows you to play TF2 in Gmod! Now with more stuff! and more Activity!
 
 ## Installation
