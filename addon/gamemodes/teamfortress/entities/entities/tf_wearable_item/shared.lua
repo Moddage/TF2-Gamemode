@@ -38,6 +38,11 @@ function ENT:Think()
 			end
 		end
 	elseif SERVER then
+		if self:GetOwner():GetNoDraw() == true then
+			self:SetNoDraw(true)
+		else
+			self:SetNoDraw(false)
+		end
 		if self:GetItemData()["item_slot"] == "head" then
 			if self:GetOwner():GetInfoNum("tf_hatcolor_rainbow", 0) == 1 then 
 				self:SetCosmeticTint(Vector(math.random(5, 255)/255, math.random(5, 255)/255, math.random(5, 255)/255))
@@ -159,6 +164,32 @@ function ENT:OnOwnerDeath()
 	self:DrawShadow(false)
 	SafeRemoveEntityDelayed(self, 1)
 end
+
+
+hook.Add("PlayerHurt", "TFHatDisable2", function(pl)
+	for k,dringer in pairs(ents.FindByClass("tf_weapon_invis_dringer")) do
+		if dringer.Owner == pl and dringer.dt.Ready == true then
+			for _,v in pairs(ents.FindByClass("tf_wearable_item")) do
+				if v:GetOwner()==pl then
+					v:SetNoDraw(true)
+					v:DrawShadow(false)
+					timer.Create("Decloak", 0.001, 0, function()
+						if dringer.dt.Charging == false then
+							v:SetNoDraw(false)
+							v:DrawShadow(true)	
+							v:SetMaterial("models/shadertest/predator")  
+							timer.Simple(1, function() 
+								v:SetMaterial("")
+								timer.Stop("Decloak")
+							end)
+						end
+					end)
+				end
+			end
+		end
+	end
+end)
+
 
 hook.Add("DoPlayerDeath", "DetachPlayerHat", function(pl)
 	for _,v in pairs(pl:GetTFItems()) do

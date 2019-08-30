@@ -110,9 +110,7 @@ end
 hook.Add("PlayerBindPress", "TargeChargeBindPress", function(pl, cmd, down)
 	local t = LocalPlayer().TargeEntity
 	if IsValid(t) and t.dt and t.dt.Charging then
-		if string.find(cmd, "+jump") then
-			return true
-		elseif string.find(cmd, "+duck") then
+		if string.find(cmd, "+duck") then
 			return true
 		end
 	end
@@ -404,6 +402,7 @@ function ENT:Think()
 		
 		if p0 < 0.33 and self.ChargeState == 1 then
 			GAMEMODE:StartCritBoost(self.Owner, "melee")
+			GAMEMODE:StartCritBoost(self.Owner, "primary")
 			self.ChargeState = 2
 			
 			if not self.CritStartSoundEnt then
@@ -413,7 +412,8 @@ function ENT:Think()
 				self.CritStartSoundEnt:Play()
 			end
 		elseif p0 < 0.66 and not self.ChargeState then
-			GAMEMODE:StartMiniCritBoost(self.Owner, "melee")
+			GAMEMODE:StartCritBoost(self.Owner, "melee")
+			GAMEMODE:StartCritBoost(self.Owner, "primary")
 			self.ChargeState = 1
 		end
 	elseif not self.dt.Ready then

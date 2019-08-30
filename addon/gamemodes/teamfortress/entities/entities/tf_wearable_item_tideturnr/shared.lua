@@ -4,33 +4,33 @@ local tf_targe_enhanced_charge = CreateConVar("tf_targe_enhanced_charge", 1, {FC
 ENT.Type 			= "anim"
 ENT.Base 			= "tf_wearable_item"
 
-ENT.MeleeRange = 0
+ENT.MeleeRange = 50
 
 ENT.ForceMultiplier = 10000
 ENT.CritForceMultiplier = 10000
-ENT.ForceAddPitch = 20
+ENT.ForceAddPitch = 0
 ENT.CritForceAddPitch = 0
 
 ENT.DefaultBaseDamage = 50
 ENT.DamagePerHead = 10
 --ENT.MaxHeads = 5
 
-ENT.BaseDamage = 0
+ENT.BaseDamage = 50
 ENT.DamageRandomize = 0.1
 ENT.MaxDamageRampUp = 0
 ENT.MaxDamageFalloff = 0
 
-ENT.HitPlayerSound = Sound("")
-ENT.HitPlayerRangeSound = Sound("")
-ENT.HitWorldSound = Sound("")
+ENT.HitPlayerSound = Sound("DemoCharge.HitFlesh")
+ENT.HitPlayerRangeSound = Sound("DemoCharge.HitFleshRange")
+ENT.HitWorldSound = Sound("DemoCharge.HitWorld")
 
-ENT.CritStartSound = Sound("")
-ENT.CritStopSound = Sound("")
+ENT.CritStartSound = Sound("DemoCharge.ChargeCritOn")
+ENT.CritStopSound = Sound("DemoCharge.ChargeCritOff")
 
-ENT.DefaultChargeDuration = 0
-ENT.ChargeCooldownDuration = 0
+ENT.DefaultChargeDuration = 1.5
+ENT.ChargeCooldownDuration = 12
 
-ENT.ChargeSteerConstraint = 9999
+ENT.ChargeSteerConstraint = GetConVar( "sensitivity" )
 
 function ENT:SetupDataTables()
 	self.BaseClass.SetupDataTables(self)
@@ -43,6 +43,8 @@ end
 
 if CLIENT then
 
+ENT.GlobalCustomHUD = {HudDemomanCharge = true}
+
 function ENT:InitializeCModel(weapon)
 	local vm = self.Owner:GetViewModel()
 	
@@ -52,7 +54,7 @@ function ENT:InitializeCModel(weapon)
 		
 		self.CModel:SetPos(vm:GetPos())
 		self.CModel:SetAngles(vm:GetAngles())
-		self.CModel:AddEffects(EF_BONEMERGE)
+		self.CModel:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE_FASTCULL))
 		self.CModel:SetParent(vm)
 		self.CModel:SetNoDraw(true)
 	end
@@ -74,10 +76,47 @@ function ENT:Think()
 	
 	if self.Owner == LocalPlayer() then
 		if self.dt.Charging then
-			return nil
+			if not self.ChargeDuration then
+				self.ChargeDuration = self.DefaultChargeDuration + self.dt.AdditiveChargeDuration
+			end
+			
+			local p = (self.dt.NextEndCharge - CurTime()) / self.ChargeDuration
+			local p0 = p * (self.DefaultChargeDuration / self.ChargeDuration)
+			
+			if p0 < 0.33 then
+				HudDemomanPipes:SetChargeStatus(3)
+			elseif p0 < 0.66 then
+				HudDemomanPipes:SetChargeStatus(2)
+			else
+				HudDemomanPipes:SetChargeStatus(1)
+			end
+			
+			HudDemomanPipes:SetProgress(p)
+		else
+			HudDemomanPipes:SetChargeStatus(0)
+			if self.dt.Ready then
+				HudDemomanPipes:SetProgress(1)
+			else
+				self.ChargeDuration = nil
+				
+				local cooldown = self.ChargeCooldownDuration * self.dt.ChargeCooldownMultiplier
+				local p = 1 - (self.dt.NextEndCharge - CurTime()) / cooldown
+				HudDemomanPipes:SetProgress(p)
+			end
 		end
 	end
 end
+
+hook.Add("PlayerBindPress", "TargeChargeBindPress", function(pl, cmd, down)
+	local t = LocalPlayer().TargeEntity
+	if IsValid(t) and t.dt and t.dt.Charging then
+		if string.find(cmd, "+jump") then
+			return true
+		elseif string.find(cmd, "+duck") then
+			return true
+		end
+	end
+end)
 
 hook.Add("CreateMove", "TargeChargeCreateMove", function(cmd)
 	local t = LocalPlayer().TargeEntity
@@ -85,9 +124,6 @@ hook.Add("CreateMove", "TargeChargeCreateMove", function(cmd)
 		local ang = cmd:GetViewAngles()
 		if LocalPlayer().SavedTargeAngle then
 			local oldyaw = LocalPlayer().SavedTargeAngle.y
-			
-			ang.y = oldyaw + math.Clamp(math.AngleDifference(ang.y, oldyaw), -t.ChargeSteerConstraint, t.ChargeSteerConstraint)
-			cmd:SetViewAngles(ang)
 		end
 		LocalPlayer().SavedTargeAngle = ang
 	else
@@ -114,6 +150,18 @@ function ENT:CanChargeThrough(ent)
 	return false
 end
 
+-- Open the area portal linked to this door entity
+local function OpenLinkedAreaPortal(ent)
+	local name = ent:GetName()
+	if not name or name == "" then return end
+	
+	for _,v in pairs(ents.FindByClass("func_areaportal")) do
+		if v.TargetDoorName == name then
+			v:Fire("Open")
+		end
+	end
+end
+
 function ENT:MeleeAttack()
 	if not IsValid(self.Owner) then return end
 	
@@ -122,7 +170,7 @@ function ENT:MeleeAttack()
 	ang.p = 0
 	local endpos = pos + ang:Forward() * self.MeleeRange
 	
-	local hitent, hitpos, dmginfo
+	local hitent, hitpos, dmginfo, dir
 	
 	--self.Owner:LagCompensation(true)
 	
@@ -153,7 +201,7 @@ function ENT:MeleeAttack()
 		end
 		
 		local ang = self.Owner:EyeAngles()
-		local dir = ang:Forward()
+		dir = ang:Forward()
 		hitpos = tr.Entity:NearestPoint(self.Owner:GetShootPos()) - 2 * dir
 		tr.HitPos = hitpos
 		
@@ -210,16 +258,17 @@ function ENT:MeleeAttack()
 		end
 		
 		if tf_targe_enhanced_charge:GetBool() and IsValid(tr.Entity) then
-			print("charge hit", tr.Entity, tr.Entity:Health(), tr.Entity:GetMaxHealth(), self:CanChargeThrough(tr.Entity))
 			if self:CanChargeThrough(tr.Entity) then
 				return
-			--[[elseif tr.Entity:GetClass() == "prop_door_rotating" then
+			elseif tr.Entity:GetClass() == "prop_door_rotating" then
 				local p = ents.Create("prop_physics")
 				p:SetModel(tr.Entity:GetModel())
 				p:SetBodygroup(1, 1)
 				p:SetSkin(tr.Entity:GetSkin())
 				p:SetPos(tr.Entity:GetPos())
 				p:SetAngles(tr.Entity:GetAngles())
+				
+				OpenLinkedAreaPortal(tr.Entity)
 				tr.Entity:Remove()
 				p:Spawn()
 				
@@ -236,10 +285,12 @@ function ENT:MeleeAttack()
 				local door = tr.Entity:GetParent()
 				
 				local p = ents.Create("prop_physics")
-				p:SetModel(door:GetModel())
-				p:SetSkin(door:GetSkin())
-				p:SetPos(door:GetPos())
-				p:SetAngles(door:GetAngles())
+				p:SetModel(tr.Entity:GetModel())
+				p:SetSkin(tr.Entity:GetSkin())
+				p:SetPos(tr.Entity:GetPos())
+				p:SetAngles(tr.Entity:GetAngles())
+				
+				OpenLinkedAreaPortal(door)
 				door:Remove()
 				p:Spawn()
 				
@@ -250,7 +301,7 @@ function ENT:MeleeAttack()
 					p:SetPhysicsAttacker(self.Owner)
 				end
 				
-				return]]
+				return
 			end
 		end
 	end
@@ -276,26 +327,51 @@ end
 
 function ENT:StartCharging()
 	if not self.ChargeDuration then
-		return nil
+		self.dt.AdditiveChargeDuration = self.Owner.TempAttributes.AdditiveChargeDuration or 0
+		self.dt.ChargeCooldownMultiplier = self.Owner.TempAttributes.ChargeCooldownMultiplier or 1
+		self.ChargeDuration = self.DefaultChargeDuration + self.dt.AdditiveChargeDuration
 	end
 	
+	self.dt.Ready = false
+	self.dt.Charging = true
+	self.dt.NextEndCharge = CurTime() + self.ChargeDuration
+	self.SpeedBonus = 2.69
+	self.Owner:ResetClassSpeed()
+	self.Owner:SetJumpPower(0)
+	
 	if not self.ChargeSoundEnt then
-		return nil
+		self.ChargeSoundEnt = CreateSound(self.Owner, "DemoCharge.Charging")
 	end
 	
 	if self.ChargeSoundEnt then
-		return nil
+		self.ChargeSoundEnt:Play()
 	end
 end
 
 function ENT:StopCharging()
+	self.ChargeDuration = nil
+	self.dt.Ready = false
+	self.dt.Charging = false
+	self.dt.NextEndCharge = CurTime() + self.ChargeCooldownDuration * self.dt.ChargeCooldownMultiplier
+	self.SpeedBonus = nil
+	self.Owner:ResetClassSpeed()
+	self.Owner:SetJumpPower(250)
 	
 	if self.ChargeSoundEnt then
-		return nil
+		self.ChargeSoundEnt:Stop()
+		self.ChargeSoundEnt = nil
 	end
 	
 	if self.ChargeState then
-		return nil
+		if self.ChargeState == 2 then
+			if self.CritStartSoundEnt then
+				self.CritStartSoundEnt:Stop()
+				self.CritStartSoundEnt = nil
+				self.Owner:EmitSound(self.CritStopSound)
+			end
+		end
+		
+		self.NextEndCritBoost = CurTime() + 0.4
 	end
 end
 
@@ -309,11 +385,71 @@ function ENT:Think()
 	if not IsValid(self.Owner) then return end
 	
 	if self.dt.Charging then
-		return nil
+		local vel = self.Owner:GetVelocity():LengthSqr()
+		
+		if self.Owner:Crouching() then
+			self.Owner:ConCommand("-duck")
+		end
+		
+		if not self.MaxSpeed or vel > self.MaxSpeed then
+			self.MaxSpeed = vel
+		end
+		
+		local cap = self.MaxSpeed * 0.8 * 0.8
+		
+		if vel < cap then
+			--print("below minimum speed, performing trace check")
+			self:MeleeAttack()
+			if not self.dt.Charging then
+				return
+			end
+		end
+		
+		if CurTime() > self.dt.NextEndCharge then
+			self:StopCharging()
+			return
+		end
+		
+		local p = (self.dt.NextEndCharge - CurTime()) / self.ChargeDuration
+		local p0 = p * (self.DefaultChargeDuration / self.ChargeDuration)
+		
+		if p0 < 0.33 and self.ChargeState == 1 then
+			GAMEMODE:StartCritBoost(self.Owner)
+			self.ChargeState = 2
+			
+			if not self.CritStartSoundEnt then
+				self.CritStartSoundEnt = CreateSound(self, self.CritStartSound)
+			end
+			if self.CritStartSoundEnt then
+				self.CritStartSoundEnt:Play()
+			end
+		elseif p0 < 0.66 and not self.ChargeState then
+			GAMEMODE:StartCritBoost(self.Owner)
+			self.ChargeState = 1
+		end
+	elseif not self.dt.Ready then
+		if CurTime() > self.dt.NextEndCharge then
+			self.dt.Ready = true
+			umsg.Start("PlayChargeReadySound", self.Owner)
+			umsg.End()
+		end
+		
+		self.MaxSpeed = nil
+		self.ChargeState = nil
 	end
 	
 	if self.NextEndCritBoost and CurTime() > self.NextEndCritBoost then
-		return nil
+		GAMEMODE:StopCritBoost(self.Owner)
+		self.NextEndCritBoost = nil
+	end
+	
+	if self.Owner:KeyDown(IN_ATTACK2) and self.dt.Ready then
+		if self.Owner:OnGround() then
+			if self.Owner:Crouching() then
+				self.Owner:ConCommand("-duck")
+			end
+			self:StartCharging()
+		end
 	end
 	
 	self:NextThink(CurTime())

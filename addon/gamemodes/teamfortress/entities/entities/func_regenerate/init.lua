@@ -37,10 +37,12 @@ function ENT:Think()
 			resupplied = true
 			GAMEMODE:GiveHealthPercent(pl, 100)
 			GAMEMODE:GiveAmmoPercent(pl, 100)
+			pl:SetPlayerClass(pl:GetPlayerClass())
 			if self.Opened then
 				self:EmitSound("AmmoPack.Touch", 100, 100)
 			end
 			self.Players[pl] = CurTime()
+			self.NextClose = CurTime() + 1.5
 		end
 	end
 	

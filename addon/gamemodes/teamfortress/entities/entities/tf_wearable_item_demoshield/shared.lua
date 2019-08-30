@@ -358,6 +358,7 @@ function ENT:StopCharging()
 	self.dt.NextEndCharge = CurTime() + self.ChargeCooldownDuration * self.dt.ChargeCooldownMultiplier
 	self.SpeedBonus = nil
 	self.Owner:ResetClassSpeed()
+	self.Owner:SetJumpPower(250)
 	
 	if self.ChargeSoundEnt then
 		self.ChargeSoundEnt:Stop()
@@ -416,7 +417,7 @@ function ENT:Think()
 		local p0 = p * (self.DefaultChargeDuration / self.ChargeDuration)
 		
 		if p0 < 0.33 and self.ChargeState == 1 then
-			GAMEMODE:StartCritBoost(self.Owner, "melee")
+			GAMEMODE:StartCritBoost(self.Owner)
 			self.ChargeState = 2
 			
 			if not self.CritStartSoundEnt then
@@ -426,7 +427,7 @@ function ENT:Think()
 				self.CritStartSoundEnt:Play()
 			end
 		elseif p0 < 0.66 and not self.ChargeState then
-			GAMEMODE:StartMiniCritBoost(self.Owner, "melee")
+			GAMEMODE:StartCritBoost(self.Owner)
 			self.ChargeState = 1
 		end
 	elseif not self.dt.Ready then
@@ -443,7 +444,6 @@ function ENT:Think()
 	if self.NextEndCritBoost and CurTime() > self.NextEndCritBoost then
 		GAMEMODE:StopCritBoost(self.Owner)
 		self.NextEndCritBoost = nil
-		print("!?!")
 	end
 	
 	if self.Owner:KeyDown(IN_ATTACK2) and self.dt.Ready then
