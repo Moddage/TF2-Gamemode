@@ -33,7 +33,8 @@ SWEP.ExplosionCritDamageMultiplier = 2
 
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "none"
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 
 SWEP.HoldType = "MELEE"
 

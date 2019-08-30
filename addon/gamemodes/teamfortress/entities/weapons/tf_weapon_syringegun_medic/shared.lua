@@ -27,10 +27,16 @@ SWEP.ShootSound = Sound("Weapon_SyringeGun.Single")
 SWEP.ShootCritSound = Sound("Weapon_SyringeGun.SingleCrit")
 SWEP.ReloadSound = Sound("Weapon_SyringeGun.WorldReload")
 
+SWEP.BaseDamage = 15
+SWEP.DamageRandomize = 0.1
+SWEP.MaxDamageRampUp = 0.7
+SWEP.MaxDamageFalloff = 0.5
+
 SWEP.Primary.ClipSize		= 40
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_PRIMARY
 SWEP.Primary.Delay          = 0.1
+SWEP.ReloadTime = 1.5
 
 SWEP.BulletSpread = 0.02
 
@@ -38,6 +44,8 @@ SWEP.IsRapidFire = true
 SWEP.ReloadSingle = false
 
 SWEP.HoldType = "PRIMARY"
+
+SWEP.HoldTypeHL2 = "ar2"
 
 SWEP.ProjectileShootOffset = Vector(40, 8, -5)
 
@@ -54,7 +62,7 @@ function SWEP:ShootProjectile()
 		end
 		syringe:SetOwner(self.Owner)
 		--syringe:SetProjectileType(1)
-		
+		syringe.BaseDamage = self.BaseDamage
 		self:InitProjectileAttributes(syringe)
 		
 		syringe:Spawn()

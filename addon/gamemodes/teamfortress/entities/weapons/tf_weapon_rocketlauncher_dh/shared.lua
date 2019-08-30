@@ -27,7 +27,8 @@ SWEP.CustomExplosionSound = Sound("Weapon_RPG_DirectHit.Explode")
 SWEP.Primary.ClipSize		= 4
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_PRIMARY
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 
 SWEP.IsRapidFire = false
 SWEP.ReloadSingle = true

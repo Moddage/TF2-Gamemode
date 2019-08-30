@@ -50,6 +50,7 @@ SWEP.ReloadSingle = false
 SWEP.HasCustomMeleeBehaviour = true
 
 SWEP.HoldType = "ITEM1"
+SWEP.HoldTypeHL2 = "grenade"
 
 SWEP.ProjectileShootOffset = Vector(0, 0, 0)
 
@@ -68,7 +69,7 @@ function SWEP:MeleeAttack()
 	local pos = self.Owner:GetShootPos()
 	
 	if SERVER then
-		local grenade = ents.Create("tf_projectile_can")
+		local grenade = ents.Create("tf_projectile_jar")
 		grenade:SetPos(pos)
 		grenade:SetAngles(self.Owner:EyeAngles())
 		
@@ -85,6 +86,7 @@ function SWEP:MeleeAttack()
 		self:InitProjectileAttributes(grenade)
 		
 		grenade:Spawn()
+		grenade:SetModel("models/weapons/c_models/c_energy_drink/c_energy_drink.mdl")
 		
 		local vel = self.Owner:GetAimVector():Angle()
 		vel.p = vel.p + self.AddPitch

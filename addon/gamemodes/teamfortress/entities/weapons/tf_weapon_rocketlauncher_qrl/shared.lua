@@ -23,12 +23,13 @@ SWEP.MuzzleEffect = "muzzle_pipelauncher"
 SWEP.ShootSound = Sound("Weapon_QuakeRPG.Single")
 SWEP.ShootCritSound = Sound("Weapon_QuakeRPG.SingleCrit")
 SWEP.CustomExplosionSound = Sound("Weapon_QuakeRPG.Reload")
-SWEP.Primary.Reload = Sound("Weapon_QuakeRPG.Reload")
+SWEP.ReloadSound = Sound("Weapon_QuakeRPG.Reload")
 
 SWEP.Primary.ClipSize		= 4
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_PRIMARY
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 
 SWEP.IsRapidFire = false
 SWEP.ReloadSingle = true
@@ -65,6 +66,7 @@ function SWEP:ShootProjectile()
 		local rocket = ents.Create("tf_projectile_rocket")
 		rocket:SetPos(self:ProjectileShootPos())
 		local ang = self.Owner:EyeAngles()
+		rocket.ExplosionSound = "Weapon_QuakeRPG.Explode"
 		
 		if self.WeaponMode == 1 then
 			local charge = (CurTime() - self.ChargeStartTime) / self.ChargeTime

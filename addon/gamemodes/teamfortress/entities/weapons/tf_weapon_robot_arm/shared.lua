@@ -29,13 +29,13 @@ SWEP.MaxDamageRampUp = 0
 SWEP.MaxDamageFalloff = 0
 SWEP.IsRoboArm = true
 
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 
 SWEP.HoldType = "ITEM2"
 
 SWEP.NoHitSound = true
 SWEP.UpgradeSpeed = 25
-SWEP.HasThirdpersonCritAnimation = true
 
 SWEP.AltIdleAnimationProbability = 0.1
 
@@ -77,7 +77,12 @@ function SWEP:OnMeleeAttack(tr)
 		if IsValid(tr.Entity) and tr.Entity:IsTFPlayer() and !tr.Entity:IsBuilding() then
 			hit = true
 		end
-		
+		if IsValid(tr.Entity) and tr.Entity:IsNPC() and !tr.Entity:IsBuilding() then
+			hit = true
+		end
+		if self:CriticalEffect() then
+			self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_HARD_ITEM2,true)
+		end
 		if hit then
 			self.HasHit = true
 		else
@@ -86,24 +91,30 @@ function SWEP:OnMeleeAttack(tr)
 	end
 end
 
+
 function SWEP:OnMeleeHit(tr)
 	if tr.Entity and tr.Entity:IsValid() then
 		if tr.Entity:IsBuilding() then
 			local ent = tr.Entity
 			
 			if ent.IsTFBuilding and ent:IsFriendly(self.Owner) then
+				if ent.Sapped == true then
+					self.Owner:EmitSound("Weapon_Sapper.Removed")
+					ent.Sapped = false
+				end
 				if SERVER then
+
 					local m = ent:AddMetal(self.Owner, self.Owner:GetAmmoCount(TF_METAL))
 					if m > 0 then
-						self:EmitSound(self.HitBuildingSuccess)
+						self.Owner:EmitSound(self.HitBuildingSuccess)
 						self.Owner:RemoveAmmo(m, TF_METAL)
 						umsg.Start("PlayerMetalBonus", self.Owner)
 							umsg.Short(-m)
 						umsg.End()
 					elseif ent:GetState() == 1 then
-						self:EmitSound(self.HitBuildingSuccess)
+						self.Owner:EmitSound(self.HitBuildingSuccess)
 					else
-						self:EmitSound(self.HitBuildingFailure)
+						self.Owner:EmitSound(self.HitBuildingFailure)
 					end
 				end
 			else
@@ -117,7 +128,7 @@ function SWEP:OnMeleeHit(tr)
 	elseif tr.HitWorld then
 		self:EmitSound(self.HitWorld)
 	end
-
+	
 	if SERVER then
 		if self.HasHit then
 			self.dt.Combo = self.dt.Combo + 1
@@ -134,7 +145,6 @@ function SWEP:Critical(ent,dmginfo)
 	if self.dt.Combo >= 2 then
 		return true
 	end
-	
 	return self:CallBaseFunction("Critical", ent, dmginfo)
 end
 
@@ -169,3 +179,53 @@ function SWEP:Think()
 	
 	self:CallBaseFunction("Think")
 end
+
+
+function SWEP:SecondaryAttack()
+	self:SetNextSecondaryFire(CurTime() + 0.5)
+	for k,v in pairs(ents.FindInSphere(self.Owner:GetPos(), 75)) do
+		if v:IsBuilding() and v:GetBuilder() == self.Owner then
+			if v:GetClass() == "obj_sentrygun" then
+				if SERVER then
+					if v:GetLevel() == 3 then
+						self.DeployedBuildingLevel = 3
+					elseif v:GetLevel() == 2 then
+						self.DeployedBuildingLevel = 2
+					end
+					v:Fire("Kill")
+					self.Owner:ConCommand("move 2 0")
+				end
+			elseif v:GetClass() == "obj_dispenser" then
+				if SERVER then
+					if v:GetLevel() == 3 then
+						self.DeployedBuildingLevel = 3
+					elseif v:GetLevel() == 2 then
+						self.DeployedBuildingLevel = 2
+					end
+					v:Fire("Kill")
+					self.Owner:ConCommand("move 0 0")
+				end
+			elseif v:GetClass() == "obj_teleporter" and self:IsExit() != true then
+				if SERVER then
+					if v:GetLevel() == 3 then
+						self.DeployedBuildingLevel = 3
+					elseif v:GetLevel() == 2 then
+						self.DeployedBuildingLevel = 2
+					end
+					v:Fire("Kill")
+					self.Owner:ConCommand("move 1 0")
+				end
+			elseif v:GetClass() == "obj_teleporter" and self:IsExit() != false then
+				if SERVER then
+					if v:GetLevel() == 3 then
+						self.DeployedBuildingLevel = 3
+					elseif v:GetLevel() == 2 then
+						self.DeployedBuildingLevel = 2
+					end
+					v:Fire("Kill")
+					self.Owner:ConCommand("move 1 1")
+				end
+			end
+		end
+	end
+end 	

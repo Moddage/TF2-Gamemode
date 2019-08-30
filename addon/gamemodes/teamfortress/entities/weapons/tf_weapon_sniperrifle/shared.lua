@@ -46,7 +46,6 @@ usermessage.Hook("SetZoomStatus",function(msg)
 		end
 		
 		self.ChargeTimerStart = nil
-		self.ChargeSoundPlayed = nil
 		self.DrawCrosshair = true
 	end
 end)
@@ -90,11 +89,6 @@ function SWEP:DrawHUD()
 			
 			charge = math.Clamp(100*charge/chargetime, 0, 100)
 			HudSniperChargeMeter:SetProgress(charge)
-		end
-
-		if charge == 100 and !self.ChargeSoundPlayed then
-			surface.PlaySound("player/recharged.wav")
-			self.ChargeSoundPlayed = true
 		end
 		
 		local tex
@@ -191,6 +185,8 @@ SWEP.IsRapidFire = false
 SWEP.ReloadSingle = false
 
 SWEP.HoldType = "PRIMARY"
+
+SWEP.HoldTypeHL2 = "smg"
 
 SWEP.ProjectileShootOffset = Vector(3, 8, -5)
 SWEP.ChargeTime = 4
@@ -294,6 +290,7 @@ function SWEP:PrimaryAttack()
 	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
 	self:TakePrimaryAmmo(1)
 	self:RustyBulletHole()
+	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 	if SERVER then
 		self.NextAutoZoomOut = CurTime()+0.6
 	end
@@ -335,6 +332,18 @@ end
 
 function SWEP:Think()
 	self:TFViewModelFOV()
+
+	for k, v in pairs(player.GetAll()) do
+		if v == self.Owner then
+			if v:IsHL2() then
+				if self.ZoomStatus then
+					self:SetHoldType( "rpg" )
+				else
+					self:SetHoldType( "smg" )
+				end
+			end
+		end
+	end
 
 	if SERVER and self.NextReplayDeployAnim then
 		if CurTime() > self.NextReplayDeployAnim then
@@ -406,4 +415,16 @@ end
 
 function SWEP:OnRemove()
 	self:Holster()
+end
+
+
+
+if SERVER then
+
+hook.Add("PreScaleDamage", "BackstabSetDamage2", function(ent, hitgroup, dmginfo)
+	if dmginfo:GetInflictor().ZoomStatus then	
+		ent:AddDeathFlag(DF_HEADSHOT)
+	end
+end)
+
 end

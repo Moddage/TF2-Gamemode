@@ -39,8 +39,8 @@ SWEP.Spawnable = true
 SWEP.AdminSpawnable = false
 SWEP.Category = "Team Fortress 2"
 
-SWEP.MuzzleEffect = "muzzle_pipelauncher"
-PrecacheParticleSystem("muzzle_pipelauncher")
+SWEP.MuzzleEffect = "rocketbackblast"
+PrecacheParticleSystem("rocketbackblast")
 
 SWEP.ShootSound = Sound("weapons/rocket_shoot.wav")
 SWEP.ShootCritSound = Sound("Weapon_RPG.SingleCrit")
@@ -50,12 +50,14 @@ SWEP.ReloadSound = Sound("Weapon_RPG.WorldReload")
 SWEP.Primary.ClipSize		= 4
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_PRIMARY
-SWEP.Primary.Delay          = 0.8
 
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 SWEP.IsRapidFire = false
 SWEP.ReloadSingle = true
 
 SWEP.HoldType = "PRIMARY"
+SWEP.HoldTypeHL2 = "rpg"
 
 SWEP.ProjectileShootOffset = Vector(0, 13, -4)
 
@@ -192,7 +194,9 @@ function SWEP:ShootProjectile()
 		local rocket = ents.Create("tf_projectile_rocket")
 		rocket:SetPos(self:ProjectileShootPos())
 		local ang = self.Owner:EyeAngles()
-		
+		if self:GetItemData().model_player == "models/weapons/c_models/c_rocketjumper/c_rocketjumper.mdl" then
+			rocket.ExplosionSound = "weapons/rocket_jumper_explode1.wav"
+		end
 		if self.WeaponMode == 1 then
 			local charge = (CurTime() - self.ChargeStartTime) / self.ChargeTime
 			rocket.Gravity = Lerp(1 - charge, self.MinGravity, self.MaxGravity)
@@ -224,5 +228,27 @@ function SWEP:OnRemove()
 	if (game.SinglePlayer() or CLIENT) and self.ChargeUpSound then
 		self.ChargeUpSound:Stop()
 		self.ChargeUpSound = nil
+	end
+end
+
+function SWEP:ShootEffects()
+
+	if self.Owner:GetMaterial() == "models/shadertest/predator" then return end
+	if self:GetVisuals() and self:GetVisuals()["sound_single_shot"] then
+		self.ShootSound = self:GetVisuals()["sound_single_shot"]
+		self.ShootCritSound = self:GetVisuals()["sound_burst"]
+	end
+	if self:Critical() then
+		self:EmitSound(self.ShootCritSound)
+	else
+		self:EmitSound(self.ShootSound, self.ShootSoundLevel, self.ShootSoundPitch)
+	end
+	 
+	if SERVER then
+		if self.MuzzleEffect and self.MuzzleEffect~="" then
+			umsg.Start("DoRPGMuzzleFlash")
+				umsg.Entity(self)
+			umsg.End()
+		end
 	end
 end

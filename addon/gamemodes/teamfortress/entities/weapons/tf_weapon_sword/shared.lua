@@ -5,7 +5,6 @@ end
 if CLIENT then
 
 SWEP.PrintName			= "The Eyelander"
-SWEP.HasCModel = true
 SWEP.Slot				= 2
 
 local WhisperIdle = Sound("Sword.Idle")
@@ -20,27 +19,6 @@ end)
 
 SWEP.GlobalCustomHUD = {HudItemEffectMeter_Demoman = function(self) return self.dt.IsEyelander end}
 
-function SWEP:InitializeCModel()
-	self:CallBaseFunction("InitializeCModel")
-	
-	for _,v in pairs(self.Owner:GetTFItems()) do
-		if v:GetClass() == "tf_wearable_item_demoshield" then
-			self.ShieldEntity = v
-			v:InitializeCModel(self)
-		end
-	end
-end
-
-function SWEP:ViewModelDrawn()
-	self:CallBaseFunction("ViewModelDrawn")
-	
-	if IsValid(self.ShieldEntity) and IsValid(self.ShieldEntity.CModel) then
-		self.ShieldEntity:StartVisualOverrides()
-		self.ShieldEntity.CModel:DrawModel()
-		self.ShieldEntity:EndVisualOverrides()
-	end
-end
-
 end
 
 SWEP.Base				= "tf_weapon_melee_base"
@@ -48,7 +26,6 @@ SWEP.Base				= "tf_weapon_melee_base"
 SWEP.ViewModel			= "models/weapons/c_models/c_demo_arms.mdl"
 SWEP.WorldModel			= "models/weapons/c_models/c_claymore/c_claymore.mdl"
 SWEP.Crosshair = "tf_crosshair3"
-SWEP.ItemName = "Unique Achievement Sword"
 
 SWEP.Swing = Sound("Weapon_Sword.Swing")
 SWEP.SwingCrit = Sound("Weapon_Sword.SwingCrit")
@@ -68,14 +45,14 @@ SWEP.HealthBonus = 15
 
 SWEP.BaseDamage = 65
 SWEP.DamageRandomize = 0.1
-SWEP.MaxDamageRampUp = 0
+SWEP.MaxDamageRampUp = 0	
 SWEP.MaxDamageFalloff = 0
 
 --SWEP.CriticalChance = 0
 
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "none"
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
 
 SWEP.HoldType = "ITEM1"
 
@@ -129,7 +106,9 @@ function SWEP:OnPlayerKilled(ent)
 		if self.Owner:GetNWInt("Heads")<=4 then
 			--self.Owner:SetClassSpeed(self.Owner:GetClassSpeed() + self.SpeedBonus)
 			self.Owner.TempAttributes.AdditiveSpeedBonus = (self.Owner.TempAttributes.AdditiveSpeedBonus or 0) + 7.5
+			if self.Owner:GetInfoNum("tf_giant_robot",0) != 1 then
 			self.Owner:ResetClassSpeed()
+			end
 			
 			self.Owner:SetMaxHealth(self.Owner:GetMaxHealth() + self.HealthBonus)
 			--self.Owner:SetNWInt("PlayerMaxHealthBuff", self.HealthBonus * self:GetNWInt("Heads"))

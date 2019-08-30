@@ -39,11 +39,13 @@ SWEP.MaxDamageFalloff = 0
 
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "none"
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay = 0.8
+SWEP.ReloadTime = 0.8
 
 SWEP.NoCModelOnStockWeapon = true
 
 SWEP.HoldType = "MELEE"
+SWEP.HoldTypeHL2 = "MELEE"
 
 function SWEP:Think()
 	self:CallBaseFunction("Think")
@@ -69,7 +71,9 @@ function SWEP:Think()
 			else
 				self.LocalSpeedBonus = nil
 			end
+			if self.Owner:GetInfoNum("tf_giant_robot",0) != 1 then
 			self.Owner:ResetClassSpeed()
+			end
 			self.LastSpeed = sp
 		end
 		

@@ -43,8 +43,11 @@ SWEP.Primary.ClipSize		= 25
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_SECONDARY
 SWEP.Primary.Delay          = 0.1
+SWEP.ReloadTime = 1.4
 
 SWEP.HoldType = "SECONDARY"
+
+SWEP.HoldTypeHL2 = "smg"
 
 SWEP.AutoReloadTime = 0.10
 
