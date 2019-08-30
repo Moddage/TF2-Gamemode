@@ -231,6 +231,7 @@ DF_BACKSTAB	= 4		-- death by backstab, play the backstab death pose
 DF_DECAP	= 8		-- death from decapitation, drop a headless ragdoll and a head gib
 DF_GOLDEN	= 16	-- death from the Golden Wrench, drop a golden ragdoll
 DF_SILENCED	= 32	-- death from Your Eternal Reward, suppress death sound and cloak ragdoll
+DF_FROZEN	= 64	-- death from Your Eternal Reward, suppress death sound and cloak ragdoll
 
 function meta:AddDeathFlag(f)
 	--[[local dt = self:GetDataTableEntity()

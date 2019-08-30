@@ -54,7 +54,7 @@ local VGUIFiles = {
 	
 	"hud_weaponselection";
 	"hud_inspectpanel";
-	"hud_objectiveflagpanel";
+	--"hud_objectiveflagpanel";
 	
 	"hud_demomanpipes";
 	"hud_mediccharge";
@@ -290,42 +290,32 @@ end
 -- Using a custom TargetID system
 
 function GM:HUDDrawTargetID()
-	if LocalPlayer():IsHL2() then
-		return self.BaseClass:HUDDrawTargetID()
-	end
      return false
 end
 
-local function targetid_trace_condition(tr, ply)
-	ply = ply or LocalPlayer()
-	return !ply:IsHL2() and IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:IsNPC()) and (GAMEMODE:EntityTeam(tr.Entity)==ply:Team() or hud_targetid_anyteam:GetBool())
+local function targetid_trace_condition(tr)
+	return IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:IsNPC()) and (GAMEMODE:EntityTeam(tr.Entity)==LocalPlayer():Team() or hud_targetid_anyteam:GetBool())
 end
 
 function GM:TargetIDThink()
-	local ply = LocalPlayer()
-
-	if LocalPlayer():GetObserverTarget() and LocalPlayer():GetObserverTarget():IsPlayer() then
-		ply = LocalPlayer():GetObserverTarget()
-	end
-
-	if not ply:Alive() then
+	if not LocalPlayer():Alive() then
 		return
 	end
 	
-	--local ent = ply:GetEyeTrace().Entity
+	--local ent = LocalPlayer():GetEyeTrace().Entity
 	
-	local start = ply:GetShootPos()
-	local endpos = start + ply:GetAimVector() * 10000
+	local start = LocalPlayer():GetShootPos()
+	local endpos = start + LocalPlayer():GetAimVector() * 10000
 	
 	local tr = tf_util.MixedTrace({
 		start = start,
 		endpos = endpos,
-		filter = ply,
+		filter = LocalPlayer(),
 		mins = Vector(-5, -5, -5),
 		maxs = Vector(5, 5, 5),
 	}, targetid_trace_condition)
 	
-	if targetid_trace_condition(tr, ply) then
+	if targetid_trace_condition(tr) then
 		HudTargetID:SetTargetEntity(tr.Entity)
 		HudTargetID:SetVisible(true)
 	else

@@ -93,7 +93,7 @@ npc_citizen = {
 	vplayer=VPLAYER_REBEL
 },
 npc_vortigaunt = {
-	team=TEAM_RED,
+	team=TEAM_NEUTRAL,
 	health=125,
 	vplayer=VPLAYER_VORTIGAUNT
 },
@@ -191,7 +191,7 @@ npc_turret_floor = {
 npc_turret_ground = {
 	team=TEAM_BLU,
 	flags=NPC_BUILDING,
-	vplayer=VPLAYER_NONE
+	vplayer=VPLAYER_REBEL
 },
 
 -- Synths/boss combine machines

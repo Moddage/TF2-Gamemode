@@ -163,21 +163,3 @@ Register({
 	--w_model = "models/weapons/w_models/w_toolbox.mdl",
 	blueprint_model = "models/buildables/sentry1_blueprint.mdl"
 })
-
-Register({
-	name = "OBJ_ATTACHMENT_SAPPER",
-	class_name = "obj_attachment_sapper",
-	status_name = "",
-	build_time = 0.1,
-	max_objects = -1,
-	cost = 0,
-	upgrade_cost = 0,
-	upgrade_duration = 0,
-	placement_type = 2,
-	metal_gibs = 10,
-	
-	slot = 1,
-	hidden = false,
-	v_model = "models/weapons/v_models/v_sapper_spy.mdl",
-	w_model = "models/weapons/w_models/w_sapper.mdl",
-})

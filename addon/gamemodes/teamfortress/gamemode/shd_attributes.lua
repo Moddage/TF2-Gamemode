@@ -535,6 +535,26 @@ local ATTRIBUTES = {
 		end
 	end,
 },
+["desc_gascan_description"] = {
+	projectile_fired = function(v,proj,weapon,owner)
+		if proj:GetClass()=="tf_projectile_gas" then
+			local jar = scripted_ents.Get("tf_projectile_gas")
+			if not jar then return end
+			
+			proj.DoSpecialDamage = jar.DoSpecialDamage
+			proj.DoExplosion = jar.DoExplosion
+			proj.BugbaitTouch = jar.BugbaitTouch
+			proj.ActivateBugbaitTargets = jar.ActivateBugbaitTargets
+			
+			proj.NoSelfDamage = true
+			proj.NoMiniCrits = true
+			proj.ExplosionSound = "weapons/gas_can_explode.wav"
+			
+			proj.Trail = util.SpriteTrail(proj, 0, Color(200,255,0,200), false,
+			0.1, 5, 1, 1/(5+1)*0.5, "Effects/arrowtrail_red.vmt")
+		end
+	end,
+},
 
 ["sticky_arm_time"] = {
 	projectile_fired = function(v,proj,weapon,owner)
@@ -1007,10 +1027,12 @@ local ATTRIBUTES = {
 	}
 	
 		if ent:CanReceiveCrits() then
-			ent:EmitSound("weapons/saxxy_turntogold_05.wav")
+			ent:EmitSound("weapons/saxxy_impact_gen_06.wav")
 			--ent:SetNWBool("ShouldDropGoldenRagdoll", true)
 			ent:AddDeathFlag(DF_GOLDEN)
-			att:PlayScene(engineer_gold_lines[math.random( #engineer_gold_lines )])
+			if inf.Owner:GetPlayerClass() == "engineer" then
+				att:PlayScene(engineer_gold_lines[math.random( #engineer_gold_lines )])
+			end
 		end
 	end,
 },

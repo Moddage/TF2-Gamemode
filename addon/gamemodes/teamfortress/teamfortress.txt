@@ -47,32 +47,14 @@
 		}
 		5
 		{
-			"name"		"tf_fashlight"
-			"text"		"TF Flashlight"
-			"help"		"Whether or not players will have a flashlight as a TF2 Class"
-			"type"		"CheckBox"
-			"default"	"1"
-			"singleplayer" "1"
-		}
-		6
-		{
-			"name"		"tf_competitive"
-			"text"		"Competitive Mode"
-			"help"		"Disables sandbox features, recommended for serious coop!"
-			"type"		"CheckBox"
-			"default"	"0"
-			"singleplayer" "1"
-		}
-		7
-		{
 			"name"		"sbox_noclip"
 			"text"		"Noclip"
 			"help"		"When enabled players will be able to noclip"
 			"type"		"CheckBox"
-			"default"	"1"
+			"default"	"0"
 			"singleplayer" "1"
 		}
-		8
+		6
 		{
 			"name"		"sbox_godmode"
 			"text"		"god_mode"

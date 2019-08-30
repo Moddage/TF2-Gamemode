@@ -8,6 +8,7 @@ include("sv_gamelogic.lua")
 include("sv_damage.lua")
 include("sv_death.lua")
 include("sv_ctf_bots.lua")
+include("shd_gravitygun.lua")
 include("sv_chat.lua")
 include("shd_taunts.lua")
 
@@ -19,6 +20,7 @@ local load_time = SysTime()
 include("sv_npc_relationship.lua")
 include("sv_ent_substitute.lua")
 
+CreateConVar("grapple_distance", -1, false) 
 response_rules.Load("talker/tf_response_rules.txt")
 response_rules.Load("talker/demoman_custom.txt")
 response_rules.Load("talker/heavy_custom.txt")
@@ -26,7 +28,9 @@ response_rules.Load("talker/heavy_custom.txt")
 CreateConVar( "tf_use_hl_hull_size", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players use the HL2 hull size found on coop." )
 CreateConVar( "tf_kill_on_change_class", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will die if they change class." )
 CreateConVar( "tf_flashlight", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will have a flashlight as a TF2 Class" )
-
+CreateConVar( "tf_muselk_zombies", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Zombies")
+CreateConVar( "tf_disable_nonred_mvm", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will have a flashlight as a TF2 Class" )
+CreateConVar('tf_opentheorangebox', 0, FCVAR_ARCHIVE + FCVAR_SERVER_CAN_EXECUTE, 'Enables 2007 mode')
 -- Quickfix for Valve's typo in tf_reponse_rules.txt
 response_rules.AddCriterion([[criterion "WeaponIsScattergunDouble" "item_name" "The Force-a-Nature" "required" weight 10]])
 
@@ -56,6 +60,22 @@ concommand.Add("tf_stripme", function(pl, cmd, args)
 	pl:StripWeapons()
 end)
 
+concommand.Add("dspset", function(pl)
+	if pl:IsAdmin() then
+		timer.Create("DSP", 0.01, 0, function()
+			for k,v in ipairs(player.GetAll()) do
+				v:SetDSP(36	)
+			end
+		end)
+	end
+end)
+
+concommand.Add("stopdsp", function(pl)
+	if pl:IsAdmin() then
+		timer.Stop("DSP")
+	end
+end)
+
 concommand.Add("changeclass", function(pl, cmd, args)
 	if pl:Team()==TEAM_SPECTATOR then return end
 	if pl:GetObserverMode() ~= OBS_MODE_NONE then pl:Spectate(OBS_MODE_NONE) end
@@ -69,6 +89,8 @@ concommand.Add( "changeteam", function( pl, cmd, args )
 	if ( tonumber( args[ 1 ] ) == 0 or tonumber( args[ 1 ] ) == 3 ) then pl:ChatPrint("Invalid Team!") return end
 	if ( pl:Team() == tonumber( args[ 1 ] ) ) then return false end
 	if ( GetConVar("tf_competitive"):GetBool() and tonumber( args[ 1 ] ) == 4 ) then pl:ChatPrint("Competitive mode is on!") return end
+	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "mvm_") and tonumber( args[ 1 ] ) == 4 ) then pl:ChatPrint("Neutral Team is disabled!") return end
+	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "mvm_") and tonumber( args[ 1 ] ) == 2 ) and !pl:IsAdmin() then pl:ChatPrint("Blue Team is disabled!") return end
 	if pl:Team() == TEAM_SPECTATOR then
 		pl:KillSilent()
 	end
@@ -230,7 +252,7 @@ function GM:PlayerSpawn(ply)
 	ply:SetNWBool("ShouldDropDecapitatedRagdoll", false)
 	ply:SetNWBool("DeathByHeadshot", false)]]
 	ply:ResetDeathFlags()
-	
+	ply:EnablePhonemes()
 	ply.LastWeapon = nil
 	self:ResetKills(ply)
 	self:ResetDamageCounter(ply)
@@ -310,7 +332,7 @@ function GM:PlayerSpawn(ply)
 
 	ply:SetPlayerColor(playercolor)
 	ply:SetWeaponColor(weaponcolor)
-	ply:SetNoCollideWithTeammates(true)
+	ply:SetNoCollideWithTeammates(false)
 	ply:SetAvoidPlayers(true)
 	
 	if GetConVar("tf_randomizer"):GetBool() and !ply:IsHL2() then

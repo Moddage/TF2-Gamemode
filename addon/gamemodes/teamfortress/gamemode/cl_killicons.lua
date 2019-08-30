@@ -33,13 +33,23 @@ weapon_crossbow = "d_hl_crossbow",
 crossbow_bolt = "d_hl_crossbow",
 crossbow_bolt_deflect = "d_deflect_crossbowbolt",
 weapon_smg1 = "d_hl_smg",
+-- L4D
+weapon_l4d_smg = "d_hl_smg",
+weapon_l4d_pistol = "d_hl_357",	
+weapon_l4d_dual_pistol = "d_hl_357",	
+weapon_l4d_rifle = "d_hl_smg",	
 weapon_shotgun = "d_hl_shotgun",
+weapon_l4d_pumpshotgun = "d_hl_shotgun",
+weapon_l4d_autoshotgun = "d_hl_shotgun",
+-- Continue HL2	
 weapon_ar2 = "d_hl_ar2",
 weapon_crowbar = "d_hl_crowbar",
+tf_weapon_grapplinghook = "d_hl_crowbar",
 weapon_stunstick = "d_hl_stunstick",
 weapon_rpg = "d_hl_rpg",
 weapon_annabelle = "d_sniperrifle",
 rpg_missile = "d_hl_rpg",
+simfphys_tankprojectile = "d_hl_rpg",
 rpg_missile_deflect = "d_deflect_rpg",
 weapon_frag = "d_hl_frag",
 npc_grenade_frag = "d_hl_frag",
@@ -66,6 +76,7 @@ npc_antlion = "d_hl_antlion",
 npc_antlion_worker = "d_hl_antlion",
 npc_antlion_worker_explosion = "d_hl_antworker_explosion",
 npc_antlionguard = "d_hl_antlionguard",
+tf_projectile_rocket_fireball = "d_dragons_fury",
 
 npc_hunter = "d_hl_hunter_charge",
 npc_hunter_pound = "d_hl_hunter_pound",
@@ -79,7 +90,9 @@ npc_combinegunship = "d_hl_airboat_gun",
 npc_combinedropship = "d_hl_airboat_gun",
 npc_strider_minigun = "d_hl_strider_minigun",
 concussiveblast = "d_hl_strider_beam",
+tf_weapon_superphyscannon = "d_hl_strider_beam",
 npc_strider = "d_hl_strider_skewer",
+rocketpack = "d_boot",
 
 npc_rollermine = "d_hl_rollermine",
 npc_manhack = "d_hl_manhack",
@@ -152,6 +165,7 @@ tf_weapon_ambassador_headshot = "d_ambassador_headshot",
 prop_vehicle_jeep_old = "d_vehicle",
 prop_vehicle_jeep = "d_vehicle",
 prop_vehicle_airboat = "d_vehicle",
+gmod_sent_vehicle_fphysics_base = "d_vehicle",
 
 -- Other
 entityflame = "d_firedeath",
@@ -160,6 +174,7 @@ tf_entitybleed = "d_bleed_kill",
 env_explosion = "d_explosion",
 env_physexplosion = "d_explosion",
 combine_mine = "d_hl_combine_mine",
+weapon_l4d_first_aid_kit = "d_hl_combine_mine",
 prop_physics = "d_hl_physics",
 }
 
@@ -685,6 +700,74 @@ d_force_a_nature={
 
 }, -- ["_images"]
 
+["_images_v3"]={
+	
+d_rescue_ranger={
+	x=256,
+	y=416,
+	w=128,
+	h=32,
+},
+	
+d_panic_attack={
+	x=258,
+	y=736,
+	w=124,
+	h=32,
+},
+
+d_iron_bomber={
+	x=259,
+	y=673,
+	w=122,
+	h=32,
+},
+
+d_psapper={
+	x=278,
+	y=480,
+	w=83,
+	h=33
+},
+
+d_lollichop={
+	x=16,
+	y=609,
+	w=65,
+	h=30,
+},
+
+d_rainblower={
+	x=7,
+	y=673,
+	w=89,
+	h=31,
+},
+
+d_holiday_punch={
+	x=0,
+	y=481,
+	w=90,
+	h=31,
+},
+	
+d_dragons_fury={
+	x=257,
+	y=992,
+	w=127,
+	h=32,
+},
+	
+d_phlogistinator={
+	x=260,
+	y=1,
+	w=120,
+	h=31,
+}
+
+
+},
+
 ["_images_v2"]={
 
 d_wrench_golden={
@@ -692,6 +775,27 @@ d_wrench_golden={
 	y=736,
 	w=96,
 	h=32,
+},
+
+d_saxxy={
+	x=392,
+	y=255,
+	w=77,
+	h=33,
+},	
+
+d_iron_curtain={
+	x=260,
+	y=706,
+	w=89,
+	h=28,
+},
+
+d_boot={
+	x=394,
+	y=867,
+	w=46,
+	y=27,
 },
 
 d_building_carried_destroyed={

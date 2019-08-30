@@ -82,6 +82,20 @@ function meta:Explode()
 	umsg.End()
 end
 
+function meta:EnablePhonemes( ent, on )
+
+	if ( !IsValid( ent ) ) then return end
+
+	if ( !on ) then
+		-- Disable mouth movement
+		self:SetupPhonemeMappings( "" )
+	else
+		-- Enable mouth movement
+		self:SetupPhonemeMappings( "heavy/phonemes" )
+	end
+
+end
+
 function meta:RandomSentence(group)
 	if self:IsHL2() then return end
 	

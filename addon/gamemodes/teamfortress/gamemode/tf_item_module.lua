@@ -353,19 +353,37 @@ end
 
 function ITEM:SetupItem(item)
 	if SERVER then
-		if self:IsWeapon() and self.SetupCModelActivities then
-			if item.attach_to_hands==1 then
-				local t = self.Owner:GetPlayerClassTable()
-				if t and t.ModelName then
-					self.ViewModelOverride = Format("models/weapons/c_models/c_%s_arms.mdl", t.ModelName)
-					self.ViewModel = self.ViewModelOverride
-					self:SetModel(self.ViewModelOverride)
-					self.Owner:GetViewModel():SetModel(self.ViewModelOverride)
-					self:SetupCModelActivities(item)
+		if !GetConVar("tf_opentheorangebox"):GetBool() then
+			if self:IsWeapon() and self.SetupCModelActivities then
+				if item.attach_to_hands==1 then
+					local t = self.Owner:GetPlayerClassTable()
+					if t and t.ModelName then
+						self.ViewModelOverride = Format("models/weapons/c_models/c_%s_arms.mdl", t.ModelName)
+						self.ViewModel = self.ViewModelOverride
+						self:SetModel(self.ViewModelOverride)
+						self.Owner:GetViewModel():SetModel(self.ViewModelOverride)
+						self:SetupCModelActivities(item)
+					end
+				else
+					self:SetupCModelActivities()
+					self.ViewModelOverride = nil
 				end
-			else
-				self:SetupCModelActivities()
-				self.ViewModelOverride = nil
+			end
+		else
+			if self:GetClass() == "tf_weapon_flamethrower" and self:GetClass() == "tf_weapon_club" then
+				if item.attach_to_hands==1 then
+					local t = self.Owner:GetPlayerClassTable()
+					if t and t.ModelName then
+						self.ViewModelOverride = Format("models/weapons/c_models/c_%s_arms.mdl", t.ModelName)
+						self.ViewModel = self.ViewModelOverride
+						self:SetModel(self.ViewModelOverride)
+						self.Owner:GetViewModel():SetModel(self.ViewModelOverride)
+						self:SetupCModelActivities(item)
+					end
+				else
+					self:SetupCModelActivities()
+					self.ViewModelOverride = nil
+				end
 			end
 		end
 	else
@@ -388,27 +406,27 @@ function ITEM:SetupItem(item)
 		end
 		
 		if self:IsWeapon() and self.SetupCModelActivities then
-			if item.attach_to_hands==1 then
-				local t = self.Owner:GetPlayerClassTable()
-				if t and t.ModelName then
-					self.ViewModelOverride = Format("models/weapons/c_models/c_%s_arms.mdl", t.ModelName)
-					self:SetModel(self.ViewModelOverride)
-					self:SetupCModelActivities(item)
+				if item.attach_to_hands==1 then
+					local t = self.Owner:GetPlayerClassTable()
+					if t and t.ModelName then
+						self.ViewModelOverride = Format("models/weapons/c_models/c_%s_arms.mdl", t.ModelName)
+						self:SetModel(self.ViewModelOverride)
+						self:SetupCModelActivities(item)
+					end
+					
+					if item.model_player then
+						self.HasCModel = true
+						self.WorldModelOverride = item.model_player
+					end
+				else
+					self:SetupCModelActivities()
+					self.HasCModel = false
+					
+					-- won't be using the original worldmodel anymore, since it tends to randomly disappear when the player is near NPCs
+					if self.WorldModel ~= "" then
+						self.WorldModelOverride = self.WorldModel
+					end
 				end
-				
-				if item.model_player then
-					self.HasCModel = true
-					self.WorldModelOverride = item.model_player
-				end
-			else
-				self:SetupCModelActivities()
-				self.HasCModel = false
-				
-				-- won't be using the original worldmodel anymore, since it tends to randomly disappear when the player is near NPCs
-				if self.WorldModel ~= "" then
-					self.WorldModelOverride = self.WorldModel
-				end
-			end
 			
 			self.WorldModelOverride2 = item.model_world
 		

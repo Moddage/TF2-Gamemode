@@ -332,6 +332,7 @@ end
 local META = FindMetaTable("Player")
 
 function META:Speak(concept, nospeech, dbg)
+	if self:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then return true end
 	if self:IsHL2() then return false end
 	if self:GetInfoNum("tf_robot", 0) == 1 or self:Team() == TEAM_SPECTATOR then return true end
 	if not self:Alive() then

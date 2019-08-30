@@ -7,10 +7,704 @@ function include(name)
 	MsgN(Format("Included Lua file '%s', %f secs to load", name, SysTime() - time_start))
 end
 ]]
+
+
+sound.Add( {
+	name = "Weapon_SMG1.Single",
+	volume = 1.0,
+	level = 120,
+	channel = CHAN_WEAPON,
+	pitch = { 94, 105 },
+	sound = { "^weapons/smg1/npc_smg1_fire1.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_SMG1.Burst",
+	volume = 1.0,
+	level = 120,
+	pitch = { 94, 105 },
+	channel = CHAN_WEAPON,
+	sound = { "weapons/smg1/smg1_fireburst1.wav" } 
+} )
+sound.Add( {
+	name = "AlienSlavePowerup",
+	volume = 1.0,
+	level = 140,
+	channel = CHAN_WEAPON,
+	pitch = { 130 },
+	sound = { "debris/zap4.wav" } 
+} )
+sound.Add( {
+	name = "AlienSlavePowerup2",
+	volume = 1.0,
+	level = 140,
+	channel = CHAN_WEAPON,
+	pitch = { 140 },
+	sound = { "debris/zap4.wav" } 
+} )
+sound.Add( {
+	name = "AlienSlavePowerup3",
+	volume = 1.0,
+	level = 140,
+	channel = CHAN_WEAPON,
+	pitch = { 150 },
+	sound = { "debris/zap4.wav" } 
+} )
+sound.Add( {
+	name = "AlienSlavePowerup4",
+	volume = 1.0,
+	level = 140,
+	channel = CHAN_WEAPON,
+	pitch = { 160 },
+	sound = { "debris/zap4.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_AR2.Single",
+	volume = 1.0,
+	level = 150,
+	pitch = { 85,95 },
+	channel = CHAN_WEAPON,
+	sound = { "weapons/ar2/fire1.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Shotgun.Single",
+	volume = 1.0,
+	level = 150,
+	pitch = { 100 },
+	channel = CHAN_WEAPON,
+	sound = { "weapons/shotgun/shotgun_fire6.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Pistol.Single",
+	volume = 1.0,
+	level = 150,
+	pitch = { 100 },
+	channel = CHAN_WEAPON,
+	sound = { "^weapons/pistol/pistol_fire3.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_SuperShotGun.TubeOpen",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/supershotgun_tube_open.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_SuperShotGun.TubeClose",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/supershotgun_tube_close.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_SuperShotGun.ShellsIn",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/supershotgun_shells_in.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_GrenadeLauncherDM.Cock_Back",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/grenade_launcher_dm_cock_back.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_GrenadeLauncherDM.Cock_Forward",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/grenade_launcher_dm_cock_forward.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_GrenadeLauncherDM.DrumLoad",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/grenade_launcher_dm_drum_load.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Pistol.SlideForward",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/pistol_slideforward.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Pistol.SlideBack",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/pistol_slideback.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Pistol.ClipIn",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/pistol_clipin.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Pistol.ClipOut",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "weapons/pistol_clipout.wav" } 
+} )
+
+sound.Add( {
+	name = "Weapon_Crowbar.Single",
+	volume = 1.0,
+	level = 90,
+	pitch = { 85, 100 },
+	sound = { "^weapons/iceaxe/iceaxe_swing1.wav" } 
+} )
+sound.Add( {
+	name = "DosidoIntro",
+	volume = 1.0,
+	level = 90,
+	channel = CHAN_REPLACE,
+	pitch = { 100 },
+	sound = { "music/fortress_reel_loop.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Crowbar_HL1.HitFlesh",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "^weapons/hl1/cbar_hitbod1.wav",  "^weapons/hl1/cbar_hitbod2.wav", "^weapons/hl1/cbar_hitbod3.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Crowbar_HL1.HitWorld",
+	volume = 1.0,
+	level = 90,
+	pitch = { 100 },
+	sound = { "^weapons/hl1/cbar_hit1.wav",  "^weapons/hl1/cbar_hit2.wav"} 
+} )
+sound.Add( {
+	name = "ClassSelection.ThemeNonMVM",
+	volume = 1.0,
+	level = 50,
+	pitch = { 100 },
+	sound = { "music/class_menu_bg.wav"} 
+} )
+sound.Add( {
+	name = "ClassSelection.ThemeMVM",
+	volume = 1.0,
+	level = 50,
+	pitch = { 100 },
+	sound = { "music/mvm_class_menu_bg.wav"} 
+} )
+sound.Add( {
+	name = "BaseExplosionEffect.Sound",
+	volume = 1.0,
+	level = 95,
+	pitch = { 100 },
+	sound = { "tf/weapons/explode1.wav",  "tf/weapons/explode2.wav",  "tf/weapons/explode3.wav"} 
+} )
+sound.Add( {
+	name = "NPC_AntlionGuard.StepLight",
+	level = 75,
+	pitch = { 70, 85 },
+	sound = { "npc/antlion_guard/foot_light1.wav", "npc/antlion_guard/foot_light2.wav" } 
+} )
+sound.Add( {
+	name = "NPC_AntlionGuard.StepHeavy",
+	pitch = { 70, 85 },
+	level = 75,
+	sound = { "^npc/antlion_guard/antlionguard_foot_heavy1.wav", "^npc/antlion_guard/antlionguard_foot_heavy2.wav" }  
+} )
+sound.Add( {
+	name = "NPC_AntlionGuard.FarStepLight",
+	pitch = { 70, 85 },
+	level = 155,
+	sound = { "npc/antlion_guard/far_foot_light1.wav", "npc/antlion_guard/far_foot_light2.wav" }  
+} )
+sound.Add( {
+	name = "NPC_AntlionGuard.FarStepHeavy",
+	pitch = { 70, 85 },
+	level = 155,
+	sound = { "npc/antlion_guard/far_foot_heavy1.wav", "npc/antlion_guard/far_foot_heavy2.wav" }  
+} )
+sound.Add( {
+	name = "NPC_AntlionGuard.NearStepLight",
+	pitch = { 70, 85 },
+	level = 125,
+	sound = { "npc/antlion_guard/near_foot_heavy1.wav", "npc/antlion_guard/near_foot_heavy2.wav" }  
+} )
+sound.Add( {
+	name = "NPC_CombineDropship.NearRotorLoop",
+	pitch = 100,
+	level = 150,
+	sound = { "^npc/combine_gunship/dropship_engine_loop1.wav" } 
+} )
+sound.Add( {
+	name = "NPC_Vortigaunt.RangedAttack",
+	pitch = 150,
+	level = 110,
+	sound = { "npc/vort/attack_charge.wav" } 
+} )
+sound.Add( {
+	name = "NPC_CombineDropship.RotorLoop",
+	pitch = 100,
+	level = 150,
+	sound = { "^npc/combine_gunship/dropship_engine_loop1.wav" }
+} )
+sound.Add( {
+	name = "NPC_AntlionGuard.NearStepHeavy",
+	pitch = { 70, 85 },
+	level = 85,
+	sound = { "npc/antlion_guard/near_foot_heavy1.wav", "npc/antlion_guard/near_foot_heavy2.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_QuadLauncher.Reload",
+	pitch = { 70, 105 },
+	level = 85,
+	sound = { "weapons/quake_ammo_pickup_remastered.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_QuadLauncher.Shoot",
+	pitch = { 70, 105 },
+	level = 85,
+	channel = CHAN_WEAPON,
+	sound = { "weapons/quake_rpg_fire_remastered.wav" } 
+} )
+sound.Add( {
+	name = "Flesh.ImpactSoft",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = { "tf/physics/body/body_medium_impact_soft1.wav", "tf/physics/body/body_medium_impact_soft2.wav", "tf/physics/body/body_medium_impact_soft3.wav", "tf/physics/body/body_medium_impact_soft4.wav", "tf/physics/body/body_medium_impact_soft5.wav", "tf/physics/body/body_medium_impact_soft6.wav", "tf/physics/body/body_medium_impact_soft7.wav"} 
+} )
+sound.Add( {
+	name = "Flesh.ImpactHard",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = { "tf/physics/body/body_medium_impact_hard1.wav", "tf/physics/body/body_medium_impact_hard2.wav", "tf/physics/body/body_medium_impact_hard3.wav", "tf/physics/body/body_medium_impact_hard4.wav", "tf/physics/body/body_medium_impact_hard5.wav", "tf/physics/body/body_medium_impact_hard6.wav"} 
+} )
+
+sound.Add( {
+	name = "Selection.HeavyFootStomp",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_foot_stomp.wav"} 
+} )
+
+sound.Add( {
+	name = "Selection.PyroFootStomp",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_foot_stomp.wav"} 
+} )
+
+
+sound.Add( {
+	name = "Selection.HeavyEquipment1",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_equipment_gun2.wav"} 
+} )
+
+sound.Add( {
+	name = "Selection.HeavyEquipment2",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_equipment_gun1.wav"} 
+} )
+
+sound.Add( {
+	name = "Selection.PyroEquipment1",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_equipment_jingle3.wav"} 
+} )
+
+sound.Add( {
+	name = "Selection.PyroEquipment2",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_equipment_jingle2.wav"} 
+} )
+
+
+sound.Add( {
+	name = "Selection.EngineerWrenchShoulder",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_shotgun_shoulder.wav"} 
+} )
+
+sound.Add( {
+	name = "Selection.EngineerFootStomp",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_foot_stomp.wav"} 
+} )	
+
+sound.Add( {
+	name = "Selection.EngineerClothesRustle",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_clothes_rustle.wav"} 
+} )
+
+
+sound.Add( {
+	name = "Taunt.Heavy01HoldGun",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_grenade_catch.wav"} 
+} )
+
+
+sound.Add( {
+	name = "Taunt.Heavy01ClothesRustle",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_clothes_rustle.wav"} 
+} )
+
+
+sound.Add( {
+	name = "Taunt.Heavy01EquipmentGun",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_equipment_gun1.wav"} 
+} )
+
+sound.Add( {
+	name = "Taunt.Heavy01EquipmentGun2",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_equipment_gun2.wav"} 
+} )
+
+sound.Add( {
+	name = "Taunt.Heavy01EquipmentRustleHeavy",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_equipment_jingle2.wav"} 
+} )
+sound.Add( {
+	name = "Taunt.Heavy01HoldGunLight",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_hand_clap2.wav"} 
+} )
+
+sound.Add( {
+	name = "Selection.HeavyClothesRustle",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_clothes_rustle.wav"} 
+} )
+
+
+sound.Add( {
+	name = "Selection.ScoutShotgunShoulder",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_shotgun_shoulder.wav"} 
+} )
+
+
+sound.Add( {
+	name = "Selection.MedicHeelClick",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_heel_click.wav"} 
+} )
+
+sound.Add( {
+	name = "Selection.MedicFootStomp",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_foot_stomp.wav"} 
+} )	
+
+sound.Add( {
+	name = "Selection.MedicFootSlide",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_foot_spin.wav"} 
+} )	
+
+sound.Add( {
+	name = "Selection.ScoutShotgunTwirl",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_shotgun_twirl.wav"} 
+} )
+
+sound.Add( {
+	name = "Selection.PyroClothesRustle",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_clothes_rustle.wav"} 
+} )
+
+sound.Add( {
+	name = "Dirt.StepLeft",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/dirt1.wav","tf/player/footsteps/dirt3.wav","tf/player/footsteps/dirt2.wav","tf/player/footsteps/dirt4.wav"} 
+} )
+sound.Add( {
+	name = "Dirt.StepRight",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/dirt2.wav","tf/player/footsteps/dirt4.wav","tf/player/footsteps/dirt1.wav","tf/player/footsteps/dirt3.wav"} 
+} )
+sound.Add( {
+	name = "Grass.StepLeft",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/grass1.wav","tf/player/footsteps/grass3.wav","tf/player/footsteps/grass2.wav","tf/player/footsteps/grass4.wav"} 
+} )
+sound.Add( {
+	name = "MVM.GiantHeavyStep",
+	volume = 1.0,
+	level = 150,
+	pitch = 100,
+	channel = CHAN_BODY,
+	sound = {"^mvm/giant_common/giant_common_step_01.wav","^mvm/giant_common/giant_common_step_02.wav","^mvm/giant_common/giant_common_step_03.wav","^mvm/giant_common/giant_common_step_04.wav","^mvm/giant_common/giant_common_step_05.wav","^mvm/giant_common/giant_common_step_06.wav","^mvm/giant_common/giant_common_step_07.wav","^mvm/giant_common/giant_common_step_08.wav"} 
+} )
+sound.Add( {
+	name = "Grass.StepRight",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/grass2.wav","tf/player/footsteps/grass4.wav","tf/player/footsteps/grass1.wav","tf/player/footsteps/grass3.wav"} 
+} )
+sound.Add( {
+	name = "Default.StepLeft",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/concrete1.wav","tf/player/footsteps/concrete3.wav","tf/player/footsteps/concrete1.wav","tf/player/footsteps/concrete3.wav"} 
+} )
+sound.Add( {
+	name = "Concrete.StepRight",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/concrete2.wav","tf/player/footsteps/concrete4.wav","tf/player/footsteps/concrete1.wav","tf/player/footsteps/concrete3.wav"} 
+} ) 
+sound.Add( {
+	name = "Concrete.StepLeft",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/concrete1.wav","tf/player/footsteps/concrete3.wav","tf/player/footsteps/concrete1.wav","tf/player/footsteps/concrete3.wav"} 
+} )
+sound.Add( {
+	name = "Default.StepRight",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/concrete2.wav","tf/player/footsteps/concrete4.wav","tf/player/footsteps/concrete1.wav","tf/player/footsteps/concrete3.wav"} 
+} ) 
+sound.Add( {
+	name = "Wood.StepLeft",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/wood1.wav","tf/player/footsteps/wood3.wav","tf/player/footsteps/wood2.wav","tf/player/footsteps/wood4.wav"} 
+} )
+sound.Add( {
+	name = "Wood.StepRight",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/wood2.wav","tf/player/footsteps/wood4.wav","tf/player/footsteps/wood1.wav","tf/player/footsteps/wood3.wav"} 
+} )
+sound.Add( {
+	name = "SolidMetal.StepLeft",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/metal1.wav","tf/player/footsteps/metal3.wav","tf/player/footsteps/metal2.wav","tf/player/footsteps/metal4.wav",} 
+} )
+sound.Add( {
+	name = "SolidMetal.StepRight",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/metal2.wav","tf/player/footsteps/metal4.wav","tf/player/footsteps/metal1.wav","tf/player/footsteps/metal3.wav"} 
+} )
+sound.Add( {
+	name = "Tile.StepLeft",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/tile1.wav","tf/player/footsteps/tile2.wav","tf/player/footsteps/tile3.wav","tf/player/footsteps/tile4.wav"} 
+} )
+sound.Add( {
+	name = "Tile.StepRight",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/tile1.wav","tf/player/footsteps/tile2.wav","tf/player/footsteps/tile3.wav","tf/player/footsteps/tile4.wav"} 
+} )
+sound.Add( {
+	name = "Grass.StepLeft",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/grass1.wav","tf/player/footsteps/grass2.wav","tf/player/footsteps/grass3.wav","tf/player/footsteps/grass4.wav"} 
+} )
+sound.Add( {
+	name = "Grass.StepRight",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 103 },
+	channel = CHAN_BODY,
+	sound = {"tf/player/footsteps/grass1.wav","tf/player/footsteps/grass3.wav","tf/player/footsteps/grass3.wav","tf/player/footsteps/grass4.wav"} 
+} )
+sound.Add( {
+	name = "Weapon_FrontierJustice.Single",
+	volume = 1.0,
+	level = 95,
+	pitch = { 100 },
+	sound = {"weapons/frontier_justice_shoot.wav"} 
+} )
+sound.Add( {
+	name = "Weapon_FrontierJustice.SingleCrit",
+	volume = 1.0,
+	level = 95,
+	pitch = { 100 },
+	sound = {"weapons/frontier_justice_shoot_crit.wav"} 
+} )
+sound.Add( {
+	name = "HalloweenMerasmus.MERLAGMUS",
+	volume = 1.0,
+	level = 0,
+	channel = CHAN_VOICE,
+	pitch = { 100 },
+	sound = {
+		"vo/halloween_merasmus/sf12_found01.mp3",
+		"vo/halloween_merasmus/sf12_found02.mp3",
+		"vo/halloween_merasmus/sf12_found03.mp3",
+		"vo/halloween_merasmus/sf12_found04.mp3",
+		"vo/halloween_merasmus/sf12_found05.mp3",
+		"vo/halloween_merasmus/sf12_found07.mp3",
+		"vo/halloween_merasmus/sf12_found08.mp3",
+		"vo/halloween_merasmus/sf12_found09.mp3",
+	}
+} )
+
+sound.Add( {
+	name = "SappedRobot",
+	channel = CHAN_REPLACE,
+	volume = 1.0,
+	level = 80,
+	pitch = { 100 },
+	sound = { "weapons/sapper_timer.wav" }
+} )
+sound.Add( {
+	name = "BanjoSong",
+	channel = CHAN_REPLACE,
+	volume = 1.0,
+	level = 80,
+	pitch = { 100 },
+	sound = { "player/taunt_bumpkins_banjo_music.wav" }
+} )
+sound.Add( {
+	name = "BanjoSongStop",
+	channel = CHAN_REPLACE,
+	volume = 1.0,
+	level = 80,
+	pitch = { 100 },
+	sound = { "player/taunt_bumpkins_banjo_music_stop.wav" }
+} )
+sound.Add( {
+	name = "GrappledFlesh",
+	channel = CHAN_REPLACE,
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = { "weapons/grappling_hook_impact_flesh_loop.wav" }
+} )
+sound.Add( {
+	name = "BusterLoop",
+	channel = CHAN_REPLACE,
+	volume = 1.0,
+	level = 125,
+	pitch = { 100 },
+	sound = { "mvm/sentrybuster/mvm_sentrybuster_loop.wav" }
+} )
+
+sound.Add( {
+	name = "Ambient.NucleusElectricity",
+	channel = CHAN_STATIC,
+	volume = 1.0,
+	level = 105,
+	pitch = { 100 },
+	sound = { ")ambient/nucleus_electricity.wav" }
+} )
+sound.Add( {
+	name = "Grappling",
+	channel = CHAN_REPLACE,
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = { "weapons/grappling_hook_reel_start.wav" }
+} )
+sound.Add( {
+	name = "TappedRobot",
+	channel = CHAN_REPLACE,
+	volume = 1.0,
+	level = 80,
+	pitch = { 100 },
+	sound = { "weapons/spy_tape_01.wav","weapons/spy_tape_02.wav","weapons/spy_tape_03.wav","weapons/spy_tape_04.wav" ,"weapons/spy_tape_05.wav" }
+} )
+
+
 HOOK_WARNING_THRESHOLD = 0.1
 
 local old_hook_call = hook.Call
---[[function hook.Call(name, gm, ...)
+function hook.Call(name, gm, ...)
 	if HOOK_WARNING_THRESHOLD then
 		local time_start = SysTime()
 		local res = {old_hook_call(name, gm, ...)}
@@ -24,7 +718,7 @@ local old_hook_call = hook.Call
 	else
 		return old_hook_call(name, gm, ...)
 	end
-end]]
+end
 
 if not util.PrecacheModel0 then
 	util.PrecacheModel0 = util.PrecacheModel
@@ -34,6 +728,9 @@ function util.PrecacheModel(mdl)
 	if SERVER and game.SinglePlayer() then return end
 	return util.PrecacheModel0(mdl)
 end
+
+include("particle_manifest.lua")
+include("vmatrix_extension.lua")
 
 include("tf_lang_module.lua")
 tf_lang.Load("tf_english.txt")
@@ -68,8 +765,107 @@ include("shd_criticals.lua")
 include("shd_ragdolls.lua")
 
 include("shd_items_game.lua")
-
+ 
 tf_soundscript.Load("teamfortress/scripts/game_sounds_weapons_tf.txt")
+
+
+CreateConVar('tf_talkicon_computablecolor', 1, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Compute color from location brightness.')
+CreateConVar('tf_talkicon_showtextchat', 1, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Show icon on using text chat.')
+CreateConVar('tf_talkicon_ignoreteamchat', 1, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Disable over-head icon on using team chat.')
+
+hook.Add( "EntityEmitSound", "TimeWarpSounds", function( t )
+
+	local p = t.Pitch
+
+	if ( game.GetTimeScale() != 1 ) then
+		p = p * game.GetTimeScale()
+	end
+
+	if ( GetConVarNumber( "host_timescale" ) != 1 && GetConVarNumber( "sv_cheats" ) >= 1 ) then
+		p = p * GetConVarNumber( "host_timescale" )
+	end
+
+	if ( p != t.Pitch ) then
+		t.Pitch = math.Clamp( p, 0, 255 )
+		return true
+	end
+
+	if ( CLIENT && engine.GetDemoPlaybackTimeScale() != 1 ) then
+		t.Pitch = math.Clamp( t.Pitch * engine.GetDemoPlaybackTimeScale(), 0, 255 )
+		return true
+	end
+
+end )
+
+if (SERVER) then
+
+	RunConsoleCommand('mp_show_voice_icons', '0')
+
+	util.AddNetworkString('TalkIconChat')
+
+	net.Receive('TalkIconChat', function(_, ply)
+		local bool = net.ReadBool()
+		ply:SetNW2Bool('ti_istyping', (bool ~= nil) and bool or false)
+	end)
+
+elseif (CLIENT) then
+
+	local computecolor = GetConVar('tf_talkicon_computablecolor')
+	local showtextchat = GetConVar('tf_talkicon_showtextchat')
+	local noteamchat = GetConVar('tf_talkicon_ignoreteamchat')
+
+	local voice_mat = Material('effects/speech_voice_red')
+	local voice_mat2 = Material('effects/speech_voice_blue')
+	local text_mat = Material('effects/speech_typing')
+
+	hook.Add('PostPlayerDraw', 'TalkIcon', function(ply)
+		if ply == LocalPlayer() and GetViewEntity() == LocalPlayer()
+			and (GetConVar('thirdperson') and GetConVar('thirdperson'):GetInt() != 0) then return end
+		if not ply:Alive() then return end
+		if not ply:IsSpeaking() and not (showtextchat:GetBool() and ply:GetNW2Bool('ti_istyping')) then return end
+
+		local pos = ply:GetPos() + Vector(0, 0, ply:GetModelRadius() + 10)
+
+		if LocalPlayer():Team() == TEAM_BLU then
+			render.SetMaterial(ply:IsSpeaking() and voice_mat2 or voice_mat2)
+		else
+			render.SetMaterial(ply:IsSpeaking() and voice_mat or voice_mat)		
+		end
+
+		local color_var = 255
+
+		if computecolor:GetBool() then
+			local computed_color = render.ComputeLighting(ply:GetPos(), Vector(0, 0, 1))
+			local max = math.max(computed_color.x, computed_color.y, computed_color.z)
+			color_var = math.Clamp(max * 255 * 1.11, 0, 255)
+		end
+
+		render.DrawSprite(pos, 16, 16, Color(color_var, color_var, color_var, 255))
+	end)
+
+	hook.Add('StartChat', 'TalkIcon', function(isteam)
+		if isteam and noteamchat:GetBool() then return end
+		net.Start('TalkIconChat')
+			net.WriteBool(true)
+		net.SendToServer()
+	end)
+
+	hook.Add('FinishChat', 'TalkIcon', function()
+		net.Start('TalkIconChat')
+			net.WriteBool(false)
+		net.SendToServer() 
+	end)
+
+	hook.Add("InitPostEntity", "RemoveChatBubble", function()
+		hook.Remove("StartChat", "StartChatIndicator")
+		hook.Remove("FinishChat", "EndChatIndicator")
+
+		hook.Remove("PostPlayerDraw", "DarkRP_ChatIndicator")
+		hook.Remove("CreateClientsideRagdoll", "DarkRP_ChatIndicator")
+		hook.Remove("player_disconnect", "DarkRP_ChatIndicator")
+	end)
+
+end
 
 function GM:PostTFLibsLoaded()
 end
@@ -81,7 +877,6 @@ GM.Author 		= "_Kilburn; Fixed by wango911; Ported by Jcw87; Workshopped by Agen
 GM.Email 		= "N/A"
 GM.Website 		= "N/A"
 GM.TeamBased 	= true
-GM.Version 	= "1.0"
 
 GM.Data = {}
 
@@ -109,33 +904,6 @@ local VoiceMenuChatMessage = {
 	["TLK_PLAYER_HELP"] = 			"#Voice_Menu_Help",
 }
 
-local VoiceMenuGesture = {
-	["TLK_PLAYER_MEDIC"] =			ACT_MP_GESTURE_VC_HANDMOUTH,
-	["TLK_PLAYER_THANKS"] =			ACT_MP_GESTURE_VC_THUMBSUP,
-	["TLK_PLAYER_GO"] =				ACT_MP_GESTURE_VC_FINGERPOINT,
-	["TLK_PLAYER_MOVEUP"] =			ACT_MP_GESTURE_VC_FINGERPOINT,
-	["TLK_PLAYER_LEFT"] =			ACT_MP_GESTURE_VC_FINGERPOINT,
-	["TLK_PLAYER_RIGHT"] =			ACT_MP_GESTURE_VC_FINGERPOINT,
-	["TLK_PLAYER_YES"] =			nil,
-	["TLK_PLAYER_NO"] =				nil,
-	["TLK_PLAYER_INCOMING"] =		ACT_MP_GESTURE_VC_HANDMOUTH,
-	["TLK_PLAYER_CLOAKEDSPY"] =		nil,
-	["TLK_PLAYER_SENTRYAHEAD"] =	ACT_MP_GESTURE_VC_FINGERPOINT,
-	["TLK_PLAYER_TELEPORTERHERE"] =	nil,
-	["TLK_PLAYER_DISPENSERHERE"] =	nil,
-	["TLK_PLAYER_SENTRYHERE"] =		nil,
-	["TLK_PLAYER_ACTIVATECHARGE"] =	nil,
-	["TLK_PLAYER_CHARGEREADY"] =	ACT_MP_GESTURE_VC_THUMBSUP,
-	["TLK_PLAYER_HELP"] =			ACT_MP_GESTURE_VC_HANDMOUTH,
-	["TLK_PLAYER_BATTLECRY"] =		ACT_MP_GESTURE_VC_FISTPUMP,
-	["TLK_PLAYER_CHEERS"] =			ACT_MP_GESTURE_VC_FISTPUMP,
-	["TLK_PLAYER_JEERS"] =			nil,
-	["TLK_PLAYER_POSITIVE"] =		nil,
-	["TLK_PLAYER_NEGATIVE"] =		nil,
-	["TLK_PLAYER_NICESHOT"] =		ACT_MP_GESTURE_VC_THUMBSUP,
-	["TLK_PLAYER_GOODJOB"] =		ACT_MP_GESTURE_VC_THUMBSUP,
-}
-
 concommand.Remove("__svspeak")
 
 --[[concommand.Add( "changeteam", function( pl, cmd, args )
@@ -151,9 +919,6 @@ util.AddNetworkString("DeActivateTauntCam")
 
 concommand.Add("__svspeak", function(pl,_,args)
 	if pl:Speak(args[1]) then
-		if VoiceMenuGesture[args[1]] then
-			pl:DoAnimationEvent(VoiceMenuGesture[args[1]], true)
-		end
 		
 		umsg.Start("TFPlayerVoice")
 			umsg.Entity(pl)
@@ -286,13 +1051,13 @@ function GM:EntityTeam(ent)
 	
 	if type(ent.Team)=="function" then
 		return ent:Team()
-	elseif isstring(ent.Team) and (ent.Team == "RED" or ent.Team == "BLU" or string.sub(ent:GetModel(), 1, 12) == "models/robo/") then
+	elseif isstring(ent.Team) and (ent.Team == "RED" or ent.Team == "BLU" or string.sub(ent:GetModel(), 1, 12) == "models/bots/") then
 		if ent.Team == "RED" then
 			return TEAM_RED
 		elseif ent.Team == "BLU" then
 			return TEAM_BLU
-		elseif string.sub(ent:GetModel(), 1, 12) == "models/robo/" then
-			return TEAM_SPECTATOR
+		elseif string.sub(ent:GetModel(), 1, 12) == "models/bots/" then
+			return TEAM_BLU
 		end
 	else
 		local t = ent:GetNWInt("Team") or 0

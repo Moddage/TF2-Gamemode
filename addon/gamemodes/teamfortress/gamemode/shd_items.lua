@@ -873,22 +873,19 @@ function AC_GiveItem(cmd, args)
 	return GiveItemAutoComplete(cmd, args, filter_all)
 end
 
-function AC_GiveWeapon(cmd, args)
+function AC_GiveWeapon(cmd, args)	
 	return GiveItemAutoComplete(cmd, args, filter_weapon)
 end
 
-function AC_GiveHat(cmd, args)
+function AC_GiveHat(cmd, args)	
 	return GiveItemAutoComplete(cmd, args, filter_head)
 end
 
-function AC_GiveMisc(cmd, args)
 	return GiveItemAutoComplete(cmd, args, filter_misc)
 end
 
-function AC_GiveBundle(cmd, args)
+function AC_GiveBundle(cmd, args)	
 	return GiveItemAutoComplete(cmd, args, filter_bundle)
-end
-
 end
 
 
@@ -903,12 +900,6 @@ concommand.Add("striphat", function(pl) pl:EmptyLoadoutSlot("head") end)
 concommand.Add("stripmisc", function(pl) pl:EmptyLoadoutSlot("misc") end)
 
 else
-
-concommand.Remove("giveitem")
-concommand.Remove("giveweapon")
-concommand.Remove("givehat")
-concommand.Remove("givemisc")
-concommand.Remove("givebundle")
 
 concommand.Add("giveitem", function(pl,_,args)
 	if LocalPlayer():Team() == TEAM_SPECTATOR then return end

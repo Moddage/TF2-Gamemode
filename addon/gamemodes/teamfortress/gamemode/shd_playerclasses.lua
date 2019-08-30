@@ -200,7 +200,25 @@ function meta:SetPlayerClass(class)
 		else
 			c.Model = "models/player/"..(c.ModelName or "scout")..".mdl"
 		end
-
+		if self:GetInfoNum("tf_giant_robot", 0) == 1 then
+			if self:GetPlayerClass() != "medic" and self:GetPlayerClass() != "sniper" and self:GetPlayerClass() != "engineer" and self:GetPlayerClass() != "spy" then
+				c.Model = "models/bots/"..(c.ModelName or "scout").."_boss/bot_"..(c.ModelName or "scout").."_boss.mdl"
+			else
+				c.Model = "models/bots/"..(c.ModelName or "scout").."/bot_"..(c.ModelName or "scout")..".mdl"
+			end
+			self:SetViewOffset(Vector(0, 0, 126))
+			if self:GetPlayerClass() == "medic" and self:GetPlayerClass() == "pyro" and self:GetPlayerClass() == "soldier" and self:GetPlayerClass() == "demoman" and self:GetPlayerClass() == "engineer" and self:GetPlayerClass() == "sniper" then
+				self:SetHealth(3600)
+				self:SetMaxHealth(3600)
+			elseif self:GetPlayerClass() == "scout" and self:GetPlayerClass() == "spy" then
+				self:SetHealth(1300)
+				self:SetMaxHealth(1300)	
+			elseif self:GetPlayerClass() == "heavy" then
+				self:SetHealth(5000)
+				self:SetMaxHealth(5000)			
+			end
+			self:SetModelScale(1.75)
+		end
 	--end
 	
 	self:SetModel(c.Model)

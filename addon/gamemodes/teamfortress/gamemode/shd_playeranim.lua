@@ -57,7 +57,7 @@ function GM:HandlePlayerDucking(pl, vel)
 		return self.BaseClass:HandlePlayerDucking(pl, vel)
 	end
 	
-	if pl:Crouching() and !pl:IsHL2() then
+	if pl:Crouching() then
 		local len2d = vel:Length2D()
 		
 		-- fucking shit garry, you broke GetCrouchedWalkSpeed
@@ -120,10 +120,10 @@ function GM:UpdateAnimation(pl, velocity, maxseqgroundspeed)
 	maxspeed = pl:GetRealClassSpeed()
 	
 	if c and c.Speed then 
+	if (pl:OnGround() and pl:Crouching()) then
 		maxspeed = c.Speed
 	end
 	
-	if (pl:OnGround() and pl:Crouching()) then
 		maxspeed = maxspeed * 0.3
 	elseif pl:WaterLevel() > 1 then
 		maxspeed = maxspeed * 0.8
@@ -132,7 +132,7 @@ function GM:UpdateAnimation(pl, velocity, maxseqgroundspeed)
 	if c and c.ModifyMaxAnimSpeed then
 		maxspeed = c.ModifyMaxAnimSpeed(pl, maxspeed)
 	end
-	
+	if pl:IsPlayer() and pl:GetInfoNum("tf_giant_robot", 0) != 1 then
 	maxspeed = maxspeed * 3
 	
 	local vel = 1 * velocity
@@ -141,6 +141,20 @@ function GM:UpdateAnimation(pl, velocity, maxseqgroundspeed)
 	
 	pl:SetPoseParameter("move_x", vel.x / maxspeed)
 	pl:SetPoseParameter("move_y", -vel.y / maxspeed)
+	
+	else
+	maxspeed = maxspeed * 3
+	
+	local vel = 1 * velocity
+	vel:Rotate(Angle(0,-pl:EyeAngles().y,0))
+	vel:Rotate(Angle(-vel:Angle().p,0,0))
+	
+	local maxspeed2 =  pl:GetClassSpeed()
+	
+	pl:SetPoseParameter("move_x", vel.x / maxspeed2)
+	pl:SetPoseParameter("move_y", -vel.y / maxspeed2)		
+	
+	end
 	
 	local pitch = math.Clamp(math.NormalizeAngle(-pl:EyeAngles().p), -45, 90)
 	pl:SetPoseParameter("body_pitch", pitch)
@@ -209,10 +223,61 @@ local VoiceCommandGestures = {
 }
 
 local TauntGestures = {
-	[ACT_DOD_HS_CROUCH_KNIFE] = "layer_taunt_laugh",
-	[ACT_DOD_CROUCH_AIM_C96] = "layer_taunt01",
-	[ACT_DOD_CROUCHWALK_AIM_MP40] = "layer_taunt02",
-	[ACT_DOD_STAND_AIM_30CAL] = "layer_taunt03",
+	[ACT_DOD_HS_CROUCH_KNIFE] = "taunt_laugh",
+	[ACT_DOD_CROUCH_AIM_C96] = "taunt01",
+	[ACT_DOD_CROUCHWALK_AIM_MP40] = "taunt02",
+	[ACT_DOD_STAND_AIM_30CAL] = "taunt03",
+	[ACT_DOD_SPRINT_AIM_SPADE] = "taunt04",
+	[ACT_DOD_CROUCH_AIM_RIFLE] = "taunt07_halloween",
+	[ACT_DOD_WALK_IDLE_MP44] = "taunt11_howl",
+	[ACT_DOD_CROUCHWALK_AIM_30CAL] = "taunt_replay",
+	[ACT_DOD_STAND_ZOOM_BOLT] = "taunt_hifivesuccess",
+	[ACT_DOD_CROUCH_ZOOM_BOLT] = "taunt_highfivesuccess",
+	[ACT_DOD_CROUCHWALK_ZOOM_BOLT] = "taunt_highfivesuccessfull",
+	[ACT_DOD_WALK_ZOOM_BOLT] = "taunt_hifivesuccessfull",
+	[ACT_DOD_SECONDARYATTACK_PRONE_BOLT] = "taunt_dosido_dance",
+	[ACT_DOD_PRONEWALK_IDLE_BAR] = "taunt_rps_scissors_win",
+	[ACT_DOD_SPRINT_IDLE_BAR] = "taunt_rps_scissors_lose",
+	[ACT_DOD_PRIMARYATTACK_BOLT] = "throw_fire",
+	[ACT_DOD_SECONDARYATTACK_BOLT] = "taunt_flip_success_initiator",
+	[ACT_WALK_SCARED] = "taunt_party_trick",
+	[ACT_DOD_PRIMARYATTACK_PRONE_BOLT] = "taunt_flip_success_receiver",
+	[ACT_DOD_RUN_IDLE_MG] = "taunt_headbutt_success",
+	[ACT_DOD_CROUCH_IDLE_TOMMY] = "taunt06",
+	[ACT_DOD_STAND_AIM_KNIFE] = "taunt09",
+	[ACT_DOD_CROUCHWALK_IDLE_PISTOL] = "taunt_conga",
+	[ACT_DI_ALYX_ZOMBIE_TORSO_MELEE] = "taunt_russian",
+	[ACT_DOD_CROUCH_IDLE_PISTOL] = "taunt04",
+	[ACT_DOD_WALK_AIM_PSCHRECK] = "taunt_brutallegend",
+	[ACT_DOD_ZOOMLOAD_BAZOOKA] = "taunt_rps_rock_win",
+	[ACT_DOD_RELOAD_PSCHRECK] = "taunt_rps_rock_lose",
+	[ACT_DOD_ZOOMLOAD_PSCHRECK] = "taunt_rps_paper_win",
+	[ACT_DOD_RELOAD_DEPLOYED_FG42] = "taunt_rps_paper_lose",
+	[ACT_DOD_DEPLOYED] = "gesture_primary_help",
+	[ACT_DOD_PRONE_DEPLOYED] = "gesture_secondary_help",
+	[ACT_DOD_IDLE_ZOOMED] = "gesture_melee_help",
+	[ACT_DOD_WALK_ZOOMED] = "a_grapple_pull_idle",
+	[ACT_DOD_CROUCH_ZOOMED] = "a_grapple_SHOOT",
+	[ACT_DOD_CROUCHWALK_ZOOMED] = "a_grapple_pull_start",
+	[ACT_DOD_PRONE_ZOOMED] = "rocketpack_stand_launch",
+	[ACT_DOD_PRONE_FORWARD_ZOOMED] = "SECONDARY_fire_alt",
+	[ACT_DOD_PRIMARYATTACK_DEPLOYED] = "ReloadStand_MELEE_ALLCLASS",
+	[ACT_DOD_PRIMARYATTACK_PRONE_DEPLOYED] = "ReloadStand_ITEM1",
+	[ACT_SIGNAL1] = "stomp_ITEM4",
+	[ACT_SIGNAL2] = "taunt08",
+	[ACT_SIGNAL3] = "crouch_ITEM4",
+	[ACT_SIGNAL_ADVANCE] = "crouch_walk_ITEM4",
+	[ACT_DOD_RELOAD_DEPLOYED] = "kart_idle",
+	[ACT_DOD_RELOAD_PRONE_DEPLOYED] = "selectionMenu_Anim01",
+	[ACT_SMG2_IDLE2] = "ReloadStand_PRIMARY_end",
+	[ACT_SMG2_FIRE2] = "ReloadStand_SECONDARY_end",
+	[ACT_SMG2_DRAW2] = "PRIMARY_reload_end",
+	[ACT_SMG2_RELOAD2] = "a_SECONDARY_reload_end",
+	[ACT_SMG2_DRYFIRE2] = "a_primary_reload_end",
+	[ACT_RUN_AIM] = "taunt_dosido_intro",
+	[ACT_RUN_CROUCH] = "taunt_rps_start",
+	[ACT_CLIMB_DOWN] = "taunt_bumpkins_banjo_fastloop",
+	[ACT_CLIMB_UP] = "taunt_bumpkins_banjo_outro",
 }
 
 function GM:TranslateActivity(pl, act)
@@ -238,7 +303,7 @@ function GM:TranslateActivity(pl, act)
 	end
 
 	if pl:InVehicle() then
-		return ACT_KART_IDLE or act
+		return ACT_DOD_RELOAD_DEPLOYED or act
 	end
 	
 	return pl:TranslateWeaponActivity(act)
@@ -248,8 +313,6 @@ function GM:DoAnimationEvent(pl, event, data, taunt)
 	if pl:IsHL2() then
 		return self.BaseClass:DoAnimationEvent(pl, event, data)
 	end
-	
-	print(event, data)
 	
 	local w = pl:GetActiveWeapon()
 	if event == PLAYERANIMEVENT_ATTACK_PRIMARY then
@@ -396,6 +459,8 @@ function meta:SendWeaponAnim(act)
 		for k, v in pairs(self.Owner:GetWeapons()) do
 			if IsValid(v) and v:GetClass() == "tf_weapon_robot_arm" and v.IsRoboArm then
 				self.ViewModelOverride = "models/weapons/c_models/c_engineer_gunslinger.mdl"
+			elseif IsValid(v) and v:GetClass() == "tf_weapon_shortcircuit" and v.IsRoboArm then
+				self.Owner:GetViewModel():SetBodygroup(2, 1)
 			end
 		end
 		

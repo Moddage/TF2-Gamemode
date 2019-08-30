@@ -16,6 +16,7 @@ obj_dispenser = true,
 }
 local ForceDamageClasses = {
 npc_combinegunship = true,
+npc_helcopter = true,
 }
 
 --[[
@@ -512,7 +513,7 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 		if ent.TempHealth<=0 then
 			util.BlastDamage(inflictor, attacker, dmginfo:GetDamagePosition(), 80, 1000)
 			
-			local effectdata = EffectData()
+			local effectdata = EffectData()	
 				effectdata:SetOrigin(dmginfo:GetDamagePosition())
 			util.Effect("Explosion", effectdata, true, true)
 			
@@ -540,7 +541,7 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 	
 	-- Pain and death sounds
 	local hp = ent:Health() - dmginfo:GetDamage()
-	
+	if ent:GetInfoNum("tf_robot",0) != 1 or ent:IsBot() and GetConVar("tf_botbecomerobots"):GetBool() then
 	ent:Speak("TLK_PLAYER_EXPRESSION", true)
 	
 	if inflictor:GetClass()=="tf_entityflame" then
@@ -555,10 +556,24 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 	if hp<=0 then
 		--ent.LastDamageInfo = CopyDamageInfo(dmginfo)
 	elseif not dmginfo:IsFallDamage() and not dmginfo:IsDamageType(DMG_DIRECT) then
-		if dmginfo:GetDamage()/hp>0.5 or ent == attacker then
-			ent:Speak("TLK_PLAYER_ATTACKER_PAIN")
+		if ent:Health() <= 50 or ent == attacker then
+			if ent:HasGodMode() == false then
+				ent:Speak("TLK_PLAYER_ATTACKER_PAIN")
+			else
+				if ent:GetPlayerClass() == "scout" then
+					ent:EmitSound("Scout.BeingShotInvincible"..math.random(10,36))
+				end
+				ent:EmitSound("tf/weapons/fx/rics/ric"..math.random(1,4)..".wav", 80, math.random(92, 106))
+			end
 		else
-			ent:Speak("TLK_PLAYER_PAIN")
+			if ent:HasGodMode() == false then
+				ent:Speak("TLK_PLAYER_PAIN")
+			else
+				if ent:GetPlayerClass() == "scout" then
+					ent:EmitSound("Scout.BeingShotInvincible"..math.random(10,36))
+				end
+				ent:EmitSound("tf/weapons/fx/rics/ric"..math.random(1,4)..".wav", 80, math.random(92, 106))
+			end
 		end
 		
 		umsg.Start("PushDamageIndicator", ent)
@@ -566,7 +581,15 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 			umsg.Float(dmginfo:GetDamage())
 		umsg.End()
 	elseif dmginfo:IsFallDamage() then 
-		ent:Speak("TLK_PLAYER_ATTACKER_PAIN")
+		if ent:HasGodMode() == false then
+			ent:Speak("TLK_PLAYER_ATTACKER_PAIN")
+		else
+			if ent:GetPlayerClass() == "scout" then
+				ent:EmitSound("Scout.BeingShotInvincible"..math.random(10,36))
+			end
+			ent:EmitSound("tf/weapons/fx/rics/ric"..math.random(1,4)..".wav", 80, math.random(92, 106))
+		end
+	end
 	end
 end
 
