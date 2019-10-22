@@ -156,7 +156,6 @@ function ENT:StartTouch(ply)
 				end)
 				timer.Simple(5, function()
 					if not v.Carrier:Alive() then v.Carrier:Freeze(false) return end
-					v:Capture()
 					v:SetNoDraw(false)
 					v.Carrier:Freeze(false)
 					v.Carrier:SetNoDraw(false)
@@ -165,6 +164,7 @@ function ENT:StartTouch(ply)
 				timer.Simple(5.3, function()
 					if not v.Carrier:Alive() then v.Carrier:Freeze(false) return end
 					v.Carrier:Kill() 
+					v:Capture()
 				end)
 		end
 	end
