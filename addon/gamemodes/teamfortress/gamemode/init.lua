@@ -29,7 +29,7 @@ CreateConVar( "tf_use_hl_hull_size", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIF
 CreateConVar( "tf_kill_on_change_class", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will die if they change class." )
 CreateConVar( "tf_flashlight", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will have a flashlight as a TF2 Class" )
 CreateConVar( "tf_muselk_zombies", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Zombies")
-CreateConVar( "tf_disable_nonred_mvm", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will have a flashlight as a TF2 Class" )
+CreateConVar( "tf_disable_nonred_mvm", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Disable BLU and neutral" )
 CreateConVar('tf_opentheorangebox', 0, FCVAR_ARCHIVE + FCVAR_SERVER_CAN_EXECUTE, 'Enables 2007 mode')
 -- Quickfix for Valve's typo in tf_reponse_rules.txt
 response_rules.AddCriterion([[criterion "WeaponIsScattergunDouble" "item_name" "The Force-a-Nature" "required" weight 10]])
@@ -726,23 +726,23 @@ hook.Add("PlayerDeath", "PlayerRobotDeath", function( ply, attacker, inflictor)
 			eyeparticle2:Fire("kill", 0.001)
 		end
 		if ply:GetPlayerClass() == "scout" then
-			ply:EmitSound("vo/mvm/norm/scout_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/scout_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "soldier" then
-			ply:EmitSound("vo/mvm/norm/soldier_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/soldier_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "pyro" then
-			ply:EmitSound("vo/mvm/norm/pyro_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/pyro_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "demoman" then
-			ply:EmitSound("vo/mvm/norm/demoman_mvm_paincrticialdeath0"..math.random(1,7)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/demoman_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "heavy" then
-			ply:EmitSound("vo/mvm/norm/heavy_mvm_paincrticialdeath0"..math.random(1,5)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/heavy_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "engineer" then
-			ply:EmitSound("vo/mvm/norm/engineer_mvm_paincrticialdeathp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/engineer_mvm_paincrticialdeathp0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "medic" then
-			ply:EmitSound("vo/mvm/norm/medic_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/medic_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "sniper" then
-			ply:EmitSound("vo/mvm/norm/sniper_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/sniper_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "spy" then
-			ply:EmitSound("vo/mvm/norm/spy_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/spy_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		end
 			 
 				
@@ -759,23 +759,23 @@ hook.Add("PlayerDeath", "PlayerRobotDeath", function( ply, attacker, inflictor)
 			eyeparticle2:Fire("kill", 0.001)
 		end
 		if ply:GetPlayerClass() == "scout" then
-			ply:EmitSound("vo/mvm/norm/scout_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/scout_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "soldier" then
-			ply:EmitSound("vo/mvm/norm/soldier_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/soldier_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "pyro" then
-			ply:EmitSound("vo/mvm/norm/pyro_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/pyro_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "demoman" then
-			ply:EmitSound("vo/mvm/norm/demoman_mvm_paincrticialdeath0"..math.random(1,7)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/demoman_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "heavy" then
-			ply:EmitSound("vo/mvm/norm/heavy_mvm_paincrticialdeath0"..math.random(1,5)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/heavy_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "engineer" then
-			ply:EmitSound("vo/mvm/norm/engineer_mvm_paincrticialdeathp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/engineer_mvm_paincrticialdeathp0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "medic" then
-			ply:EmitSound("vo/mvm/norm/medic_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/medic_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "sniper" then
-			ply:EmitSound("vo/mvm/norm/sniper_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/sniper_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		elseif ply:GetPlayerClass() == "spy" then
-			ply:EmitSound("vo/mvm/norm/spy_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+			ply:EmitSound("vo/mvm/norm/spy_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
 		end
 	end
 	if not ply:IsHL2() and ply:GetInfoNum("tf_mvm_voodoo", 0) == 1 then
