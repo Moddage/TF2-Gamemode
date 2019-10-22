@@ -1,5 +1,5 @@
-## Unofficial Modified Build of Team Fortress 2 Gamemode
-The Gamemode that allows you to play TF2 in Gmod! Now with more stuff! and more Activity!
+## Team Fortress 2 Gamemode
+The Gamemode that allows you to play TF2 in Gmod!
 
 ## Installation
 Drop the addon folder into the addons folder.
@@ -8,7 +8,6 @@ Drop the addon folder into the addons folder.
 The Bot AI is based on [LeadBot](https://github.com/LeadKiller/leadbot), depending on the time from commits and the latest leadbot version, it may be out of date. The progress on the AI can be seen [here](https://github.com/LeadKiller/leadbot/projects/1#card-21958419).
 
 ## Credit
-### Original Coders
  - [LeadKiller](https://steamcommunity.com/id/leadkiller)
  - [Agent Agrimar](https://steamcommunity.com/id/Agrimar/)
  - [wango911](https://forum.facepunch.com/u/fstw/wango911/)
