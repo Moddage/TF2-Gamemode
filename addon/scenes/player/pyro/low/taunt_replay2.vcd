@@ -4,9 +4,9 @@ event stoppoint "end"
   time 2.828768 -1.000000
   param "noaction"
 }
-actor "Heavy"
+actor "!target1"
 {
-  channel "Animation"
+  channel "animation"
   {
     event sequence "pyro_taunt_replay"
     {
@@ -18,17 +18,15 @@ actor "Heavy"
   channel "audio"
   {
   }
-  faceposermodel "D:\dev\staging\game\tf\models\player\pyro.mdl"
 }
-
+mapname "maps\lol.bsp"
 scalesettings
 {
-  "CChoreoView" "292"
-  "RampTool" "60"
+  "CChoreoView" "100"
   "SceneRampTool" "100"
   "ExpressionTool" "100"
   "GestureTool" "100"
+  "RampTool" "100"
 }
 fps 60
 snap off
-ignorePhonemes off

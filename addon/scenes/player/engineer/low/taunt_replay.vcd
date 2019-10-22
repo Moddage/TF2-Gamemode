@@ -1,5 +1,5 @@
 // Choreo version 1
-actor "engineer"
+actor "!target1"
 {
   channel "body"
   {
@@ -16,8 +16,8 @@ actor "engineer"
       param2 "madUpper"
       event_ramp
       {
-        0.0511 0.9612 "curve_easein_to_curve_easein"
-        0.8500 0.9563 "curve_easein_to_curve_easeout"
+        0.0511 0.9608
+        0.8500 0.9529
       }
     }
     event expression "happyBig"
@@ -27,22 +27,21 @@ actor "engineer"
       param2 "happyBig"
       event_ramp
       {
-        0.0830 1.0000 "curve_easein_to_curve_easeout"
-        2.2614 1.0000 "curve_easeout_to_curve_easeout"
-        2.3774 0.0218
+        0.0830 1.0000
+        2.2614 1.0000
+        2.3774 0.0196
       }
     }
   }
 }
-
+mapname "maps\lol.bsp"
 scalesettings
 {
-  "CChoreoView" "108"
-  "RampTool" "94"
-  "ExpressionTool" "74"
-  "GestureTool" "100"
+  "CChoreoView" "100"
   "SceneRampTool" "100"
+  "ExpressionTool" "100"
+  "GestureTool" "100"
+  "RampTool" "100"
 }
 fps 60
 snap off
-ignorePhonemes off

@@ -4,9 +4,9 @@ event stoppoint "end"
   time 4.934916 -1.000000
   param "noaction"
 }
-actor "Pyro"
+actor "!target1"
 {
-  channel "Animation"
+  channel "animation"
   {
     event sequence "taunt_laugh"
     {
@@ -23,17 +23,15 @@ actor "Pyro"
       cctoken ""
     }
   }
-  faceposermodel "D:\dev\staging\game\tf\models\player\pyro.mdl"
 }
-
+mapname "maps\lol.bsp"
 scalesettings
 {
-  "CChoreoView" "276"
-  "RampTool" "60"
+  "CChoreoView" "100"
   "SceneRampTool" "100"
   "ExpressionTool" "100"
   "GestureTool" "100"
+  "RampTool" "100"
 }
 fps 60
 snap off
-ignorePhonemes off

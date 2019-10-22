@@ -1,5 +1,5 @@
 // Choreo version 1
-actor "medic"
+actor "!target1"
 {
   channel "body"
   {
@@ -16,8 +16,8 @@ actor "medic"
       param2 "evilHappyUpper"
       event_ramp
       {
-        0.1853 1.0000 "curve_easein_to_curve_easeout"
-        2.7840 1.0000 "curve_easeout_to_curve_easeout"
+        0.1853 1.0000
+        2.7840 1.0000
       }
     }
     event expression "happyFull"
@@ -27,21 +27,20 @@ actor "medic"
       param2 "happyFull"
       event_ramp
       {
-        0.1647 0.9954 "curve_easein_to_curve_easeout"
-        1.9986 1.0000 "curve_easeout_to_curve_easeout"
+        0.1647 0.9922
+        1.9986 1.0000
       }
     }
   }
 }
-
+mapname "maps\lol.bsp"
 scalesettings
 {
-  "CChoreoView" "112"
-  "RampTool" "68"
-  "ExpressionTool" "74"
-  "GestureTool" "100"
+  "CChoreoView" "100"
   "SceneRampTool" "100"
+  "ExpressionTool" "100"
+  "GestureTool" "100"
+  "RampTool" "100"
 }
 fps 60
 snap off
-ignorePhonemes off
