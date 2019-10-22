@@ -40,6 +40,8 @@ function Player:Nick()
 			return "Giant Demoman"
 		elseif self:GetPlayerClass() == "giantheavy" then
 			return "Giant Heavy"
+		elseif self:GetPlayerClass() == "sentrybuster" then
+			return "Sentry Buster"
 		else
 			return self:GetPlayerClass() or oNick(self)
 		end
