@@ -499,6 +499,342 @@ function GM:GiveHealthBonus(pl, h, allowoverheal)
 	return true
 end
 
+
+hook.Add("PlayerFootstep", "RoboStep", function( ply, pos, foot, sound, volume, rf)
+	if not ply:IsHL2() and ply:GetInfoNum("tf_robot", 0) == 1 then
+		if ply:GetPlayerClass() != "medic" then
+			ply:EmitSound( "MVM.BotStep" ) -- Play the footsteps hunter is using
+		else
+			ply:EmitSound( "items/cart_rolling_"..table.Random({"stop", "start"})..".wav", 75, 100, 0.5)
+		end
+		return true -- Don't allow default footsteps
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_mvm_voodoo", 0) == 1 then
+		if ply:GetPlayerClass() != "medic" then
+			ply:EmitSound( "MVM.BotStep" ) -- Play the footsteps hunter is using
+		else
+			ply:EmitSound( "items/cart_rolling_"..table.Random({"stop", "start"})..".wav", 75, 100, 0.5)
+		end
+		return true -- Don't allow default footsteps
+	end
+	if not ply:IsHL2() and ply:Team() == TEAM_BLU and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+		if ply:GetPlayerClass() != "medic" then
+			ply:EmitSound( "MVM.BotStep" ) -- Play the footsteps hunter is using
+		else
+			ply:EmitSound( "items/cart_rolling_"..table.Random({"stop", "start"})..".wav", 75, 100, 0.5)
+		end
+		return true -- Don't allow default footsteps
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_giant_robot", 0) == 1 then
+		ply:EmitSound( "MVM.GiantHeavyStep" ) -- Play the footsteps hunter is using
+		return true -- Don't allow default footsteps
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_mvm_giant_voodoo", 0) == 1 then
+		ply:EmitSound( "MVM.GiantHeavyStep" ) -- Play the footsteps hunter is using
+		return true -- Don't allow default footsteps
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_sentrybuster", 0) == 1 then
+		ply:EmitSound( "MVM.SentryBusterStep" ) -- Play the footsteps hunter is using
+		return true -- Don't allow default footsteps
+	end
+end)
+
+hook.Add("PlayerHurt", "RoboIsHurt", function( ply, pos, foot, sound, volume, rf )
+	local dmginfo = DamageInfo()
+	if not ply:IsHL2() and ply:GetInfoNum("tf_robot", 0) == 1 then
+		if ( shouldOccur ) then
+			if ply:Health() <= 50 then
+				if ply:GetPlayerClass() == "scout" then
+					ply:EmitSound("vo/mvm/norm/scout_mvm_painsevere0"..math.random(1,6)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "soldier" then
+					ply:EmitSound("vo/mvm/norm/soldier_mvm_painsevere0"..math.random(1,6)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "pyro" then
+					ply:EmitSound("vo/mvm/norm/pyro_mvm_painsevere0"..math.random(1,6)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "demoman" then
+					ply:EmitSound("vo/mvm/norm/demoman_mvm_painsevere0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "heavy" then
+					ply:EmitSound("vo/mvm/norm/heavy_mvm_painsevere0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "engineer" then
+					ply:EmitSound("vo/mvm/norm/engineer_mvm_painsevere0"..math.random(1,7)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "medic" then
+					ply:EmitSound("vo/mvm/norm/medic_mvm_painsevere0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "sniper" then
+					ply:EmitSound("vo/mvm/norm/sniper_mvm_painsevere0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "spy" then
+					ply:EmitSound("vo/mvm/norm/spy_mvm_painsevere0"..math.random(1,5)..".mp3", 95, 100, 1, CHAN_VOICE)
+				end
+			else
+				if ply:GetPlayerClass() == "scout" then
+					ply:EmitSound("vo/mvm/norm/scout_mvm_painsharp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "soldier" then
+					ply:EmitSound("vo/mvm/norm/soldier_mvm_painsharp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "pyro" then
+					ply:EmitSound("vo/mvm/norm/pyro_mvm_painsharp0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "demoman" then
+					ply:EmitSound("vo/mvm/norm/demoman_mvm_painsharp0"..math.random(1,7)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "heavy" then
+					ply:EmitSound("vo/mvm/norm/heavy_mvm_painsharp0"..math.random(1,5)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "engineer" then
+					ply:EmitSound("vo/mvm/norm/engineer_mvm_painsharp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "medic" then
+					ply:EmitSound("vo/mvm/norm/medic_mvm_painsharp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "sniper" then
+					ply:EmitSound("vo/mvm/norm/sniper_mvm_painsharp0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "spy" then
+					ply:EmitSound("vo/mvm/norm/spy_mvm_painsharp0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				end
+			end
+			shouldOccur = false
+			timer.Simple( hurtdelay, function() shouldOccur = true end )
+		end
+			 
+				
+		ply:EmitSound( "MVM_Robot.BulletImpact" )
+	end
+	if not ply:IsHL2() and ply:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
+		if ( shouldOccur ) then
+			if ply:Health() <= 50 then
+				if ply:GetPlayerClass() == "scout" then
+					ply:EmitSound("vo/mvm/norm/scout_mvm_painsevere0"..math.random(1,6)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "soldier" then
+					ply:EmitSound("vo/mvm/norm/soldier_mvm_painsevere0"..math.random(1,6)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "pyro" then
+					ply:EmitSound("vo/mvm/norm/pyro_mvm_painsevere0"..math.random(1,6)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "demoman" then
+					ply:EmitSound("vo/mvm/norm/demoman_mvm_painsevere0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "heavy" then
+					ply:EmitSound("vo/mvm/norm/heavy_mvm_painsevere0"..math.random(1,3)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "engineer" then
+					ply:EmitSound("vo/mvm/norm/engineer_mvm_painsevere0"..math.random(1,7)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "medic" then
+					ply:EmitSound("vo/mvm/norm/medic_mvm_painsevere0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "sniper" then
+					ply:EmitSound("vo/mvm/norm/sniper_mvm_painsevere0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "spy" then
+					ply:EmitSound("vo/mvm/norm/spy_mvm_painsevere0"..math.random(1,5)..".mp3", 95, 100, 1, CHAN_VOICE)
+				end
+			else
+				if ply:GetPlayerClass() == "scout" then
+					ply:EmitSound("vo/mvm/norm/scout_mvm_painsharp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "soldier" then
+					ply:EmitSound("vo/mvm/norm/soldier_mvm_painsharp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "pyro" then
+					ply:EmitSound("vo/mvm/norm/pyro_mvm_painsharp0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "demoman" then
+					ply:EmitSound("vo/mvm/norm/demoman_mvm_painsharp0"..math.random(1,7)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "heavy" then
+					ply:EmitSound("vo/mvm/norm/heavy_mvm_painsharp0"..math.random(1,5)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "engineer" then
+					ply:EmitSound("vo/mvm/norm/engineer_mvm_painsharp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "medic" then
+					ply:EmitSound("vo/mvm/norm/medic_mvm_painsharp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "sniper" then
+					ply:EmitSound("vo/mvm/norm/sniper_mvm_painsharp0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				elseif ply:GetPlayerClass() == "spy" then
+					ply:EmitSound("vo/mvm/norm/spy_mvm_painsharp0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+				end
+			end
+			shouldOccur = false
+			timer.Simple( hurtdelay, function() shouldOccur = true end )
+		end
+			 
+				
+		ply:EmitSound( "MVM_Robot.BulletImpact" )
+	end
+	
+
+	
+	
+	if not ply:IsHL2() and ply:GetInfoNum("tf_mvm_voodoo", 0) == 1 then
+		ply:EmitSound( "MVM_Robot.BulletImpact" )
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_giant_robot", 0) == 1 then
+		ply:EmitSound( "MVM_Giant.BulletImpact" )
+	end 
+	if not ply:IsHL2() and ply:GetInfoNum("tf_mvm_giant_voodoo", 0) == 1 then
+		ply:EmitSound( "MVM_Giant.BulletImpact" )
+	end	
+	if ply:GetPlayerClass() == "spy" then
+		for k,v in pairs(ents.FindByClass("tf_weapon_invis_dringer")) do
+			if v.Owner == ply and v.dt.Ready == true then
+				v:StartCloaking()
+				ply:CreateRagdoll()
+			end
+		end
+	end
+end)
+
+hook.Add("PlayerDeath", "PlayerRobotDeath", function( ply, attacker, inflictor)
+	local dmginfo = DamageInfo()
+	ply:SetParent()
+	for k,v in pairs(ents.FindInSphere(ply:GetPos(), 110)) do
+		if v:IsPlayer() then
+			v:SetParent()
+		end
+	end
+	if ply:GetPlayerClass() == "jockey" then
+		
+		ply:SetNWBool("Taunting", false)
+		ply:SetNWBool("NoWeapon", false)
+		ply:SetPos(ply:GetPos() + Vector(40, 40, 40))
+		net.Start("DeActivateTauntCam")
+		net.Send(ply)
+
+	end
+	if ply:GetPlayerClass() == "hunter" then
+		
+		ply:SetNWBool("Taunting", false)
+		ply:SetNWBool("NoWeapon", false)
+		ply:SetPos(ply:GetPos() + Vector(40, 40, 40))
+		net.Start("DeActivateTauntCam")
+		net.Send(ply)
+
+	end
+	if ply:IsHL2() then
+		if ply:GetPlayerClass() == "gmodplayer" then
+			if ply:GetModel() == "models/survivfix/survivor_mechanic.mdl" then
+				ply:EmitSound("player/survivor/voice/mechanic/deathscream0"..math.random(1,6)..".wav")
+			elseif ply:GetModel() == "models/survivfix/survivor_namvet.mdl" then
+				ply:EmitSound("player/survivor/voice/namvet/deathscream0"..math.random(1,8)..".wav")
+			elseif ply:GetModel() == "models/survivfix/survivor_manager.mdl" then
+				ply:EmitSound("player/survivor/voice/manager/deathscream0"..math.random(1,9)..".wav")
+			elseif ply:GetModel() == "models/survivfix/survivor_biker.mdl" then
+				ply:EmitSound("player/survivor/voice/biker/deathscream0"..math.random(1,9)..".wav")
+			end
+		end
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_sentrybuster", 0) == 1 then			
+		for k,v in pairs(player.GetAll()) do
+			if not v:IsFriendly(ply) and v:Alive() and not v:IsHL2() then
+				if v:GetPlayerClass() == "heavy" then
+					v:EmitSound("vo/heavy_mvm_sentry_buster02.mp3", 85, 100, 1, CHAN_REPLACE)
+				elseif v:GetPlayerClass() == "medic" then
+					v:EmitSound("vo/medic_mvm_sentry_buster02.mp3", 85, 100, 1, CHAN_REPLACE)
+				elseif v:GetPlayerClass() == "soldier" then
+					v:EmitSound("vo/soldier_mvm_sentry_buster02.mp3", 85, 100, 1, CHAN_REPLACE)
+				elseif v:GetPlayerClass() == "engineer" then
+					v:EmitSound("vo/engineer_mvm_sentry_buster02.mp3", 85, 100, 1, CHAN_REPLACE)
+				end
+			end
+		end
+	end
+	if not ply:IsHL2() and ply:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
+		if eyeparticle1:IsValid() then
+			eyeparticle1:Fire("kill", 0.001)
+		end
+		if eyeparticle2:IsValid() then
+			eyeparticle2:Fire("kill", 0.001)
+		end
+		if ply:GetPlayerClass() == "scout" then
+			ply:EmitSound("vo/mvm/norm/scout_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "soldier" then
+			ply:EmitSound("vo/mvm/norm/soldier_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "pyro" then
+			ply:EmitSound("vo/mvm/norm/pyro_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "demoman" then
+			ply:EmitSound("vo/mvm/norm/demoman_mvm_paincrticialdeath0"..math.random(1,7)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "heavy" then
+			ply:EmitSound("vo/mvm/norm/heavy_mvm_paincrticialdeath0"..math.random(1,5)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "engineer" then
+			ply:EmitSound("vo/mvm/norm/engineer_mvm_paincrticialdeathp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "medic" then
+			ply:EmitSound("vo/mvm/norm/medic_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "sniper" then
+			ply:EmitSound("vo/mvm/norm/sniper_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "spy" then
+			ply:EmitSound("vo/mvm/norm/spy_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+		end
+			 
+				
+		ply:EmitSound( "MVM_Robot.BulletImpact" )
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_robot", 0) == 1 then
+		ply:EmitSound( "MVM_Robot.BulletImpact" ) -- Play the footsteps hunter is using
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_robot", 0) == 1 then
+		if eyeparticle1:IsValid() then
+			eyeparticle1:Fire("kill", 0.001)
+		end
+		if eyeparticle2:IsValid() then
+			eyeparticle2:Fire("kill", 0.001)
+		end
+		if ply:GetPlayerClass() == "scout" then
+			ply:EmitSound("vo/mvm/norm/scout_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "soldier" then
+			ply:EmitSound("vo/mvm/norm/soldier_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "pyro" then
+			ply:EmitSound("vo/mvm/norm/pyro_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "demoman" then
+			ply:EmitSound("vo/mvm/norm/demoman_mvm_paincrticialdeath0"..math.random(1,7)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "heavy" then
+			ply:EmitSound("vo/mvm/norm/heavy_mvm_paincrticialdeath0"..math.random(1,5)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "engineer" then
+			ply:EmitSound("vo/mvm/norm/engineer_mvm_paincrticialdeathp0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "medic" then
+			ply:EmitSound("vo/mvm/norm/medic_mvm_paincrticialdeath0"..math.random(1,8)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "sniper" then
+			ply:EmitSound("vo/mvm/norm/sniper_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+		elseif ply:GetPlayerClass() == "spy" then
+			ply:EmitSound("vo/mvm/norm/spy_mvm_paincrticialdeath0"..math.random(1,4)..".mp3", 95, 100, 1, CHAN_VOICE)
+		end
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_mvm_voodoo", 0) == 1 then
+		ply:EmitSound( "MVM_Robot.BulletImpact" ) -- Play the footsteps hunter is using
+	end
+	ply:StopSound("BusterLoop")
+	if not ply:IsHL2() and ply:GetPlayerClass() == "sentrybuster" then
+		ply:EmitSound("MVM.SentryBusterExplode")
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_sentrybuster", 0) == 1 then
+		ply:EmitSound("MVM.SentryBusterExplode")
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_giant_robot", 0) == 1 then
+		ply:EmitSound( "MVM.GiantCommonExplodes" ) -- Play the footsteps hunter is using
+		ply:PrecacheGibs()
+		ply:GibBreakClient( Vector(math.random(1,4), math.random(1,4), math.random(1,4)) )
+		ply:GetRagdollEntity():Remove()	
+		for k,v in pairs(player.GetAll()) do
+			if not v:IsFriendly(ply) and v:Alive() and not v:IsHL2() then
+				if v:GetPlayerClass() == "heavy" then
+					v:EmitSound("vo/heavy_mvm_giant_robot02.mp3", 85, 100, 1, CHAN_REPLACE)
+				elseif v:GetPlayerClass() == "medic" then
+					v:EmitSound("vo/medic_mvm_giant_robot02.mp3", 85, 100, 1, CHAN_REPLACE)
+				end
+			end
+		end
+	end
+	if not ply:IsHL2() and ply:GetPlayerClass() == "giantheavy" or ply:GetPlayerClass() == "giantdemoman" or ply:GetPlayerClass() == "giantsoldier" or ply:GetPlayerClass() == "giantpyro" then
+		ply:EmitSound( "MVM.GiantCommonExplodes" ) -- Play the footsteps hunter is using
+		ply:PrecacheGibs()
+		ply:GibBreakClient( Vector(math.random(1,4), math.random(1,4), math.random(1,4)) )
+		ply:GetRagdollEntity():Remove()	
+		for k,v in pairs(player.GetAll()) do
+			if not v:IsFriendly(ply) and v:Alive() and not v:IsHL2() then
+				if v:GetPlayerClass() == "heavy" then
+					v:EmitSound("vo/heavy_mvm_giant_robot02.mp3", 85, 100, 1, CHAN_REPLACE)
+				elseif v:GetPlayerClass() == "medic" then
+					v:EmitSound("vo/medic_mvm_giant_robot02.mp3", 85, 100, 1, CHAN_REPLACE)
+				end
+			end
+		end
+	end
+	if not ply:IsHL2() and ply:GetInfoNum("tf_mvm_giant_voodoo", 0) == 1 then
+		ply:EmitSound( "MVM.GiantCommonExplodes" ) -- Play the footsteps hunter is using
+		ply:PrecacheGibs()
+		ply:GibBreakClient( Vector(math.random(1,4), math.random(1,4), math.random(1,4)) )
+		ply:GetRagdollEntity():Remove()	
+		for k,v in pairs(player.GetAll()) do
+			if not v:IsFriendly(ply) and v:Alive() and not v:IsHL2() then
+				if ply:GetPlayerClass() == "heavy" then
+					ply:EmitSound("vo/heavy_mvm_giant_robot02.mp3", 85, 100, 1, CHAN_REPLACE)
+				elseif ply:GetPlayerClass() == "medic" then
+					ply:EmitSound("vo/medic_mvm_giant_robot02.mp3", 85, 100, 1, CHAN_REPLACE)
+				end
+			end
+		end
+	end
+end)
+
 file.Append(LOGFILE, Format("Done loading, time = %f\n", SysTime() - load_time))
 local load_time = SysTime()
 
