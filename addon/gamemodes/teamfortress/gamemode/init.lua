@@ -517,7 +517,7 @@ hook.Add("PlayerFootstep", "RoboStep", function( ply, pos, foot, sound, volume, 
 		end
 		return true -- Don't allow default footsteps
 	end
-	if not ply:IsHL2() and ply:Team() == TEAM_BLU and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	if not ply:IsHL2() and ply:Team() == TEAM_BLU and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		if ply:GetPlayerClass() != "medic" then
 			ply:EmitSound( "MVM.BotStep" ) -- Play the footsteps hunter is using
 		else
