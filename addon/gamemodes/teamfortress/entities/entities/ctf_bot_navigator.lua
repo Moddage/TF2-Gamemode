@@ -24,12 +24,8 @@ function ENT:ChasePos( options )
 		if self.P:GetAge() > 0.1 then
 			self.P:Compute(self, self.PosGen)
 		end
-		for k,v in ipairs(player.GetAll()) do
-			if v:GetInfoNum("developer", 0) == 1 then
-				if GetConVar("developer"):GetFloat() > 0 then
-					self.P:Draw()
-				end
-			end
+		if GetConVar("developer"):GetFloat() > 0 then
+			self.P:Draw()
 		end
 		
 		if self.loco:IsStuck() then
