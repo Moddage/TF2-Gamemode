@@ -59,7 +59,7 @@ function ENT:Initialize()
 		util.AddNetworkString( "SCGG_Entity_InvalidateBone" )
 	end
 	if CLIENT then
-		net.Receive( "SCGG_Entity_InvalidateBone", function( entity ) 
+		usermessage.Receive( "SCGG_Entity_InvalidateBone", function( entity ) 
 			print("i has mesage")
 			entity:InvalidateBoneCache()
 		end )
@@ -106,14 +106,14 @@ end
 function ENT:Think()
 			if self.ClawOpenState == true then
 			self:SetPoseParameter("super_active", 1)
-			--net.Start("SCGG_Entity_InvalidateBone")
-			--net.WriteEntity( self )
-			--net.Send( player.GetAll() )
+			--usermessage.Start("SCGG_Entity_InvalidateBone")
+			--usermessage.WriteEntity( self )
+			--usermessage.Send( player.GetAll() )
 			elseif self.ClawOpenState != true then
 			self:SetPoseParameter("super_active", 0)
-			--net.Start("SCGG_Entity_InvalidateBone")
-			--net.WriteEntity( self )
-			--net.Send( player.GetAll() )
+			--usermessage.Start("SCGG_Entity_InvalidateBone")
+			--usermessage.WriteEntity( self )
+			--usermessage.Send( player.GetAll() )
 			end
 		if game.GetGlobalState("super_phys_gun") == GLOBAL_OFF and GetConVar("scgg_enabled"):GetInt() <= 0 and self.Entity.Fading != true then
 			self.Entity.Fading = true

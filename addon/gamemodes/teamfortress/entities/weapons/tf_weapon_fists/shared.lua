@@ -47,9 +47,11 @@ SWEP.HoldType = "MELEE"
 SWEP.HoldTypeHL2 = "fist"
 SWEP.HasThirdpersonCritAnimation = true
 SWEP.HasSecondaryFire = true
-SWEP.UsesLeftRightAnim = true
 
 SWEP.ShouldOccurFists = true
+
+SWEP.Force = 100000
+SWEP.AddPitch = -4
 
 function SWEP:OnCritBoostStarted()
 	self.Owner:EmitSound(self.CritEnabled)
@@ -64,17 +66,27 @@ function SWEP:Deploy()
 	self.Owner:EmitSound("Weapon_bm_gloves.draw")
 	end
 	if self:GetItemData().image_inventory == "backpack/weapons/v_models/v_fist_heavy" then
-		self.VM_IDLE = ACT_FISTS_VM_IDLE
-		self.VM_DRAW = ACT_FISTS_VM_DRAW
-		self.VM_HITLEFT = ACT_FISTS_VM_HITLEFT
-		self.VM_HITRIGHT = ACT_FISTS_VM_HITRIGHT
-		self.VM_SWINGHARD = ACT_FISTS_VM_SWINGHARD
+		
+		if self.Owner:GetPlayerClass() == "charger" then
+			self.VM_IDLE = ACT_VM_IDLE
+			self.VM_DRAW = ACT_VM_DRAW
+			self.VM_PRIMARYATTACK = ACT_VM_PRIMARYATTACK
+			self.VM_SWINGHARD = ACT_VM_PRIMARYATTACK
+		else
+			self.VM_IDLE = ACT_FISTS_VM_IDLE
+			self.VM_DRAW = ACT_FISTS_VM_DRAW
+			self.VM_HITLEFT = ACT_FISTS_VM_HITLEFT
+			self.VM_HITRIGHT = ACT_FISTS_VM_HITRIGHT
+			self.VM_SWINGHARD = ACT_FISTS_VM_SWINGHARD
+		end
 	end
+	
 	self.BaseClass.Deploy(self) 
 end
 
 function SWEP:Think() 
 	self:CallBaseFunction("Think")
+	
 	if self:GetItemData().model_player == "models/weapons/c_models/c_breadmonster_gloves/c_breadmonster_gloves.mdl" then
 		self.VM_IDLE = ACT_BREADGLOVES_VM_IDLE
 		self.VM_DRAW = ACT_BREADGLOVES_VM_DRAW
@@ -85,8 +97,57 @@ function SWEP:Think()
 		self.VM_INSPECT_IDLE = ACT_MELEE_ALT2_VM_INSPECT_IDLE
 		self.VM_INSPECT_END = ACT_MELEE_ALT2_VM_INSPECT_END
 		self.SwingCrit = Sound("Weapon_bm_gloves.attack")
-	end 
-
+	end
+		
+	if self.Owner:GetPlayerClass() == "boomer" then
+		self.Swing = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.SwingCrit = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.HitFlesh = "vj_l4d/hit/claw_hit_flesh_"..math.random(1,4)..".wav"
+		self.HitWorld = "vj_l4d_com/attack_hit/hit_punch_0"..math.random(1,8)..".wav"
+	end
+	if self.Owner:GetPlayerClass() == "hunter" then
+		self.Swing = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.SwingCrit = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.HitFlesh = "vj_l4d/hit/claw_hit_flesh_"..math.random(1,4)..".wav"
+		self.HitWorld = "vj_l4d_com/attack_hit/hit_punch_0"..math.random(1,8)..".wav"
+		self:SetNextPrimaryFire(CurTime() + 0.2)
+		self:SetNextSecondaryFire(CurTime() + 0.2)
+		self.Primary.Delay = 0.2
+		self.Secondary.Delay = 0.2  
+	end
+	if self.Owner:GetPlayerClass() == "smoker" then
+		self.Swing = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.SwingCrit = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.HitFlesh = "vj_l4d/hit/claw_hit_flesh_"..math.random(1,4)..".wav"
+		self.HitWorld = "vj_l4d_com/attack_hit/hit_punch_0"..math.random(1,8)..".wav"
+	end
+	if self.Owner:GetPlayerClass() == "jockey" then
+		self.Swing = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.SwingCrit = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.HitFlesh = "vj_l4d/hit/claw_hit_flesh_"..math.random(1,4)..".wav"
+		self.HitWorld = "vj_l4d_com/attack_hit/hit_punch_0"..math.random(1,8)..".wav"
+	end
+	if self.Owner:GetPlayerClass() == "charger" then
+		self.Swing = "charger/voice/attack/charger_melee0"..math.random(1,5)..".wav"
+		self.SwingCrit = "charger/voice/attack/charger_melee0"..math.random(1,5)..".wav"
+		self.HitFlesh = "charger/hit/charger_punch"..math.random(1,4)..".wav"
+		self.HitWorld = "charger/hit/charger_punch"..math.random(1,4)..".wav"
+		self.HasSecondaryFire = false
+	end
+	if self.Owner:GetPlayerClass() == "l4d_zombie" then
+		self.Swing = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.SwingCrit = "vj_l4d_com/attack_miss/claw_miss_"..math.random(1,2)..".wav"
+		self.HitFlesh = "vj_l4d_com/attack_hit/hit_punch_0"..math.random(1,8)..".wav"
+		self.HitWorld = "vj_l4d_com/attack_hit/hit_punch_0"..math.random(1,8)..".wav"
+	end
+	
+	if self.Owner:GetPlayerClass() == "tank" then
+		self.Swing = "vj_l4d/tank/voice/attack/tank_attack_0"..math.random(1,9)..".wav"
+		self.SwingCrit = "vj_l4d/tank/voice/attack/tank_attack_0"..math.random(1,9)..".wav"
+		self.HitFlesh = "vj_l4d/tank/hit/hulk_punch_1.wav"
+		self.HitWorld = "vj_l4d/tank/hit/hulk_punch_1.wav"
+		self.BaseDamage = 150
+	end
 	if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_xms_gloves/c_xms_gloves.mdl" then
 		self.SwingCrit = Sound("Weapon_mittens.CritHit")
 		self.HitFlesh = Sound("Weapon_mittens.HitFlesh")
@@ -162,6 +223,98 @@ function SWEP:Think()
 end
 		
 
+function SWEP:SecondaryAttack()
+	if self.Owner:GetPlayerClass() != "tank" then
+			if self.HasSecondaryFire == true then
+			if self.HasCustomMeleeBehaviour then return true end
+			
+			if self:CriticalEffect() then
+				self:EmitSound(self.SwingCrit, 100, 100)
+				--[[if SERVER then
+					self:EmitSound(self.SwingCrit, 100, 100)
+					umsg.Start("DoMeleeSwing",self.Owner)
+						umsg.Entity(self)
+						umsg.Bool(true)
+					umsg.End()
+				end]]
+				self:SendWeaponAnimEx(self.VM_SWINGHARD)
+				if self.HasThirdpersonCritAnimation then
+					self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_SECONDARYFIRE, true)
+				else
+					self.Owner:SetAnimation(PLAYER_ATTACK1)
+				end
+			else
+				self:EmitSound(self.Swing, 100, 100)
+				--[[if SERVER then
+					self:EmitSound(self.Swing, 100, 100)
+					umsg.Start("DoMeleeSwing",self.Owner)
+						umsg.Entity(self)
+						umsg.Bool(false)
+					umsg.End()
+				end]]
+				
+				self:SendWeaponAnim(self.VM_HITRIGHT)
+				self.Owner:SetAnimation(PLAYER_ATTACK1)
+			end
+			
+			--self.NextMeleeAttack = CurTime() + self.MeleeAttackDelay
+			if not self.NextMeleeAttack then
+				self.NextMeleeAttack = {}
+			end
+			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+			self:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
+			table.insert(self.NextMeleeAttack, CurTime() + self.MeleeAttackDelay)
+		end
+	else
+	
+		local pos = self.Owner:GetShootPos()
+		self.Owner:DoAnimationEvent(ACT_RANGE_ATTACK1)
+		if SERVER then
+			self.Owner:EmitSound("vj_l4d/tank/voice/yell/tank_throw_0"..math.random(1,6)..".wav", 125)
+			self.Owner:EmitSound("vj_l4d/tank/attack/rip_up_rock_1.wav", 125)
+			self:SetNextSecondaryFire(CurTime() + 10)
+			self.Owner:SetClassSpeed(1)
+			self.Owner:ConCommand("tf_tp_simulation_toggle")
+						
+			local animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+				animent2:SetModel("models/props_debris/concrete_chunk01a.mdl") 
+				animent2:SetAngles(self.Owner:GetAngles() - Angle(0, -50, 0))
+				animent2:SetPos(self.Owner:GetPos())
+				animent2:Spawn()
+				animent2:Activate()
+				animent2:SetParent(self.Owner, self.Owner:LookupAttachment("debris"))
+				animent2:SetName("DebrisModel"..self.Owner:EntIndex())
+		end
+		timer.Simple(2.3, function()
+			if SERVER then
+				local grenade = ents.Create("tf_projectile_rocket")
+				grenade:SetPos(pos)
+				grenade:SetAngles(self.Owner:EyeAngles())
+				self.Owner:ResetClassSpeed()
+				self.Owner:ConCommand("tf_tp_simulation_toggle")
+				if self:Critical() then
+					grenade.critical = true
+				end
+				
+				grenade:SetOwner(self.Owner)
+				
+				grenade:Spawn()
+				
+				grenade:SetModel("models/props_debris/concrete_chunk01a.mdl")
+				local vel = self.Owner:GetAimVector():Angle()
+				vel.p = vel.p + self.AddPitch
+				vel = vel:Forward() * self.Force * 5
+				
+				grenade:GetPhysicsObject():AddAngleVelocity(Vector(math.random(-2000,2000),math.random(-2000,2000),math.random(-2000,2000)))
+				grenade:GetPhysicsObject():ApplyForceCenter(vel)
+						
+				for k,v in ipairs(ents.FindByName("DebrisModel"..self.Owner:EntIndex())) do
+					v:Remove()
+				end
+			end
+		end)
+	end
+end
 
 function SWEP:MeleeAttack(dummy)
 	local pos = self.Owner:GetShootPos()
@@ -171,7 +324,7 @@ function SWEP:MeleeAttack(dummy)
 	if SERVER and not dummy and game.SinglePlayer() then
 		self:CallOnClient("MeleeAttack","")
 	end
-	
+
 	if CLIENT and dummy=="" then
 		dummy = false
 	end
@@ -242,14 +395,20 @@ function SWEP:MeleeAttack(dummy)
 	end
 	
 	if not dummy then
-		self.Owner:LagCompensation(false)
+		self.Owner:LagCompensation(true)
 	end
 	
 	--MsgN(Format("HELLO %s",tostring(dummy)))
 	if dummy then return tr end
-	
+	if self.Owner:GetPlayerClass() == "tank" or self.Owner:GetPlayerClass() == "boomer" or self.Owner:GetPlayerClass() == "smoker" or self.Owner:GetPlayerClass() ==  "hunter" or self.Owner:GetPlayerClass() ==  "jockey" then
+		self.Owner:DoAnimationEvent(ACT_MELEE_ATTACK1)
+	elseif self.Owner:GetPlayerClass() == "charger" then
+		self.Owner:DoAnimationEvent(ACT_DOD_IDLE_ZOOMED)
+	elseif self.Owner:GetPlayerClass() == "l4d_zombie" then
+		self.Owner:DoAnimationEvent(ACT_MELEE_ATTACK2)
+	end
 	self:OnMeleeAttack(tr)
-	
+
 	local damagedself = false
 	if self.MeleeHitSelfOnMiss and not tr.HitWorld and not IsValid(tr.Entity) then
 		damagedself = true
@@ -406,5 +565,32 @@ function SWEP:MeleeAttack(dummy)
 		
 		self:MeleeHitSound(tr)
 		self:OnMeleeHit(tr)
+	end
+end
+
+function SWEP:PrimaryAttack()
+	if self.Owner:KeyDown(IN_ATTACK2) then return end
+	self:SendWeaponAnim(self.VM_HITLEFT)
+	self.Owner:SetAnimation(PLAYER_ATTACK1)
+	
+	--self.NextMeleeAttack = CurTime() + self.MeleeAttackDelay
+	if not self.NextMeleeAttack then
+		self.NextMeleeAttack = {}
+	end
+	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+	self:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
+	table.insert(self.NextMeleeAttack, CurTime() + self.MeleeAttackDelay)
+	if self.HasCustomMeleeBehaviour then return true end
+			
+	if self:CriticalEffect() then
+		self:EmitSound(self.SwingCrit, 100, 100)
+		self:SendWeaponAnimEx(self.VM_SWINGHARD)
+		if self.HasThirdpersonCritAnimation then
+			self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_SECONDARYFIRE, true)
+		else
+			self.Owner:SetAnimation(PLAYER_ATTACK1)
+		end
+	else
+		self:EmitSound(self.Swing, 100, 100)
 	end
 end

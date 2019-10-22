@@ -1,4 +1,4 @@
-
+ 
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("shd_util.lua")
@@ -133,7 +133,6 @@ function SWEP:DropAsAmmo()
 	self.DropVelocity = self.Owner:GetVelocity()
 	self.Owner:DropWeapon(self)
 end
-
 --[[
 function SWEP:DropAsAmmo()
 	local mdl

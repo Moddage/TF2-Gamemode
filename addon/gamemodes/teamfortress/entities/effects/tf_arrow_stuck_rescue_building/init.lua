@@ -13,7 +13,7 @@ function EFFECT:Init(data)
 	self:SetAngles(ang)
 	
 	if IsValid(ent) then
-		local bone = ent:TranslatePhysBoneToBone(physbone)
+		local bone = ent:TranslatePhysBousermessageoBone(physbone)
 		local bonepos, boneang = ent:GetBonePosition(bone)
 		if bonepos and boneang then
 			self.Parent = ent

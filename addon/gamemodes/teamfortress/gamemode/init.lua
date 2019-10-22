@@ -89,7 +89,7 @@ concommand.Add( "changeteam", function( pl, cmd, args )
 	if ( tonumber( args[ 1 ] ) == 0 or tonumber( args[ 1 ] ) == 3 ) then pl:ChatPrint("Invalid Team!") return end
 	if ( pl:Team() == tonumber( args[ 1 ] ) ) then return false end
 	if ( GetConVar("tf_competitive"):GetBool() and tonumber( args[ 1 ] ) == 4 ) then pl:ChatPrint("Competitive mode is on!") return end
-	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "mvm_") and tonumber( args[ 1 ] ) == 4 ) then pl:ChatPrint("Neutral Team is disabled!") return end
+	if ( string.find(game.GetMap(), "mvm_") and tonumber( args[ 1 ] ) == 4 ) then pl:ChatPrint("Neutral Team is disabled!") return end
 	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "mvm_") and tonumber( args[ 1 ] ) == 2 ) and !pl:IsAdmin() then pl:ChatPrint("Blue Team is disabled!") return end
 	if pl:Team() == TEAM_SPECTATOR then
 		pl:KillSilent()
@@ -612,7 +612,7 @@ util.AddNetworkString("UpdateLoadout")
 
 function GM:PlayerDroppedWeapon(ply)
 	if IsValid(ply) and ply:IsPlayer() and !ply:IsHL2() then
-		net.Start("UpdateLoadout")
-		net.Send(ply)
+		usermessage.Start("UpdateLoadout")
+		usermessage.Send(ply)
 	end
 end

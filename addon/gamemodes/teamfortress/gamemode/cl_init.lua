@@ -455,6 +455,128 @@ end
 end
 
 
+function L4DClassSelection()
+
+
+	local ply = LocalPlayer()
+	local ClassFrame = vgui.Create("DFrame") --create a frame
+	ClassFrame:SetSize(ScrW() * 1, ScrH() * 1 ) --set its size
+	ClassFrame:Center() --position it at the center of the screen
+	ClassFrame:SetTitle("L4D Menu") --set the title of the menu 
+	ClassFrame:SetDraggable(true) --can you move it around
+	ClassFrame:SetSizable(false) --can you resize it?
+	if ply:GetPlayerClass() ~= "" then
+		ClassFrame:ShowCloseButton(true) --can you close it
+	else
+		ClassFrame:ShowCloseButton(false)
+	end
+		
+	ClassFrame.OnClose = function()
+		LocalPlayer():StopSound("ClassSelection.ThemeMVM") 
+		LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") 
+		if string.find(game.GetMap(), "mvm_") then 
+			LocalPlayer():EmitSound("music/mvm_class_select.wav") 
+		end
+	end
+	LocalPlayer():EmitSound("ClassSelection.ThemeL4D")	
+	
+	
+	local iconC = vgui.Create( "DModelPanel", ClassFrame )
+	iconC:SetSize( ScrW() * 1, ScrH() * 1 )
+	
+	iconC:SetCamPos( Vector( 90, 0, 40 ) )
+	iconC:SetPos( 0, 0)
+	iconC:SetModel( "models/vgui/ui_class01.mdl" ) -- you can only change colors on playermodels
+	iconC:SetZPos(-4)
+	function iconC:LayoutEntity( Entity ) return end
+	local icon = vgui.Create( "DModelPanel", ClassFrame )
+	icon:SetSize(ScrW() * 0.412, ScrH() * 0.571)
+	icon:SetPos(ScrW() * 0.012, ScrH() * 0.301)
+	icon:SetCamPos( Vector( 90, 0, 45 ) )
+	icon:SetModel( "models/infected_l4d/hulk.mdl" ) -- you can only change colors on playermodels
+	icon:SetZPos(-8)
+	icon:SetAnimated(true)
+	icon.AutomaticFrameAdvance = true
+	
+	local icon2 = vgui.Create( "DModelPanel", ClassFrame )
+	icon2:SetSize(ScrW() * 0.412, ScrH() * 0.571)
+	icon2:SetPos(ScrW() * 0.012, ScrH() * 0.301)
+	icon2:SetCamPos( Vector( 90, 0, 45 ) )
+	icon2:SetModel( "models/props_debris/concrete_chunk01a.mdl" ) -- you can only change colors on playermodels
+	icon2:SetZPos(-8)
+	icon2:SetAnimated(true)
+	icon2:GetEntity():SetParent(icon:GetEntity())
+	icon2:GetEntity():AddEffects(EF_BONEMERGE)
+	
+	
+	local spectate = vgui.Create("DModelPanel", ClassFrame)
+	spectate:SetPos( 625, 65 )
+	spectate:SetSize( 75, 100 )
+	spectate:SetModel( "models/vgui/ui_team01_spectate.mdl" )
+	
+	spectate:SetFOV(75)
+	icon2:SetZPos(	8)
+	spectate:SetCamPos(Vector(90, 50, 35))
+	spectate:SetLookAt(Vector(-1.883671, -12.644326, 30.984015))
+	
+	function spectate.DoClick() RunConsoleCommand( "tf_spectate" ) ClassFrame:Close() end
+	
+	function spectate:LayoutEntity()
+		self.Hov = self.Hov or false
+		if self:IsHovered() and !self.Hov then
+			self.Entity:SetBodygroup(1, 1)
+			local random = math.random(3)
+			if random == 1 then
+				surface.PlaySound("ui/tv_tune.mp3")
+			else
+				surface.PlaySound("ui/tv_tune"..random..".mp3")
+			end
+			self.Hov = true
+		elseif !self:IsHovered() and self.Hov then
+			self.Entity:SetBodygroup(1, 0)
+			self.Hov = false
+		end
+	end
+	
+	function icon:LayoutEntity( ent )
+		self:RunAnimation()
+	end
+	function icon2:LayoutEntity( ent )
+		return
+	end
+	local dance = icon:GetEntity():LookupSequence( "throw_02" )
+	icon:GetEntity():SetSequence( dance )
+		
+	ClassFrame.OnClose = function()
+		LocalPlayer():StopSound("ClassSelection.ThemeMVM") 
+		LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") 
+		LocalPlayer():StopSound("ClassSelection.ThemeL4D") 
+	end
+	ClassFrame:MakePopup() --make it appear
+	 
+	local TankButton = vgui.Create("DButton", ClassFrame)
+	TankButton:SetSize(100, 30)
+	TankButton:SetPos(10, 35)
+	TankButton:SetText("Tank")
+	TankButton.OnCursorEntered = function() icon:SetModel( "models/infected_l4d/hulk.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/props_debris/concrete_chunk01a.mdl") local dance = icon:GetEntity():LookupSequence( "throw_02" ) icon:GetEntity():SetSequence( dance ) end
+	TankButton.DoClick = function() RunConsoleCommand("changeclass", "tank")  LocalPlayer():EmitSound("music/safe/themonsterswithout_l4d1.wav") LocalPlayer():StopSound("ClassSelection.ThemeL4D") ClassFrame:Close()  end
+
+	local BoomerButton = vgui.Create("DButton", ClassFrame)
+	BoomerButton:SetSize(100, 30)
+	BoomerButton:SetPos(100, 35)
+	BoomerButton:SetText("Boomer") --Set the name of the button
+	BoomerButton.OnCursorEntered = function() icon:SetModel( "models/infected_l4d/boomer_l4d.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) local dance = icon:GetEntity():LookupSequence( "Run_Upper_KNIFE" ) icon:GetEntity():SetSequence( dance ) end
+	BoomerButton.DoClick = function() RunConsoleCommand("changeclass", "boomer") ClassFrame:Close() LocalPlayer():EmitSound("music/safe/themonsterswithout_l4d1.wav") LocalPlayer():StopSound("ClassSelection.ThemeL4D") end
+	
+	local L4DZombie = vgui.Create("DButton", ClassFrame)
+	L4DZombie:SetSize(100, 30)
+	L4DZombie:SetPos(190, 35)
+	L4DZombie:SetText("Male Zombie") --Set the name of the button
+	L4DZombie.DoClick = function() RunConsoleCommand("changeclass", "l4d_zombie") ClassFrame:Close() LocalPlayer():EmitSound("music/safe/themonsterswithout_l4d1.wav") LocalPlayer():StopSound("ClassSelection.ThemeL4D") LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+	
+	L4DZombie.OnCursorEntered = function() icon:SetModel( "models/cpthazama/l4d1/common/male_01.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE)icon2:GetEntity():SetModel("models/empty.mdl") surface.PlaySound( "/music/class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "Run_01" ) icon:GetEntity():SetSequence( dance ) end
+
+end
 function DoorClose()
 local ply = LocalPlayer()local ClassFrame = vgui.Create("DFrame") --create a frame
 ClassFrame:SetSize( ScrW() * 1, ScrH() * 1 ) --set its size
@@ -1044,8 +1166,10 @@ concommand.Add("tf_upgradewep04clientonly", function(ply)
 	ply:GetActiveWeapon().Primary.Delay = 0.4
 end)
 concommand.Add("tf_upgradeweprapidfireclientonly", function(ply)
-	ply:GetActiveWeapon().Primary.Delay = 0.15
+	ply:GetActiveWeapon().Primary.Delay = 0.15 
 end)
+concommand.Add("l4d_changeclass", L4DClassSelection)
+concommand.Add("l4d2_changeclass", L4DClassSelection)
 concommand.Add("tf_changeclass", ClassSelection)
 concommand.Add("tf_door", DoorClose)
 concommand.Add("tf_hatpainter", HatPicker)

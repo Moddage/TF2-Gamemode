@@ -53,7 +53,7 @@ end
 
 function SWEP:PrimaryAttack()
 	
-	if self.Owner:GetPlayerClass() == "spy" then
+	if self.Owner:GetPlayerClass() == "spy" or self.Owner:GetPlayerClass() == "gmodplayer"  then
 		for k,v in pairs(ents.FindInSphere(self.Owner:GetPos(), 120)) do
 			if v:IsPlayer() and v:GetInfoNum("tf_robot", 0) == 1 and not v:IsFriendly(self.Owner) and v:GetInfoNum("tf_giant_robot",0) != 1 then
 				self:SetNextPrimaryFire(CurTime() + 10)
@@ -98,7 +98,7 @@ function SWEP:PrimaryAttack()
 					timer.Stop("StunRobotloop4"..v:EntIndex())
 					v:StopSound("TappedRobot")
 					v:EmitSound("Weapon_Sapper.Removed")
-					net.Start("DeActivateTauntCam")
+					usermessage.Start("DeActivateTauntCam")
 					net.Send(v)
 					v:Freeze(false)
 					v:SetNWBool("NoWeapon", false)
@@ -196,7 +196,7 @@ function SWEP:PrimaryAttack()
 					v:DoAnimationEvent(ACT_MP_STUN_END,2)
 					v:StopSound("TappedRobot")
 					v:EmitSound("Weapon_Sapper.Removed")
-					net.Start("DeActivateTauntCam")
+					usermessage.Start("DeActivateTauntCam")
 					net.Send(v)
 					v:Freeze(false)
 					v:SetNWBool("NoWeapon", false)
@@ -204,26 +204,198 @@ function SWEP:PrimaryAttack()
 					animent:Remove()
 				end)
 				end
-			end
+			end 
 			if v:IsBuilding() and not v:IsFriendly(self.Owner) then
 				self:SetNextPrimaryFire(CurTime() + 2)
 				self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_GRENADE)
 				v:EmitSound("weapons/sapper_plant.wav") 
 				if SERVER then
 				if v:GetClass() == "obj_sentrygun" then
-					v:GetBuilder():EmitSound("vo/engineer_autoattackedbyspy03.mp3", 80, 100) 
+					v:GetBuilder():EmitSound("vo/engineer_autoattackedbyspy03.mp3", 80, 100)
+					if v.Model:GetModel() == "models/buildables/sentry1.mdl" then
+						v:SetModel("models/buildables/sentry1_heavy.mdl")
+						v:ResetSequence("build")
+						v:SetCycle(1)
+						v:SetPlaybackRate(-0.5)
+						v.Model:SetModel("models/buildables/sentry1_heavy.mdl")
+						v.Model:ResetSequence("build")
+						v.Model:SetCycle(1)
+						v.Model:SetPlaybackRate(-0.5)
+						timer.Simple(11, function()
+							v:StopSound("TappedRobot")
+							v:Explode()
+						end)
+					end 
+					if v.Model:GetModel() == "models/buildables/sentry2.mdl" then
+						v:SetModel("models/buildables/sentry2_heavy.mdl")
+						v:ResetSequence("upgrade")
+						v:SetCycle(0)
+						v:SetPlaybackRate(-0.4)
+						v.Model:SetModel("models/buildables/sentry2_heavy.mdl")
+						v.Model:ResetSequence("upgrade")
+						v.Model:SetCycle(1)
+						v.Model:SetPlaybackRate(-0.4)
+						timer.Create("SapSentry3", 4, 1, function()
+								if v:GetClass() == "obj_sentrygun" then
+									v:SetLevel(1)
+									v:SetModel("models/buildables/sentry1_heavy.mdl")
+									v:ResetSequence("build")
+									v:SetCycle(0)
+									v:SetPlaybackRate(-0.4)
+									v.Model:SetModel("models/buildables/sentry1_heavy.mdl")
+									v.Model:ResetSequence("build")
+									v.Model:SetCycle(1)
+									v.Model:SetPlaybackRate(-0.4)
+									timer.Simple(11, function()
+										v:StopSound("TappedRobot")
+										v:Explode()
+									end)
+								end
+						end)
+					end
+					if v.Model:GetModel() == "models/buildables/sentry3.mdl" then
+						v:SetModel("models/buildables/sentry3_heavy.mdl")
+						v:ResetSequence("upgrade")
+						v:SetCycle(0)
+						v:SetPlaybackRate(-0.4) 
+						v.Model:SetModel("models/buildables/sentry3_heavy.mdl")
+						v.Model:ResetSequence("upgrade")
+						v.Model:SetCycle(1)
+						v.Model:SetPlaybackRate(-0.4) 
+						timer.Create("SapSentry2", 4, 1, function()
+								if v:GetClass() == "obj_sentrygun" then
+									v:SetLevel(2)
+									v:SetModel("models/buildables/sentry2.mdl")
+									v.Model:SetModel("models/buildables/sentry2.mdl")
+									if v:GetModel() == "models/buildables/sentry2.mdl" then
+										v:SetModel("models/buildables/sentry2_heavy.mdl")
+										v:ResetSequence("upgrade")
+										v:SetCycle(0)
+										v:SetPlaybackRate(-0.4)
+										v.Model:SetModel("models/buildables/sentry2_heavy.mdl")
+										v.Model:ResetSequence("upgrade")
+										v.Model:SetCycle(1)
+										v.Model:SetPlaybackRate(-0.4)
+										timer.Create("SapSentry3", 4, 1, function()
+												if v:GetClass() == "obj_sentrygun" then
+													v:SetLevel(1)
+													v:SetModel("models/buildables/sentry1_heavy.mdl")
+													v:ResetSequence("build")
+													v:SetCycle(0)
+													v:SetPlaybackRate(-0.5)
+													v.Model:SetModel("models/buildables/sentry1_heavy.mdl")
+													v.Model:ResetSequence("build")
+													v.Model:SetCycle(1)
+													v.Model:SetPlaybackRate(-0.5)
+													timer.Simple(11, function()
+														v:StopSound("TappedRobot")
+														v:Explode()
+													end)
+												end
+										end)
+									end
+								end
+						end)
+					end
 				elseif v:GetClass() == "obj_dispenser" then
 					v:GetBuilder():EmitSound("vo/engineer_autoattackedbyspy02.mp3", 80, 100)
+					if v.Model:GetModel() == "models/buildables/dispenser_light.mdl" then
+						v:SetModel("models/buildables/dispenser.mdl")
+						v:ResetSequence("build")
+						v:SetCycle(0)
+						v:SetPlaybackRate(-0.5)
+						v.Model:SetModel("models/buildables/dispenser.mdl")
+						v.Model:ResetSequence("build")
+						v.Model:SetCycle(1)
+						v.Model:SetPlaybackRate(-0.5)
+						timer.Simple(22, function()
+							v:StopSound("TappedRobot")
+							v:Explode()
+						end)
+					end 
+					if v.Model:GetModel() == "models/buildables/dispenser_lvl2_light.mdl" then
+						v:SetModel("models/buildables/dispenser_lvl2.mdl")
+						v:ResetSequence("upgrade")
+						v:SetCycle(0)
+						v:SetPlaybackRate(-0.4)
+						v.Model:SetModel("models/buildables/dispenser_lvl2.mdl")
+						v.Model:ResetSequence("upgrade")
+						v.Model:SetCycle(1)
+						v.Model:SetPlaybackRate(-0.4)
+						timer.Create("SapDispenser3", 4, 1, function()
+								if v:GetClass() == "obj_dispenser" then
+									v:SetLevel(1)
+									v:SetModel("models/buildables/dispenser.mdl")
+									v:ResetSequence("build")
+									v:SetCycle(0)
+									v:SetPlaybackRate(-0.5)
+									v.Model:SetModel("models/buildables/dispenser.mdl")
+									v.Model:ResetSequence("build")
+									v.Model:SetCycle(1)
+									v.Model:SetPlaybackRate(-0.5)
+									timer.Simple(22, function()
+										v:StopSound("TappedRobot")
+										v:Explode()
+									end)
+								end
+						end)
+					end
+					if v.Model:GetModel() == "models/buildables/dispenser_lvl3_light.mdl" then
+						v:SetModel("models/buildables/dispenser_lvl3.mdl")
+						v:ResetSequence("upgrade")
+						v:SetCycle(0)
+						v:SetPlaybackRate(-0.4) 
+						v.Model:SetModel("models/buildables/dispenser_lvl3.mdl")
+						v.Model:ResetSequence("upgrade")
+						v.Model:SetCycle(1)
+						v.Model:SetPlaybackRate(-0.4) 
+						timer.Create("SapDispenser2", 4, 1, function()
+								if v:GetClass() == "obj_dispenser" then
+									v:SetLevel(2)
+									v:SetModel("models/buildables/dispenser_lvl2.mdl")
+									v.Model:SetModel("models/buildables/dispenser_lvl2.mdl")
+									if v:GetModel() == "models/buildables/dispenser_lvl2.mdl" then
+										v:SetModel("models/buildables/dispenser_lvl2.mdl")
+										v:ResetSequence("upgrade")
+										v:SetCycle(0)
+										v:SetPlaybackRate(-0.4)
+										v.Model:SetModel("models/buildables/dispenser_lvl2.mdl")
+										v.Model:ResetSequence("upgrade")
+										v.Model:SetCycle(1)
+										v.Model:SetPlaybackRate(-0.4)
+										timer.Create("SapDispenser3", 4, 1, function()
+											if v:IsBuilding() and not v:IsFriendly(self.Owner) then
+												if v:GetClass() == "obj_dispenser" then
+													v:SetLevel(1)
+													v:SetModel("models/buildables/dispenser.mdl")
+													v:ResetSequence("build")
+													v:SetCycle(0)
+													v:SetPlaybackRate(-0.5)
+													v.Model:SetModel("models/buildables/dispenser.mdl")
+													v.Model:ResetSequence("build")
+													v.Model:SetCycle(1)
+													v.Model:SetPlaybackRate(-0.5)
+													timer.Simple(22, function()
+														v:StopSound("TappedRobot")
+														v:Explode()
+													end)
+												end
+											end
+										end)
+									end
+								end
+						end)
+					end
 				elseif v:GetClass() == "obj_teleporter" then
 					v:GetBuilder():EmitSound("vo/engineer_autoattackedbyspy01.mp3", 80, 100)
 				end
 				end
 				
 				v:EmitSound("TappedRobot")
-				timer.Create("SapSentry", 0.1, 0, function()
+				timer.Create("SapSentry", 0.001, 0, function()
 					v.Target = nil
 			
-					v.TurretPitch = -15
+					v.TurretPitch = 0
 					v.TurretYaw = 0
 					v.TargetPitch = 0
 					v.TargetYaw = 0
@@ -232,9 +404,6 @@ function SWEP:PrimaryAttack()
 	
 					v.IdlePitchSpeed = 0.3
 					v.IdleYawSpeed = 0.75
-					if SERVER then
-						v:TakeDamage(2, self.Owner, self)
-					end
 					if not v:IsValid() then
 						v:StopSound("TappedRobot")
 						timer.Stop("SapSentry")

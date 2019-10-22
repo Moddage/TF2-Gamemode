@@ -170,7 +170,9 @@ function SWEP:Think()
 		else
 			self:SendWeaponAnim(self.VM_RELOAD)
 			--self.Owner:SetAnimation(10000)		
+			if SERVER then
 			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+			end
 			if self.ReloadTime == 0.2 then
 				self.Owner:GetViewModel():SetPlaybackRate(2)
 			end
@@ -188,7 +190,9 @@ function SWEP:Think()
 	if self.NextReloadStart and CurTime()>=self.NextReloadStart then
 		self:SendWeaponAnim(self.VM_RELOAD)
 		--self.Owner:SetAnimation(10000) -- reload loop
+		if SERVER then
 		self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+		end
 		if self.ReloadTime == 0.2 then
 			self.Owner:GetViewModel():SetPlaybackRate(2)
 		end

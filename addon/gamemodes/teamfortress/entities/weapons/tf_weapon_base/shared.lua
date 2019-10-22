@@ -7,10 +7,6 @@ SWEP.Instructions	= ""
 SWEP.Spawnable			= false
 SWEP.AdminSpawnable		= false
 
-if SERVER then
-	CreateConVar( "tf_caninspect", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE, FCVAR_REPLICATED}, "Whether or not players can inspect weapons." )
-end
-
 -- Viewmodel FOV should be constant, don't change this
 SWEP.ViewModelFOV	= GetConVar( "viewmodel_fov" )
 -- Ugly hack for the viewmodel resetting on draw
@@ -73,7 +69,7 @@ SWEP.Secondary.NoFiringScene	= false
 
 SWEP.m_WeaponDeploySpeed = 1.4
 SWEP.DeployDuration = 0.8
-
+SWEP.ReloadTime = 0.5
 SWEP.ReloadType = 0
 
 SWEP.BulletsPerShot = 1
@@ -101,7 +97,7 @@ SWEP.LastClass = "scout"
 CreateClientConVar("viewmodel_fov_tf", "54", true, false)
 CreateClientConVar("tf_use_viewmodel_fov", "1", true, false)
 CreateClientConVar("tf_righthand", "1", true, true)
-CreateClientConVar("tf_sprintinspect", "1", true, true)
+CreateClientConVar("tf_sprintinspect", "0", true, true)
 CreateClientConVar("tf_reloadinspect", "1", true, true)
 CreateClientConVar("tf_use_min_viewmodels", "0", true, false)
 
@@ -198,8 +194,43 @@ function SWEP:Equip()
 	end
 end
 
+function SWEP:CalcViewModelView(vm, oldpos, oldang, newpos, newang)
+	if not self.VMMinOffset and self:GetItemData() then
+		local data = self:GetItemData()
+		if data.static_attrs and data.static_attrs.min_viewmodel_offset then
+			self.VMMinOffset = Vector(data.static_attrs.min_viewmodel_offset)
+		end
+	end
+
+	if GetConVar("tf_use_min_viewmodels"):GetBool() then -- TODO: Check for inspecting
+		newpos = newpos + (newang:Forward() * self.VMMinOffset.x)
+		newpos = newpos + (newang:Right() * self.VMMinOffset.y)
+		newpos = newpos + (newang:Up() * self.VMMinOffset.z)
+	end
+
+	return newpos, newang
+end
+
+
+
 function SWEP:Deploy()
 	--MsgFN("Deploy %s", tostring(self))
+	for k, v in pairs(player.GetAll()) do
+		if v == self.Owner then		
+			if v:IsHL2() then 
+				self:SetHoldType(self.HoldTypeHL2)
+				if self.DeploySound then
+					self:EmitSound(self.DeploySound)
+				end
+			else
+				self:SetHoldType(self.HoldType)
+			end
+		end
+	end	
+				
+	if self.Owner:IsPlayer() and not self.Owner:IsHL2() and self.Owner:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
+		self.Owner:SetBloodColor(BLOOD_COLOR_MECH)
+	end
 	self:StopTimers()
 	self.DeployPlayed = nil
 	if self:GetItemData().hide_bodygroups_deployed_only then
@@ -228,14 +259,14 @@ function SWEP:Deploy()
 			self.Owner:SetBodygroup(v,1)
 		end
 	end
-	if GetConVar("tf_righthand") then
-	if GetConVar("tf_righthand"):GetInt() == 0 then
+	if GetConVar("tf_righthand") and not self:GetClass() == "tf_weapon_compound_bow" then
+	if GetConVar("tf_righthand"):GetInt() == 0	then
 		self.ViewModelFlip = true
 	else
 		self.ViewModelFlip = false
 	end
 	end
-
+	
 	if GetConVar("tf_use_viewmodel_fov"):GetInt() > 0 then
 		self.ViewModelFOV	= GetConVar( "viewmodel_fov_tf" ):GetInt()
 	else
@@ -285,8 +316,8 @@ function SWEP:Deploy()
 	--MsgFN("SendWeaponAnim %s %d", tostring(self), self.VM_DRAW)
 	self:SendWeaponAnim(self.VM_DRAW)
 	
-	local draw_duration = self:SequenceDuration()
-	local deploy_duration = self.DeployDuration
+	local draw_duration = self:SequenceDuration() - 0.5
+	local deploy_duration = self.DeployDuration - 0.5 
 	
 	if self.Owner.TempAttributes and self.Owner.TempAttributes.DeployTimeMultiplier then
 		draw_duration = draw_duration * self.Owner.TempAttributes.DeployTimeMultiplier
@@ -295,15 +326,23 @@ function SWEP:Deploy()
 	
 	self.NextIdle = CurTime() + draw_duration
 	self.NextDeployed = CurTime() + deploy_duration
-	
+	--[[
 	if CLIENT and self.DeploySound and not self.DeployPlayed then
 		self:EmitSound(self.DeploySound)
 		self.DeployPlayed = true
-	end
+	end]]
 	
 	--self.IsDeployed = false
 	self:RollCritical()
-	
+	timer.Simple(0.2, function()
+		if IsValid(self) then
+			if IsValid(self.Owner) then
+				if IsValid(self.Owner:GetViewModel()) then  
+					self.Owner:GetViewModel():SetPlaybackRate(1.2)
+				end
+			end
+		end
+	end)
 	if self.Owner.ForgetLastWeapon then
 		self.Owner.ForgetLastWeapon = nil
 		return false
@@ -336,10 +375,8 @@ function SWEP:Inspect()
 	//if self:GetSequenceActivity(self:GetSequence()) == self.VM_INSPECT_IDLE then
 
 	if self.IsDeployed and self.CanInspect then
-		local inspectionconvar2 = GetConVar("tf_caninspect")
-		local inspectionconvar = inspectionconvar2:GetBool()
-		if IsValid(self.Owner) then
-		if ( self:GetOwner():KeyPressed( IN_SPEED ) and inspecting == false and inspectionconvar and self.Owner:GetInfoNum("tf_sprintinspect", 1) == 1  ) then
+		if self.Owner ~= nil then
+		if ( self:GetOwner():KeyPressed( IN_SPEED ) and inspecting == false and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_sprintinspect", 1) == 1 ) then
 			inspecting = true
 			self:SendWeaponAnim( self.VM_INSPECT_START )
 			timer.Create("StartInspection", self:SequenceDuration(), 1,function()
@@ -359,7 +396,7 @@ function SWEP:Inspect()
 			end )
 		end
 		
-		if ( self:GetOwner():KeyReleased( IN_SPEED ) and inspecting_idle == true ) then
+		if ( self:GetOwner():KeyReleased( IN_SPEED ) and inspecting_idle == true and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_sprintinspect", 1) == 1 ) then
 			self:SendWeaponAnim( self.VM_INSPECT_END )
 			inspecting_post = false
 			inspecting_idle = false
@@ -370,25 +407,40 @@ function SWEP:Inspect()
 				end
 			end )
 		end
+
+		if ( self:GetOwner():KeyPressed( IN_RELOAD ) and ((self.Base ~= "tf_weapon_melee_base" and self:Clip1() == self:GetMaxClip1()) or self.Base == "tf_weapon_melee_base") and inspecting == false and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
+			inspecting = true
+			self:SendWeaponAnim( self.VM_INSPECT_START )
+			timer.Create("StartInspection", self:SequenceDuration(), 1, function()
+				if self:GetOwner():KeyDown( IN_RELOAD ) then 
+					self:SendWeaponAnim( self.VM_INSPECT_IDLE )
+					inspecting_idle = true
+				else
+					self:SendWeaponAnim( self.VM_INSPECT_END )
+					inspecting_post = false
+					inspecting = false
+					timer.Create("PostInspection", self:SequenceDuration(), 1, function()
+						if !self:GetOwner():KeyDown( IN_RELOAD ) then
+							self:SendWeaponAnim( self.VM_IDLE )
+						end
+					end )
+				end
+			end )
+		end
+		
+		if ( self:GetOwner():KeyReleased( IN_RELOAD ) and inspecting_idle == true and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
+			self:SendWeaponAnim( self.VM_INSPECT_END )
+			inspecting_post = false
+			inspecting_idle = false
+			inspecting = false 
+			timer.Create("PostInspection", self:SequenceDuration(), 1, function()
+				if !self:GetOwner():KeyDown( IN_RELOAD ) then
+					self:SendWeaponAnim( self.VM_IDLE )
+				end
+			end )
+		end
 		end
 	end
-end
-
-function SWEP:CalcViewModelView(vm, oldpos, oldang, newpos, newang)
-	if not self.VMMinOffset and self:GetItemData() then
-		local data = self:GetItemData()
-		if data.static_attrs and data.static_attrs.min_viewmodel_offset then
-			self.VMMinOffset = Vector(data.static_attrs.min_viewmodel_offset)
-		end
-	end
-
-	if GetConVar("tf_use_min_viewmodels"):GetBool() then -- TODO: Check for inspecting
-		newpos = newpos + (newang:Forward() * self.VMMinOffset.x)
-		newpos = newpos + (newang:Right() * self.VMMinOffset.y)
-		newpos = newpos + (newang:Up() * self.VMMinOffset.z)
-	end
-
-	return newpos, newang
 end
 
 --[[function SWEP:Inspect()
@@ -490,6 +542,8 @@ function SWEP:CanSecondaryAttack()
 end
 
 function SWEP:PrimaryAttack(noscene)
+	 
+	if self.Owner:GetMaterial() == "models/shadertest/predator" then return false end
 	if not self.IsDeployed then return false end
 	//if self.Reloading then return false end
 	
@@ -617,9 +671,16 @@ function SWEP:Reload()
 			self.NextIdle = nil
 			if self.ReloadSingle then
 				--self:SendWeaponAnim(ACT_RELOAD_START)
-				self:SendWeaponAnimEx(self.VM_RELOAD_START)
 				self.Owner:SetAnimation(PLAYER_RELOAD) -- reload start
-				self.NextReloadStart = CurTime() + (self.ReloadStartTime or self:SequenceDuration())
+				if self.ReloadTime == 1.1 then 
+					self:SendWeaponAnimEx(self.VM_RELOAD_START)
+					self.NextReloadStart = CurTime() + (self.ReloadStartTime or self:SequenceDuration() + 0.5)
+
+					self.Owner:GetViewModel():SetPlaybackRate(0.6)
+				else
+					self:SendWeaponAnimEx(self.VM_RELOAD_START)
+					self.NextReloadStart = CurTime() + (self.ReloadStartTime or self:SequenceDuration())
+				end
 			else
 				self:SendWeaponAnimEx(self.VM_RELOAD)
 				self.Owner:SetAnimation(PLAYER_RELOAD)
@@ -634,7 +695,9 @@ function SWEP:Reload()
 						umsg.Entity(self)
 					umsg.End()
 				end
-				
+				if self.ReloadTime == 0.71 then 
+					self.Owner:GetViewModel():SetPlaybackRate(1.51)
+				end
 				--self.reload_cur_start = CurTime()
 			end
 			--self:SetNextPrimaryFire( CurTime() + ( self.Primary.Delay || 0.25 ) + 1.4 )
@@ -649,7 +712,6 @@ function SWEP:Think()
 	self:TFFlipViewmodel()
 	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat() - GetConVar("tf_weapon_deploy_speed"):GetInt(), 2)
 	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat(),2)
-	
 	if SERVER and self.NextReplayDeployAnim then
 		if CurTime() > self.NextReplayDeployAnim then
 			--MsgFN("Replaying deploy animation %d", self.VM_DRAW)
@@ -678,7 +740,7 @@ function SWEP:Think()
 	if self.IsDeployed then
 		self.CanInspect = true
 	end
-			
+
 	//print(deployspeed)
 	
 	if self.NextReload and CurTime()>=self.NextReload then
@@ -701,8 +763,16 @@ function SWEP:Think()
 				--self:SendWeaponAnim(ACT_RELOAD_FINISH)
 				self:SendWeaponAnim(self.VM_RELOAD_FINISH)
 				self.CanInspect = true
-				--self.Owner:SetAnimation(10001) -- reload finish
-				self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_END, true)
+				--self.Owner:SetAnimation(10001) -- reload finish	
+				if self.Slot == 0 and self.Owner:GetPlayerClass() == "engineer" or self.Owner:GetPlayerClass() == "scout" or self.Owner:GetPlayerClass() == "demoman" then
+					self.Owner:DoAnimationEvent(ACT_SMG2_DRAW2, true)
+				elseif self.Slot == 0 and self.Owner:GetPlayerClass() != "engineer" then
+					self.Owner:DoAnimationEvent(ACT_SMG2_IDLE2, true)
+				elseif self.Slot == 1 and self.Owner:GetPlayerClass() == "heavy" or self.Owner:GetPlayerClass() == "pyro" or self.Owner:GetPlayerClass() == "demoman" then 
+					self.Owner:DoAnimationEvent(ACT_SMG2_RELOAD2, true)	
+				elseif self.Slot == 1  and self.Owner:GetPlayerClass() != "heavy"  then
+					self.Owner:DoAnimationEvent(ACT_SMG2_FIRE2, true)				
+				end
 				self.NextIdle = CurTime() + self:SequenceDuration()
 			else
 				self:SendWeaponAnim(self.VM_IDLE)
@@ -711,9 +781,22 @@ function SWEP:Think()
 			self.NextReload = nil
 		else
 			self:SendWeaponAnim(self.VM_RELOAD)
-			--self.Owner:SetAnimation(10000)
+			--self.Owner:SetAnimation(10000)	
+			if SERVER then	
 			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
-			self.NextReload = CurTime() + (self.ReloadTime or self:SequenceDuration())
+			end
+			if self.ReloadTime == 0.2 then
+				self.Owner:GetViewModel():SetPlaybackRate(2)
+			end
+			if self.ReloadTime == 1.1 then 
+				if self:GetItemData().model_player == "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl" then
+					if CLIENT then
+						self.Owner:EmitSound("Weapon_DumpsterRocket.Reload")
+					end
+				end
+				self.Owner:GetViewModel():SetPlaybackRate(0.7)
+			end
+			self.NextReload = CurTime() + (self.ReloadTime)
 				
 			if self.ReloadSound and SERVER then
 				umsg.Start("PlayTFWeaponWorldReload")
@@ -726,9 +809,22 @@ function SWEP:Think()
 	
 	if self.NextReloadStart and CurTime()>=self.NextReloadStart then
 		self:SendWeaponAnim(self.VM_RELOAD)
-		--self.Owner:SetAnimation(10000) -- reload loop
-		self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
-		self.NextReload = CurTime() + (self.ReloadTime or self:SequenceDuration())
+		--self.Owner:SetAnimation(10000) -- reload loop	
+		if SERVER then	
+			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+		end
+		if self.ReloadTime == 0.2 then
+			self.Owner:GetViewModel():SetPlaybackRate(2)
+		end
+		if self.ReloadTime == 1.1 then 
+			if self:GetItemData().model_player == "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl" then
+				if CLIENT then
+					self.Owner:EmitSound("Weapon_DumpsterRocket.Reload")
+				end
+			end
+			self.Owner:GetViewModel():SetPlaybackRate(0.7)
+		end
+		self.NextReload = CurTime() + (self.ReloadTime)
 		
 		self.AmmoAdded = 1
 		
@@ -745,5 +841,5 @@ function SWEP:Think()
 end
 
 function SWEP:Initialize()
-	self:SetWeaponHoldType(self.HoldType or "PRIMARY")
+	self:SetWeaponHoldType(self.HoldType)
 end

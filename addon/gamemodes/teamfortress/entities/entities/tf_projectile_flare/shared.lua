@@ -11,6 +11,8 @@ PrecacheParticleSystem("flaregun_destroyed")
 
 ENT.IsTFWeapon = true
 
+ENT.MannMelter = false
+
 function ENT:InitEffects()
 	local effect = "flaregun"
 	
@@ -22,7 +24,15 @@ function ENT:InitEffects()
 	
 	effect = effect..ParticleSuffix(GAMEMODE:EntityTeam(self:GetOwner()))
 	
-	ParticleEffectAttach(effect, PATTACH_ABSORIGIN_FOLLOW, self, 0)
+	if self.MannMelter == true then
+		
+		ParticleEffectAttach( "drg_manmelter_projectile", PATTACH_ABSORIGIN_FOLLOW, self, 0 )
+
+	else
+		
+		ParticleEffectAttach(effect, PATTACH_ABSORIGIN_FOLLOW, self, 0)
+
+	end
 end
 
 if CLIENT then
@@ -42,6 +52,8 @@ if SERVER then
 AddCSLuaFile( "shared.lua" )
 
 ENT.Model = "models/weapons/w_models/w_flaregun_shell.mdl"
+
+ENT.ExplosionSound = "weapons/flare_detonator_explode.wav"
 
 ENT.BaseDamage = 30
 ENT.DamageRandomize = 0.1
@@ -80,6 +92,12 @@ function ENT:Initialize()
 	
 	self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
 	
+	if self.MannMelter == true then
+		
+		self:SetMaterial("Models/effects/vol_light001")
+
+	end
+
 	self:SetLocalVelocity(self:GetForward() * (self.Force or 1650))
 	self:SetGravity(0.3)
 	
@@ -132,8 +150,78 @@ function ENT:Hit(ent)
 	self:Fire("kill", "", 0.1)
 end
 
+
+function ENT:DoExplosion()
+	self.Touch = nil
+	
+	local effect, angle
+
+	if self.Nuke then
+		self:EmitSound(self.ExplosionSoundNuke)
+		effect = "cinefx_goldrush"
+		angle = Angle(0,self:GetAngles().y, 0)
+		
+		local explosion = ents.Create("info_particle_system")
+		explosion:SetKeyValue("effect_name", effect)
+		explosion:SetKeyValue("start_active", "1")
+		explosion:SetPos(self:GetPos()) 
+		explosion:SetAngles(self:GetAngles())
+		explosion:Spawn()
+		explosion:Activate() 
+		
+		explosion:Fire("Kill", "", 5)
+	else
+		--[[if self.FastRocket then
+			self:EmitSound(self.ExplosionSoundFast)
+		else]]
+			self:EmitSound(self.ExplosionSound, 120)
+		--end
+		
+		local flags = 0
+		
+		if self:WaterLevel()>0 then
+			flags = bit.bor(flags, 1)
+		end
+		
+		local effectdata = EffectData()
+			effectdata:SetOrigin(self:GetPos())
+			effectdata:SetAttachment(flags)
+		util.Effect("tf_explosion", effectdata, true, true)
+	end
+	
+	local owner = self:GetOwner()
+	if not owner or not owner:IsValid() then owner = self end
+	
+	--local damage = self:CalculateDamage(owner:GetPos()+Vector(0,0,1))
+	local range = 20
+	if self.ExplosionRadiusMultiplier and self.ExplosionRadiusMultiplier>1 then
+		range = range * self.ExplosionRadiusMultiplier
+	end
+	--[[if self.FastRocket then
+		range = range * 0.4
+	end]]
+	
+	--self.ResultDamage = damage
+	
+	if self.Nuke then
+		--util.BlastDamage(self, owner, self:GetPos(), range*6, damage*6)
+		util.BlastDamage(self, owner, self:GetPos(), range*6, 100)
+	else
+		--util.BlastDamage(self, owner, self:GetPos(), range, damage)
+		util.BlastDamage(self, owner, self:GetPos(), range*1, 50)
+	end
+	
+	for k,v in ipairs(ents.FindInSphere(self:GetPos(), 80)) do
+		if v:Health() >= 0 then
+			GAMEMODE:IgniteEntity(v, self, owner, 10)
+		end
+	end
+	
+	self:Remove()
+end
+
 function ENT:Touch(ent)
-	if not ent:IsTrigger() then
+	if ent:IsSolid() then
 		self:Hit(ent)
 	end
 end

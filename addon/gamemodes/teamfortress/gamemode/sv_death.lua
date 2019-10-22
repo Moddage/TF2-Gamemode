@@ -386,7 +386,7 @@ local function TransferBones( base, ragdoll ) -- Transfers the bones of one enti
 	for i = 0, ragdoll:GetPhysicsObjectCount() - 1 do
 		local bone = ragdoll:GetPhysicsObjectNum( i )
 		if ( IsValid( bone ) ) then
-			local pos, ang = base:GetBonePosition( ragdoll:TranslatePhysBoneToBone( i ) )
+			local pos, ang = base:GetBonePosition( ragdoll:TranslatePhysBousermessageoBone( i ) )
 			if ( pos ) then bone:SetPos( pos ) end
 			if ( ang ) then bone:SetAngles( ang ) end
 		end
@@ -446,12 +446,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 				ply:EmitSound("vo/mercenary_painsevere0"..math.random(1,6)..".wav")
 			end
 		end
-	end
-	if not ply:IsHL2() and dmginfo:GetAttacker():GetActiveWeapon():GetClass() == "tf_weapon_fists" and dmginfo:GetAttacker():GetActiveWeapon():GetItemData().model_player == "models/weapons/c_models/c_sr3_punch/c_sr3_punch.mdl" and dmginfo:GetAttacker():GetActiveWeapon():Critical() then
-		ply:Explode()
-		ply:RandomSentence("CritDeath")
-		ply:EmitSound("physics/flesh/flesh_squishy_impact_hard2.wav", 80, 100)
-		ply:GetRagdollEntity():Remove()
 	end
 	if ply:HasDeathFlag(DF_HEADSHOT) and not ply:IsHL2() then
 		ply:RandomSentence("CritDeath")
@@ -897,7 +891,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 				ply:PrecacheGibs()
 				ply:GibBreakClient( Vector(math.random(1,4), math.random(1,4), math.random(1,4)) )
 				ply:GetRagdollEntity():Remove()
-			elseif ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 and ply:Team() == TEAM_BLU then
+			elseif not ply:IsHL2() and ply:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
 				ply:PrecacheGibs()
 				ply:GibBreakClient( Vector(math.random(1,4), math.random(1,4), math.random(1,4)) )
 				ply:GetRagdollEntity():Remove()
@@ -906,16 +900,19 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	elseif inflictor.Critical and inflictor:Critical() then -- Critical damage
 		if not inflictor.IsSilentKiller then
 			if ply:GetMaterial() == "models/shadertest/predator" then return end
+			if not ply:IsHL2() and ply:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then return end
 			ply:RandomSentence("CritDeath")
 		end
 	elseif dmginfo:IsDamageType(DMG_CLUB) or dmginfo:IsDamageType(DMG_SLASH) or inflictor.HoldType=="MELEE" then -- Melee damage
 		if not inflictor.IsSilentKiller then	
 			if ply:GetMaterial() == "models/shadertest/predator" then return end
+			if not ply:IsHL2() and ply:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then return end
 			ply:RandomSentence("MeleeDeath")
 		end
 	else -- Bullet/fire damage
 		if not inflictor.IsSilentKiller then
 			if ply:GetMaterial() == "models/shadertest/predator" then return end
+			if not ply:IsHL2() and ply:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then return end
 			ply:RandomSentence("Death")
 		end
 	end

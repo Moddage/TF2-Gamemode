@@ -187,6 +187,7 @@ end)
 concommand.Add("tf_mvm_wins", function(ply, cmd)
 	for k,v in pairs( player.GetAll() ) do
 		if v:Team() != TEAM_BLU then
+			if v:Team() == TEAM_SPECTATOR then return end
 			v:SendLua([[surface.PlaySound("music/mvm_lost_wave.wav")]])
 			v:StripWeapons()	
 			timer.Simple(5, function() 
@@ -213,9 +214,13 @@ concommand.Add("tf_mvm_wins", function(ply, cmd)
 		end
 		if v:Team() == TEAM_BLU then 
 			v:SendLua([[surface.PlaySound("misc/your_team_won.wav")]])
-			timer.Simple(8, function() 
+			timer.Simple(5, function() 
 				v:Spawn() 
 			end) 
+		end
+		if v:Team() == TEAM_SPECTATOR then 
+			v:SendLua([[surface.PlaySound("misc/your_team_lost.wav")]])
+			v:PrintMessage( HUD_PRINTCENTER, "The robots deployed the bomb! Game over for Mann Co!" )
 		end
 	end
 end)
@@ -1052,8 +1057,8 @@ concommand.Add("tf_taunt_squaredance_intro", function(ply)
 		for k,v in ipairs(ents.FindInSphere(ply:GetPos(), 80)) do
 			if v:IsPlayer() and v:Nick() != ply:Nick() then
 				ply:StopSound("DosidoIntro")
-				local scenetime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_dosido_dance00.vcd", 0)
-				local scenetime2 = v:PlayScene("scenes/player/"..v:GetPlayerClass().."/low/taunt_dosido_dance00.vcd", 0)
+				local sceusermessageime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_dosido_dance00.vcd", 0)
+				local sceusermessageime2 = v:PlayScene("scenes/player/"..v:GetPlayerClass().."/low/taunt_dosido_dance00.vcd", 0)
 				ply:DoAnimationEvent(ACT_DOD_SECONDARYATTACK_PRONE_BOLT, true)
 				v:DoAnimationEvent(ACT_DOD_SECONDARYATTACK_PRONE_BOLT, true)
 				ply:SetNWBool("Taunting", true)
@@ -1065,14 +1070,14 @@ concommand.Add("tf_taunt_squaredance_intro", function(ply)
 				net.Send(ply)
 				net.Start("ActivateTauntCam")
 				net.Send(v)
-				timer.Simple(scenetime, function()
+				timer.Simple(sceusermessageime, function()
 					if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
 					ply:SetNWBool("Taunting", false)
 					ply:SetNWBool("NoWeapon", false)
 					net.Start("DeActivateTauntCam")
 					net.Send(ply)
 				end)
-				timer.Simple(scenetime2, function()
+				timer.Simple(sceusermessageime2, function()
 					if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
 					v:SetNWBool("Taunting", false)
 					v:SetNWBool("NoWeapon", false)
@@ -1111,26 +1116,26 @@ concommand.Add("tf_taunt_rockpaperscissors_intro", function(ply)
 		end
 		for k,v in ipairs(ents.FindInSphere(ply:GetPos(), 80)) do
 			if v:IsPlayer() and v:Nick() != ply:Nick() then
-				local scenetime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/"..table.Random(rockpaperscissors)..".vcd", 0)
+				local sceusermessageime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/"..table.Random(rockpaperscissors)..".vcd", 0)
 				ply:DoAnimationEvent(table.Random(rockpaperscissorsact), true)
 				ply:SetNWBool("Taunting", true)
 				ply:SetNWBool("NoWeapon", true)
 				net.Start("ActivateTauntCam")
 				net.Send(ply)
-				local scenetime2 = v:PlayScene("scenes/player/"..v:GetPlayerClass().."/low/"..table.Random(rockpaperscissors2)..".vcd", 0)
+				local sceusermessageime2 = v:PlayScene("scenes/player/"..v:GetPlayerClass().."/low/"..table.Random(rockpaperscissors2)..".vcd", 0)
 				v:DoAnimationEvent(table.Random(rockpaperscissorsact), true)
 				v:SetNWBool("Taunting", true)
 				v:SetNWBool("NoWeapon", true)
 				net.Start("ActivateTauntCam")
 				net.Send(v)
-				timer.Simple(scenetime, function()
+				timer.Simple(sceusermessageime, function()
 					if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
 					ply:SetNWBool("Taunting", false)
 					ply:SetNWBool("NoWeapon", false)
 					net.Start("DeActivateTauntCam")
 					net.Send(ply)
 				end)
-				timer.Simple(scenetime2, function()
+				timer.Simple(sceusermessageime2, function()
 					if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
 					v:SetNWBool("Taunting", false)
 					v:SetNWBool("NoWeapon", false)

@@ -52,6 +52,7 @@ rpg_missile = "d_hl_rpg",
 simfphys_tankprojectile = "d_hl_rpg",
 rpg_missile_deflect = "d_deflect_rpg",
 weapon_frag = "d_hl_frag",
+m9k_proxy = "d_bomb_head",
 npc_grenade_frag = "d_hl_frag",
 npc_grenade_frag_deflect = "d_deflect_frag",
 prop_combine_ball = "d_hl_combine_ball",
@@ -68,6 +69,8 @@ npc_fastzombie = "d_hl_zombie",
 npc_fastzombie_torso = "d_hl_zombie",
 npc_poisonzombie = "d_hl_zombie",
 npc_zombine = "d_hl_zombie",
+
+tf_projectile_shortcircuit = "d_shortcircuit_ball",
 
 npc_headcrab = "d_hl_headcrab",
 npc_headcrab_fast = "d_hl_headcrab",
@@ -109,6 +112,7 @@ tf_weapon_bat = "d_bat",
 tf_weapon_minigun = "d_minigun",
 tf_weapon_shotgun_hwg = "d_shotgun_hwg",
 tf_weapon_fists = "d_fists",
+tf_weapon_minigun_tomislav = "d_tomislav",
 
 -- Demoman
 tf_projectile_pipe = "d_tf_projectile_pipe",
@@ -130,6 +134,8 @@ tf_weapon_shotgun_primary = "d_shotgun_primary",
 tf_weapon_pistol = "d_pistol",
 tf_weapon_wrench = "d_wrench",
 obj_sentrygun = "d_obj_sentrygun",
+npc_sentry_red = "d_obj_sentrygun",
+npc_sentry_blue = "d_obj_sentrygun",
 obj_sentrygun2 = "d_obj_sentrygun2",
 obj_sentrygun3 = "d_obj_sentrygun3",
 tf_projectile_sentryrocket = "d_obj_sentrygun3",
@@ -165,11 +171,13 @@ tf_weapon_ambassador_headshot = "d_ambassador_headshot",
 prop_vehicle_jeep_old = "d_vehicle",
 prop_vehicle_jeep = "d_vehicle",
 prop_vehicle_airboat = "d_vehicle",
+tf_wearable_item_demoshield_l4d = "d_vehicle",
 gmod_sent_vehicle_fphysics_base = "d_vehicle",
 
 -- Other
 entityflame = "d_firedeath",
 tf_entityflame = "d_firedeath",
+env_fire	= "d_firedeath",
 tf_entitybleed = "d_bleed_kill",
 env_explosion = "d_explosion",
 env_physexplosion = "d_explosion",
@@ -709,6 +717,27 @@ d_rescue_ranger={
 	h=32,
 },
 	
+d_shortcircuit_ball={
+	x=226,
+	y=322,
+	w=29,
+	h=29
+},
+
+d_prinny_machete={
+	x=100,
+	y=859,
+	w=93,
+	h=41
+},
+
+d_bomb_head={
+	x=270,
+	y=351,
+	w=106,
+	h=36
+},
+
 d_panic_attack={
 	x=258,
 	y=736,
@@ -783,6 +812,20 @@ d_saxxy={
 	w=77,
 	h=33,
 },	
+
+d_tomislav={
+	x=385,
+	y=350,
+	w=84,
+	h=35
+},
+
+d_short_circuit={
+	x=322,
+	y=929,
+	w=55,
+	h=35
+},
 
 d_iron_curtain={
 	x=260,

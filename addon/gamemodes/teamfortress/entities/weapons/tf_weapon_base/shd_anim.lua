@@ -25,16 +25,33 @@ local ActivityNameTranslate = {
 	ACT_VM_SWINGHARD		= "VM_SWINGHARD",
 }
 
+local ActIndex = {
+	[ "pistol" ]		= ACT_HL2MP_IDLE_PISTOL,
+	[ "smg" ]			= ACT_HL2MP_IDLE_SMG1,
+	[ "grenade" ]		= ACT_HL2MP_IDLE_GRENADE,
+	[ "ar2" ]			= ACT_HL2MP_IDLE_AR2,
+	[ "shotgun" ]		= ACT_HL2MP_IDLE_SHOTGUN,
+	[ "rpg" ]			= ACT_HL2MP_IDLE_RPG,
+	[ "physgun" ]		= ACT_HL2MP_IDLE_PHYSGUN,
+	[ "crossbow" ]		= ACT_HL2MP_IDLE_CROSSBOW,
+	[ "melee" ]			= ACT_HL2MP_IDLE_MELEE,
+	[ "slam" ]			= ACT_HL2MP_IDLE_SLAM,
+	[ "normal" ]		= ACT_HL2MP_IDLE,
+	[ "fist" ]			= ACT_HL2MP_IDLE_FIST,
+	[ "melee2" ]		= ACT_HL2MP_IDLE_MELEE2,
+	[ "passive" ]		= ACT_HL2MP_IDLE_PASSIVE,
+	[ "knife" ]			= ACT_HL2MP_IDLE_KNIFE,
+	[ "duel" ]			= ACT_HL2MP_IDLE_DUEL,
+	[ "camera" ]		= ACT_HL2MP_IDLE_CAMERA,
+	[ "magic" ]			= ACT_HL2MP_IDLE_MAGIC,
+	[ "revolver" ]		= ACT_HL2MP_IDLE_REVOLVER
+}
+
 function SWEP:SetupCModelActivities(item, noreplace)
 	tf_util.ReadActivitiesFromModel(self)
 	
 	if item then
-		local hold = "PRIMARY"
-		if item.anim_slot then
-			hold = string.upper(item.anim_slot)
-		elseif item.item_slot then
-			hold = string.upper(item.item_slot)
-		end
+		local hold = self.HoldType
 		--MsgN(Format("SetupCModelActivities %s", tostring(self)))
 		
 		self.VM_DRAW			= _G["ACT_"..hold.."_VM_DRAW"]
@@ -57,7 +74,7 @@ function SWEP:SetupCModelActivities(item, noreplace)
 		
 		self.VM_INSPECT_START	= _G["ACT_"..hold.."_VM_INSPECT_START"]
 		self.VM_INSPECT_IDLE	= _G["ACT_"..hold.."_VM_INSPECT_IDLE"]
-		self.VM_INSPECT_END		= _G["ACT_"..hold.."_VM_INSPECT_END"]
+		self.VM_INSPECT_GND		= _G["ACT_"..hold.."_VM_INSPECT_GND"]
 		
 		self.VM_HITLEFT			= ACT_VM_HITLEFT
 		self.VM_HITRIGHT		= ACT_VM_HITRIGHT
@@ -90,7 +107,7 @@ function SWEP:SetupCModelActivities(item, noreplace)
 		
 		self.VM_INSPECT_START	= ACT_PRIMARY_VM_INSPECT_START
 		self.VM_INSPECT_IDLE	= ACT_PRIMARY_VM_INSPECT_IDLE
-		self.VM_INSPECT_END		= ACT_PRIMARY_VM_INSPECT_END
+		self.VM_INSPECT_GND		= ACT_PRIMARY_VM_INSPECT_GND
 		
 		self.VM_HITLEFT			= ACT_VM_HITLEFT
 		self.VM_HITRIGHT		= ACT_VM_HITRIGHT
@@ -140,7 +157,7 @@ function SWEP:SendWeaponAnimEx(anim)
 		print(anim)
 		local s = self.Owner:GetViewModel():LookupSequence(anim)
 		self:SetSequence(s)
-		self.Owner:GetViewModel():SetSequence(s)
+		self.Owner:GetViewModel():ResetSequence(s)
 	end
 end
 
@@ -149,23 +166,42 @@ end
 --==================================================================
 
 function SWEP:SetWeaponHoldType(t)
-	local owner = (IsValid(self.Owner) and self.Owner) or _G.TFWeaponItemOwner
-	
-	if IsValid(owner) then
-		tf_util.ReadActivitiesFromModel(owner)
+	for k, v in pairs(player.GetAll()) do
+		if v == self.Owner then		
+		if v:IsHL2() then 	
+		t = string.lower( t )
+		local index = ActIndex[ t ]
+
+		if ( index == nil ) then
+			Msg( "SWEP:SetWeaponHoldType - ActIndex[ \"" .. t .. "\" ] isn't set! (defaulting to normal)\n" )
+			t = "normal"
+			index = ActIndex[ t ]
+		end
+
+		self.ActivityTranslate = {}
+		self.ActivityTranslate[ ACT_MP_STAND_IDLE ]					= index
+		self.ActivityTranslate[ ACT_MP_WALK ]						= index + 1
+		self.ActivityTranslate[ ACT_MP_RUN ]						= index + 2
+		self.ActivityTranslate[ ACT_MP_CROUCH_IDLE ]				= index + 3
+		self.ActivityTranslate[ ACT_MP_CROUCHWALK ]					= index + 4
+		self.ActivityTranslate[ ACT_MP_ATTACK_STAND_PRIMARYFIRE ]	= index + 5
+		self.ActivityTranslate[ ACT_MP_ATTACK_CROUCH_PRIMARYFIRE ]	= index + 5
+		self.ActivityTranslate[ ACT_MP_RELOAD_STAND ]				= index + 6
+		self.ActivityTranslate[ ACT_MP_RELOAD_CROUCH ]				= index + 6
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= index + 7
+		self.ActivityTranslate[ ACT_RANGE_ATTACK1 ]					= index + 8
+		self.ActivityTranslate[ ACT_MP_SWIM ]						= index + 9
+
+		-- "normal" jump animation doesn't exist
+		if ( t == "normal" ) then
+			self.ActivityTranslate[ ACT_MP_JUMP ] = ACT_HL2MP_JUMP_SLAM
+		end
+
+		else	
+	if IsValid(v) then
+		tf_util.ReadActivitiesFromModel(self.Owner)
 	end
 
-	local slot = self:GetItemData()["item_slot"]
-	
-	if isstring(slot) then
-		t = string.upper(slot)
-	end
-	
-	if not _G["ACT_MP_STAND_"..t] then
-		MsgN("SWEP:SetWeaponHoldType - Unknown TF2 weapon hold type '"..t.."'! Defaulting to PRIMARY")
-		t = "PRIMARY"
-	end
-	
 	self.ActivityTranslate = {}
 	self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_MP_STAND_"..t]
 	self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_MP_RUN_"..t]
@@ -173,6 +209,146 @@ function SWEP:SetWeaponHoldType(t)
 	self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_MP_CROUCHWALK_"..t]
 	self.ActivityTranslate[ACT_MP_SWIM] 							= _G["ACT_MP_SWIM_"..t]
 	self.ActivityTranslate[ACT_MP_AIRWALK] 							= _G["ACT_MP_AIRWALK_"..t]
+	if v:GetPlayerClass() == "boomer" and v:GetMoveType() != "MOVETYPE_LADDER"  then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_RUN_CROUCH"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "boomette" and v:GetMoveType() != "MOVETYPE_LADDER"  then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_RUN_CROUCH"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "smoker" and v:GetMoveType() != "MOVETYPE_LADDER"  then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_RUN_CROUCH"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "hunter" and v:GetMoveType() != "MOVETYPE_LADDER"  then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_RUN_CROUCH"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "jockey" and v:GetMoveType() != "MOVETYPE_LADDER"  then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_RUN_CROUCH"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "charger" and v:GetMoveType() != "MOVETYPE_LADDER"  then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN_AIM_RELAXED"] 
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_RUN_CROUCH"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "l4d_zombie" and v:GetMoveType() != "MOVETYPE_LADDER" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_TERROR_IDLE_ALERT"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_TERROR_CROUCH_IDLE_NEUTRAL"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_TERROR_CROUCH_RUN_INTENSE"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK2"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK2"] 
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "boomer" and v:GetMoveType() == "MOVETYPE_LADDER" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "boomette" and v:GetMoveType() == "MOVETYPE_LADDER" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "tank" and v:GetMoveType() != "MOVETYPE_LADDER"  then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_RUN_CROUCH"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "tank" and v:GetMoveType() == "MOVETYPE_LADDER" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
+	if v:GetPlayerClass() == "l4d_zombie" and v:GetMoveType() == "MOVETYPE_LADDER" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_CLIMB_UP"]
+		self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_CLIMB_UP"]
+	end
 	
 	if t == "PRIMARY" then
 		self.ActivityTranslate[ACT_MP_DEPLOYED_IDLE] 				= ACT_MP_DEPLOYED_IDLE
@@ -188,19 +364,22 @@ function SWEP:SetWeaponHoldType(t)
 		self.ActivityTranslate[ACT_MP_SWIM_DEPLOYED] 				= _G["ACT_MP_SWIM_DEPLOYED_"..t]
 	end
 	
+	if t == "ITEM4" then
+		self.ActivityTranslate[ ACT_MP_STAND_IDLE ]					= _G["ACT_MP_STAND_ITEM4"]
+		self.ActivityTranslate[ ACT_MP_RUN ]						= _G["ACT_MP_RUN_ITEM4"]
+		self.ActivityTranslate[ ACT_MP_CROUCH_IDLE ]				= _G["ACT_MP_CROUCH_ITEM4"]
+		self.ActivityTranslate[ ACT_MP_CROUCHWALK ]					= _G["ACT_MP_CROUCHWALK_ITEM4"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_MP_JUMP_START_ITEM4"]
+		self.ActivityTranslate[ ACT_MP_SWIM ]						= _G["ACT_MP_SWIM_ITEM4"]
+	end
+
 	self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE] 		= _G["ACT_MP_ATTACK_STAND_"..t]
 	self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]		= _G["ACT_MP_ATTACK_CROUCH_"..t]
 	self.ActivityTranslate[ACT_MP_ATTACK_SWIM_PRIMARYFIRE]			= _G["ACT_MP_ATTACK_SWIM_"..t]
 	
-	if _G["ACT_MP_ATTACK_STAND_HARD_"..t] then
-		self.ActivityTranslate[ACT_MP_ATTACK_STAND_SECONDARYFIRE] 		= _G["ACT_MP_ATTACK_STAND_HARD_"..t]
-		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_SECONDARYFIRE]		= _G["ACT_MP_ATTACK_CROUCH_HARD_"..t]
-		self.ActivityTranslate[ACT_MP_ATTACK_SWIM_SECONDARYFIRE]		= _G["ACT_MP_ATTACK_SWIM_HARD_"..t]
-	else
-		self.ActivityTranslate[ACT_MP_ATTACK_STAND_SECONDARYFIRE] 		= _G["ACT_MP_ATTACK_STAND_"..t.."_SECONDARY"]
-		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_SECONDARYFIRE]		= _G["ACT_MP_ATTACK_CROUCH_"..t.."_SECONDARY"]
-		self.ActivityTranslate[ACT_MP_ATTACK_SWIM_SECONDARYFIRE]		= _G["ACT_MP_ATTACK_SWIM_"..t.."_SECONDARY"]
-	end
+	self.ActivityTranslate[ACT_MP_ATTACK_STAND_SECONDARYFIRE] 		= _G["ACT_MP_ATTACK_STAND_"..t.."_SECONDARY"]
+	self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_SECONDARYFIRE]		= _G["ACT_MP_ATTACK_CROUCH_"..t.."_SECONDARY"]
+	self.ActivityTranslate[ACT_MP_ATTACK_SWIM_SECONDARYFIRE]		= _G["ACT_MP_ATTACK_SWIM_"..t.."_SECONDARY"]
 	
 	self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARY_DEPLOYED] 	= _G["ACT_MP_ATTACK_STAND_"..t.."_DEPLOYED"]
 	self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARY_DEPLOYED] 	= _G["ACT_MP_ATTACK_CROUCH_"..t.."_DEPLOYED"]
@@ -217,24 +396,17 @@ function SWEP:SetWeaponHoldType(t)
 	self.ActivityTranslate[ACT_MP_RELOAD_STAND]		 				= _G["ACT_MP_RELOAD_STAND_"..t]
 	self.ActivityTranslate[ACT_MP_RELOAD_CROUCH]		 			= _G["ACT_MP_RELOAD_CROUCH_"..t]
 	self.ActivityTranslate[ACT_MP_RELOAD_SWIM]		 				= _G["ACT_MP_RELOAD_SWIM_"..t]
-	self.ActivityTranslate[ACT_MP_RELOAD_AIRWALK]					= _G["ACT_MP_RELOAD_STAND_"..t]
 	
 	self.ActivityTranslate[ACT_MP_RELOAD_STAND_LOOP]		 		= _G["ACT_MP_RELOAD_STAND_"..t.."_LOOP"]
 	self.ActivityTranslate[ACT_MP_RELOAD_CROUCH_LOOP]		 		= _G["ACT_MP_RELOAD_CROUCH_"..t.."_LOOP"]
 	self.ActivityTranslate[ACT_MP_RELOAD_SWIM_LOOP]		 			= _G["ACT_MP_RELOAD_SWIM_"..t.."_LOOP"]
-	
-	self.ActivityTranslate[ACT_MP_RELOAD_STAND_END]		 			= _G["ACT_MP_RELOAD_STAND_"..t.."_END"]
-	self.ActivityTranslate[ACT_MP_RELOAD_CROUCH_END]		 		= _G["ACT_MP_RELOAD_CROUCH_"..t.."_END"]
-	self.ActivityTranslate[ACT_MP_RELOAD_SWIM_END]		 			= _G["ACT_MP_RELOAD_SWIM_"..t.."_END"]
-	
+
 	self.ActivityTranslate[ACT_MP_JUMP_START] 						= _G["ACT_MP_JUMP_START_"..t]
 	self.ActivityTranslate[ACT_MP_JUMP_FLOAT] 						= _G["ACT_MP_JUMP_FLOAT_"..t]
 	self.ActivityTranslate[ACT_MP_JUMP_LAND] 						= _G["ACT_MP_JUMP_LAND_"..t]
-	
-	self.ActivityTranslate[ACT_MP_GESTURE_VC_HANDMOUTH] 			= _G["ACT_MP_GESTURE_VC_HANDMOUTH_"..t]
-	self.ActivityTranslate[ACT_MP_GESTURE_VC_THUMBSUP] 				= _G["ACT_MP_GESTURE_VC_THUMBSUP_"..t]
-	self.ActivityTranslate[ACT_MP_GESTURE_VC_FINGERPOINT] 			= _G["ACT_MP_GESTURE_VC_FINGERPOINT_"..t]
-	self.ActivityTranslate[ACT_MP_GESTURE_VC_FISTPUMP] 				= _G["ACT_MP_GESTURE_VC_FISTPUMP_"..t]
+		end
+		end
+	end
 end
 
 function SWEP:TranslateActivity(act)

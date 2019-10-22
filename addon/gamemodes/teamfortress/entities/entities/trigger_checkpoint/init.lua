@@ -67,9 +67,9 @@ function ENT:StartTouch(ent)
 				umsg.End()
 			elseif GetConVarNumber("hl2c_use_old_umsg") == 0 then
 				for _, pl in pairs(player.GetAll()) do
-				net.Start("SetCheckpointPosition")
-					net.WriteVector(checkpointPositions[1])
-				net.Send(pl)
+				usermessage.Start("SetCheckpointPosition")
+					usermessage.WriteVector(checkpointPositions[1])
+				usermessage.Send(pl)
 			end
 		end
 		end

@@ -31,7 +31,7 @@ SWEP.MuzzleEffect = "pyro_blast"
 
 SWEP.ShootSound = Sound(")weapons/dragons_fury_shoot.wav")
 SWEP.ShootCritSound = Sound(")weapons/dragons_fury_shoot_crit.wav")
-SWEP.CustomExplosionSound = Sound("misc/halloween/spell_fireball_impact.wav")
+SWEP.CustomExplosionSound = Sound("")
 
 SWEP.AirblastSound = Sound("Weapon_FlameThrower.AirBurstAttack")
 SWEP.AirblastDeflectSound = Sound("Weapon_FlameThrower.AirBurstAttackDeflect")
@@ -85,14 +85,15 @@ function SWEP:ShootProjectile()
 		rocket:SetAngles(ang)
 		
 		if self:Critical() then
+			self.Owner:EmitSound(")weapons/dragons_fury_shoot_crit.wav")
 			rocket.critical = true
+		else
+			self.Owner:EmitSound(")weapons/dragons_fury_shoot.wav")
 		end
 		
 		for k,v in pairs(self.Properties) do
 			rocket[k] = v
 		end
-		
-		rocket:SetModel("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl")
 		
 		rocket:SetOwner(self.Owner)
 		self:InitProjectileAttributes(rocket)
@@ -102,7 +103,7 @@ function SWEP:ShootProjectile()
 		rocket:Activate()
 	end
 	
-	self:ShootEffects()
+	
 end
 
 

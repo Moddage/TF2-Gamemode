@@ -66,6 +66,7 @@ function SWEP:PrimaryAttack()
 			end
 		end
 	end
+	
 	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
 	self:TakePrimaryAmmo(1)
 	

@@ -4,6 +4,52 @@
 local meta = FindMetaTable( "Player" )
 if (!meta) then return end 
 
+local Player = FindMetaTable("Player")
+local oNick = Player.Nick
+
+function Player:Nick()
+	if not self:IsValid() then
+		return 
+	end
+	if self:IsBot() then
+		if self:GetPlayerClass() == "scout" then
+			return "Scout"
+		elseif self:GetPlayerClass() == "soldier" then
+			return "Soldier"
+		elseif self:GetPlayerClass() == "pyro" then
+			return "Pyro"
+		elseif self:GetPlayerClass() == "demoman" then
+			return "Demoman"
+		elseif self:GetPlayerClass() == "heavy" then
+			return "HeavyWeapons"
+		elseif self:GetPlayerClass() == "engineer" then
+			return "Engineer"
+		elseif self:GetPlayerClass() == "medic" then
+			return "Medic"
+		elseif self:GetPlayerClass() == "sniper" then
+			return "Sniper"
+		elseif self:GetPlayerClass() == "spy" then
+			return "Spy"
+		elseif self:GetPlayerClass() == "giantscout" then
+			return "Giant Scout"
+		elseif self:GetPlayerClass() == "giantsoldier" then
+			return "Giant Soldier"
+		elseif self:GetPlayerClass() == "giantpyro" then
+			return "Giant Pyro"
+		elseif self:GetPlayerClass() == "giantdemoman" then
+			return "Giant Demoman"
+		elseif self:GetPlayerClass() == "giantheavy" then
+			return "Giant Heavy"
+		else
+			return self:GetPlayerClass() or oNick(self)
+		end
+	else
+		return oNick(self)
+	end
+end
+Player.Name = Player.Nick
+Player.GetName = Player.Nick
+
 function RegisterStatType(obj, name)
 	local name_get = name
 	local name_set = "Set"..name
@@ -104,7 +150,7 @@ function meta:RandomSentence(group)
 	
 	--[[local tbl = class.Sounds[group]
 	self:EmitSound(tbl[math.random(1,#tbl)])]]
-	
+
 	self:EmitSound(Format("%s.%s", class.Name, group))
 end
 

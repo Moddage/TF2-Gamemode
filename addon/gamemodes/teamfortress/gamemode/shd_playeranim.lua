@@ -31,17 +31,39 @@ function GM:HandlePlayerJumping(pl)
 			end
 		end
 		
+		
 		if pl.anim_Jumping then
-			if pl.anim_JumpStartTime == 0 then
-				if pl.anim_Airwalk then
-					pl.anim_CalcIdeal = ACT_MP_AIRWALK
+			if pl:GetPlayerClass() == "tank" or pl:GetPlayerClass() == "boomer" or pl:GetPlayerClass() == "boomette" or pl:GetPlayerClass() == "charger" or pl:GetPlayerClass() == "hunter" or pl:GetPlayerClass() == "l4d_zombie" or pl:GetPlayerClass() == 'smoker'or pl:GetPlayerClass() == 'jockey' then					
+				if pl:GetMoveType() == MOVETYPE_LADDER then
+					if pl:GetPlayerClass() == "tank" or pl:GetPlayerClass() == "boomer" or pl:GetPlayerClass() == "charger" or pl:GetPlayerClass() == "hunter"  or pl:GetPlayerClass() == "l4d_zombie" or pl:GetPlayerClass() == 'smoker' or pl:GetPlayerClass() == 'jockey'then
+						pl.anim_CalcIdeal = ACT_CLIMB_UP
+						pl:SetPoseParameter("move_x", 1)
+					end
 				else
-					return false
+									
+					if pl:WaterLevel() >= 2 or --[[(CurTime() - pl.anim_JumpStartTime > 0.2 and]] pl:OnGround() --[[)]] then 
+						pl.anim_Jumping = false
+						pl.anim_GroundTime = nil
+						pl:AnimRestartMainSequence()
+						
+						if pl:OnGround() then
+							pl:AnimRestartGesture(GESTURE_SLOT_JUMP, ACT_TERROR_JUMP_LANDING, true)
+						end
+						pl.anim_CalcIdeal = ACT_JUMP
+					end
 				end
-			elseif not firstjumpframe and CurTime() - pl.anim_JumpStartTime > pl:SequenceDuration() then
-				pl.anim_CalcIdeal = ACT_MP_JUMP_FLOAT
 			else
-				pl.anim_CalcIdeal = ACT_MP_JUMP_START
+				if pl.anim_JumpStartTime == 0 then
+					if pl.anim_Airwalk then
+						pl.anim_CalcIdeal = ACT_MP_AIRWALK
+					else
+						return false
+					end
+				elseif not firstjumpframe and CurTime() - pl.anim_JumpStartTime > pl:SequenceDuration() then
+					pl.anim_CalcIdeal = ACT_MP_JUMP_FLOAT
+				else
+					pl.anim_CalcIdeal = ACT_MP_JUMP_START
+				end
 			end
 				
 			return true
@@ -133,26 +155,35 @@ function GM:UpdateAnimation(pl, velocity, maxseqgroundspeed)
 		maxspeed = c.ModifyMaxAnimSpeed(pl, maxspeed)
 	end
 	if pl:IsPlayer() and pl:GetInfoNum("tf_giant_robot", 0) != 1 then
-	maxspeed = maxspeed * 3
+		maxspeed = maxspeed * 3
+		
+		local vel = 1 * velocity
+		vel:Rotate(Angle(0,-pl:EyeAngles().y,0))
+		vel:Rotate(Angle(-vel:Angle().p,0,0))
+		
+		pl:SetPoseParameter("move_x", vel.x / maxspeed)
+		pl:SetPoseParameter("move_y", -vel.y / maxspeed)
 	
-	local vel = 1 * velocity
-	vel:Rotate(Angle(0,-pl:EyeAngles().y,0))
-	vel:Rotate(Angle(-vel:Angle().p,0,0))
-	
-	pl:SetPoseParameter("move_x", vel.x / maxspeed)
-	pl:SetPoseParameter("move_y", -vel.y / maxspeed)
-	
+	elseif pl:IsPlayer() and pl:GetPlayerClass() == "tank" then
+		maxspeed = maxspeed * 3
+		
+		local vel = 1 * velocity
+		vel:Rotate(Angle(0,-pl:EyeAngles().y,0))
+		vel:Rotate(Angle(-vel:Angle().p,0,0))
+		
+		pl:SetPoseParameter("move_x", vel.x / maxspeed)
+		pl:SetPoseParameter("move_y", vel.y / maxspeed)
 	else
-	maxspeed = maxspeed * 3
-	
-	local vel = 1 * velocity
-	vel:Rotate(Angle(0,-pl:EyeAngles().y,0))
-	vel:Rotate(Angle(-vel:Angle().p,0,0))
-	
-	local maxspeed2 =  pl:GetClassSpeed()
-	
-	pl:SetPoseParameter("move_x", vel.x / maxspeed2)
-	pl:SetPoseParameter("move_y", -vel.y / maxspeed2)		
+		maxspeed = maxspeed * 3
+		
+		local vel = 1 * velocity
+		vel:Rotate(Angle(0,-pl:EyeAngles().y,0))
+		vel:Rotate(Angle(-vel:Angle().p,0,0))
+		
+		local maxspeed2 =  pl:GetClassSpeed()
+		
+		pl:SetPoseParameter("move_x", vel.x / maxspeed2)
+		pl:SetPoseParameter("move_y", -vel.y / maxspeed2)		
 	
 	end
 	
@@ -253,9 +284,9 @@ local TauntGestures = {
 	[ACT_DOD_RELOAD_PSCHRECK] = "taunt_rps_rock_lose",
 	[ACT_DOD_ZOOMLOAD_PSCHRECK] = "taunt_rps_paper_win",
 	[ACT_DOD_RELOAD_DEPLOYED_FG42] = "taunt_rps_paper_lose",
-	[ACT_DOD_DEPLOYED] = "gesture_primary_help",
-	[ACT_DOD_PRONE_DEPLOYED] = "gesture_secondary_help",
-	[ACT_DOD_IDLE_ZOOMED] = "gesture_melee_help",
+	[ACT_DOD_DEPLOYED] = "Shoved_Backward",
+	[ACT_DOD_PRONE_DEPLOYED] = "melee_pounce",
+	[ACT_DOD_IDLE_ZOOMED] = "Charger_punch",
 	[ACT_DOD_WALK_ZOOMED] = "a_grapple_pull_idle",
 	[ACT_DOD_CROUCH_ZOOMED] = "a_grapple_SHOOT",
 	[ACT_DOD_CROUCHWALK_ZOOMED] = "a_grapple_pull_start",
@@ -265,9 +296,7 @@ local TauntGestures = {
 	[ACT_DOD_PRIMARYATTACK_PRONE_DEPLOYED] = "ReloadStand_ITEM1",
 	[ACT_SIGNAL1] = "stomp_ITEM4",
 	[ACT_SIGNAL2] = "taunt08",
-	[ACT_SIGNAL3] = "crouch_ITEM4",
-	[ACT_SIGNAL_ADVANCE] = "crouch_walk_ITEM4",
-	[ACT_DOD_RELOAD_DEPLOYED] = "kart_idle",
+	[ACT_DOD_RELOAD_DEPLOYED] = "Charger_pound",
 	[ACT_DOD_RELOAD_PRONE_DEPLOYED] = "selectionMenu_Anim01",
 	[ACT_SMG2_IDLE2] = "ReloadStand_PRIMARY_end",
 	[ACT_SMG2_FIRE2] = "ReloadStand_SECONDARY_end",
@@ -276,8 +305,8 @@ local TauntGestures = {
 	[ACT_SMG2_DRYFIRE2] = "a_primary_reload_end",
 	[ACT_RUN_AIM] = "taunt_dosido_intro",
 	[ACT_RUN_CROUCH] = "taunt_rps_start",
-	[ACT_CLIMB_DOWN] = "taunt_bumpkins_banjo_fastloop",
-	[ACT_CLIMB_UP] = "taunt_bumpkins_banjo_outro",
+	[ACT_SIGNAL3] = "taunt_bumpkins_banjo_fastloop",
+	[ACT_SIGNAL_ADVANCE] = "taunt_bumpkins_banjo_outro",
 }
 
 function GM:TranslateActivity(pl, act)

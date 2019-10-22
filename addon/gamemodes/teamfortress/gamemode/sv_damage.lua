@@ -167,7 +167,7 @@ function GM:CommonScaleDamage(ent, hitgroup, dmginfo)
 		if att == ent then
 			-- Self damage, don't scale the damage, but still notify the player that they critted themselves
 			if ent:IsPlayer() then
-				SendUserMessage("CriticalHitReceived", ent)
+				Sendusermessage("CriticalHitReceived", ent)
 			end
 			dontscaledamage = true
 		else
@@ -583,6 +583,9 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 	elseif dmginfo:IsFallDamage() then 
 		if ent:HasGodMode() == false then
 			ent:Speak("TLK_PLAYER_ATTACKER_PAIN")
+			if ent:GetPlayerClass() == "tank" or ent:GetPlayerClass() == "hunter" or ent:GetPlayerClass() == "charger" or ent:GetPlayerClass() == "jockey" then
+				ent:EmitSound("player/pz/fall/bodyfall_largecreature.wav", 85)
+			end
 		else
 			if ent:GetPlayerClass() == "scout" then
 				ent:EmitSound("Scout.BeingShotInvincible"..math.random(10,36))

@@ -20,7 +20,7 @@ cvars.AddChangeCallback("tf_disable_fun_classes", function(_, _, val)
 	if SERVER and val == "1" then
 		for k, v in pairs(player.GetAll()) do
 			if v:GetPlayerClass() == "gmodplayer" then
-				v:SetPlayerClass("scout")
+				v:SetPlayerClass("scout")  
 				v:Kill()
 			end
 		end
@@ -28,7 +28,7 @@ cvars.AddChangeCallback("tf_disable_fun_classes", function(_, _, val)
 end)
 
 function GM:RegisterPlayerClass(name, tbl)
-	for k,v in pairs(tbl.Gibs or {}) do
+	for k,v in pairs(tbl.Gibs or {}) do  
 		self.GibTypeTable[v] = k
 	end
 	
@@ -107,7 +107,7 @@ function meta:SetPlayerClass(class)
 	self.TempAttributes = {}
 	self.NextSpeak = nil
 	
-	-- Update all the needed networked info
+	-- Update all the needed Networked info
 	if class~=self:GetNWString("PlayerClass") then
 		if c.DefaultLoadout then
 			self.ItemLoadout = table.Copy(c.DefaultLoadout)
@@ -141,7 +141,6 @@ function meta:SetPlayerClass(class)
 		-- Default hull
 		self:ResetHull()
 		self:SetStepSize(18)
-		self:SetModelScale(0.9)
 		self:SetViewOffset(Vector(0,0,64))
 		self:SetViewOffsetDucked(Vector(0, 0, 28))
 		--self:SetCollisionBounds(unpack(DefaultHull))
@@ -149,7 +148,6 @@ function meta:SetPlayerClass(class)
 		-- Special hull, because TF2 players are larger than HL2 players
 		self:SetHull(unpack(TFHull))
 		self:SetHullDuck(unpack(TFHullDuck))
-		self:SetModelScale(1)
 		--self:SetCollisionBounds(unpack(TFHull))
 		self:SetStepSize(18)
 	end
@@ -221,6 +219,7 @@ function meta:SetPlayerClass(class)
 		end
 	--end
 	
+	self:SetModelScale(1.0)
 	self:SetModel(c.Model)
 	
 	-- If this class needs some special initialization, do it

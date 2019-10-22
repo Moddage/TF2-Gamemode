@@ -19,7 +19,7 @@ for k, v in pairs(items_game["items"]) do
         for i, o in pairs(items_game["prefabs"][v.prefab]) do
             if !v[i] then
                 v[i] = o
-            end
+            end 
         end
     end
 
@@ -34,6 +34,8 @@ for k, v in pairs(items_game["items"]) do
         v.item_class = "tf_weapon_sniperrifle"
     elseif v.item_class == "tf_weapon_pep_brawler_blaster" then
         v.item_class = "tf_weapon_scattergun"
+    elseif v.item_class == "tf_weapon_shotgun" then
+        v.item_class = "tf_weapon_shotgun_soldier"
     elseif v.item_class == "tf_wearable_demoshield" then
         v.item_class = "tf_wearable_item_demoshield"
     elseif v.item_class == "tf_weapon_handgun_scout_secondary" then
@@ -69,6 +71,9 @@ for k, v in pairs(items_game["items"]) do
 		end
         if v.name == "Deflector" then
 			v.item_class = "tf_weapon_minigun_mvm"
+		end
+        if v.name == "Huo-Long Heater" then
+			v.item_class = "tf_weapon_minigun_burner"
 		end
         if v.name == "Red-Tape Recorder" then
 			v.item_class = "tf_weapon_rtr" 

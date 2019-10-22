@@ -90,12 +90,15 @@ function ENT:StartTouch(ply)
 		if v.Carrier==ply and self.Team ~= v.Team then
 				timer.Create("UnfreezePlayer", 0.0001, 0, function()
 					if not v.Carrier:Alive() then v.Carrier:Freeze(false) v.Model2:SetNoDraw(false) timer.Stop("UnfreezePlayer") return end
-				end)  
+				end) 
 				timer.Simple(1, function()
 					if v.Carrier:GetInfoNum("tf_giant_robot", 0) == 1 then
 						v:EmitSound("mvm/mvm_deploy_giant.wav", 70, 100)
 					else
 						v:EmitSound("mvm/mvm_deploy_small.wav", 70, 100)
+					end
+					for _, player in ipairs(player.GetAll()) do
+						player:SendLua([[surface.PlaySound("vo/mvm_bomb_alerts0"..math.random(8,9)..".mp3")]])
 					end
 					v.Carrier:Freeze(true)
 					v.Carrier:SetNoDraw(true)

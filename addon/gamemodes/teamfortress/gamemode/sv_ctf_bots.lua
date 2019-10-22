@@ -4,8 +4,9 @@ local profiles = {}
 local bots = {}
 
 --local names = {"LeadKiller", "A Random Person", "Foxie117", "G.A.M.E.R v24", "Agent Agrimar"}
-local names = {"A Professional With Standards", "AimBot", "AmNot", "Aperture Science Prototype XR7", "Archimedes!", "BeepBeepBoop", "Big Mean Muther Hubbard", "Black Mesa", "BoomerBile", "Cannon Fodder", "CEDA", "Chell", "Chucklenuts", "Companion Cube", "Crazed Gunman", "CreditToTeam", "CRITRAWKETS", "Crowbar", "CryBaby", "CrySomeMore", "C++", "DeadHead", "Delicious Cake", "Divide by Zero", "Dog", "Force of Nature", "Freakin' Unbelievable", "Gentlemanne of Leisure", "GENTLE MANNE of LEISURE ", "GLaDOS", "Glorified Toaster with Legs", "Grim Bloody Fable", "GutsAndGlory!", "Hat-Wearing MAN", "Headful of Eyeballs", "Herr Doktor", "HI THERE", "Hostage", "Humans Are Weak", "H@XX0RZ", "I LIVE!", "It's Filthy in There!", "IvanTheSpaceBiker", "Kaboom!", "Kill Me", "LOS LOS LOS", "Maggot", "Mann Co.", "Me", "Mega Baboon", "Mentlegen", "Mindless Electrons", "MoreGun", "Nobody", "Nom Nom Nom", "NotMe", "Numnutz", "One-Man Cheeseburger Apocalypse", "Poopy Joe", "Pow!", "RageQuit", "Ribs Grow Back", "Saxton Hale", "Screamin' Eagles", "SMELLY UNFORTUNATE", "SomeDude", "Someone Else", "Soulless", "Still Alive", "TAAAAANK!", "Target Practice", "ThatGuy", "The Administrator", "The Combine", "The Freeman", "The G-Man", "THEM", "Tiny Baby Man", "Totally Not A Bot", "trigger_hurt", "WITCH", "ZAWMBEEZ", "Ze Ubermensch", "Zepheniah Mann", "0xDEADBEEF", "10001011101"}
-local classtb = {"scout", "soldier", "pyro", "demoman", "heavy"} 
+--local names = {"A Professional With Standards", "AimBot", "AmNot", "Aperture Science Prototype XR7", "Archimedes!", "BeepBeepBoop", "Big Mean Muther Hubbard", "Black Mesa", "BoomerBile", "Cannon Fodder", "CEDA", "Chell", "Chucklenuts", "Companion Cube", "Crazed Gunman", "CreditToTeam", "CRITRAWKETS", "Crowbar", "CryBaby", "CrySomeMore", "C++", "DeadHead", "Delicious Cake", "Divide by Zero", "Dog", "Force of Nature", "Freakin' Unbelievable", "Gentlemanne of Leisure", "GENTLE MANNE of LEISURE ", "GLaDOS", "Glorified Toaster with Legs", "Grim Bloody Fable", "GutsAndGlory!", "Hat-Wearing MAN", "Headful of Eyeballs", "Herr Doktor", "HI THERE", "Hostage", "Humans Are Weak", "H@XX0RZ", "I LIVE!", "It's Filthy in There!", "IvanTheSpaceBiker", "Kaboom!", "Kill Me", "LOS LOS LOS", "Maggot", "Mann Co.", "Me", "Mega Baboon", "Mentlegen", "Mindless Electrons", "MoreGun", "Nobody", "Nom Nom Nom", "NotMe", "Numnutz", "One-Man Cheeseburger Apocalypse", "Poopy Joe", "Pow!", "RageQuit", "Ribs Grow Back", "Saxton Hale", "Screamin' Eagles", "SMELLY UNFORTUNATE", "SomeDude", "Someone Else", "Soulless", "Still Alive", "TAAAAANK!", "Target Practice", "ThatGuy", "The Administrator", "The Combine", "The Freeman", "The G-Man", "THEM", "Tiny Baby Man", "Totally Not A Bot", "trigger_hurt", "WITCH", "ZAWMBEEZ", "Ze Ubermensch", "Zepheniah Mann", "0xDEADBEEF", "10001011101"}
+local names = {"TFBot"}
+local classtb = {"scout","soldier","pyro","demoman","heavy","spy","engineer","medic","sentrybuster"}
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
 local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
@@ -13,8 +14,8 @@ local tf_bot_melee_only = CreateConVar("tf_bot_melee_only", "0", {FCVAR_ARCHIVE,
 local seensentry = false
 function LBAddProfile(tab) 
 	if profiles[tab["name"]] then return end
-	table.insert(profiles, tab)
-end
+	table.insert(profiles, tab) 
+end  
 
 function LBAddBot(team)
 	--if !profiles[name] then MsgN("That is not a valid bot!") return end
@@ -115,7 +116,7 @@ hook.Add("PlayerSpawn", "leadbot_spawn", function(ply)
 				for k, v in pairs(weps) do
 					if v.Base == "tf_weapon_melee_base" then
 						timer.Simple(0.2, function()
-							ply:SelectWeapon(v:GetClass())
+							ply:SelectWeapon(v:GetClass()) 
 						end)
 						print(v)
 					end
@@ -329,7 +330,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				local trace = util.QuickTrace(bot:EyePos(), targetply:EyePos() - bot:EyePos(), bot)
 				debugoverlay.Line(trace.StartPos, trace.HitPos, 1, Color( 255, 255, 0 ))
 
-				if trace.Entity == targetply and trace.Entity:IsFriendly(bot) then
+				if trace.Entity == targetply and targetply:IsFriendly(bot) then
 					bot.TargetEnt = targetply
 					bot:SetEyeAngles((targetply:EyePos() - bot:GetShootPos()):Angle())
 					bot:SelectWeapon("tf_weapon_medigun")
@@ -353,7 +354,14 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 		end
 		local BotCanTarget = tf_bot_notarget:GetBool()
 		local BotCanTargetPlayer = GetConVar("ai_ignoreplayers"):GetBool()
-			
+		if bot:GetPlayerClass() == "tank" and bot:GetPlayerClass() == "l4d_zombie" and bot:GetPlayerClass() == "boomer" and bot:GetPlayerClass() == "charger" and bot:GetPlayerClass() == "smoker" then
+			local args = {"TLK_PLAYER_CLOAKEDSPY"}
+			if bot:Speak(args[1]) then
+				umsg.Start("TerrorPlayerVoice")
+					umsg.Entity(bot)
+				umsg.End()
+			end
+		end
 		if !BotCanTarget then
 			
 			if !BotCanTargetPlayer then
@@ -375,36 +383,59 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 					end
 
 				else
-					for k, v in pairs(player.GetAll()) do
-						if v:Team() ~= bot:Team() and v:Alive() and v:Team() ~= TEAM_SPECTATOR and v:GetNoDraw() != true then
-
+					for k, v in pairs(ents.GetAll()) do
+						if v:GetClass() == "obj_sentrygun" and !v:IsFriendly(bot) and v:Health() >= 0 and GAMEMODE:EntityTeam(v) ~= TEAM_SPECTATOR then
 							local att
-							if !v:IsHL2() then
-								att = v:GetAttachment(v:LookupAttachment("head")).Pos
-							else
-								att = v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1"))
-							end
+							att = v:GetBonePosition(v:LookupBone("weapon_bone"))
 							local trace = util.QuickTrace(bot:EyePos(), att - bot:EyePos(), team.GetPlayers(bot:Team()))
-							if v:GetPlayerClass() == "spy" then
-								if v:GetModel() == "models/player/scout.mdl" or  v:GetModel() == "models/player/soldier.mdl" or  v:GetModel() == "models/player/pyro.mdl" or  v:GetModel() == "models/player/demo.mdl" or  v:GetModel() == "models/player/heavy.mdl" or  v:GetModel() == "models/player/engineer.mdl" or  v:GetModel() == "models/player/medic.mdl" or  v:GetModel() == "models/player/sniper.mdl" or  v:GetModel() == "models/player/hwm/spy.mdl" or v:GetModel() == "models/player/kleiner.mdl" then
-									if trace.Entity == v then
-										debugoverlay.Text(bot:EyePos() + Vector(0, 0, 15), ""..v:Nick().." is a spy!", 0.03, false)
-										bot.TargetEnt = nil
-									end
+							if bot:GetPlayerClass() == "spy" then
+								bot:SelectWeapon("tf_weapon_rtr")
+								bot:SelectWeapon("tf_weapon_sapper")
+								bot:SelectWeapon("tf_weapon_builder")
+								bot:SetModel("models/player/"..table.Random(randomclassmodel)..".mdl")
+								if bot:Team() != TEAM_RED then
+									bot:SetSkin(0)
+								else
+									bot:SetSkin(1)
 								end
 							end
-							if trace.Entity == v then
-								debugoverlay.Text(bot:EyePos() + Vector(0, 0, 15), "I can see you "..v:Nick().."!", 0.03, false)
-								bot.TargetEnt = v
+							for _,ents in ipairs(ents.FindInSphere(bot:GetPos(), 800)) do
+								if ents == v then
+									bot.TargetEnt = v
+								end
 							end
-						elseif v:Team() ~= bot:Team() and v:Alive() and v:Team() ~= TEAM_SPECTATOR and v:GetNoDraw() == true then
-							local args = {"TLK_PLAYER_CLOAKEDSPY"}
-							if bot:Speak(args[1]) then
-						
-								umsg.Start("TFPlayerVoice")
-									umsg.Entity(bot)
-									umsg.String(args[1])
-								umsg.End()
+						end
+					end
+					if bot:GetPlayerClass() != "spy" then
+						for k, v in pairs(player.GetAll()) do
+							if v:Team() ~= bot:Team() and v:Alive() and v:Team() ~= TEAM_SPECTATOR and v:GetNoDraw() != true then
+
+								local att
+								if !v:IsHL2() then
+									att = v:GetAttachment(v:LookupAttachment("head")).Pos
+								else
+									att = v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1"))
+								end
+								local trace = util.QuickTrace(bot:EyePos(), att - bot:EyePos(), team.GetPlayers(bot:Team()))
+								if v:GetPlayerClass() == "spy" then
+									if v:GetModel() == "models/player/scout.mdl" or  v:GetModel() == "models/player/soldier.mdl" or  v:GetModel() == "models/player/pyro.mdl" or  v:GetModel() == "models/player/demo.mdl" or  v:GetModel() == "models/player/heavy.mdl" or  v:GetModel() == "models/player/engineer.mdl" or  v:GetModel() == "models/player/medic.mdl" or  v:GetModel() == "models/player/sniper.mdl" or  v:GetModel() == "models/player/hwm/spy.mdl" or v:GetModel() == "models/player/kleiner.mdl" then
+										if trace.Entity == v then
+											bot.TargetEnt = nil
+										end
+									end
+								end
+								if trace.Entity == v then
+									bot.TargetEnt = v
+								end
+							elseif v:Team() ~= bot:Team() and v:Alive() and v:Team() ~= TEAM_SPECTATOR and v:GetNoDraw() == true then
+								local args = {"TLK_PLAYER_CLOAKEDSPY"}
+								if bot:Speak(args[1]) then
+								
+									umsg.Start("TFPlayerVoice")
+										umsg.Entity(bot)
+										umsg.String(args[1])
+									umsg.End()
+								end
 							end
 						end
 					end
@@ -479,8 +510,30 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			--[[if (IsValid(bot:GetActiveWeapon()) and bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base") and bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 120 then
 				cmd:SetForwardMove( -250 )
 			else]]
-			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
-				if bot.TargetEnt:GetClass() != "obj_sentrygun" then
+			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 450 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
+			
+				if bot:GetPlayerClass() == "charger" then
+					if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 80 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
+						cmd:SetButtons(IN_ATTACK)
+					else
+						cmd:SetButtons(IN_ATTACK2)
+					end
+
+				end
+
+			end
+
+			if bot:GetActiveWeapon() != "tf_weapon_fists" then
+
+				if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 130 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" and bot:GetPlayerClass() != "charger" then
+
+					cmd:SetButtons(IN_ATTACK)
+
+				end
+			
+			end
+			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" and bot:GetPlayerClass() != "charger" then
+				if bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" and bot:GetPlayerClass() != "charger" then
 					cmd:SetForwardMove(-250)
 				end
 				if bot:GetPlayerClass() == "pyro" then
@@ -497,7 +550,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				--print("SHOOT!!!")
 				--bot:GetActiveWeapon():PrimaryAttack()
 				--cmd:SetButtons(IN_CANCEL)
-			if bot:GetPlayerClass() ~= "pyro" then
+			if bot:GetPlayerClass() ~= "pyro" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" then
 				if math.random(2) == 1 or bot:GetPlayerClass() == "heavy" or bot:GetPlayerClass() == "pyro" or bot:GetPlayerClass() == "giantpyro" or bot:GetPlayerClass() == "giantheavy" or bot:GetPlayerClass() == "medic" and bot:GetActiveWeapon():GetClass() == "tf_weapon_medigun" or  bot:GetActiveWeapon():GetClass() == "tf_weapon_medigun_qf" and bot:GetActiveWeapon():GetClass() == "tf_weapon_medigun_vaccinator" and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then --[[or bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base")]]
 					if bot:GetNWBool("Taunting") == false then
 						cmd:SetButtons(IN_ATTACK)

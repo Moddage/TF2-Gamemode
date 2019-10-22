@@ -78,7 +78,7 @@ function SWEP:Initialize()
 			--util.AddNetworkString( "gg_Holster_EnableGrav" )
 		--end
 		--[[if CLIENT then
-			net.Receive( "gg_OpenClaws_Client", function() 
+			usermessage.Receive( "gg_OpenClaws_Client", function() 
 					
 			end )
 		end--]]
@@ -148,8 +148,8 @@ if !IsValid(self.Owner) or !self.Owner:Alive() then return end
 			ViewModel:ManipulateBoneAngles(prong_a, frame_a)
 			ViewModel:ManipulateBoneAngles(prong_b, frame_b)--]]
 			end
-			--net.Start("gg_OpenClaws_Client")
-			--net.Send(self.Owner)
+			--usermessage.Start("gg_OpenClaws_Client")
+			--usermessage.Send(self.Owner)
 		if IsValid(WorldModel) then
 			if worldframe > 1 then WorldModel:SetPoseParameter("super_active", 1) end
 			--if worldframe >= 1 then timer.Remove("gg_move_claws_open") return end
@@ -875,11 +875,11 @@ function SWEP:PrimaryAttack()
 				else
 				
 				if tgt:IsPlayer() then
-					--[[net.Start( "PlayerKilledByPlayer" )
-					net.WriteEntity( tgt )
-					net.WriteString( "weapon_superphyscannon" )
-					net.WriteEntity( self.Owner )
-					net.Broadcast()--]]
+					--[[usermessage.Start( "PlayerKilledByPlayer" )
+					usermessage.WriteEntity( tgt )
+					usermessage.WriteString( "weapon_superphyscannon" )
+					usermessage.WriteEntity( self.Owner )
+					usermessage.Broadcast()--]]
 				elseif tgt:IsNPC() then
 					if tgt:GetShouldServerRagdoll() != true then
 					tgt:SetShouldServerRagdoll( true )
@@ -1017,11 +1017,11 @@ function SWEP:PrimaryAttack()
 				undo.Finish();
 				
 				--[[if !tgt:IsPlayer() and tgt:Health() <= 0 and tgt:IsValid() then
-				net.Start( "PlayerKilledNPC" )
-				net.WriteString( tgt:GetClass() )
-				net.WriteString( self.Weapon:GetClass() )
-				net.WriteEntity( self.Owner )
-				net.Broadcast()
+				usermessage.Start( "PlayerKilledNPC" )
+				usermessage.WriteString( tgt:GetClass() )
+				usermessage.WriteString( self.Weapon:GetClass() )
+				usermessage.WriteEntity( self.Owner )
+				usermessage.Broadcast()
 				end--]]
 				end
 				
@@ -1047,11 +1047,11 @@ function SWEP:PrimaryAttack()
 				elseif tgt:IsNPC() then
 					--if tgt:Health() >= 1 then
 					tgt:Fire("Kill","",0)
-					--net.Start( "PlayerKilledNPC" )
-					--net.WriteString( tgt:GetClass() )
-					--net.WriteString( "weapon_superphyscannon" )
-					--net.WriteEntity( self.Owner )
-					--net.Broadcast()
+					--usermessage.Start( "PlayerKilledNPC" )
+					--usermessage.WriteString( tgt:GetClass() )
+					--usermessage.WriteString( "weapon_superphyscannon" )
+					--usermessage.WriteEntity( self.Owner )
+					--usermessage.Broadcast()
 					--end
 				end
 				
@@ -1074,7 +1074,7 @@ function SWEP:PrimaryAttack()
 					local bone = ragdoll:GetPhysicsObjectNum(i)
 					
 					if bone and bone.IsValid and bone:IsValid() then
-						local bonepos, boneang = tgt:GetBonePosition(ragdoll:TranslatePhysBoneToBone(i))
+						local bonepos, boneang = tgt:GetBonePosition(ragdoll:TranslatePhysBousermessageoBone(i))
 						
 						if self.ggNewRagdollFormed == true then
 						bone:SetPos(bonepos)
@@ -1551,11 +1551,11 @@ function SWEP:SecondaryAttack()
 					dmg:SetInflictor( self.Weapon )
 					dmg:SetReportedPosition( self.Owner:GetShootPos() )
 					tgt:TakeDamageInfo( dmg )
-					--[[net.Start( "PlayerKilledByPlayer" )
-					net.WriteEntity( tgt )
-					net.WriteString( "weapon_superphyscannon" )
-					net.WriteEntity( self.Owner )
-					net.Broadcast()--]]
+					--[[usermessage.Start( "PlayerKilledByPlayer" )
+					usermessage.WriteEntity( tgt )
+					usermessage.WriteString( "weapon_superphyscannon" )
+					usermessage.WriteEntity( self.Owner )
+					usermessage.Broadcast()--]]
 					elseif tgt:IsNPC() then
 					if tgt:GetShouldServerRagdoll() != true then
 					tgt:SetShouldServerRagdoll( true )
@@ -1655,11 +1655,11 @@ function SWEP:SecondaryAttack()
 					undo.Finish();
 					
 					--[[if !tgt:IsPlayer() and tgt:Health() <= 0 and tgt:IsValid() then
-					net.Start( "PlayerKilledNPC" )
-					net.WriteString( tgt:GetClass() )
-					net.WriteString( self.Weapon:GetClass() )
-					net.WriteEntity( self.Owner )
-					net.Broadcast()
+					usermessage.Start( "PlayerKilledNPC" )
+					usermessage.WriteString( tgt:GetClass() )
+					usermessage.WriteString( self.Weapon:GetClass() )
+					usermessage.WriteEntity( self.Owner )
+					usermessage.Broadcast()
 					end--]]
 					end
 					
@@ -1701,7 +1701,7 @@ function SWEP:SecondaryAttack()
 					local bone = ragdoll:GetPhysicsObjectNum(i)
 					
 						if bone and bone.IsValid and bone:IsValid() then
-							local bonepos, boneang = tgt:GetBonePosition(ragdoll:TranslatePhysBoneToBone(i))
+							local bonepos, boneang = tgt:GetBonePosition(ragdoll:TranslatePhysBousermessageoBone(i))
 							
 							bone:SetPos(bonepos)
 							bone:SetAngles(boneang)
@@ -2152,8 +2152,8 @@ function SWEP:Deploy()
 		self.Weapon:SetNextSecondaryFire( CurTime() + 5 )
 		--[[if self.Owner:GetWeapon("weapon_physcannon"):IsValid() then
 			--print("yeah")
-			net.Start("gg_Deploy_DisableGrav")
-			net.Send( self.Owner )
+			usermessage.Start("gg_Deploy_DisableGrav")
+			usermessage.Send( self.Owner )
 		end--]]
 		self:CoreEffect()
 		self:TimerDestroyAll()
@@ -2195,8 +2195,8 @@ self:TimerDestroyAll()
 	if self.Owner:GetWeapon("weapon_physcannon"):IsValid() then
 		local ply = self.Owner
 		--print("yeah2")
-		net.Start("gg_Holster_EnableGrav")
-		net.Send( ply )
+		usermessage.Start("gg_Holster_EnableGrav")
+		usermessage.Send( ply )
 	end
 end--]]
 self.Weapon:StopSound(HoldSound)

@@ -72,8 +72,6 @@ function ENT:IsReady()
 	local link = self:GetLinkedTeleporter()
 	if self:IsEntrance() then
 		return IsValid(link) and (self:GetChargePercentage() >= 1)
-	else
-		return IsValid(link) and link:IsReady()
 	end
 end
 

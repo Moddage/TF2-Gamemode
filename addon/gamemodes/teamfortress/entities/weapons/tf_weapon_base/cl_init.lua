@@ -10,7 +10,7 @@ SWEP.DrawCrosshair		= true
 SWEP.DrawWeaponInfoBox	= false
 SWEP.BounceWeaponIcon   = false
 SWEP.WepSelectIcon = surface.GetTextureID( "weapons/swep" )
-SWEP.SwayScale			= 0 -- 0.5
+SWEP.SwayScale			= 0.5
 SWEP.BobScale			= 0.5
 
 SWEP.RenderGroup 		= RENDERGROUP_OPAQUE
@@ -45,6 +45,7 @@ hook.Add("Think", "TFCheckWeaponChanged", function()
 	end
 end)
 
+
 function SWEP:InitializeCModel()
 	if not self.HasCModel then return end
 	--Msg("InitializeCModel\n")
@@ -55,12 +56,13 @@ function SWEP:InitializeCModel()
 	if IsValid(self.CModel) then
 		self.CModel:SetModel(wmodel)
 	elseif IsValid	(vm) then
-		self.CModel = ClientsideModel(wmodel)
+		self.CModel = ents.CreateClientProp()
 		if not IsValid(self.CModel) then return end
 		
 		self.CModel:SetPos(vm:GetPos())
+		self.CModel:SetModel(wmodel)
 		self.CModel:SetAngles(vm:GetAngles())
-		self.CModel:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE_FASTCULL))
+		self.CModel:AddEffects(EF_BONEMERGE)
 		self.CModel:SetParent(vm)
 		self.CModel:SetNoDraw(true)
 	end
@@ -83,12 +85,13 @@ function SWEP:InitializeWModel2()
 	if IsValid(self.WModel2) then
 		self.WModel2:SetModel(wmodel)
 	else
-		self.WModel2 = ClientsideModel(wmodel)
+		self.WModel2 = ents.CreateClientProp()
 		if not IsValid(self.WModel2) then return end
 		
 		self.WModel2:SetPos(self.Owner:GetPos())
+		self.WModel2:SetModel(wmodel)
 		self.WModel2:SetAngles(self.Owner:GetAngles())
-		self.WModel2:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE_FASTCULL))
+		self.WModel2:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE))
 		self.WModel2:SetParent(self.Owner)
 		self.WModel2:SetNoDraw(true)
 		self.WModel2:SetColor(Color(255, 255, 255))
@@ -119,9 +122,10 @@ function SWEP:InitializeAttachedModels()
 	elseif self.AttachedWorldModel then
 		local ent = (IsValid(self.WModel2) and self.WModel2) or self
 		
-		self.AttachedWModel = ClientsideModel(self.AttachedWorldModel)
+		self.AttachedWModel = ents.CreateClientProp()
 		self.AttachedWModel:SetPos(ent:GetPos())
-		self.AttachedWModel:SetAngles(ent:GetAngles())
+		self.AttachedWModel:SetModel(wmodel)
+		self.AttachedWModel:SetAngles(ent:GetzAngles())
 		self.AttachedWModel:AddEffects(EF_BONEMERGE)
 		self.AttachedWModel:SetParent(ent)
 		self.AttachedWModel:SetNoDraw(true)
@@ -147,8 +151,9 @@ function SWEP:InitializeAttachedModels()
 		
 		if not IsValid(ent) then return end
 		
-		self.AttachedVModel = ClientsideModel(self.AttachedViewModel)
+		self.AttachedVModel = ents.CreateClientProp()
 		self.AttachedVModel:SetPos(ent:GetPos())
+		self.AttachedVModel:SetModel(wmodel)
 		self.AttachedVModel:SetAngles(ent:GetAngles())
 		self.AttachedVModel:AddEffects(EF_BONEMERGE)
 		self.AttachedVModel:SetParent(ent)
@@ -164,6 +169,8 @@ function SWEP:InitializeAttachedModels()
 		end
 	end
 end
+
+
 
 -- Attached viewmodels seem to lose their parent when the player exits a vehicle, we'll force ViewModelDrawn to re-parent them to the player's viewmodel if the player has entered a vehicle
 local LastVehicle = NULL
@@ -202,13 +209,9 @@ function SWEP:RenderWModel()
 	end
 end
 
-function SWEP:DrawWeaponSelection(x, y, w, h, alpha)
+function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
 	surface.SetDrawColor(255, 255, 255, alpha)
-	local tex = self:GetIconTextureID() or nil
-	if tex == nil then
-		draw.SimpleText(self.PrintName, "TFHudSelectionText", x + w / 2, y + h * 0.4, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
-		return
-	end
+	local tex = self:GetIconTextureID()
 	surface.SetTexture(tex)
 	local rx, ry = surface.GetTextureSize(tex)
 
@@ -385,14 +388,39 @@ function SWEP:DoMuzzleFlash()
 	end
 end
 
-function SWEP:Draw()
-	self:DrawModel()
+
+function SWEP:DoRPGMuzzleFlash()
+	local betaeffect = self.BetaMuzzle
+	local ent
+	
+	if self.Owner==LocalPlayer() and not LocalPlayer():ShouldDrawLocalPlayer() then
+		ent = self:GetViewModelEntity()
+	else
+		ent = self:GetWorldModelEntity()
+	end
+	
+	self:ResetParticles()
+	
+	if betaeffect then
+		local effectdata = EffectData()
+			effectdata:SetEntity(self)
+		util.Effect(betaeffect, effectdata)
+	else
+		ParticleEffectAttach(self.MuzzleEffect, PATTACH_POINT_FOLLOW, ent, 2)
+	end
 end
 
 usermessage.Hook("DoMuzzleFlash", function(msg)
 	local w = msg:ReadEntity()
 	if IsValid(w) and w.DoMuzzleFlash then
 		w:DoMuzzleFlash()
+	end
+end)
+
+usermessage.Hook("DoRPGMuzzleFlash", function(msg)
+	local w = msg:ReadEntity()
+	if IsValid(w) and w.DoMuzzleFlash then
+		w:DoRPGMuzzleFlash()
 	end
 end)
 
@@ -422,4 +450,3 @@ hook.Add("EntityRemoved", "TFWeaponRemoved", function(ent)
 		if IsValid(ent.AttachedWModel) then ent.AttachedWModel:Remove() end
 	end
 end)
-

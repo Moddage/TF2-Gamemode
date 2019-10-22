@@ -2473,7 +2473,7 @@
 		}
 		"100"
 		{
-			"name"	"Glengarry Bonnet"
+			"name"	"Glengarry Bonusermessage"
 			"item_class"	"tf_wearable_item"
 			"loadondemand" "1"
 			"craft_class"	"hat"
@@ -4062,7 +4062,7 @@
 				"can_deal_damage"			"1"
 				"can_be_equipped_by_soldier_or_demo"	"1"
 				"can_deal_critical_damage"	"1"
-				"can_deal_mvm_penetration_damage"	"1"
+				"can_deal_mvm_peusermessageration_damage"	"1"
 				"can_deal_long_distance_damage"	"1"
 				"can_deal_taunt_damage"		"1"
 			}
@@ -10719,7 +10719,7 @@
 		}
 		"306"
 		{
-			"name"	"Scotch Bonnet"
+			"name"	"Scotch Bonusermessage"
 			"loadondemand" "1"
 			"item_class"	"tf_wearable_item"
 			"craft_class"	"hat"
@@ -10730,14 +10730,14 @@
 			}
 			"show_in_armory"	"1"
 			"item_type_name" "#TF_Wearable_Hat"
-			"item_name"	"#TF_ScotchBonnet"
-			"item_description"	"#TF_ScotchBonnet_Desc"
+			"item_name"	"#TF_ScotchBonusermessage"
+			"item_description"	"#TF_ScotchBonusermessage_Desc"
 			"item_slot"	"head"
 			"item_quality"	"unique"
-			"image_inventory"	"backpack/player/items/demo/demo_scotchbonnet"
+			"image_inventory"	"backpack/player/items/demo/demo_scotchbonusermessage"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
-			"model_player"	"models/player/items/demo/demo_scotchbonnet.mdl"
+			"model_player"	"models/player/items/demo/demo_scotchbonusermessage.mdl"
 			"drop_type"	"drop"
 			"propername"	"0"
 			"used_by_classes"
@@ -13138,7 +13138,7 @@
 			{
 				"The Loch-N-Load"	"1"
 				"The Ullapool Caber"	"1"
-				"Scotch Bonnet"		"1"
+				"Scotch Bonusermessage"		"1"
 			}
 			"item_type_name"	"#TF_StoreBundle"
 			"item_name"		"#TF_Bundle_ExpertsOrdnance"
@@ -13176,7 +13176,7 @@
 				// expert's ordnance
 				"The Loch-N-Load"	"1"
 				"The Ullapool Caber"	"1"
-				"Scotch Bonnet"		"1"
+				"Scotch Bonusermessage"		"1"
 			}
 			"item_type_name"	"#TF_StoreBundle"
 			"item_name"		"#TF_Bundle_WinterUpdate"
@@ -13278,7 +13278,7 @@
 				// expert's ordnance
 				"The Loch-N-Load"	"1"
 				"The Ullapool Caber"	"1"
-				"Scotch Bonnet"		"1"
+				"Scotch Bonusermessage"		"1"
 			}
 			"item_type_name"	"#TF_StoreBundle"
 			"item_name"		"#TF_Bundle_ExcessiveBundle"

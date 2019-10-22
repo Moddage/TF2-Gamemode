@@ -147,9 +147,14 @@ function ENT:Initialize()
 	self.ai_sound:Activate()
 	self.ai_sound:Fire("EmitAISound", "", 0.3)
 	
-	timer.Simple(0.32, function()
-		self:Remove()
+	timer.Create("NearMissDF"..self:EntIndex(), 0.1, 0, function()
+		for k,v in ipairs(ents.FindInSphere(self:GetPos(), 100)) do
+			if v:IsPlayer() then
+				v:EmitSound("weapons/fx/nearmiss/dragons_fury_nearmiss.wav", 50, 100)
+			end
+		end
 	end)
+
 	self:InitEffects()
 end
 
@@ -258,11 +263,6 @@ function ENT:DoExplosion(ent)
 		if self:WaterLevel()>0 then
 			flags = bit.bor(flags, 1)
 		end
-		local effectdata = EffectData()
-			effectdata:SetOrigin(self:GetPos())
-			effectdata:SetAngles(angle)
-			effectdata:SetAttachment(flags)
-		util.Effect("tf_explosion", effectdata, true, true)
 	end
 	
 	local owner = self:GetOwner()
@@ -285,9 +285,13 @@ function ENT:DoExplosion(ent)
 	else
 		--util.BlastDamage(self, owner, self:GetPos(), range, damage)
 
-		util.BlastDamage(self, owner, self:GetPos(), range*2, 80)
-	
-		GAMEMODE:IgniteEntity(ent, self, owner, 10)
+		util.BlastDamage(self, owner, self:GetPos(), range, 40)
+		for k,v in ipairs(ents.FindInSphere(self:GetPos(), range)) do
+			if v:IsNPC() or v:IsPlayer() then
+				GAMEMODE:IgniteEntity(v, self, owner, 10)
+				v:EmitSound("weapons/dragons_fury_impact_bonus_damage_pain.wav")
+			end
+		end
 	end
 	
 	if ForceDamageClasses[ent:GetClass()] then
@@ -306,7 +310,9 @@ end
 
 
 function ENT:Touch(ent)
-	self:DoExplosion(ent)
+	if ent:IsSolid() then
+		self:DoExplosion(ent)
+	end
 end
 
 end

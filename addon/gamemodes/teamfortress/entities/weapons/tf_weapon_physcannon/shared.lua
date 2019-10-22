@@ -77,7 +77,7 @@ function SWEP:Initialize()
 			util.AddNetworkString( "gg_Ragdoll_GetPlayerColor" )
 		end
 		--[[if CLIENT then
-			net.Receive( "gg_OpenClaws_Client", function()  
+			usermessage.Receive( "gg_OpenClaws_Client", function()  
 					
 			end )
 		end--]]
@@ -278,8 +278,8 @@ if !IsValid(self.Owner) or !self.Owner:Alive() then return end
 			ViewModel:ManipulateBoneAngles(prong_a, frame_a)
 			ViewModel:ManipulateBoneAngles(prong_b, frame_b)--]]
 			end
-			--net.Start("gg_OpenClaws_Client")
-			--net.Send(self.Owner)
+			--usermessage.Start("gg_OpenClaws_Client")
+			--usermessage.Send(self.Owner)
 		if IsValid(WorldModel) then
 			if worldframe > 1 then WorldModel:SetPoseParameter("active", 1) end
 			--if worldframe >= 1 then timer.Remove("gg_move_claws_open") return end
@@ -1380,8 +1380,8 @@ function SWEP:Deploy()
 		self:SetNextSecondaryFire( CurTime() + 5 )
 		--[[if self.Owner:GetWeapon("weapon_physcannon"):IsValid() then
 			--print("yeah")
-			net.Start("gg_Deploy_DisableGrav")
-			net.Send( self.Owner )
+			usermessage.Start("gg_Deploy_DisableGrav")
+			usermessage.Send( self.Owner )
 		end--]]
 		
 		self:TimerDestroyAll()
@@ -1488,8 +1488,8 @@ self:TimerDestroyAll()
 	if self.Owner:GetWeapon("weapon_physcannon"):IsValid() then
 		local ply = self.Owner
 		--print("yeah2")
-		net.Start("gg_Holster_EnableGrav")
-		net.Send( ply )
+		usermessage.Start("gg_Holster_EnableGrav")
+		usermessage.Send( ply )
 	end
 end--]]
 self:StopSound(HoldSound)

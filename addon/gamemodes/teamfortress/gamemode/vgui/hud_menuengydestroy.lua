@@ -17,7 +17,7 @@ local hud_menu_dispenser_build = surface.GetTextureID("hud/hud_obj_status_dispen
 local hud_menu_tele_entrance_build = surface.GetTextureID("hud/hud_obj_status_tele_entrance")
 local hud_menu_tele_exit_build = surface.GetTextureID("hud/hud_obj_status_tele_exit")
 
-local BUILDINGS = {
+local BUILDINGS = { 
 	{"#TF_Object_Sentry", 				hud_menu_sentry_build},
 	{"#TF_Object_Dispenser", 			hud_menu_dispenser_build},
 	{"#TF_Object_Tele_Entrance_360", 	hud_menu_tele_entrance_build},
@@ -70,7 +70,7 @@ function PANEL:Paint(wid, hei)
 	local telexd = false 
 
 	for k, v in pairs(ents) do
-		if v:GetNWEntity("Player") == LocalPlayer() then
+		if v:GetBuilder() == LocalPlayer() then
 			if v:GetClass() == "obj_sentrygun" then
 				sentryd = true
 			elseif v:GetClass() == "obj_dispenser" then

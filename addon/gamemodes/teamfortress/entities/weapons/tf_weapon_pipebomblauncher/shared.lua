@@ -42,7 +42,7 @@ SWEP.ShootSound = Sound("Weapon_StickyBombLauncher.Single")
 SWEP.ShootCritSound = Sound("Weapon_StickyBombLauncher.SingleCrit")
 SWEP.DetonateSound = Sound("Weapon_StickyBombLauncher.ModeSwitch")
 SWEP.ChargeSound = Sound("Weapon_StickyBombLauncher.ChargeUp")
-SWEP.ReloadSound = Sound("Weapon_StickyBombLauncher.WorldReload")
+SWEP.ReloadSound = Sound("Weapon_FlareGun.WorldReload")
 SWEP.Primary.ClipSize		= 8
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_SECONDARY
@@ -77,6 +77,17 @@ end
 function SWEP:Deploy()
 	if CLIENT then
 		HudBowCharge:SetProgress(0)
+	end
+					
+	if self.Owner:IsPlayer() and not self.Owner:IsHL2() and self.Owner:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
+		timer.Create("Unstuck"..self.Owner:EntIndex(), 0.01, 0, function()
+			if SERVER then
+				if self.Owner:IsInWorld() == false then
+					self.Owner:Spawn()
+				end
+			end
+		end)
+		self.Owner:SetBloodColor(BLOOD_COLOR_MECH)
 	end
 	
 	return self:CallBaseFunction("Deploy")
@@ -150,6 +161,64 @@ function SWEP:PrimaryAttack()
 	self.ChargeStartTime = CurTime()
 end
 
+
+function SWEP:Reload()
+	self:StopTimers()
+	if CLIENT and _G.NOCLIENTRELOAD then return end
+	
+	if self.NextReloadStart or self.NextReload or self.Reloading then return end
+	
+	if self.RequestedReload then
+		if self.Delay and CurTime() < self.Delay then
+			return false
+		end
+	else
+		--MsgN("Requested reload!")
+		self.RequestedReload = true
+		return false
+	end
+	
+	self.CanInspect = false
+	
+	--MsgN("Reload!")
+	self.RequestedReload = false
+	
+	if self.Primary and self.Primary.Ammo and self.Primary.ClipSize ~= -1 then
+		local available = self.Owner:GetAmmoCount(self.Primary.Ammo)
+		local ammo = self:Clip1()
+		
+		if ammo < self.Primary.ClipSize and available > 0 then
+			self.NextIdle = nil
+			if self.ReloadSingle then
+				--self:SendWeaponAnim(ACT_RELOAD_START)
+				self:SendWeaponAnimEx(self.VM_RELOAD_START)
+				self.Owner:SetAnimation(PLAYER_RELOAD) -- reload start
+				self.NextReloadStart = CurTime() + (self.ReloadStartTime or self:SequenceDuration())
+			else
+				self:SendWeaponAnimEx(self.VM_RELOAD)
+				self.Owner:SetAnimation(PLAYER_RELOAD)
+				self.NextIdle = CurTime() + (self.ReloadTime or self:SequenceDuration())
+				self.NextReload = self.NextIdle
+				
+				self.AmmoAdded = math.min(self.Primary.ClipSize - ammo, available)
+				self.Reloading = true
+				
+				if self.ReloadSound and SERVER then
+					umsg.Start("PlayTFWeaponWorldReload")
+						umsg.Entity(self)
+					umsg.End()
+				end
+				
+				--self.reload_cur_start = CurTime()
+			end
+			--self:SetNextPrimaryFire( CurTime() + ( self.Primary.Delay || 0.25 ) + 1.4 )
+			--self:SetNextSecondaryFire( CurTime() + ( self.Primary.Delay || 0.25 ) + 1.4 )
+			return true
+		end
+	end
+end
+
+
 function SWEP:Think()
 	local BASESPEED = 3 --this is really bad if anyone has a better way of doing this please tell me
 	local sp = 100
@@ -163,7 +232,7 @@ function SWEP:Think()
 			HudBowCharge:SetProgress(0)
 		end
 	end
-	
+
 	
 	if self.NextReload and CurTime()>=self.NextReload then
 		self:SetClip1(self:Clip1() + self.AmmoAdded)
@@ -183,13 +252,13 @@ function SWEP:Think()
 			self.CanInspect = true
 			if self.ReloadSingle then
 				--self:SendWeaponAnim(ACT_RELOAD_FINISH)
-				self.Owner:DoAnimationEvent(ACT_SMG2_DRYFIRE2, true)	 
+				self.Owner:DoAnimationEvent(ACT_DOD_IDLE_ZOOMED, true)	 
 				self:SendWeaponAnim(self.VM_RELOAD_FINISH)
 				self.CanInspect = true
 				--self.Owner:SetAnimation(10001) -- reload finish
 				self.NextIdle = CurTime() + self:SequenceDuration()
 			else
-				self.Owner:DoAnimationEvent(ACT_SMG2_DRYFIRE2, true)	
+				self.Owner:DoAnimationEvent(ACT_DOD_IDLE_ZOOMED, true)	
 				self:SendWeaponAnim(self.VM_IDLE)
 				self.NextIdle = nil
 			end

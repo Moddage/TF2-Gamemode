@@ -54,6 +54,15 @@ concommand.Add("voicemenu", function(pl, cmd, args)
 	v = v[b+1]
 	if not v then return end
 	
+	if pl:GetPlayerClass() == "tank" then
+		pl:EmitSound("Tank.Yell")
+	elseif pl:GetPlayerClass() == "charger" then
+		pl:EmitSound("Charger.Idle")
+	elseif pl:GetPlayerClass() == "boomer" then
+		pl:EmitSound("vj_l4d/boomer/voice/idle/boomer_lurk_0"..math.random(1,9)..".wav")
+	elseif pl:GetPlayerClass() == "l4d_zombie" then
+		pl:EmitSound("vj_l4d_com/attack_b/male/rage_"..math.random(50,82)..".wav")
+	end
 	RunConsoleCommand("__svspeak", v[1])
 	HudVoiceMenu:Hide()
 end)

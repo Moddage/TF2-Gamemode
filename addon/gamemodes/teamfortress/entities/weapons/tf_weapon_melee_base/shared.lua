@@ -132,6 +132,10 @@ function SWEP:MeleeHitSound(tr)
 					
 					sound.Play(self.HitRobot, self:GetPos())
 					
+				elseif tr.Entity:IsPlayer() and not tr.Entity:IsHL2() and tr.Entity:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
+					
+					sound.Play(self.HitRobot, self:GetPos())
+					
 
 				elseif tr.Entity:IsPlayer() and not tr.Entity:IsHL2() and tr.Entity:GetInfoNum("tf_sentrybuster",0) == 1 then
 					

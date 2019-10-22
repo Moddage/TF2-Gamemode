@@ -5,30 +5,14 @@ end
 
 if CLIENT then
 
-SWEP.PrintName			= "Fucking Piece of Gargbage"
+SWEP.PrintName			= "Fireball Spell"
 SWEP.HasCModel = true
-SWEP.Slot				= 1
+SWEP.Slot				= 5
 
 SWEP.RenderGroup 		= RENDERGROUP_BOTH
 
-function SWEP:ResetParticles(state_override)
-	self:CallBaseFunction("ResetParticles", state_override)
-	
-	if not self.DoneDeployParticle then
-		if self.Owner==LocalPlayer() and not LocalPlayer():ShouldDrawLocalPlayer() then
-			local ent = self:GetViewModelEntity()
-			if IsValid(ent) then
-				ParticleEffectAttach("energydrink_milk_splash", PATTACH_POINT_FOLLOW, ent, ent:LookupAttachment("drink_spray"))
-			end
-		end
-		
-		self.DoneDeployParticle = true
-	end
 end
 
-end
-
-PrecacheParticleSystem("energydrink_milk_splash")
 
 SWEP.Base				= "tf_weapon_melee_base"
 
@@ -42,14 +26,13 @@ SWEP.ShootSound = ""
 SWEP.ShootCritSound = ""
 
 SWEP.Primary.ClipSize		= -1
-SWEP.Primary.Ammo			= TF_GRENADES1
-SWEP.Primary.Delay          = 1
-
+SWEP.Primary.Ammo			= TF_PRIMARY
+SWEP.Primary.Delay          = 0.8
 SWEP.ReloadSingle = false
 
 SWEP.HasCustomMeleeBehaviour = true
 
-SWEP.HoldType = "ITEM1"
+SWEP.HoldType = "MELEE_ALLCLASS"
 SWEP.HoldTypeHL2 = "grenade"
 
 SWEP.ProjectileShootOffset = Vector(0, 0, 0)
@@ -60,41 +43,50 @@ SWEP.AddPitch = -4
 
 SWEP.VM_DRAW = ACT_ITEM1_VM_DRAW
 SWEP.VM_IDLE = ACT_ITEM1_VM_IDLE
-SWEP.VM_PRIMARYATTACK = ACT_ITEM1_VM_PRIMARYATTACK
+SWEP.VM_PRIMARYATTACK = ACT_SPELL_VM_FIRE
+
+function SWEP:InspectAnimCheck()
+	self:CallBaseFunction("InspectAnimCheck")
+	self.VM_DRAW = ACT_SPELL_VM_DRAW
+	self.VM_IDLE = ACT_SPELL_VM_IDLE
+	self.VM_HITCENTER = ACT_SPELL_VM_FIRE
+	self.VM_SWINGHARD = ACT_SPELL_VM_FIRE
+	self.VM_INSPECT_START = ACT_ITEM3_VM_INSPECT_START
+	self.VM_INSPECT_IDLE = ACT_ITEM3_VM_INSPECT_IDLE
+	self.VM_INSPECT_END = ACT_ITEM3_VM_INSPECT_END
+	
+	end
 
 function SWEP:PredictCriticalHit()
 end
 
 function SWEP:MeleeAttack()
-	local pos = self.Owner:GetShootPos()
-	
-	if SERVER then
-		local grenade = ents.Create("tf_projectile_jar")
-		grenade:SetPos(pos)
-		grenade:SetAngles(self.Owner:EyeAngles())
-		
-		if self:Critical() then
-			grenade.critical = true
+		if SERVER then
+			local rocket = ents.Create("tf_projectile_capsule")
+			rocket:SetPos(self:ProjectileShootPos())
+			local ang = self.Owner:EyeAngles()
+			
+			if self.WeaponMode == 1 then
+				local charge = (CurTime() - self.ChargeStartTime) / self.ChargeTime
+				rocket.Gravity = Lerp(1 - charge, self.MinGravity, self.MaxGravity)
+				rocket.BaseSpeed = Lerp(charge, self.MinForce, self.MaxForce)
+				ang.p = ang.p + Lerp(1 - charge, self.MinAddPitch, self.MaxAddPitch)
+			end
+			
+			rocket:SetAngles(ang)
+			
+			
+			for k,v in pairs(self.Properties) do
+				rocket[k] = v
+			end
+			
+			rocket:SetOwner(self.Owner)
+			self:InitProjectileAttributes(rocket)
+			rocket.ExplosionSound = self.CustomExplosionSound
+			
+			rocket:Spawn()
+			rocket:Activate()
 		end
-		
-		for k,v in pairs(self.Properties) do
-			grenade[k] = v
-		end
-		
-		grenade:SetOwner(self.Owner)
-		grenade.JarType = 2
-		self:InitProjectileAttributes(grenade)
-		
-		grenade:Spawn()
-		grenade:SetModel("models/weapons/c_models/c_energy_drink/c_energy_drink.mdl")
-		
-		local vel = self.Owner:GetAimVector():Angle()
-		vel.p = vel.p + self.AddPitch
-		vel = vel:Forward() * self.Force * (grenade.Mass or 10)
-		
-		grenade:GetPhysicsObject():AddAngleVelocity(Vector(math.random(-2000,2000),math.random(-2000,2000),math.random(-2000,2000)))
-		grenade:GetPhysicsObject():ApplyForceCenter(vel)
-	end
 end
 
 function SWEP:PrimaryAttack()
@@ -104,11 +96,16 @@ function SWEP:PrimaryAttack()
 		self.Owner:Speak("TLK_JARATE_LAUNCH")
 	end
 	
+	self.VM_DRAW = ACT_SPELL_VM_DRAW
+	self.VM_IDLE = ACT_SPELL_VM_IDLE
+	self.VM_HITCENTER = ACT_SPELL_VM_FIRE
+	self.VM_SWINGHARD = ACT_SPELL_VM_FIRE
+	self.VM_INSPECT_START = ACT_ITEM3_VM_INSPECT_START
+	self.VM_INSPECT_IDLE = ACT_ITEM3_VM_INSPECT_IDLE
+	self.VM_INSPECT_END = ACT_ITEM3_VM_INSPECT_END
 	self:SendWeaponAnim(self.VM_PRIMARYATTACK)
-	self.Owner:SetAnimation(PLAYER_ATTACK1)
-	
-	self:TakePrimaryAmmo(1)
-	
+	self.Owner:DoAnimationEvent(ACT_MP_THROW,true)
+	self.Owner:EmitSound("misc/halloween/spell_fireball_cast.wav")
 	self.Owner.NextGiveAmmo = CurTime() + (self.Properties.ReloadTime or 20)
 	self.Owner.NextGiveAmmoType = self.Primary.Ammo
 	
@@ -119,13 +116,5 @@ function SWEP:PrimaryAttack()
 		self.NextMeleeAttack = {}
 	end
 	
-	table.insert(self.NextMeleeAttack, CurTime() + 0.25)
-end
-
-function SWEP:Holster()
-	if CLIENT then
-		self.DoneDeployParticle = false
-	end
-	
-	return self:CallBaseFunction("Holster")
+	table.insert(self.NextMeleeAttack, CurTime() + 0.01)
 end

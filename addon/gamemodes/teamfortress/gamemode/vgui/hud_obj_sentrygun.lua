@@ -30,12 +30,6 @@ PANEL.ObjectIcon = {
 PANEL.Lang_NotBuilt = "#Building_hud_sentry_not_built"
 
 function PANEL:PaintActive()
-	for k, v in pairs(ents.FindByClass("obj_sentrygun")) do
-		if v:GetNWEntity("Player") == LocalPlayer() then
-			self.TargetEntity = v
-		end
-	end
-
 	local level = self.TargetEntity:GetLevel()
 	
 	-- active

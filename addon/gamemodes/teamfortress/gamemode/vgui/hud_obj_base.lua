@@ -245,7 +245,7 @@ end
 function PANEL:FindTargetEntity()
 	self.TargetEntity = nil
 	for _,v in pairs(ents.FindByClass(self.BuildingClass)) do
-		if v.ClientInitialized and v:GetBuilder() == LocalPlayer() and self:FindTargetCondition(v) then
+		if v:IsBuilding() and v:GetBuilder() == LocalPlayer() and self:FindTargetCondition(v) then
 			self.TargetEntity = v
 			return
 		end
@@ -284,6 +284,8 @@ function PANEL:DrawAlertPanel()
 		end
 	end
 	
+
+
 	if self.AlertType == 0 and self.NextAlertPanelOpen then
 		self:CloseAlertPanel()
 	end
@@ -345,13 +347,15 @@ end
 function PANEL:Paint()
 	local schm = obj_status_schemes[self.PanelType] or obj_status_schemes[1]
 	
-	if not IsValid(self.TargetEntity) then
+	if 	!IsValid(self.TargetEntity) then
 		self:FindTargetEntity()
 	end
 	
 	surface.SetDrawColor(color_white)
 	
-	if not IsValid(self.TargetEntity) or self.TargetEntity:GetState() == 0 then
+
+
+	if !IsValid(self.TargetEntity) or self.TargetEntity:GetState() == 0 then
 		-- not built
 		self.HealthBar:SetVisible(false)
 		
@@ -378,17 +382,24 @@ function PANEL:Paint()
 		
 		self.AlertType = 0
 	else
+
 		self.HealthBar:SetVisible(true)
 		self.HealthBar:SetValue(self.TargetEntity:Health() / self.TargetEntity:GetObjectHealth())
 		
 		local level = self.TargetEntity:GetLevel()
 		local state = self.TargetEntity:GetState()
-		
-		if not self.NoAlert and state > 1 then
+		if IsValid(self.TargetEntity) and self.TargetEntity.Sapped == true then
+			self.AlertType = 4
+		else
+			self.AlertType = 0
+		end
+		if not self.No and state > 1 then
 			self:DrawAlertPanel()
 		else
 			self.AlertType = 0
 		end
+
+
 		
 		tf_draw.ModTexture((LocalPlayer():Team() == TEAM_BLU and schm.background[2]) or schm.background[1],
 			schm.bg_p.x*Scale,

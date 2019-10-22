@@ -124,7 +124,7 @@ local function ArrowBulletCallback(att, tr, dmginfo)
 
 		inf:EmitSound(ImpactSounds[tr.MatType] or "Weapon_Arrow.ImpactMetal")
 	elseif ent:IsTFPlayer() then
-		local bone, hitpos = ent:TranslatePhysBoneToBone(tr.PhysicsBone), tr.HitPos + inf:GetForward() * 5
+		local bone, hitpos = ent:TranslatePhysBousermessageoBone(tr.PhysicsBone), tr.HitPos + inf:GetForward() * 5
 		local pos = ent:GetBonePosition(bone)
 		
 		--inf:SetAngles((pos - hitpos):Angle())
@@ -146,7 +146,7 @@ local function ArrowBulletCallback(att, tr, dmginfo)
 		end
 		
 		if att:IsPlayer() then
-			SendUserMessage("ArrowHit", att)
+			Sendusermessage("ArrowHit", att)
 		end
 	else
 		inf:EmitSound(ImpactSounds[tr.MatType] or "Weapon_Arrow.ImpactMetal")

@@ -23,38 +23,6 @@ local INACTIVE_WIDTH = 71.5
 local INACTIVE_HEIGHT = 54
 local GAP_HEIGHT = 3.75
 
-local DEFAULT_ICONS = {
-tf_weapon_bat					= "sprites/bucket_bat_%s",
-tf_weapon_bonesaw				= "sprites/bucket_bonesaw",
-tf_weapon_bottle				= "sprites/bucket_bottle_%s",
-tf_weapon_builder				= "sprites/bucket_sapper",
-tf_weapon_club					= "sprites/bucket_machete",
-tf_weapon_fireaxe				= "sprites/bucket_fireaxe",
-tf_weapon_fists					= "sprites/bucket_fists_%s",
-tf_weapon_flamethrower			= "sprites/bucket_flamethrower_%s",
-tf_weapon_grenadelauncher		= "sprites/bucket_grenlaunch",
-tf_weapon_knife					= "sprites/bucket_knife",
-tf_weapon_medigun				= "sprites/bucket_medigun_%s",
-tf_weapon_minigun				= "sprites/bucket_minigun",
-tf_weapon_pda_engineer_build	= "sprites/bucket_pda_build",
-tf_weapon_pda_engineer_destroy	= "sprites/bucket_pda_destroy",
-tf_weapon_pipebomblauncher		= "sprites/bucket_pipelaunch",
-tf_weapon_pistol				= "sprites/bucket_pistol",
-tf_weapon_pistol_scout			= "sprites/bucket_pistol",
-tf_weapon_revolver				= "sprites/bucket_revolver",
-tf_weapon_rocketlauncher		= "sprites/bucket_rl",
-tf_weapon_scattergun			= "sprites/bucket_scatgun",
-tf_weapon_shotgun_hwg			= "sprites/bucket_shotgun",
-tf_weapon_shotgun_primary		= "sprites/bucket_shotgun",
-tf_weapon_shotgun_pyro			= "sprites/bucket_shotgun",
-tf_weapon_shotgun_soldier		= "sprites/bucket_shotgun",
-tf_weapon_shovel				= "sprites/bucket_shovel",
-tf_weapon_smg					= "sprites/bucket_smg",
-tf_weapon_sniperrifle			= "sprites/bucket_sniper",
-tf_weapon_syringegun_medic		= "sprites/bucket_syrgun_%s",
-tf_weapon_wrench				= "sprites/bucket_wrench",
-}
-
 function PANEL:Init()
 	self:SetPaintBackgroundEnabled(false)
 	self:ParentToHUD()
@@ -214,9 +182,7 @@ function PANEL:UpdateLoadout()
 			t:SetVisible(true)
 			local w = tf_items.ItemsByID[l.id]
 			if w then
-				if w.baseitem and DEFAULT_ICONS[l.class] then
-					t.itemImage = surface.GetTextureID(Format(DEFAULT_ICONS[l.class], teamnames[LocalPlayer():EntityTeam()] or teamnames[1]))
-				elseif w.image_inventory then
+				if w.image_inventory then
 					t.itemImage = surface.GetTextureID(w.image_inventory)
 				else
 					t.itemImage = nil

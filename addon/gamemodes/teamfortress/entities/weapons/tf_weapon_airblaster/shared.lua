@@ -26,7 +26,7 @@ function SWEP:SetFlamethrowerEffect(i)
 	local t = GAMEMODE:EntityTeam(self.Owner)
 	
 	if i==1 then
-		effect = "flamethrower_blue"
+		effect = "flamethrower_new"
 	elseif i>1 then
 		if t==2 then
 			effect = "flamethrower_crit_blue"
@@ -68,7 +68,7 @@ end
 
 PrecacheParticleSystem("flamethrower_fire_1")
 PrecacheParticleSystem("flamethrower_crit_red")
-PrecacheParticleSystem("flamethrower_blue")
+PrecacheParticleSystem("flamethrower_new")
 PrecacheParticleSystem("flamethrower_crit_blue")
 
 SWEP.Base				= "tf_weapon_gun_base"
@@ -320,6 +320,9 @@ function SWEP:StopFiring()
 	self:SetFlamethrowerEffect(0)
 	self.SpinUpSound:Stop()
 	self.SpinDownSound:Play()
+	if self.Primary.Delay == 0.06 then
+		self.SpinDownSound:ChangePitch(120)
+	end
 	self.FireSound:Stop()
 	self.FireCritSound:Stop()
 	self.Owner:SetAnimation(PLAYER_POSTFIRE)

@@ -16,8 +16,9 @@ end
 
 if CLIENT then
 
-SWEP.PrintName			= "Minigun"
+SWEP.PrintName			= "L4D Minigun"
 SWEP.Slot				= 0
+SWEP.RenderGroup		= RENDERGROUP_BOTH
 
 function SWEP:SetMinigunEffect(i)
 	if self.LastEffect==i then return end
@@ -155,7 +156,7 @@ SWEP.MuzzleEffect = "muzzle_minigun_constant"
 SWEP.MuzzleOffset = Vector(20, 3, -10)
 SWEP.TracerEffect = "bullet_tracer01"
 
-SWEP.BaseDamage = 1.9
+SWEP.BaseDamage = 8
 SWEP.DamageRandomize = 0
 SWEP.MaxDamageRampUp = 0.9
 SWEP.MaxDamageFalloff = 0.2
@@ -165,7 +166,7 @@ SWEP.BulletSpread = 0.08
 
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.Ammo			= TF_PRIMARY
-SWEP.Primary.Delay          = 0.1
+SWEP.Primary.Delay          = 0.07
 
 SWEP.Secondary.Delay          = 0.1
 
@@ -175,11 +176,11 @@ SWEP.HoldType = "PRIMARY"
 
 SWEP.ReloadSound = Sound("Weapon_Minigun.Reload")
 SWEP.EmptySound = Sound("Weapon_Minigun.ClipEmpty")
-SWEP.ShootSound2 = Sound("Weapon_Minigun.Fire")
-SWEP.SpecialSound1 = Sound("Weapon_Minigun.WindUp")
-SWEP.SpecialSound2 = Sound("Weapon_Minigun.WindDown")
+SWEP.ShootSound2 = Sound("weapons/minigun/gunfire/minigun_fire.wav")
+SWEP.SpecialSound1 = Sound("weapons/minigun/gunother/minigun_wind_up.wav")
+SWEP.SpecialSound2 = Sound("weapons/minigun/gunother/minigun_wind_down.wav")
 SWEP.SpecialSound3 = Sound("Weapon_Minigun.Spin")
-SWEP.ShootCritSound = Sound("Weapon_Minigun.FireCrit")
+SWEP.ShootCritSound = Sound("weapons/minigun/gunfire/minigun_fire.wav")
 
 function SWEP:CreateSounds()
 	self.SpinUpSound = CreateSound(self.Owner, self.SpecialSound1)
@@ -270,6 +271,10 @@ end
 
 function SWEP:PrimaryAttack(vampire)
 	if not self.IsDeployed then return false end
+	if self.Owner:IsBot() and GetConVar("tf_bot_melee_only"):GetBool() then
+		self.Owner:SelectWeapon(self.Owner:GetWeapons()[3])
+		return
+	end
 	
 	if not self.Spinning then
 		self.IsVampire = vampire
@@ -431,24 +436,6 @@ function SWEP:Think()
 			self:SpinDown()
 		end
 	end
-end
-
-function SWEP:ShootProjectile()
-	if SERVER then
-		local syringe = ents.Create("tf_projectile_flare")
-		local ang = self.Owner:EyeAngles()
-		
-		syringe:SetPos(self:ProjectileShootPos())
-		syringe:SetAngles(ang)
-		syringe.Inflictor = self
-		if self:Critical() then
-			syringe.critical = true
-		end
-		syringe:SetOwner(self.Owner)
-		syringe:Spawn()
-	end
-	
-	self:ShootEffects()
 end
 
 function SWEP:Holster()

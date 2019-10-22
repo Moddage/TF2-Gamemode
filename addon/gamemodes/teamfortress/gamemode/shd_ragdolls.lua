@@ -21,27 +21,27 @@ local PhysBones = {
 }
 
 local function BuildBoneLookupTable(ent)
-	ent.BoneTable = {}
+	ent.Bousermessageable = {}
 	for _,v in ipairs(PhysBones) do
-		ent.BoneTable[v] = ent:LookupBone(v)
+		ent.Bousermessageable[v] = ent:LookupBone(v)
 	end
 	
-	ent.PhysBoneTable = {}
+	ent.PhysBousermessageable = {}
 	for i=0,ent:GetPhysicsObjectCount()-1 do
-		ent.PhysBoneTable[ent:TranslatePhysBoneToBone(i)] = i
+		ent.PhysBousermessageable[ent:TranslatePhysBousermessageoBone(i)] = i
 	end
 end
 
-local function BoneToPhysBone(ent, bone)
-	if not ent.BoneTable or not ent.PhysBoneTable then
+local function BousermessageoPhysBone(ent, bone)
+	if not ent.Bousermessageable or not ent.PhysBousermessageable then
 		BuildBoneLookupTable(ent)
 	end
 	
-	if not ent.BoneTable[bone] or not ent.PhysBoneTable[ent.BoneTable[bone]] then
+	if not ent.Bousermessageable[bone] or not ent.PhysBousermessageable[ent.Bousermessageable[bone]] then
 		return
 	end
 	
-	return ent.PhysBoneTable[ent.BoneTable[bone]]
+	return ent.PhysBousermessageable[ent.Bousermessageable[bone]]
 end
 
 DecapDeathPose = {
@@ -102,7 +102,7 @@ local function StartDeathPose(ent, dp)
 	if not IsValid(ent) then return end
 	ent.OldPhysParams = {}
 	for k,v in pairs(dp.PhysParams) do
-		local p = BoneToPhysBone(ent, k)
+		local p = BousermessageoPhysBone(ent, k)
 		if p then
 			local phys = ent:GetPhysicsObjectNum(p)
 			if phys then
@@ -536,7 +536,7 @@ hook.Add("CreateEntityRagdoll", "TFServersideNPCRagdoll", function(npc, rag)
 		-- Weld each physics object together
 		
 		for k,v in pairs(GoldenMassParams) do
-			local p = BoneToPhysBone(rag, k)
+			local p = BousermessageoPhysBone(rag, k)
 			if p then
 				local phys = rag:GetPhysicsObjectNum(p)
 				if phys and phys:IsValid() then

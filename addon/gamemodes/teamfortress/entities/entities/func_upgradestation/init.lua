@@ -20,39 +20,111 @@ function ENT:StartTouch(ent)
 		if ent:GetPlayerClass() == "scout" then
 			ent:SetHealth(125 + 150)
 			ent:SetMaxHealth(125 + 150)
-			ent:SetArmor(520)
+			ent:SetArmor(1200)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(135)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		elseif ent:GetPlayerClass() == "soldier" then
 			ent:SetHealth(200 + 150)
 			ent:SetMaxHealth(200 + 150)
-			ent:SetArmor(550)
+			ent:SetArmor(1250)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(112)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		elseif ent:GetPlayerClass() == "pyro" then
 			ent:SetHealth(175 + 150)
 			ent:SetMaxHealth(175 + 150)
-			ent:SetArmor(520)
+			ent:SetArmor(1220)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(121)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		elseif ent:GetPlayerClass() == "demoman" then
 			ent:SetHealth(150 + 175)
 			ent:SetMaxHealth(150 + 175)
-			ent:SetArmor(520)
+			ent:SetArmor(1220)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(120)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		elseif ent:GetPlayerClass() == "heavy" then
 			ent:SetHealth(300 + 175)
 			ent:SetMaxHealth(300 + 175)
-			ent:SetArmor(570)
+			ent:SetArmor(1220)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(118)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		elseif ent:GetPlayerClass() == "engineer" then
 			ent:SetHealth(125 + 150)
 			ent:SetMaxHealth(125 + 150)
-			ent:SetArmor(520)
+			ent:SetArmor(1220)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(130)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		elseif ent:GetPlayerClass() == "medic" then
 			ent:SetHealth(175 + 150)
 			ent:SetMaxHealth(175 + 150)
-			ent:SetArmor(520)
+			ent:SetArmor(1220)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(112)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		elseif ent:GetPlayerClass() == "sniper" then
 			ent:SetHealth(125 + 150)
 			ent:SetMaxHealth(125 + 150)
-			ent:SetArmor(300)
+			ent:SetArmor(1220)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(128)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		elseif ent:GetPlayerClass() == "spy" then
 			ent:SetHealth(125 + 150)
 			ent:SetMaxHealth(125 + 150)
-			ent:SetArmor(330)
+			ent:SetArmor(1220)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(112)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		end
 		currentweapon = ent:GetActiveWeapon()
 		if currentweapon:GetClass() == "tf_weapon_rocketlauncher" then
@@ -61,7 +133,7 @@ function ENT:StartTouch(ent)
 			currentweapon.ReloadTime = 0.2
 			ent.AmmoMax[TF_PRIMARY] = 120
 			ent:ConCommand("tf_upgradewep05clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -78,7 +150,7 @@ function ENT:StartTouch(ent)
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep05clientonly")
 			ent.AmmoMax[TF_PRIMARY] = 120
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -95,7 +167,7 @@ function ENT:StartTouch(ent)
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep05clientonly")
 			ent.AmmoMax[TF_PRIMARY] = 120
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -112,7 +184,7 @@ function ENT:StartTouch(ent)
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep05clientonly")
 			ent.AmmoMax[TF_PRIMARY] = 120
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -129,7 +201,7 @@ function ENT:StartTouch(ent)
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
 			ent.AmmoMax[TF_PRIMARY] = 120
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -146,7 +218,24 @@ function ENT:StartTouch(ent)
 			currentweapon.MaxDamageRampUp = 0.75
 			currentweapon.MaxDamageFalloff = 0.6
 			ent.AmmoMax[TF_PRIMARY] = 400
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			timer.Simple(0.1, function()
+				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
+			end)
+			timer.Simple(0.4, function()
+				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
+			end)
+			timer.Simple(0.6, function()
+				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
+			end)
+		end
+		if currentweapon:GetClass() == "tf_weapon_minigun_assaultcannon" then
+			currentweapon.Primary.Delay          = 0.06
+			currentweapon.BaseDamage = 6
+			currentweapon.MaxDamageRampUp = 0.75
+			currentweapon.MaxDamageFalloff = 0.6
+			ent.AmmoMax[TF_PRIMARY] = 400
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -158,7 +247,7 @@ function ENT:StartTouch(ent)
 			end)
 		end
 		if currentweapon:GetClass() == "tf_weapon_pda_engineer_build" then
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their existing Buildings" )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their existing Buildings" )
 			for k,v in pairs(ents.FindByClass("obj_sentrygun")) do
 				if v:GetBuilder() == ent then
 					v.FireRate = 0.065
@@ -188,7 +277,7 @@ function ENT:StartTouch(ent)
 			currentweapon.BaseDamage = 6
 			currentweapon.BaseDamage = 5
 			ent.AmmoMax[TF_PRIMARY] = 400
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -204,7 +293,7 @@ function ENT:StartTouch(ent)
 			currentweapon.BaseDamage = 6
 			currentweapon.BaseDamage = 9
 			ent.AmmoMax[TF_PRIMARY] = 400
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -220,7 +309,7 @@ function ENT:StartTouch(ent)
 			currentweapon.BaseDamage = 6
 			currentweapon.BaseDamage = 9
 			ent.AmmoMax[TF_PRIMARY] = 400
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -236,7 +325,7 @@ function ENT:StartTouch(ent)
 			currentweapon.BaseDamage = 6
 			currentweapon.BaseDamage = 9
 			ent.AmmoMax[TF_PRIMARY] = 400
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -253,7 +342,7 @@ function ENT:StartTouch(ent)
 			currentweapon.BaseDamage = 9
 			ent.AmmoMax[TF_PRIMARY] = 400
 			
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $300 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -270,7 +359,7 @@ function ENT:StartTouch(ent)
 			currentweapon.Primary.ClipSize         = 12
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -288,7 +377,7 @@ function ENT:StartTouch(ent)
 			currentweapon.ReloadTime = 0.71
 			ent.AmmoMax[TF_PRIMARY] = 400
 			ent:ConCommand("tf_upgradewep03clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -305,7 +394,7 @@ function ENT:StartTouch(ent)
 			currentweapon.Primary.ClipSize         = 12
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -321,7 +410,7 @@ function ENT:StartTouch(ent)
 			currentweapon.BaseDamage = 12
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -338,7 +427,7 @@ function ENT:StartTouch(ent)
 			currentweapon.Primary.ClipSize         = 12
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their S"..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their S"..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -352,7 +441,7 @@ function ENT:StartTouch(ent)
 		if currentweapon:GetClass() == "tf_weapon_flaregun" then
 			currentweapon.Primary.Delay          = 0.5
 			ent:ConCommand("tf_upgradewep05clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -369,7 +458,7 @@ function ENT:StartTouch(ent)
 			currentweapon.Primary.ClipSize         = 12
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $500 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $500 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -386,7 +475,7 @@ function ENT:StartTouch(ent)
 			currentweapon.Primary.ClipSize         = 12
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -404,7 +493,7 @@ function ENT:StartTouch(ent)
 			currentweapon.Primary.ClipSize         = 8
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -421,7 +510,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.BaseDamage = 6
 			ent.AmmoMax[TF_PRIMARY] = 600
 			ent.AmmoMax[TF_PRIMARY] = 600
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -437,7 +526,7 @@ currentweapon.Primary.Delay          = 0.015
 currentweapon.Primary.Delay          = 0.015
 			currentweapon.BaseDamage = 6
 			ent.AmmoMax[TF_PRIMARY] = 600
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -453,7 +542,7 @@ currentweapon.Primary.Delay          = 0.015
 currentweapon.Primary.Delay          = 0.015
 			currentweapon.BaseDamage = 6
 			ent.AmmoMax[TF_PRIMARY] = 600
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -469,7 +558,7 @@ currentweapon.Primary.Delay          = 0.015
 currentweapon.Primary.Delay          = 0.015
 			currentweapon.BaseDamage = 6
 			ent.AmmoMax[TF_PRIMARY] = 600
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -485,7 +574,7 @@ currentweapon.Primary.Delay          = 0.015
 currentweapon.Primary.Delay          = 0.015
 			currentweapon.BaseDamage = 6
 			ent.AmmoMax[TF_PRIMARY] = 600
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -503,7 +592,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
 			ent.AmmoMax[TF_PRIMARY] = 120 
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -518,7 +607,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.22
 			currentweapon.BaseDamage = 23
 			currentweapon.Primary.ClipSize         = 8
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -532,7 +621,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_sniperrifle" then
 			currentweapon.Primary.Delay          = 0.7
 			currentweapon.BaseDamage = 120
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -547,7 +636,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.08
 			currentweapon.Primary.ClipSize          = 35	
 			currentweapon.BaseDamage = 30
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $600 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -563,7 +652,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.ClipSize         = 12
 			currentweapon.ReloadTime = 0.2
 			ent.AmmoMax[TF_PRIMARY] = 80
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their G"..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their G"..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -579,7 +668,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.ClipSize         = 12
 			currentweapon.ReloadTime = 0.2
 			currentweapon.MaxBombs = 12
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $1200 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $1200 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -593,7 +682,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_pistol_scout" then
 			currentweapon.Primary.Delay          = 0.08
 			currentweapon.Primary.ClipSize         = 16
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -609,7 +698,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Secondary.Delay          = 0.4
 			currentweapon.BaseDamage = 140
 			ent.AmmoMax[TF_METAL] = 550
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name)
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -624,7 +713,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.08
 			currentweapon.BaseDamage = 12
 			currentweapon.Primary.ClipSize         = 16
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -638,7 +727,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_bat" then
 			currentweapon.Primary.Delay          = 0.2
 			currentweapon.BaseDamage = 95
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -653,7 +742,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.25
 			currentweapon.Secondary.Delay          = 2
 			currentweapon.BaseDamage = 95
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -667,7 +756,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_club" then
 			currentweapon.Primary.Delay          = 0.43
 			currentweapon.BaseDamage = 95
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -682,7 +771,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 95
 			ent.AmmoMax[TF_METAL] = 450
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -697,7 +786,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 95
 			ent.AmmoMax[TF_METAL] = 450
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -712,7 +801,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 95
 			ent.AmmoMax[TF_METAL] = 450
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -726,7 +815,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_bottle" then
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 95
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -740,7 +829,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_fireaxe" then
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 95
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their	"..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their	"..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -755,7 +844,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.07
 			currentweapon.BaseDamage = 65
 			currentweapon.Primary.ClipSize			= 80
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -803,7 +892,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_bonesaw" then
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 95
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -817,7 +906,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_fists" then
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 95
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -831,7 +920,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_shovel" then
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 95
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -845,7 +934,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_sword" then
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 150
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -859,7 +948,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_katana" then
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 150
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -873,7 +962,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_allclass" and ent:GetPlayerClass() != "scout" then
 			currentweapon.Primary.Delay	= 0.5
 			currentweapon.BaseDamage = 100
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)
@@ -887,7 +976,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_allclass" and ent:GetPlayerClass() == "scout" then
 			currentweapon.Primary.Delay	= 0.2
 			currentweapon.BaseDamage = 100
-			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Rapid Fire with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
 			end)

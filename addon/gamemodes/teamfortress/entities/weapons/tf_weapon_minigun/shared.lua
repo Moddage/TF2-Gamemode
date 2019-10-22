@@ -136,11 +136,11 @@ SWEP.ShootCritSound = Sound("Weapon_Minigun.FireCrit")
 SWEP.DeploySound = Sound("weapons/draw_default.wav")
 
 function SWEP:CreateSounds()
-	self.SpinUpSound = CreateSound(self.Owner, self.SpecialSound1)
-	self.SpinDownSound = CreateSound(self.Owner, self.SpecialSound2)
-	self.SpinSound = CreateSound(self.Owner, self.SpecialSound3)
-	self.ShootSoundLoop = CreateSound(self.Owner, self.ShootSound2)
-	self.ShootCritSoundLoop = CreateSound(self.Owner, self.ShootCritSound)
+	self.SpinUpSound = CreateSound(self, self.SpecialSound1)
+	self.SpinDownSound = CreateSound(self, self.SpecialSound2)
+	self.SpinSound = CreateSound(self, self.SpecialSound3)
+	self.ShootSoundLoop = CreateSound(self, self.ShootSound2)
+	self.ShootCritSoundLoop = CreateSound(self, self.ShootCritSound)
 	
 	self.SoundsCreated = true
 end
@@ -232,7 +232,10 @@ end
 
 function SWEP:PrimaryAttack(vampire)
 	if not self.IsDeployed then return false end
-	
+	if self.Owner:IsBot() and GetConVar("tf_bot_melee_only"):GetBool() then
+		self.Owner:SelectWeapon(self.Owner:GetWeapons()[3])
+		return
+	end
 	if not self.Spinning then
 		self.IsVampire = vampire
 		self:SpinUp()
@@ -449,7 +452,7 @@ function SWEP:Think()
 				return
 			end
 			else
-				self.Owner:GetViewModel():ManipulateBoneAngles( 2, Angle(0,0,self.barrelRotation) )
+				self.Owner:GetViewModel():ManipulateBoneAngles( 2, Angle(0,0,0) )
 		end
 		
 	else

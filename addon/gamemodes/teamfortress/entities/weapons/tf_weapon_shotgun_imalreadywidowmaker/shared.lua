@@ -1,9 +1,9 @@
-if SERVER then
+if SERVER then 
 	AddCSLuaFile( "shared.lua" )
 end
 
 if CLIENT then
-	SWEP.PrintName			= "Shotgun"
+	SWEP.PrintName			= "Widowmaker"
 SWEP.Slot				= 0
 end
 
@@ -53,6 +53,11 @@ function SWEP:CanPrimaryAttack()
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
 	self:EmitSound("Weapon_WidowMaker.Empty")
 	return false
+end
+
+function SWEP:InspectAnimCheck()
+	self:CallBaseFunction("InspectAnimCheck") 
+	self.VM_PRIMARYATTACK = ACT_VM_PRIMARYATTACK_SPECIAL
 end
 
 function SWEP:PrimaryAttack()

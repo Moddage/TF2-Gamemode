@@ -293,6 +293,8 @@ function ENT:Pickup(ply)
 				end
 			end
 	
+			ply:SetWalkSpeed(140)
+			ply:SetRunSpeed(140)
 
 			if not ply:Alive() then
 				ply:Freeze(false)

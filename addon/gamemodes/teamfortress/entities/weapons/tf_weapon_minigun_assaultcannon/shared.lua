@@ -232,6 +232,10 @@ end
 
 function SWEP:PrimaryAttack(vampire)
 	if not self.IsDeployed then return false end
+	if self.Owner:IsBot() and GetConVar("tf_bot_melee_only"):GetBool() then
+		self.Owner:SelectWeapon(self.Owner:GetWeapons()[3])
+		return
+	end
 	
 	if not self.Spinning then
 		self.IsVampire = vampire

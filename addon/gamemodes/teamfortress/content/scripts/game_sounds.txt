@@ -359,7 +359,7 @@
 	"wave"	"items/spawn_item.wav"
 }
 
-"PropaneTank.Burst"
+"Propausermessageank.Burst"
 {
 	"channel"	"CHAN_WEAPON"
 	"volume"	"1.0"

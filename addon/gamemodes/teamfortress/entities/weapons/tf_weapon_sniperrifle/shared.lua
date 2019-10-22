@@ -254,7 +254,8 @@ end
 
 function SWEP:PrimaryAttack()
 	if not self.IsDeployed then return false end
-	
+
+
 	if self.NextIdle then return end
 	
 	if not self:CanPrimaryAttack() then
@@ -332,7 +333,12 @@ end
 
 function SWEP:Think()
 	self:TFViewModelFOV()
-
+	
+	if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_bazaar_sniper/c_bazaar_sniper.mdl" then
+		self.ShootSound = "Weapon_Bazaar_Bargain.Single"
+		self.ShootCritSound = "Weapon_Bazaar_Bargain.SingleCrit"
+	end
+	
 	for k, v in pairs(player.GetAll()) do
 		if v == self.Owner then
 			if v:IsHL2() then

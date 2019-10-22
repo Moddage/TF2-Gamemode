@@ -31,7 +31,7 @@ function EFFECT:Init(data)
 	
 	local exclude = {}
 
-	if pl:IsPlayer then
+	if pl:IsPlayer() then 
 
 	for _,v in pairs(pl:GetTFItems()) do
 		if v then
