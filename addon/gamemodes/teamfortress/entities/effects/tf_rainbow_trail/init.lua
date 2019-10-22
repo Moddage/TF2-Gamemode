@@ -35,7 +35,7 @@ function EFFECT:DoParticleEffects()
 	end
 	
 	for i=0,100 do
-		b = self.Parent:TranslatePhysBousermessageoBone(i)
+		b = self.Parent:TranslatePhysBoneToBone(i)
 		if b<0 then break end
 		
 		local mat = self.Parent:GetBoneMatrix(b)

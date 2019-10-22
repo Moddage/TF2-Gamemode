@@ -28,7 +28,7 @@ local function BuildBoneLookupTable(ent)
 	
 	ent.PhysBousermessageable = {}
 	for i=0,ent:GetPhysicsObjectCount()-1 do
-		ent.PhysBousermessageable[ent:TranslatePhysBousermessageoBone(i)] = i
+		ent.PhysBousermessageable[ent:TranslatePhysBoneToBone(i)] = i
 	end
 end
 

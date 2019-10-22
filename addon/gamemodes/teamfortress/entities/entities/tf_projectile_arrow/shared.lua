@@ -142,7 +142,7 @@ local function ArrowBulletCallback(att, tr, dmginfo)
 
 		inf:EmitSound(ImpactSounds[tr.MatType] or "Weapon_Arrow.ImpactMetal")
 	elseif ent:IsTFPlayer() then
-		local bone, hitpos = ent:TranslatePhysBousermessageoBone(tr.PhysicsBone), tr.HitPos + inf:GetForward() * 5
+		local bone, hitpos = ent:TranslatePhysBoneToBone(tr.PhysicsBone), tr.HitPos + inf:GetForward() * 5
 		local pos = ent:GetBonePosition(bone)
 		
 		--inf:SetAngles((pos - hitpos):Angle())
@@ -222,7 +222,7 @@ function ENT:Hit(ent)
 		if ent:IsTFPlayer() then
 			local bone, dist, bpos
 			for i=1,100 do
-				local b = ent:TranslatePhysBousermessageoBone(i)
+				local b = ent:TranslatePhysBoneToBone(i)
 				if b==0 then break end
 				
 				local pos = ent:GetBonePosition(b)

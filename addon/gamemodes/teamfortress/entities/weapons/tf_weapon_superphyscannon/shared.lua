@@ -1074,7 +1074,7 @@ function SWEP:PrimaryAttack()
 					local bone = ragdoll:GetPhysicsObjectNum(i)
 					
 					if bone and bone.IsValid and bone:IsValid() then
-						local bonepos, boneang = tgt:GetBonePosition(ragdoll:TranslatePhysBousermessageoBone(i))
+						local bonepos, boneang = tgt:GetBonePosition(ragdoll:TranslatePhysBoneToBone(i))
 						
 						if self.ggNewRagdollFormed == true then
 						bone:SetPos(bonepos)
@@ -1701,7 +1701,7 @@ function SWEP:SecondaryAttack()
 					local bone = ragdoll:GetPhysicsObjectNum(i)
 					
 						if bone and bone.IsValid and bone:IsValid() then
-							local bonepos, boneang = tgt:GetBonePosition(ragdoll:TranslatePhysBousermessageoBone(i))
+							local bonepos, boneang = tgt:GetBonePosition(ragdoll:TranslatePhysBoneToBone(i))
 							
 							bone:SetPos(bonepos)
 							bone:SetAngles(boneang)
