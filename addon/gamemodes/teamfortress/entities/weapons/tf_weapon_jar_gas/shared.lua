@@ -21,11 +21,11 @@ SWEP.Crosshair = "tf_crosshair3"
 
 SWEP.MuzzleEffect = ""
 
-SWEP.ShootSound = ""
-SWEP.ShootCritSound = ""
+SWEP.ShootSound = "weapons/gas_can_throw.wav"
+SWEP.ShootCritSound = "weapons/gas_can_throw.wav"
 
 SWEP.Primary.ClipSize		= -1
-SWEP.Primary.Ammo			= TF_GRENADES1
+SWEP.Primary.Ammo			= TF_SECONDARY
 SWEP.Primary.Delay          = 1
 
 SWEP.ReloadSingle = false
@@ -105,6 +105,7 @@ function SWEP:PrimaryAttack()
 	
 	self.Owner.NextGiveAmmo = CurTime() + (20)
 	self.Owner.NextGiveAmmoType = self.Primary.Ammo
+	self:EmitSound("weapons/gas_can_throw.wav")
 	if CLIENT then
 		self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_ITEM2, true)
 	end

@@ -9,6 +9,7 @@ PrecacheParticleSystem("critical_grenade_blue")
 PrecacheParticleSystem("peejar_impact")
 PrecacheParticleSystem("peejar_impact_milk")
 PrecacheParticleSystem("peejar_impact_small")
+PrecacheParticleSystem("gas_can_impact_red")
 
 if CLIENT then
 
@@ -28,13 +29,13 @@ ENT.Model = "models/weapons/c_models/c_gascan/c_gascan.mdl"
 ENT.Model2 = "models/weapons/c_models/c_madmilk/c_madmilk.mdl"
 
 ENT.Explosive = true
-ENT.NoSelfDamage = true
+ENT.NoSelfDamage = false
 --ENT.NoMiniCrits = true
 ENT.ZeroDamageCrits = true
-ENT.ExplosionSound = Sound("Jar.Explode")
+ENT.ExplosionSound = Sound("weapons/gas_can_explode.wav")
 ENT.OwnerDamage = 0
 
-ENT.Trail = {"peejar_trail_red", "peejar_trail_blu"}
+ENT.Trail = {"gas_can_red", "gas_can_blu"}
 
 ENT.Mass = 10
 
@@ -201,22 +202,22 @@ function ENT:DoExplosion()
 	
 	local owner = self:GetOwner()
 	if not owner or not owner:IsValid() then owner = self end
-	
 	local range, damage
 	range = 140
-	self.BaseDamage = 1
-	self.OwnerDamage = 0
+	self.BaseDamage = 5
+	self.OwnerDamage = 2
 	self.ResultDamage = self.BaseDamage
 	
 	self.CalculatedDamage = 0
 	-- Yes, I'm using blast damage because it has a complex algorithm that allows explosive damage to get around walls with a certain limit
 	-- A simple FindInSphere wouldn't be enough since players would be able to get jarated through a wall
-	util.BlastDamage(self, owner, self:GetPos(), range, self.BaseDamage)
+	util.BlastDamage(self, owner, self:GetPos(), range, 5)
 	self:BugbaitTouch(owner)
-	self:Fire("kill", "", 0.01)
+	self:Fire("kill", "", 0.2)
 end
 
 function ENT:PhysicsCollide(data, physobj)
+	ParticleEffect("gas_can_impact_red", self:GetPos(), self:GetAngles(), self)
 	self:DoExplosion()
 end
 
