@@ -167,7 +167,7 @@ function GM:CommonScaleDamage(ent, hitgroup, dmginfo)
 		if att == ent then
 			-- Self damage, don't scale the damage, but still notify the player that they critted themselves
 			if ent:IsPlayer() then
-				Sendusermessage("CriticalHitReceived", ent)
+				SendUserMessage("CriticalHitReceived", ent)
 			end
 			dontscaledamage = true
 		else

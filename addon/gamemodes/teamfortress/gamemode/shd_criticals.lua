@@ -131,15 +131,15 @@ function DispatchCritEffect(ent, inf, att, is_mini_crit)
 		-- Notify the attacker that they scored a crit hit :D
 		if att:IsPlayer() then
 			if is_mini_crit then
-				Sendusermessage("CriticalHitMini", att, critpos)
+				SendUserMessage("CriticalHitMini", att, critpos)
 			else
-				Sendusermessage("CriticalHit", att, critpos)
+				SendUserMessage("CriticalHit", att, critpos)
 			end
 		end
 		
 		-- Notify the victim that they have been critted in the face D:
 		if ent:IsPlayer() then
-			Sendusermessage("CriticalHitReceived", ent)
+			SendUserMessage("CriticalHitReceived", ent)
 		end
 		
 		-- Also notify all teammates if the hit is a mini crit
@@ -148,7 +148,7 @@ function DispatchCritEffect(ent, inf, att, is_mini_crit)
 			for _,v in pairs(team.GetPlayers(att:EntityTeam())) do
 				rp:AddPlayer(v)
 			end
-			Sendusermessage("CriticalHitMiniOther", rp, critpos)
+			SendUserMessage("CriticalHitMiniOther", rp, critpos)
 		end
 	end
 	
