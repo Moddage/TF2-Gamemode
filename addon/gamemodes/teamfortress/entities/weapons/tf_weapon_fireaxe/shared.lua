@@ -20,6 +20,7 @@ SWEP.Category = "Team Fortress 2"
 SWEP.Swing = Sound("Weapon_FireAxe.Miss")
 SWEP.SwingCrit = Sound("Weapon_FireAxe.MissCrit")
 SWEP.HitFlesh = Sound("Weapon_FireAxe.HitFlesh")
+SWEP.HitRobot = Sound("MVM_Weapon_Sword.HitFlesh")
 SWEP.HitWorld = Sound("Weapon_FireAxe.HitWorld")
 
 SWEP.BaseDamage = 65
