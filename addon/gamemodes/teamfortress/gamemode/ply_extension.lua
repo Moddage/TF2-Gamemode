@@ -42,6 +42,8 @@ function Player:Nick()
 			return "Giant Heavy"
 		elseif self:GetPlayerClass() == "giantheavyshotgun" then
 			return "Giant Shotgun Heavy"
+		elseif self:GetPlayerClass() == "heavyweightchamp" then
+			return "Heavyweight Champ"
 		elseif self:GetPlayerClass() == "heavyshotgun" then
 			return "Shotgun Heavy"
 		elseif self:GetPlayerClass() == "giantsoldierrapidfire" then

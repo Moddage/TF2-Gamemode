@@ -319,18 +319,14 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				if v ~= bot and v:Team() == bot:Team() and v:Health() < v:GetMaxHealth() / 2 then
 					targetply = v
 				end
-			end 
-
-			if targetply:Health() > targetply:GetMaxHealth() / 2 then
-				targetply = nil
 			end
 
-			if IsValid(targetply) then
+			if IsValid(targetply) and targetply:IsFriendly(bot) then
 				targetpos2 = targetply:GetPos()
 				local trace = util.QuickTrace(bot:EyePos(), targetply:EyePos() - bot:EyePos(), bot)
 				debugoverlay.Line(trace.StartPos, trace.HitPos, 1, Color( 255, 255, 0 ))
 
-				if trace.Entity == targetply and targetply:IsFriendly(bot) then
+				if trace.Entity == targetply then
 					bot.TargetEnt = targetply
 					bot:SetEyeAngles((targetply:EyePos() - bot:GetShootPos()):Angle())
 					bot:SelectWeapon("tf_weapon_medigun")
