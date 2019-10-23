@@ -6,7 +6,7 @@ local bots = {}
 --local names = {"LeadKiller", "A Random Person", "Foxie117", "G.A.M.E.R v24", "Agent Agrimar"}
 --local names = {"A Professional With Standards", "AimBot", "AmNot", "Aperture Science Prototype XR7", "Archimedes!", "BeepBeepBoop", "Big Mean Muther Hubbard", "Black Mesa", "BoomerBile", "Cannon Fodder", "CEDA", "Chell", "Chucklenuts", "Companion Cube", "Crazed Gunman", "CreditToTeam", "CRITRAWKETS", "Crowbar", "CryBaby", "CrySomeMore", "C++", "DeadHead", "Delicious Cake", "Divide by Zero", "Dog", "Force of Nature", "Freakin' Unbelievable", "Gentlemanne of Leisure", "GENTLE MANNE of LEISURE ", "GLaDOS", "Glorified Toaster with Legs", "Grim Bloody Fable", "GutsAndGlory!", "Hat-Wearing MAN", "Headful of Eyeballs", "Herr Doktor", "HI THERE", "Hostage", "Humans Are Weak", "H@XX0RZ", "I LIVE!", "It's Filthy in There!", "IvanTheSpaceBiker", "Kaboom!", "Kill Me", "LOS LOS LOS", "Maggot", "Mann Co.", "Me", "Mega Baboon", "Mentlegen", "Mindless Electrons", "MoreGun", "Nobody", "Nom Nom Nom", "NotMe", "Numnutz", "One-Man Cheeseburger Apocalypse", "Poopy Joe", "Pow!", "RageQuit", "Ribs Grow Back", "Saxton Hale", "Screamin' Eagles", "SMELLY UNFORTUNATE", "SomeDude", "Someone Else", "Soulless", "Still Alive", "TAAAAANK!", "Target Practice", "ThatGuy", "The Administrator", "The Combine", "The Freeman", "The G-Man", "THEM", "Tiny Baby Man", "Totally Not A Bot", "trigger_hurt", "WITCH", "ZAWMBEEZ", "Ze Ubermensch", "Zepheniah Mann", "0xDEADBEEF", "10001011101"}
 local names = {"TFBot"}
-local classtb = {"scout","soldier","pyro","demoman","heavy","spy","engineer","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier"}
+local classtb = {"scout","soldier","pyro","demoman","heavy","spy","engineer","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","giantheavyshotgun","giantsoldierrapidfire","heavyshotgun","heavyweightchamp","melee_scout","ubermedic"}
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
 local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
@@ -312,7 +312,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			bot:ConCommand("build", "3")
 		end]]
 		
-		if bot:GetPlayerClass() == "medic" and (!IsValid(intel) or (IsValid(intel) and intel.Carrier ~= bot)) then
+		if bot:GetPlayerClass() == "medic" or bot:GetPlayerClass() == "ubermedic" and (!IsValid(intel) or (IsValid(intel) and intel.Carrier ~= bot)) then
 				--print(intel)
 			local targetply = player.GetAll()[1]
 			for k, v in pairs(player.GetAll()) do
@@ -523,17 +523,8 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 			end
 
-			if bot:GetActiveWeapon() != "tf_weapon_fists" then
-
-				if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 130 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" and bot:GetPlayerClass() != "charger" then
-
-					cmd:SetButtons(IN_ATTACK)
-
-				end
-			
-			end
-			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" and bot:GetPlayerClass() != "charger" then
-				if bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" and bot:GetPlayerClass() != "charger" then
+			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
+				if bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" or bot:GetActiveWeapon():GetClass() != "tf_weapon_bat" then
 					cmd:SetForwardMove(-250)
 				end
 				if bot:GetPlayerClass() == "pyro" then

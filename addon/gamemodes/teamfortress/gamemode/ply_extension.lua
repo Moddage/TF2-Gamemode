@@ -40,6 +40,16 @@ function Player:Nick()
 			return "Giant Demoman"
 		elseif self:GetPlayerClass() == "giantheavy" then
 			return "Giant Heavy"
+		elseif self:GetPlayerClass() == "giantheavyshotgun" then
+			return "Giant Shotgun Heavy"
+		elseif self:GetPlayerClass() == "heavyshotgun" then
+			return "Shotgun Heavy"
+		elseif self:GetPlayerClass() == "giantsoldierrapidfire" then
+			return "Giant Rapid-Fire Soldier"
+		elseif self:GetPlayerClass() == "ubermedic" then
+			return "Quick-Fix Medic"
+		elseif self:GetPlayerClass() == "melee_scout" then
+			return "Melee Scout"
 		elseif self:GetPlayerClass() == "sentrybuster" then
 			return "Sentry Buster"
 		else
