@@ -538,4 +538,3 @@ hook.Add("PostScaleDamage", "MinigunVampirePostDamage", function(ent, hitgroup, 
 end)
 
 end
--- test test test for github
