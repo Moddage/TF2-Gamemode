@@ -386,7 +386,7 @@ local function TransferBones( base, ragdoll ) -- Transfers the bones of one enti
 	for i = 0, ragdoll:GetPhysicsObjectCount() - 1 do
 		local bone = ragdoll:GetPhysicsObjectNum( i )
 		if ( IsValid( bone ) ) then
-			local pos, ang = base:GetBonePosition( ragdoll:TranslatePhysBoneToBone( i ) )
+			local pos, ang = base:GetBonePosition( ragdoll:TranslatePhysBousermessageoBone( i ) )
 			if ( pos ) then bone:SetPos( pos ) end
 			if ( ang ) then bone:SetAngles( ang ) end
 		end
@@ -884,6 +884,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		
 		if not ply:IsHL2() then
 			if ply:GetInfoNum("tf_robot", 0) == 0 then
+				if not ply:IsHL2() and ply:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
+					return
+				end
 				ply:Explode()
 				ply:EmitSound("physics/flesh/flesh_squishy_impact_hard2.wav", 80, 100)
 				shouldgib = true
@@ -940,10 +943,10 @@ function GM:OnNPCKilled(ent, attacker, inflictor)
 	
 	-- for Gran <3
 	-- NPCs should spawn silly gibs if killed by damage of type DMG_ALWAYSGIB+DMG_REMOVENORAGDOLL
-	if ent.LastDamageInfo and ent.LastDamageInfo:IsDamageType(DMG_ALWAYSGIB) and ent.LastDamageInfo:IsDamageType(DMG_REMOVENORAGDOLL) then
+	if dmginfo:IsDamageType(DMG_ALWAYSGIB) or dmginfo:IsDamageType(DMG_BLAST) or dmginfo:IsExplosionDamage() or inflictor.Explosive then
 		umsg.Start("GibNPC")
 			umsg.Entity(ent)
-			umsg.Short(ent.DeathFlags or 0)
+			umsg.Short(ent.DeathFlags)
 		umsg.End()
 	end
 	
