@@ -48,9 +48,9 @@ SWEP.ShootCritSound = Sound("MVM.GiantSoldierRocketShootCrit")
 SWEP.ChargeSound = Sound("Weapon_StickyBombLauncher.ChargeUp")
 SWEP.ReloadSound = Sound("MVM.RobotImpactSoft")
 
-SWEP.Primary.ClipSize		= 100
+SWEP.Primary.ClipSize		= 20
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
-SWEP.Primary.Delay          = 0.1
+SWEP.Primary.Delay          = 0.25
 
 SWEP.IsRapidFire = true
 SWEP.ReloadSingle = true

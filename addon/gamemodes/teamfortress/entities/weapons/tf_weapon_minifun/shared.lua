@@ -169,8 +169,8 @@ function SWEP:SpinUp()
 	
 	self.Spinning = true
 	
-	self.NextEndSpinUp = CurTime() + 0.95 * (self.MinigunSpinupMultiplier or 1)
-	self.NextEndSpinUpSound = CurTime() + 0.95
+	self.NextEndSpinUp = CurTime() + 1 * (self.MinigunSpinupMultiplier or 1)
+	self.NextEndSpinUpSound = CurTime() + 1
 	self.NextEndSpinDown = nil
 	self.NextIdle = nil
 	
@@ -186,7 +186,7 @@ function SWEP:SpinDown()
 	--self.Owner:SetAnimation(10005)
 	self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_POSTFIRE, true)
 	self:SendWeaponAnim(self.VM_POSTFIRE)
-	self.Owner:StopSound("Weapon_Minifun.ClipEmpty")
+	
 	self.Ready = false
 	self.NextEndSpinUp = nil
 	self.NextEndSpinUpSound = nil
@@ -201,7 +201,6 @@ function SWEP:SpinDown()
 	self.SpinUpSound:Stop()
 	self.SpinSound:Stop()
 	self.SpinDownSound:Play()
-	self:SetNextPrimaryFire( CurTime() + 0.1 )
 	if self.Primary.Delay == 0.06 then
 		self.SpinDownSound:ChangePitch(120)
 	end
@@ -227,11 +226,8 @@ end
 function SWEP:CanPrimaryAttack()
 	if self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
 	
-		self.SpinSound:Stop()
-		if SERVER then
-			self.Owner:EmitSound(self.EmptySound)
-		end
-		self:SetNextPrimaryFire( CurTime() + 4 )
+		self:EmitSound("weapons/shotgun_empty.wav", 80, 100)
+		self:SetNextPrimaryFire( CurTime() + 0.2 )
 		self:Reload()
 		return false
 		
@@ -246,7 +242,6 @@ function SWEP:PrimaryAttack(vampire)
 		self.Owner:SelectWeapon(self.Owner:GetWeapons()[3])
 		return
 	end
-	
 	if not self.Spinning then
 		self.IsVampire = vampire
 		self:SpinUp()
@@ -295,7 +290,7 @@ function SWEP:PrimaryAttack(vampire)
 			self:SetMinigunEffect(1)
 			self.SpinSound:Stop()
 			self.ShootCritSoundLoop:Stop()
-			self.ShootSoundLoop:Play( "Weapon_Tomislav.ShootLoop", self.Owner:GetPos(), 95, 95, "VOL_NORM")
+			self.ShootSoundLoop:Play()
 			if self.Primary.Delay == 0.06 then
 				self.ShootSoundLoop:ChangePitch(120)
 			end

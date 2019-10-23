@@ -163,22 +163,21 @@ function SWEP:SpinUp()
 	end
 	
 	self:SendWeaponAnim(self.VM_PREFIRE)
-	if SERVER then
-	self.Owner:GetViewModel():SetPlaybackRate(1.5)
-	end
+	
 	self:SetNetworkedBool("Spinning", true)
 	
 	self.Spinning = true
 	
-	self.NextEndSpinUp = CurTime() + 0.6 * (self.MinigunSpinupMultiplier or 1)
-	self.NextEndSpinUpSound = CurTime() + 0.6
+	self.NextEndSpinUp = CurTime() + 0.7 * (self.MinigunSpinupMultiplier or 1)
+	self.NextEndSpinUpSound = CurTime() + 0.87
 	self.NextEndSpinDown = nil
 	self.NextIdle = nil
 	
-	self.SpinDownSound:Stop()
-	self.SpinSound:Stop()
-	self.SpinUpSound:Play()
-	self.SpinUpSound:ChangePitch(94)
+	if SERVER then
+	self.Owner:StopSound(self.SpecialSound2)
+	self.Owner:StopSound(self.SpecialSound3)
+	self.Owner:EmitSound(self.SpecialSound1)
+	end
 	if self.Primary.Delay == 0.06 then
 		self.SpinUpSound:ChangePitch(120)
 	end
@@ -200,9 +199,12 @@ function SWEP:SpinDown()
 	self:SetNetworkedBool("Spinning", false)
 	self.Spinning = false
 	
-	self.SpinUpSound:Stop()
-	self.SpinSound:Stop()
-	self.SpinDownSound:Play()
+	if SERVER then
+	self.Owner:StopSound(self.ShootSound2)
+	self.Owner:StopSound(self.SpecialSound1)
+	self.Owner:StopSound(self.SpecialSound3)
+	self.Owner:EmitSound(self.SpecialSound2)
+	end
 	if self.Primary.Delay == 0.06 then
 		self.SpinDownSound:ChangePitch(120)
 	end
@@ -219,12 +221,10 @@ function SWEP:StopFiring()
 		self.Owner:SetAnimation(PLAYER_IDLE)
 	end
 	
-	self.SpinSound:Play()
-	self.SpinSound:ChangePitch(97)
-	self.ShootSoundLoop:Stop()
-	self.ShootCritSoundLoop:Stop()
-	if self.Primary.Delay == 0.06 then
-		self.SpinSound:ChangePitch(120)
+	if SERVER then
+	self.Owner:EmitSound(self.SpecialSound3)
+	self.Owner:StopSound(self.ShootSound2)
+	self.Owner:StopSound(self.ShootCritSound)
 	end
 	self.Firing = false
 end
@@ -248,7 +248,6 @@ function SWEP:PrimaryAttack(vampire)
 		self.Owner:SelectWeapon(self.Owner:GetWeapons()[3])
 		return
 	end
-	
 	if not self.Spinning then
 		self.IsVampire = vampire
 		self:SpinUp()
@@ -283,23 +282,25 @@ function SWEP:PrimaryAttack(vampire)
 	if self:RollCritical() then
 		if not self.Critting or not self.Firing then
 			self:SetMinigunEffect(1)
-			self.SpinSound:Stop()
-			self.ShootSoundLoop:Stop()
-			self.ShootCritSoundLoop:Play()
+			if SERVER then
+			self.Owner:StopSound(self.SpecialSound3)
+			self.Owner:StopSound(self.ShootSound2)
+			self.Owner:EmitSound(self.ShootCritSound)
+			end
 			if self.Primary.Delay == 0.06 then
 				self.ShootCritSoundLoop:ChangePitch(120)
 			end
-			self.ShootCritSoundLoop:ChangePitch(97)
 			self.Firing = true
 		end
 		self.Critting = true
 	else
 		if self.Critting or not self.Firing then
 			self:SetMinigunEffect(1)
-			self.SpinSound:Stop()
-			self.ShootCritSoundLoop:Stop()
-			self.ShootSoundLoop:Play( "Weapon_Tomislav.ShootLoop" )
-			self.ShootSoundLoop:ChangePitch(97)
+			if SERVER then
+			self.Owner:StopSound(self.SpecialSound3)
+			self.Owner:StopSound(self.ShootCritSound)
+			self.Owner:EmitSound(self.ShootSound2)
+			end
 			if self.Primary.Delay == 0.06 then
 				self.ShootSoundLoop:ChangePitch(120)
 			end
