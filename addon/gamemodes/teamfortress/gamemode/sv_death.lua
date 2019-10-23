@@ -35,7 +35,12 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 				data:SetEntity(ent)
 			util.Effect("tf_hl2_head_gib", data)
 	end
-
+	if ent:IsNPC() and dmginfo:IsDamageType(DMG_BLAST) then
+		umsg.Start("GibNPC")
+			umsg.Entity(ent)
+			umsg.Short(ent.DeathFlags)
+		umsg.End()
+	end
 
 	if ent:IsPlayer() and ent:HasDeathFlag(DF_DECAP) then
 			local ang = m1:GetAngles()
@@ -943,7 +948,7 @@ function GM:OnNPCKilled(ent, attacker, inflictor)
 	
 	-- for Gran <3
 	-- NPCs should spawn silly gibs if killed by damage of type DMG_ALWAYSGIB+DMG_REMOVENORAGDOLL
-	if dmginfo:IsDamageType(DMG_ALWAYSGIB) or dmginfo:IsDamageType(DMG_BLAST) or dmginfo:IsExplosionDamage() or inflictor.Explosive then
+	if ent.LastDamageInfo and ent.LastDamageInfo:IsDamageType(DMG_ALWAYSGIB) and ent.LastDamageInfo:IsDamageType(DMG_BLAST) and ent.LastDamageInfo:IsDamageType(DMG_REMOVENORAGDOLL) then
 		umsg.Start("GibNPC")
 			umsg.Entity(ent)
 			umsg.Short(ent.DeathFlags)
