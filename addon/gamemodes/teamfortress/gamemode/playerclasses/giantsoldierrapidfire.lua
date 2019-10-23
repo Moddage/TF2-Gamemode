@@ -1,4 +1,4 @@
-CLASS.Name = "Giant Soldier"
+CLASS.Name = "Giant Rapid-Fire Soldier"
 CLASS.Speed = 57
 CLASS.Health = 3600
 
@@ -8,13 +8,13 @@ if CLIENT then
 		surface.GetTextureID("hud/class_soldierblue")
 	}
 	CLASS.ScoreboardImage = {
-		surface.GetTextureID("hud/leaderboard_class_soldier"),
-		surface.GetTextureID("hud/leaderboard_class_soldier_d")
+		surface.GetTextureID("hud/leaderboard_class_soldier_spammer"),
+		surface.GetTextureID("hud/leaderboard_class_soldier_spammer")
 	}
 end
 
 CLASS.Loadout = {"tf_weapon_rocketlauncher", "tf_weapon_shotgun_soldier", "tf_weapon_shovel"}
-CLASS.DefaultLoadout = {"Giant Soldier's Rocket Launcher", "TF_WEAPON_SHOVEL"}
+CLASS.DefaultLoadout = {}
 CLASS.ModelName = "soldier"
 
 CLASS.Gibs = {
@@ -70,6 +70,8 @@ if SERVER then
 function CLASS:Initialize()
 	self:SetModel("models/bots/soldier_boss/bot_soldier_boss.mdl")
 	self:SetModelScale(1.75)
+	self:Give("tf_weapon_rocketlauncher_rapidfire2")
+	self:SelectWeapon("tf_weapon_rocketlauncher_rapidfire2")
 	self:SetViewOffset(Vector(0, 0, 126))
 end
 

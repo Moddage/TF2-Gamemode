@@ -1,21 +1,21 @@
-CLASS.Name = "Giant Soldier"
-CLASS.Speed = 57
-CLASS.Health = 3600
+CLASS.Name = "Giant Scout"
+CLASS.Speed = 120
+CLASS.Health = 200
 
 if CLIENT then
 	CLASS.CharacterImage = {
-		surface.GetTextureID("hud/class_soldierred"),
-		surface.GetTextureID("hud/class_soldierblue")
+		surface.GetTextureID("hud/class_scoutred"),
+		surface.GetTextureID("hud/class_scoutblue")
 	}
 	CLASS.ScoreboardImage = {
-		surface.GetTextureID("hud/leaderboard_class_soldier"),
-		surface.GetTextureID("hud/leaderboard_class_soldier_d")
+		surface.GetTextureID("hud/leaderboard_class_scout_giant_fast"),
+		surface.GetTextureID("hud/leaderboard_class_scout_giant_fast")
 	}
 end
 
 CLASS.Loadout = {"tf_weapon_rocketlauncher", "tf_weapon_shotgun_soldier", "tf_weapon_shovel"}
 CLASS.DefaultLoadout = {"Giant Soldier's Rocket Launcher", "TF_WEAPON_SHOVEL"}
-CLASS.ModelName = "soldier"
+CLASS.ModelName = "scout"
 
 CLASS.Gibs = {
 	[GIB_LEFTLEG]		= GIBS_SOLDIER_START,
