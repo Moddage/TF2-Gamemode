@@ -13,8 +13,8 @@ if CLIENT then
 	}
 end
 
-CLASS.Loadout = {"tf_weapon_rocketlauncher", "tf_weapon_shotgun_soldier", "tf_weapon_shovel"}
-CLASS.DefaultLoadout = {"Giant Soldier's Rocket Launcher", "TF_WEAPON_SHOVEL"}
+CLASS.Loadout = {"tf_weapon_scattergun", "tf_weapon_bat"}
+CLASS.DefaultLoadout = {"Scattergun", "Bat"}
 CLASS.ModelName = "scout"
 
 CLASS.Gibs = {
@@ -68,7 +68,7 @@ CLASS.AmmoMax = {
 if SERVER then
 
 function CLASS:Initialize()
-	self:SetModel("models/bots/soldier_boss/bot_soldier_boss.mdl")
+	self:SetModel("models/bots/scout_boss/bot_scout_boss.mdl")
 	self:SetModelScale(1.75)
 	self:SetViewOffset(Vector(0, 0, 126))
 end
