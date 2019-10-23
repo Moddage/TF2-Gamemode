@@ -168,9 +168,9 @@ function SWEP:SpinUp()
 	self.NextEndSpinDown = nil
 	self.NextIdle = nil
 	
-	self.Owner:StopSound(self.SpecialSound2)
-	self.Owner:StopSound(self.SpecialSound3)
-	self.Owner:EmitSound(self.SpecialSound1)
+	self:StopSound(self.SpecialSound2)
+	self:StopSound(self.SpecialSound3)
+	self:EmitSound(self.SpecialSound1)
 	if self.Primary.Delay == 0.06 then
 		self.SpinUpSound:ChangePitch(120)
 	end
@@ -192,10 +192,10 @@ function SWEP:SpinDown()
 	self:SetNetworkedBool("Spinning", false)
 	self.Spinning = false
 	
-	self.Owner:StopSound(self.ShootSound2)
-	self.Owner:StopSound(self.SpecialSound1)
-	self.Owner:StopSound(self.SpecialSound3)
-	self.Owner:EmitSound(self.SpecialSound2)
+	self:StopSound(self.ShootSound2)
+	self:StopSound(self.SpecialSound1)
+	self:StopSound(self.SpecialSound3)
+	self:EmitSound(self.SpecialSound2)
 	if self.Primary.Delay == 0.06 then
 		self.SpinDownSound:ChangePitch(120)
 	end
@@ -211,11 +211,9 @@ function SWEP:StopFiring()
 		self.StartTime = nil
 		self.Owner:SetAnimation(PLAYER_IDLE)
 	end
-	if SERVER then
-	self.Owner:EmitSound(self.SpecialSound3)
-	self.Owner:StopSound(self.ShootSound2)
-	self.Owner:StopSound(self.ShootCritSound)
-	end
+	self:EmitSound(self.SpecialSound3)
+	self:StopSound(self.ShootSound2)
+	self:StopSound(self.ShootCritSound)
 	self.Firing = false
 end
 
@@ -272,11 +270,9 @@ function SWEP:PrimaryAttack(vampire)
 	if self:RollCritical() then
 		if not self.Critting or not self.Firing then
 			self:SetMinigunEffect(1)
-			if SERVER then
-			self.Owner:StopSound(self.SpecialSound3)
-			self.Owner:StopSound(self.ShootSound2)
-			self.Owner:EmitSound(self.ShootCritSound)
-			end
+			self:StopSound(self.SpecialSound3)
+			self:StopSound(self.ShootSound2)
+			self:EmitSound(self.ShootCritSound)
 			if self.Primary.Delay == 0.06 then
 				self.ShootCritSoundLoop:ChangePitch(120)
 			end
@@ -286,11 +282,9 @@ function SWEP:PrimaryAttack(vampire)
 	else
 		if self.Critting or not self.Firing then
 			self:SetMinigunEffect(1)
-			if SERVER then
-			self.Owner:StopSound(self.SpecialSound3)
-			self.Owner:StopSound(self.ShootCritSound)
-			self.Owner:EmitSound(self.ShootSound2)
-			end
+			self:StopSound(self.SpecialSound3)
+			self:StopSound(self.ShootCritSound)
+			self:EmitSound(self.ShootSound2)
 			if self.Primary.Delay == 0.06 then
 				self.ShootSoundLoop:ChangePitch(120)
 			end
@@ -361,10 +355,8 @@ function SWEP:Think()
 	end
 	
 	if self.NextEndSpinUpSound and CurTime()>=self.NextEndSpinUpSound then
-		if SERVER then
-		self.Owner:StopSound(self.SpecialSound1)
-		self.Owner:EmitSound(self.SpecialSound3)
-		end
+		self:StopSound(self.SpecialSound1)
+		self:EmitSound(self.SpecialSound3)
 		if self.Primary.Delay == 0.06 then
 			self.SpinSound:ChangePitch(120)
 		end
