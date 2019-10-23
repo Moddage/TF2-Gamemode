@@ -25,15 +25,16 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 	end
 
 	if ent:IsNPC() and ent:HasDeathFlag(DF_DECAP) then
-			local ang = m1:GetAngles()
-			ang:RotateAroundAxis(ang:Right(), -90)
-			ang:RotateAroundAxis(ang:Up(), -90)
-			local pos = m1:GetTranslation() - 73 * ang:Up()
-			local data = EffectData()
-				data:SetOrigin(pos)
-				data:SetAngles(ang)
-				data:SetEntity(ent)
-			util.Effect("tf_hl2_head_gib", data)
+		umsg.Start("GibNPCHead")
+			umsg.Entity(ent)
+			umsg.Short(ent.DeathFlags)
+		umsg.End()
+	end
+	if ent:IsPlayer() and ent:HasDeathFlag(DF_DECAP) then
+		umsg.Start("GibPlayerHead")
+			umsg.Entity(ent)
+			umsg.Short(ent.DeathFlags)
+		umsg.End()
 	end
 	if ent:IsNPC() and dmginfo:IsDamageType(DMG_BLAST) then
 		umsg.Start("GibNPC")
