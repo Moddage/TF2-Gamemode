@@ -80,20 +80,6 @@ sound.Add( {
 	level = 110,
 	sound = { "npc/vort/attack_charge.wav" } 
 } )
-sound.Add( {
-	name = "Flesh.ImpactSoft",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	sound = { "tf/physics/body/body_medium_impact_soft1.wav", "tf/physics/body/body_medium_impact_soft2.wav", "tf/physics/body/body_medium_impact_soft3.wav", "tf/physics/body/body_medium_impact_soft4.wav", "tf/physics/body/body_medium_impact_soft5.wav", "tf/physics/body/body_medium_impact_soft6.wav", "tf/physics/body/body_medium_impact_soft7.wav"} 
-} )
-sound.Add( {
-	name = "Flesh.ImpactHard",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	sound = { "tf/physics/body/body_medium_impact_hard1.wav", "tf/physics/body/body_medium_impact_hard2.wav", "tf/physics/body/body_medium_impact_hard3.wav", "tf/physics/body/body_medium_impact_hard4.wav", "tf/physics/body/body_medium_impact_hard5.wav", "tf/physics/body/body_medium_impact_hard6.wav"} 
-} )
 
 sound.Add( {
 	name = "Selection.HeavyFootStomp",
