@@ -214,7 +214,7 @@ function ENT:StartTouch(ent)
 		end
 		if currentweapon:GetClass() == "tf_weapon_minigun" then
 			currentweapon.Primary.Delay          = 0.06
-			currentweapon.BaseDamage = 6
+			currentweapon.BaseDamage = 18
 			currentweapon.MaxDamageRampUp = 0.75
 			currentweapon.MaxDamageFalloff = 0.6
 			ent.AmmoMax[TF_PRIMARY] = 400
@@ -231,7 +231,7 @@ function ENT:StartTouch(ent)
 		end
 		if currentweapon:GetClass() == "tf_weapon_minigun_assaultcannon" then
 			currentweapon.Primary.Delay          = 0.06
-			currentweapon.BaseDamage = 6
+			currentweapon.BaseDamage = 18
 			currentweapon.MaxDamageRampUp = 0.75
 			currentweapon.MaxDamageFalloff = 0.6
 			ent.AmmoMax[TF_PRIMARY] = 400
@@ -274,8 +274,7 @@ function ENT:StartTouch(ent)
 		end
 		if currentweapon:GetClass() == "tf_weapon_minifun" then
 			currentweapon.Primary.Delay          = 0.06
-			currentweapon.BaseDamage = 6
-			currentweapon.BaseDamage = 5
+			currentweapon.BaseDamage = 18
 			ent.AmmoMax[TF_PRIMARY] = 400
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
@@ -290,8 +289,7 @@ function ENT:StartTouch(ent)
 		end
 		if currentweapon:GetClass() == "tf_weapon_minigun_tomislav" then
 			currentweapon.Primary.Delay          = 0.06
-			currentweapon.BaseDamage = 6
-			currentweapon.BaseDamage = 9
+			currentweapon.BaseDamage = 14
 			ent.AmmoMax[TF_PRIMARY] = 400
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
@@ -306,8 +304,7 @@ function ENT:StartTouch(ent)
 		end
 		if currentweapon:GetClass() == "tf_weapon_minigun_burner" then
 			currentweapon.Primary.Delay          = 0.06
-			currentweapon.BaseDamage = 6
-			currentweapon.BaseDamage = 9
+			currentweapon.BaseDamage = 18
 			ent.AmmoMax[TF_PRIMARY] = 400
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
@@ -322,8 +319,7 @@ function ENT:StartTouch(ent)
 		end
 		if currentweapon:GetClass() == "tf_weapon_minigun_bb" then
 			currentweapon.Primary.Delay          = 0.06
-			currentweapon.BaseDamage = 6
-			currentweapon.BaseDamage = 9
+			currentweapon.BaseDamage = 18
 			ent.AmmoMax[TF_PRIMARY] = 400
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
@@ -338,8 +334,7 @@ function ENT:StartTouch(ent)
 		end
 		if currentweapon:GetClass() == "tf_weapon_minigun_ic" then
 			currentweapon.Primary.Delay          = 0.06
-			currentweapon.BaseDamage = 6
-			currentweapon.BaseDamage = 9
+			currentweapon.BaseDamage = 18
 			ent.AmmoMax[TF_PRIMARY] = 400
 			
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name )
@@ -356,7 +351,7 @@ function ENT:StartTouch(ent)
 		if currentweapon:GetClass() == "tf_weapon_shotgun_soldier" then
 			currentweapon.Primary.Delay          = 0.3
 			currentweapon.BaseDamage = 12
-			currentweapon.Primary.ClipSize         = 12
+			currentweapon.Primary.ClipSize         = 16
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their "..currentweapon:GetItemData().item_name )
@@ -423,8 +418,8 @@ function ENT:StartTouch(ent)
 		end
 		if currentweapon:GetClass() == "tf_weapon_shotgun_hwg" then
 			currentweapon.Primary.Delay          = 0.3
-			currentweapon.BaseDamage = 12
-			currentweapon.Primary.ClipSize         = 12
+			currentweapon.BaseDamage = 40
+			currentweapon.Primary.ClipSize         = 16
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $600 dollars for their S"..currentweapon:GetItemData().item_name )
@@ -455,7 +450,7 @@ function ENT:StartTouch(ent)
 		if currentweapon:GetClass() == "tf_weapon_shotgun_pyro" then
 			currentweapon.Primary.Delay          = 0.3
 			currentweapon.BaseDamage = 12
-			currentweapon.Primary.ClipSize         = 12
+			currentweapon.Primary.ClipSize         = 16
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $500 dollars for their "..currentweapon:GetItemData().item_name )
@@ -472,7 +467,7 @@ function ENT:StartTouch(ent)
 		if currentweapon:GetClass() == "tf_weapon_shotgun_primary" then
 			currentweapon.Primary.Delay          = 0.3
 			currentweapon.BaseDamage = 12
-			currentweapon.Primary.ClipSize         = 12
+			currentweapon.Primary.ClipSize         = 16
 			currentweapon.ReloadTime = 0.2
 			ent:ConCommand("tf_upgradewep03clientonly")
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
@@ -648,9 +643,11 @@ currentweapon.Primary.Delay          = 0.015
 			end)
 		end
 		if currentweapon:GetClass() == "tf_weapon_grenadelauncher" then
-			currentweapon.Primary.Delay          = 0.4
-			currentweapon.Primary.ClipSize         = 12
+			currentweapon.Primary.Delay          = 0.3
+			currentweapon.BaseDamage = 150
+			currentweapon.Primary.ClipSize         = 16
 			currentweapon.ReloadTime = 0.2
+			ent:ConCommand("tf_upgradewep03clientonly")
 			ent.AmmoMax[TF_PRIMARY] = 80
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their G"..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()

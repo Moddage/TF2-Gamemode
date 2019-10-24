@@ -5,7 +5,38 @@ end
 if CLIENT then
 
 SWEP.PrintName			= "The Eyelander"
+SWEP.HasCModel = true
 SWEP.Slot				= 2
+
+SWEP.RenderGroup 		= RENDERGROUP_BOTH
+
+function SWEP:InitializeCModel()
+	self:CallBaseFunction("InitializeCModel")
+	
+	for _,v in pairs(self.Owner:GetTFItems()) do
+		if v:GetClass() == "tf_wearable_item_demoshield" then
+			self.ShieldEntity = v
+			v:InitializeCModel(self)
+		end
+	end
+	for _,v in pairs(self.Owner:GetTFItems()) do
+		if v:GetClass() == "tf_wearable_item_tideturnr" then
+			self.ShieldEntity = v
+			v:InitializeCModel(self)
+		end
+	end
+end
+
+function SWEP:ViewModelDrawn()
+	self:CallBaseFunction("ViewModelDrawn")
+	
+	if IsValid(self.ShieldEntity) and IsValid(self.ShieldEntity.CModel) then
+		self.ShieldEntity:StartVisualOverrides()
+		self.ShieldEntity.CModel:DrawModel()
+		self.ShieldEntity:EndVisualOverrides()
+	end
+end
+
 
 local WhisperIdle = Sound("Sword.Idle")
 local WhisperKill = Sound("Sword.Hit")
@@ -16,6 +47,33 @@ usermessage.Hook("SwordWhisper", function(msg)
 	else			LocalPlayer():EmitSound(WhisperIdle)
 	end
 end)
+
+function SWEP:InitializeCModel()
+	self:CallBaseFunction("InitializeCModel")
+	
+	for _,v in pairs(self.Owner:GetTFItems()) do
+		if v:GetClass() == "tf_wearable_item_demoshield" then
+			self.ShieldEntity = v
+			v:InitializeCModel(self)
+		end
+	end
+	for _,v in pairs(self.Owner:GetTFItems()) do
+		if v:GetClass() == "tf_wearable_item_tideturnr" then
+			self.ShieldEntity = v
+			v:InitializeCModel(self)
+		end
+	end
+end
+
+function SWEP:ViewModelDrawn()
+	self:CallBaseFunction("ViewModelDrawn")
+	
+	if IsValid(self.ShieldEntity) and IsValid(self.ShieldEntity.CModel) then
+		self.ShieldEntity:StartVisualOverrides()
+		self.ShieldEntity.CModel:DrawModel()
+		self.ShieldEntity:EndVisualOverrides()
+	end
+end
 
 SWEP.GlobalCustomHUD = {HudItemEffectMeter_Demoman = function(self) return self.dt.IsEyelander end}
 
@@ -30,6 +88,7 @@ SWEP.Crosshair = "tf_crosshair3"
 SWEP.Swing = Sound("Weapon_Sword.Swing")
 SWEP.SwingCrit = Sound("Weapon_Sword.SwingCrit")
 SWEP.HitFlesh = Sound("Weapon_Sword.HitFlesh")
+SWEP.HitRobot = Sound("MVM_Weapon_Sword.HitFlesh")
 SWEP.HitWorld = Sound("Weapon_Sword.HitWorld")
 
 SWEP.WhisperKillProbabilityPlayer = 0.5
@@ -96,6 +155,10 @@ function SWEP:OnPlayerKilled(ent)
 	--ent:SetNWBool("ShouldDropDecapitatedRagdoll", true)
 	if ent:CanGiveHead() then
 		ent:AddDeathFlag(DF_DECAP)
+		umsg.Start("GibPlayerHead")
+			umsg.Entity(ent)
+			umsg.Short(ent.DeathFlags)
+		umsg.End()
 	end
 	
 	if self.dt.IsEyelander and ent:CanGiveHead() then
@@ -116,8 +179,14 @@ function SWEP:OnPlayerKilled(ent)
 		self.Owner:SetHealth(self.Owner:Health() + self.HealthBonus)
 		
 		local prob
-		if ent:IsPlayer() then	prob = self.WhisperKillProbabilityPlayer
-		else					prob = self.WhisperKillProbabilityNPC
+		if ent:IsPlayer() then	
+			prob = self.WhisperKillProbabilityPlayer
+			umsg.Start("GibPlayerHead")
+				umsg.Entity(ent)
+				umsg.Short(ent.DeathFlags)
+			umsg.End()
+		else					
+			prob = self.WhisperKillProbabilityNPC
 		end
 		
 		if math.random()<prob then

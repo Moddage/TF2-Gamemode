@@ -229,7 +229,9 @@ function SWEP:Deploy()
 	end	
 				
 	if self.Owner:IsPlayer() and not self.Owner:IsHL2() and self.Owner:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
-		self.Owner:SetBloodColor(BLOOD_COLOR_MECH)
+		if SERVER then
+			self.Owner:SetBloodColor(BLOOD_COLOR_MECH)
+		end
 	end
 	self:StopTimers()
 	self.DeployPlayed = nil

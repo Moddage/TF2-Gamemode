@@ -116,6 +116,29 @@ usermessage.Hook("GibPlayer", function(um)
 	util.Effect("tf_player_gibbed", effectdata)
 end)
 
+
+usermessage.Hook("GibPlayerHead", function(um)
+	local pl = GetPlayerByUserID(um:ReadLong())
+	if not IsValid(pl) then return end
+	
+	pl.DeathFlags = um:ReadShort()
+	
+	local effectdata = EffectData()
+		effectdata:SetEntity(pl)
+	util.Effect("tf_tf2_head_gib", effectdata)
+end)
+
+usermessage.Hook("GibNPCHead", function(um)
+	local pl = GetPlayerByUserID(um:ReadLong())
+	if not IsValid(pl) then return end
+	
+	pl.DeathFlags = um:ReadShort()
+	
+	local effectdata = EffectData()
+		effectdata:SetEntity(pl)
+	util.Effect("tf_hl2_head_gib", effectdata)
+end)
+
 usermessage.Hook("GibNPC", function(um)
 	local npc = um:ReadEntity()
 	if not IsValid(npc) then return end

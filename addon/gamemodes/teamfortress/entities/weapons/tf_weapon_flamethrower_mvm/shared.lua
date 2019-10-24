@@ -28,12 +28,12 @@ function SWEP:SetFlamethrowerEffect(i)
 	local t = GAMEMODE:EntityTeam(self.Owner)
 	
 	if i==1 then
-		effect = "flamethrower_giant_mvm"
+		effect = "flamethrower_new"
 	elseif i>1 then
 		if t==2 then
-			effect = "flamethrower_crit_giant_mvm"
+			effect = "flamethrower_new"
 		else
-			effect = "flamethrower_crit_giant_mvm"
+			effect = "flamethrower_new"
 		end
 	end
 	

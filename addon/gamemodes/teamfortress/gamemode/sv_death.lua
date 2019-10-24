@@ -392,7 +392,7 @@ local function TransferBones( base, ragdoll ) -- Transfers the bones of one enti
 	for i = 0, ragdoll:GetPhysicsObjectCount() - 1 do
 		local bone = ragdoll:GetPhysicsObjectNum( i )
 		if ( IsValid( bone ) ) then
-			local pos, ang = base:GetBonePosition( ragdoll:TranslatePhysBousermessageoBone( i ) )
+			local pos, ang = base:GetBonePosition( ragdoll:TranslatePhysBoneToBone( i ) )
 			if ( pos ) then bone:SetPos( pos ) end
 			if ( ang ) then bone:SetAngles( ang ) end
 		end

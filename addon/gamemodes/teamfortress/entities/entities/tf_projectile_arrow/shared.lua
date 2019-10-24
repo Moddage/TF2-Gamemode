@@ -164,7 +164,7 @@ local function ArrowBulletCallback(att, tr, dmginfo)
 		end
 		
 		if att:IsPlayer() then
-			SendUserMessage("ArrowHit", att)
+			SendNet("ArrowHit", att)
 		end
 	else
 		inf:EmitSound(ImpactSounds[tr.MatType] or "Weapon_Arrow.ImpactMetal")

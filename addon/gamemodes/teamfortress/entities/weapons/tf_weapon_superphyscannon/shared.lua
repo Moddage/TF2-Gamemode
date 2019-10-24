@@ -148,8 +148,8 @@ if !IsValid(self.Owner) or !self.Owner:Alive() then return end
 			ViewModel:ManipulateBoneAngles(prong_a, frame_a)
 			ViewModel:ManipulateBoneAngles(prong_b, frame_b)--]]
 			end
-			--usermessage.Start("gg_OpenClaws_Client")
-			--usermessage.Send(self.Owner)
+			--net.Start("gg_OpenClaws_Client")
+			--net.Send(self.Owner)
 		if IsValid(WorldModel) then
 			if worldframe > 1 then WorldModel:SetPoseParameter("super_active", 1) end
 			--if worldframe >= 1 then timer.Remove("gg_move_claws_open") return end
@@ -875,7 +875,7 @@ function SWEP:PrimaryAttack()
 				else
 				
 				if tgt:IsPlayer() then
-					--[[usermessage.Start( "PlayerKilledByPlayer" )
+					--[[net.Start( "PlayerKilledByPlayer" )
 					usermessage.WriteEntity( tgt )
 					usermessage.WriteString( "weapon_superphyscannon" )
 					usermessage.WriteEntity( self.Owner )
@@ -1017,7 +1017,7 @@ function SWEP:PrimaryAttack()
 				undo.Finish();
 				
 				--[[if !tgt:IsPlayer() and tgt:Health() <= 0 and tgt:IsValid() then
-				usermessage.Start( "PlayerKilledNPC" )
+				net.Start( "PlayerKilledNPC" )
 				usermessage.WriteString( tgt:GetClass() )
 				usermessage.WriteString( self.Weapon:GetClass() )
 				usermessage.WriteEntity( self.Owner )
@@ -1047,7 +1047,7 @@ function SWEP:PrimaryAttack()
 				elseif tgt:IsNPC() then
 					--if tgt:Health() >= 1 then
 					tgt:Fire("Kill","",0)
-					--usermessage.Start( "PlayerKilledNPC" )
+					--net.Start( "PlayerKilledNPC" )
 					--usermessage.WriteString( tgt:GetClass() )
 					--usermessage.WriteString( "weapon_superphyscannon" )
 					--usermessage.WriteEntity( self.Owner )
@@ -1551,7 +1551,7 @@ function SWEP:SecondaryAttack()
 					dmg:SetInflictor( self.Weapon )
 					dmg:SetReportedPosition( self.Owner:GetShootPos() )
 					tgt:TakeDamageInfo( dmg )
-					--[[usermessage.Start( "PlayerKilledByPlayer" )
+					--[[net.Start( "PlayerKilledByPlayer" )
 					usermessage.WriteEntity( tgt )
 					usermessage.WriteString( "weapon_superphyscannon" )
 					usermessage.WriteEntity( self.Owner )
@@ -1655,7 +1655,7 @@ function SWEP:SecondaryAttack()
 					undo.Finish();
 					
 					--[[if !tgt:IsPlayer() and tgt:Health() <= 0 and tgt:IsValid() then
-					usermessage.Start( "PlayerKilledNPC" )
+					net.Start( "PlayerKilledNPC" )
 					usermessage.WriteString( tgt:GetClass() )
 					usermessage.WriteString( self.Weapon:GetClass() )
 					usermessage.WriteEntity( self.Owner )
@@ -2152,8 +2152,8 @@ function SWEP:Deploy()
 		self.Weapon:SetNextSecondaryFire( CurTime() + 5 )
 		--[[if self.Owner:GetWeapon("weapon_physcannon"):IsValid() then
 			--print("yeah")
-			usermessage.Start("gg_Deploy_DisableGrav")
-			usermessage.Send( self.Owner )
+			net.Start("gg_Deploy_DisableGrav")
+			net.Send( self.Owner )
 		end--]]
 		self:CoreEffect()
 		self:TimerDestroyAll()
@@ -2195,8 +2195,8 @@ self:TimerDestroyAll()
 	if self.Owner:GetWeapon("weapon_physcannon"):IsValid() then
 		local ply = self.Owner
 		--print("yeah2")
-		usermessage.Start("gg_Holster_EnableGrav")
-		usermessage.Send( ply )
+		net.Start("gg_Holster_EnableGrav")
+		net.Send( ply )
 	end
 end--]]
 self.Weapon:StopSound(HoldSound)

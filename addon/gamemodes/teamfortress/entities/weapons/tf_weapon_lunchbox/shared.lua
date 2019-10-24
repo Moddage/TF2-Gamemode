@@ -54,9 +54,9 @@ function SWEP:PrimaryAttack()
 	else
 		self:SetNextPrimaryFire( CurTime() + 5 )
 	end
-	usermessage.Start("ActivateTauntCam")
+	net.Start("ActivateTauntCam")
 	if SERVER then
-	usermessage.Send(self.Owner)
+	net.Send(self.Owner)
 	end
 	self.Owner:DoAnimationEvent(ACT_DOD_CROUCH_IDLE_PISTOL, true)
 	self.Owner:SetNWBool("Taunting", true)
@@ -86,8 +86,8 @@ function SWEP:PrimaryAttack()
 	end)
 	timer.Simple(4, function()
 		GAMEMODE:HealPlayer(self.Owner, self.Owner, 50, true, false)
-		usermessage.Start("DeActivateTauntCam")
-		usermessage.Send(self.Owner)
+		net.Start("DeActivateTauntCam")
+		net.Send(self.Owner)
 		self.Owner:SetNWBool("Taunting", false)
 		self.Owner:SelectWeapon(self.Owner:GetWeapons()[1])
 	end)
