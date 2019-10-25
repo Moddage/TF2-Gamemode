@@ -37,9 +37,6 @@ function ENT:Initialize()
 	else
 		self:SetSkin(0)
 	end
-	if obj.class_name == "obj_dispenser" and self.Player.TempAttributes.BuildsMiniSentries then
-		self:SetModel("models/buildables/mdispenser_blueprint.mdl")
-	end
 	if obj.class_name == "obj_dispenser" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
 		self:SetModel("models/buildables/repair_level1.mdl")
 	end
@@ -159,8 +156,6 @@ function ENT:Build()
 		end)
 	end
 	if obj.class_name == "obj_sentrygun" and self.Player.TempAttributes.BuildsMiniSentries then
-		ent:SetBuildingType(1)
-	elseif obj.class_name == "obj_dispenser" and self.Player.TempAttributes.BuildsMiniSentries then
 		ent:SetBuildingType(1)
 	elseif obj.class_name == "obj_dispenser" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
 		ent:SetBuildingType(2)
