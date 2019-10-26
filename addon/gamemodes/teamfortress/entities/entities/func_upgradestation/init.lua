@@ -903,6 +903,22 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_fists" then
 			currentweapon.Primary.Delay          = 0.5
 			currentweapon.BaseDamage = 95
+			ent:ConCommand("tf_upgradewep05clientonly")
+			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
+			timer.Simple(0.1, function()
+				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
+			end)
+			timer.Simple(0.4, function()
+				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
+			end)
+			timer.Simple(0.6, function()
+				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
+			end)
+		end
+		if currentweapon:GetClass() == "tf_weapon_knife" then
+			currentweapon.Primary.Delay          = 0.5
+			ent:ConCommand("tf_upgradewep05clientonly")
+			currentweapon.BaseDamage = 95
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)

@@ -834,12 +834,12 @@ function SWEP:PrimaryAttack()
 			if self.Blueprint:Build() then
 				self.Owner.objtype = self:GetBuilding().objtype
 				self.Owner:Speak("TLK_BUILDING_OBJECT")
-				
-				self.Owner:RemoveAmmo(self:GetBuilding().cost, TF_METAL)
-				umsg.Start("PlayerMetalBonus", self.Owner)
-					umsg.Short(-self:GetBuilding().cost)
-				umsg.End() 
-				
+				if !self.Owner:IsBot() then
+					self.Owner:RemoveAmmo(self:GetBuilding().cost, TF_METAL)
+					umsg.Start("PlayerMetalBonus", self.Owner)
+						umsg.Short(-self:GetBuilding().cost)
+					umsg.End() 
+				end
 				-- temp
 				self.Owner.ForgetLastWeapon = true
 				self.Owner:SelectWeapon(self.LastWeapon)
@@ -1109,46 +1109,7 @@ local old_group_translate = {
 	[4] = {3,0},
 }
 concommand.Add("build", function(pl, cmd, args)
-	local group = tonumber(args[1])
-	local sub = tonumber(args[2])
-	
-	local builder = pl:GetWeapon("tf_weapon_builder")
-
-	builder:SetHoldType("BUILDING")
-	
-	builder.Moving = false
-	
-	timer.Simple(25, function()
-		if ( builder.Moving != false and pl:KeyPressed( IN_FORWARD ) ) then 
-			pl:EmitSound("vo/engineer_sentrymoving0"..math.random(1,2)..".mp3", 80, 100)
-		else
-			return
-		end
-	end)	
-	
-	if not IsValid(builder) then return end
-	if not group then return end
-	
-	if not sub then
-		if not old_group_translate[group] then return end
-		
-		group, sub = unpack(old_group_translate[group])
-	end
-	
-	local current = pl:GetActiveWeapon()
-	if builder:SetBuilding(group, sub) and current ~= builder then
-		if current.IsPDA then
-			local last = pl:GetWeapon(pl.LastWeapon)
-			if not IsValid(last) or last.IsPDA then
-				last = pl:GetWeapons()[1]
-			end
-			builder.LastWeapon = last:GetClass()
-			pl:SelectWeapon(last:GetClass())
-		else
-			builder.LastWeapon = current:GetClass()
-		end
-		pl:SelectWeapon("tf_weapon_builder")
-	end
+	pl:Build(args[1], args[2])
 end)
 
 concommand.Add("move", function(pl, cmd, args)

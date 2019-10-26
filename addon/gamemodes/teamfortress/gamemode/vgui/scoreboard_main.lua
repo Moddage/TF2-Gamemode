@@ -127,7 +127,7 @@ function PANEL:Init()
 	self:SetPaintBackgroundEnabled(false)
 	self:SetVisible(false)
 	
-	self.BluePlayerList = vgui.Create("TFScoreboardPlayerList", self)
+	self.BluePlayerList = vgui.Create("TFMVMScoreboardPlayerList", self)
 	self.BluePlayerList:SetTeam(TEAM_BLU)
 	self.RedPlayerList = vgui.Create("TFScoreboardPlayerList", self)
 	self.RedPlayerList:SetTeam(TEAM_RED)

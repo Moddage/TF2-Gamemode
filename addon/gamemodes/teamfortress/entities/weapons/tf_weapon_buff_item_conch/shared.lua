@@ -47,12 +47,17 @@ SWEP.RangedMaxHealing = 85
 SWEP.HoldType = "MELEE"
 
 SWEP.Ready = true
+function SWEP:InspectAnimCheck()
+	self:CallBaseFunction("InspectAnimCheck")
+	self.VM_DRAW = ACT_ITEM2_VM_DRAW
+	self.VM_IDLE = ACT_ITEM2_VM_IDLE
+end
 
 function SWEP:PrimaryAttack()
 
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 	self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_ITEM2, true)
-	self:SendWeaponAnim(ACT_ITEM1_VM_SECONDARYATTACK)
+	self:SendWeaponAnim(ACT_ITEM2_VM_SECONDARYATTACK)
 	self:EmitSound("items/samurai/tf_conch.wav", 90, 100)
 	timer.Simple(3, function()
 		if SERVER then
@@ -63,6 +68,27 @@ function SWEP:PrimaryAttack()
 				self.Owner:SetClassSpeed(150)
 			end
 		end)
+		if SERVER then
+		animent3 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+		animent3:SetAngles(self.Owner:GetAngles())
+		animent3:SetPos(self.Owner:GetPos())
+		animent3:SetModel("models/workshop_partner/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl")
+		animent3:Spawn()
+		animent3:Activate()
+		animent3:SetParent(self.Owner)
+		animent3:AddEffects(EF_BONEMERGE)
+		animent3:SetName("Cosmetic"..self.Owner:EntIndex())
+		
+		if self.Owner:GetPlayerClass() == "soldierbuffed" then	
+			timer.Create("RemoveBanner"..self.Owner:EntIndex(), 120, 1, function()
+				animent3:Remove()
+			end)
+		else
+			timer.Create("RemoveBanner"..self.Owner:EntIndex(), 20, 1, function()
+				animent3:Remove()
+			end)
+		end
+		end
 		self.Ready = false
 		timer.Create("HealFor20Secs", 1, 20, function()
 			GAMEMODE:HealPlayer(self.Owner, self.Owner, 10, false, false)
@@ -79,28 +105,66 @@ function SWEP:PrimaryAttack()
 		ParticleEffectAttach("soldierbuff_red_buffed", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 0)
 		end
 	end)
-	timer.Simple(20, function()
-		if SERVER then
-			timer.Stop("SetFasterSpeed1")
-			GAMEMODE:StopCritBoost(self.Owner)
-			self.Owner:SetClassSpeed(80)			
-		end
-		self.Owner:StopParticlesNamed("soldierbuff_red_buffed")
-		self.SpeedEnabled = false
-		self.Ready = true
-	end)
+	if self.Owner:GetPlayerClass() == "soldierbuffed" then
+		timer.Simple(120, function()
+			if SERVER then
+				timer.Stop("SetFasterSpeed1")
+				GAMEMODE:StopCritBoost(self.Owner) 
+				self.Owner:SetClassSpeed(80)			
+			end
+			self.Owner:StopParticlesNamed("soldierbuff_red_buffed")
+			self.SpeedEnabled = false
+			self.Ready = true
+		end)
+	else
+		timer.Simple(20, function()
+			if SERVER then
+				timer.Stop("SetFasterSpeed1")
+				GAMEMODE:StopCritBoost(self.Owner) 
+				self.Owner:SetClassSpeed(80)			
+			end
+			self.Owner:StopParticlesNamed("soldierbuff_red_buffed")
+			self.SpeedEnabled = false
+			self.Ready = true
+		end)
+	end
 end
 
 function SWEP:Deploy()
 	self:SendWeaponAnim(ACT_ITEM2_VM_DRAW)
-	
-	return self:CallBaseFunction("Holster")
+	--MsgFN("Deploy %s", tostring(self))
+	if SERVER then
+	animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+	animent2:SetAngles(self.Owner:GetAngles())
+	animent2:SetPos(self.Owner:GetPos())
+	animent2:SetModel("models/weapons/c_models/c_shogun_warpack/c_shogun_warpack.mdl")
+	animent2:Spawn()
+	animent2:Activate()
+	animent2:SetParent(self.Owner)
+	animent2:AddEffects(EF_BONEMERGE)
+	animent2:SetName("Cosmetic"..self.Owner:EntIndex())
+	timer.Create("RemoveBackpack"..self.Owner:EntIndex(), 0.01, 0, function()
+		if !self.Owner:Alive() then
+			animent2:Remove()
+		end
+	end)
+	end
+	self.BaseClass.Deploy(self)
 end
 
 function SWEP:Holster()
 	self.NextMeleeAttack = nil
-	
-	self:StopTimers()
-	
+	if SERVER then
+	timer.Create("RemoveBackpack"..self.Owner:EntIndex(), 0.01, 0, function()
+		if !self.Owner:Alive() then
+			animent2:Remove()
+		end
+	end)
+	timer.Create("RemoveBanner2"..self.Owner:EntIndex(), 0.01, 0, function()
+		if !self.Owner:Alive() then
+			animent3:Remove()
+		end
+	end)
+	end
 	return self:CallBaseFunction("Holster")
 end

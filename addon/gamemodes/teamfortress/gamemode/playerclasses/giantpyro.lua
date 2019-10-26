@@ -4,12 +4,12 @@ CLASS.Health = 5000
 
 if CLIENT then
 	CLASS.CharacterImage = {
-		surface.GetTextureID("hud/class_heavyred"),
-		surface.GetTextureID("hud/class_heavyblue")
+		surface.GetTextureID("hud/class_pyrored"),
+		surface.GetTextureID("hud/class_pyroblue")
 	}
 	CLASS.ScoreboardImage = {
-		surface.GetTextureID("hud/leaderboard_class_heavy"),
-		surface.GetTextureID("hud/leaderboard_class_heavy_d")
+		surface.GetTextureID("hud/leaderboard_class_pyro"),
+		surface.GetTextureID("hud/leaderboard_class_pyro_d")
 	}
 end
 

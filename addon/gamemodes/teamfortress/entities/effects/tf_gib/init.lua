@@ -117,7 +117,7 @@ function EFFECT:Think()
 	
 	if diff<self.FadeTime then
 		local a = math.Clamp(255*diff/self.FadeTime, 0, self.InitialColor.a)
-		self:SetColor(self.InitialColor.r,self.InitialColor.g,self.InitialColor.b,a)
+		self:SetColor(Color(self.InitialColor.r,self.InitialColor.g,self.InitialColor.b,a))
 	end
 	
 	return diff>0

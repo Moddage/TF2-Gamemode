@@ -115,24 +115,28 @@ function SWEP:SetupCModelActivities(item)
 		self:SetWeaponHoldType("ITEM2")		
 		self.ScattergunHasKnockback = true
 		self.ReloadTime = 1.6
+		self.Primary.Delay = 0.3
 		self.ReloadSingle = false
 		self.ReloadDiscardClip = true
-		self.Primary.ClipSize		= 6
-		self.Primary.DefaultClip	= 6
+		self.Primary.ClipSize		= 2
+		self.Primary.DefaultClip	= 2
+		self.ReloadSound = "Weapon_SMG1.Reload"
 		self:SetClip1(2)
 		self.ShootSound = Sound("weapons/scatter_gun_double_shoot.wav")
 		self.ShootCritSound = Sound("weapons/scatter_gun_double_shoot_crit.wav")
 	end
 	
-	if self:GetItemData().model_player == "models/weapons/c_models/c_soda_popper/c_soda_popper.mdl" then
+	if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_soda_popper/c_soda_popper.mdl" then
 		self.HoldType = "ITEM2"
 		self:SetWeaponHoldType("ITEM2")		
 		self.ScattergunHasKnockback = true
-		self.ReloadTime = 1.6
+		self.ReloadTime = 1.15
+		self.Primary.Delay = 0.3
 		self.ReloadSingle = false
 		self.ReloadDiscardClip = true
-		self.Primary.ClipSize		= 6
-		self.Primary.DefaultClip	= 6
+		self.Primary.ClipSize		= 2
+		self.Primary.DefaultClip	= 2
+		self.ReloadSound = "Weapon_SMG1.Reload"
 		self:SetClip1(2)
 		self.ShootSound = Sound("weapons/scatter_gun_double_bonk_shoot.wav")
 		self.ShootCritSound = Sound("weapons/scatter_gun_double_bonk_shoot_crit.wav")
@@ -225,6 +229,9 @@ function SWEP:Reload()
 			else
 				self:SendWeaponAnimEx(self.VM_RELOAD)
 				self.Owner:SetAnimation(PLAYER_RELOAD)
+				if self.ReloadTime == 1.15 then
+					self.Owner:GetViewModel():SetPlaybackRate(1.4)
+				end
 				self.NextIdle = CurTime() + (self.ReloadTime or self:SequenceDuration())
 				self.NextReload = self.NextIdle
 				

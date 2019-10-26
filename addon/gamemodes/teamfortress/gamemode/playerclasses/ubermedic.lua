@@ -14,7 +14,7 @@ if CLIENT then
 end
 
 CLASS.Loadout = {"tf_weapon_syringegun_medic", "tf_weapon_medigun", "tf_weapon_bonesaw"}
-CLASS.DefaultLoadout = {"Quick-Fix"}
+CLASS.DefaultLoadout = {"Syringe Gun","Quick-Fix"}
 CLASS.ModelName = "medic"
 
 CLASS.Gibs = {

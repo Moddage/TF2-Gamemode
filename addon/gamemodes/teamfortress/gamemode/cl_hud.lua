@@ -54,7 +54,7 @@ local VGUIFiles = {
 	
 	"hud_weaponselection";
 	"hud_inspectpanel";
-	--"hud_objectiveflagpanel";
+	"hud_objectiveflagpanel";
 	
 	"hud_demomanpipes";
 	"hud_mediccharge";
@@ -75,7 +75,8 @@ local VGUIFiles = {
 	"menu_charinfoloadoutsubpanel";
 	"menu_fullloadoutpanel";
 	
-	"scoreboard_playerlist";
+	"scoreboard_playerlist"; 
+	"mvmbotlist";
 	"scoreboard_localstats";
 	"scoreboard_main";
 }

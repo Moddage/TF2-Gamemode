@@ -48,10 +48,22 @@ function Player:Nick()
 			return "Shotgun Heavy"
 		elseif self:GetPlayerClass() == "giantsoldierrapidfire" then
 			return "Giant Rapid-Fire Soldier"
-		elseif self:GetPlayerClass() == "ubermedic" then
+		elseif self:GetPlayerClass() == "ubermedic" then 
 			return "Quick-Fix Medic"
+		elseif self:GetPlayerClass() == "demoknight" then 
+			return "Demoknight"
+		elseif self:GetPlayerClass() == "giantheavyheater" then 
+			return "Giant Heavy"
+		elseif self:GetPlayerClass() == "giantsoldiercharged" then 
+			return "Giant Charged Soldier"
+		elseif self:GetPlayerClass() == "soldierblackbox" then 
+			return "Black Box Soldier"
 		elseif self:GetPlayerClass() == "melee_scout" then
 			return "Melee Scout"
+		elseif self:GetPlayerClass() == "superscout" then
+			return "Super Scout"
+		elseif self:GetPlayerClass() == "soldierbuffed" then
+			return "Buffed Concheror Soldier"
 		elseif self:GetPlayerClass() == "sentrybuster" then
 			return "Sentry Buster"
 		else
@@ -140,6 +152,81 @@ function meta:Explode()
 		umsg.Long(self:UserID())
 		umsg.Short(self.DeathFlags)
 	umsg.End()
+end
+
+
+function meta:SetBuilding(group, mode)
+	local builder = self:GetWeapon("tf_weapon_builder")
+	if self.Buildings[group] and self.Buildings[group][mode] then
+		local cost = self.Buildings[group][mode].cost
+		if self:GetAmmoCount(TF_METAL) < cost then
+			return false
+		end
+		
+		builder.dt.BuildGroup = group
+		builder.dt.BuildMode = mode
+		return true
+	end
+end
+
+function meta:SetBuilding2(group, mode)
+	if self.Buildings[group] and self.Buildings[group][mode] then
+		self.dt.BuildGroup = group
+		self.dt.BuildMode = mode
+		return true
+	end
+end
+
+local old_group_translate = {
+	[0] = {0,0},
+	[1] = {1,0},
+	[2] = {1,1},
+	[3] = {2,0},
+	[4] = {3,0},
+}
+
+function meta:Build(number1,number2)
+	local args
+	local group = tonumber(number1)
+	local sub = tonumber(number2)
+	
+	local builder = self:GetWeapon("tf_weapon_builder")
+
+	builder:SetHoldType("BUILDING")
+	
+	builder.Moving = false
+	
+	timer.Simple(25, function()
+		if ( builder.Moving != false and self:KeyPressed( IN_FORWARD ) ) then 
+			self:EmitSound("vo/engineer_sentrymoving0"..math.random(1,2)..".mp3", 80, 100)
+		else
+			return
+		end
+	end)	
+	
+	if not IsValid(builder) then return end
+	if not group then return end
+	
+	if not sub then
+		if not old_group_translate[group] then return end
+		
+		group, sub = unpack(old_group_translate[group])
+	end
+	
+	local current = self:GetActiveWeapon()
+	if self:SetBuilding(group, sub) and current ~= builder then
+		if current.IsPDA then
+			local last = self:GetWeapon(self.LastWeapon)
+			if not IsValid(last) or last.IsPDA then
+				last = self:GetWeapons()[1]
+			end
+			builder.LastWeapon = last:GetClass()
+			self:SelectWeapon(last:GetClass())
+		else
+			builder.LastWeapon = current:GetClass()
+		end
+		self:SelectWeapon("tf_weapon_builder")
+	end
 end
 
 function meta:EnablePhonemes( ent, on )

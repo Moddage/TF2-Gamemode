@@ -23,15 +23,14 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 			ent:EmitSound("player/dissolve.wav", 85)
 		end
 	end
-
+	ent:StopSound("Weapon_Minifun.Fire")
+	ent:StopSound("Weapon_Minigun.Fire")
+	ent:StopSound("Weapon_Tomislav.ShootLoop")
+	ent:StopSound("Weapon_Minifun.FireCrit")
+	ent:StopSound("Weapon_Minigun.FireCrit")
+	ent:StopSound("Weapon_Tomislav.FireCrit")
 	if ent:IsNPC() and ent:HasDeathFlag(DF_DECAP) then
 		umsg.Start("GibNPCHead")
-			umsg.Entity(ent)
-			umsg.Short(ent.DeathFlags)
-		umsg.End()
-	end
-	if ent:IsPlayer() and ent:HasDeathFlag(DF_DECAP) then
-		umsg.Start("GibPlayerHead")
 			umsg.Entity(ent)
 			umsg.Short(ent.DeathFlags)
 		umsg.End()
@@ -41,18 +40,14 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 			umsg.Entity(ent)
 			umsg.Short(ent.DeathFlags)
 		umsg.End()
+		ent:Fire("Kill", "", 0.1)
 	end
 
 	if ent:IsPlayer() and ent:HasDeathFlag(DF_DECAP) then
-			local ang = m1:GetAngles()
-			ang:RotateAroundAxis(ang:Right(), -90)
-			ang:RotateAroundAxis(ang:Up(), -90)
-			local pos = m1:GetTranslation() - 73 * ang:Up()
-			local data = EffectData()
-				data:SetOrigin(pos)
-				data:SetAngles(ang)
-				data:SetEntity(ent)
-			util.Effect("tf_tf2_head_gib", data)
+		umsg.Start("GibPlayerHead")
+			umsg.Entity(ent)
+			umsg.Short(ent.DeathFlags)
+		umsg.End()
 	end
 
 
@@ -555,6 +550,13 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		animent:SetAngles(ply:GetAngles())
 		animent:Spawn()
 		animent:Activate()
+		if ent:IsPlayer() and ent:HasDeathFlag(DF_DECAP) then
+			umsg.Start("GibPlayerHead")
+				umsg.Entity(ent)
+				umsg.Short(ent.DeathFlags)
+			umsg.End()
+		end
+
 		local b1 = animent:LookupBone("bip_head")
 		local b2 = animent:LookupBone("bip_neck")
 		local b3 = animent:LookupBone("prp_helmet")

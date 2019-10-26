@@ -196,6 +196,44 @@ function RandomWeapon(ply, wepslot)
 	ply:EquipInLoadout(wep)
 end
 
+-- by hl2 campaign https://github.com/daunknownfox2010/half-life-2-campaign/blob/master/gamemode/init.lua but edited
+function GM:EntityKeyValue( ent, key, value )
+
+	if ( ( ent:GetClass() == "trigger_changelevel" ) && ( key == "map" ) ) then
+	
+		ent.map = value
+	
+	end
+
+	if ( ( ent:GetClass() == "npc_combine_s" ) && ( key == "additionalequipment" ) && ( value == "weapon_shotgun" ) ) then
+	
+		ent:SetSkin( 1 )
+	 
+	end
+
+end
+
+concommand.Add("changelevel2", function(ply,com,arg) 
+    if ply:IsValid() then return end --only let server console access this command
+    RunConsoleCommand("changelevel", arg[1])
+end)
+
+
+if ( file.Exists( "teamfortress/gamemode/maps/"..game.GetMap()..".lua", "LUA" ) ) then
+
+	include( "maps/"..game.GetMap()..".lua" )
+
+end
+
+-- Called by GoToNextLevel
+function GM:GrabAndSwitch()
+
+	changingLevel = true
+
+	game.ConsoleCommand( "changelevel "..NEXT_MAP.."\n" )
+
+end
+
 function RandomWeapon2(ply, wepslot)
 	local weps = tf_items.ReturnItems()
 	local class = ply:GetPlayerClass()
@@ -245,8 +283,14 @@ function GM:PlayerSpawn(ply)
 	if ply.CPPos and ply.CPAng then
 		ply:SetPos(ply.CPPos)
 		ply:SetEyeAngles(ply.CPAng)
+	end 
+	ply:SetNoCollideWithTeammates( true )
+	if ply:GetPlayerClass() == "soldierbuffed" then 
+		timer.Simple(0.8, function()
+			ply:SelectWeapon("tf_weapon_buff_item_conch")
+			ply:GetActiveWeapon():PrimaryAttack()
+		end)
 	end
-	
 	--ply:ShouldDropWeapon(true)
 	--[[ply:SetNWBool("ShouldDropBurningRagdoll", false)
 	ply:SetNWBool("ShouldDropDecapitatedRagdoll", false)
@@ -332,7 +376,6 @@ function GM:PlayerSpawn(ply)
 
 	ply:SetPlayerColor(playercolor)
 	ply:SetWeaponColor(weaponcolor)
-	ply:SetNoCollideWithTeammates(false)
 	ply:SetAvoidPlayers(true)
 	
 	if GetConVar("tf_randomizer"):GetBool() and !ply:IsHL2() then

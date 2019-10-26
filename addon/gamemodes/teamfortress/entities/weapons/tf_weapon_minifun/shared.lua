@@ -174,9 +174,9 @@ function SWEP:SpinUp()
 	self.NextEndSpinDown = nil
 	self.NextIdle = nil
 	
-	self.SpinDownSound:Stop()
-	self.SpinSound:Stop()
-	self.SpinUpSound:Play()
+	self:StopSound(self.SpecialSound2)
+	self:StopSound(self.SpecialSound3)
+	self:EmitSound(self.SpecialSound1)
 	if self.Primary.Delay == 0.06 then
 		self.SpinUpSound:ChangePitch(120)
 	end
@@ -198,9 +198,10 @@ function SWEP:SpinDown()
 	self:SetNetworkedBool("Spinning", false)
 	self.Spinning = false
 	
-	self.SpinUpSound:Stop()
-	self.SpinSound:Stop()
-	self.SpinDownSound:Play()
+	self:StopSound(self.ShootSound2)
+	self:StopSound(self.SpecialSound1)
+	self:StopSound(self.SpecialSound3)
+	self:EmitSound(self.SpecialSound2)
 	if self.Primary.Delay == 0.06 then
 		self.SpinDownSound:ChangePitch(120)
 	end
@@ -216,10 +217,9 @@ function SWEP:StopFiring()
 		self.StartTime = nil
 		self.Owner:SetAnimation(PLAYER_IDLE)
 	end
-	
-	self.SpinSound:Play()
-	self.ShootSoundLoop:Stop()
-	self.ShootCritSoundLoop:Stop()
+	self:EmitSound(self.SpecialSound3)
+	self:StopSound(self.ShootSound2)
+	self:StopSound(self.ShootCritSound)
 	self.Firing = false
 end
 
@@ -276,9 +276,9 @@ function SWEP:PrimaryAttack(vampire)
 	if self:RollCritical() then
 		if not self.Critting or not self.Firing then
 			self:SetMinigunEffect(1)
-			self.SpinSound:Stop()
-			self.ShootSoundLoop:Stop()
-			self.ShootCritSoundLoop:Play()
+			self:StopSound(self.SpecialSound3)
+			self:StopSound(self.ShootSound2)
+			self:EmitSound(self.ShootCritSound)
 			if self.Primary.Delay == 0.06 then
 				self.ShootCritSoundLoop:ChangePitch(120)
 			end
@@ -288,9 +288,9 @@ function SWEP:PrimaryAttack(vampire)
 	else
 		if self.Critting or not self.Firing then
 			self:SetMinigunEffect(1)
-			self.SpinSound:Stop()
-			self.ShootCritSoundLoop:Stop()
-			self.ShootSoundLoop:Play()
+			self:StopSound(self.SpecialSound3)
+			self:StopSound(self.ShootCritSound)
+			self:EmitSound(self.ShootSound2)
 			if self.Primary.Delay == 0.06 then
 				self.ShootSoundLoop:ChangePitch(120)
 			end
@@ -318,7 +318,6 @@ function SWEP:SecondaryAttack()
 		self:SpinUp()
 	end
 end
-
 function SWEP:Reload()	
 end
 

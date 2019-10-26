@@ -16,8 +16,8 @@ SWEP.Crosshair = "tf_crosshair1"
 SWEP.MuzzleEffect = "muzzle_shotgun"
 SWEP.MuzzleOffset = Vector(20, 4, -3)
 
-SWEP.ShootSound = Sound("weapons/shotgun_shoot.wav")
-SWEP.ShootCritSound = Sound("Weapon_Shotgun.SingleCrit")
+SWEP.ShootSound = Sound("Weapon_FrontierJustice.Single")
+SWEP.ShootCritSound = Sound("Weapon_FrontierJustice.SingleCrit")
 SWEP.ReloadSound = Sound("Weapon_Shotgun.WorldReload")
 
 SWEP.TracerEffect = "bullet_shotgun_tracer01"
@@ -46,3 +46,33 @@ SWEP.PunchView = Angle( -2, 0, 0 )
 SWEP.ReloadSingle = true
 
 SWEP.HoldType = "PRIMARY"
+
+function SWEP:Think()
+	for k,v in ipairs(ents.FindByClass("obj_sentrygun")) do
+		if v:GetBuilder() == self.Owner then
+			if v:Health() <= 20 then
+				if SERVER then
+					GAMEMODE:StartCritBoost(self.Owner)
+					
+					if self.Owner:Team() != TEAM_BLU then
+						ParticleEffectAttach("soldierbuff_red_buffed", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 0)
+					else
+						ParticleEffectAttach("soldierbuff_blue_buffed", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 0)		
+					end
+				end
+			end
+		end
+	end
+	
+	if self:CanPrimaryAttack() == false then
+		if SERVER then
+			if GAMEMODE:StopCritBoost(self.Owner) then
+			
+				self.Owner:StopParticlesNamed("soldierbuff_red_buffed")
+				self.Owner:StopParticlesNamed("soldierbuff_blue_buffed")
+				
+			end
+		end
+	end
+	return self:CallBaseFunction("Think")
+end

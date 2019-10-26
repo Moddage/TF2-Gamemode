@@ -6,7 +6,7 @@ local bots = {}
 --local names = {"LeadKiller", "A Random Person", "Foxie117", "G.A.M.E.R v24", "Agent Agrimar"}
 --local names = {"A Professional With Standards", "AimBot", "AmNot", "Aperture Science Prototype XR7", "Archimedes!", "BeepBeepBoop", "Big Mean Muther Hubbard", "Black Mesa", "BoomerBile", "Cannon Fodder", "CEDA", "Chell", "Chucklenuts", "Companion Cube", "Crazed Gunman", "CreditToTeam", "CRITRAWKETS", "Crowbar", "CryBaby", "CrySomeMore", "C++", "DeadHead", "Delicious Cake", "Divide by Zero", "Dog", "Force of Nature", "Freakin' Unbelievable", "Gentlemanne of Leisure", "GENTLE MANNE of LEISURE ", "GLaDOS", "Glorified Toaster with Legs", "Grim Bloody Fable", "GutsAndGlory!", "Hat-Wearing MAN", "Headful of Eyeballs", "Herr Doktor", "HI THERE", "Hostage", "Humans Are Weak", "H@XX0RZ", "I LIVE!", "It's Filthy in There!", "IvanTheSpaceBiker", "Kaboom!", "Kill Me", "LOS LOS LOS", "Maggot", "Mann Co.", "Me", "Mega Baboon", "Mentlegen", "Mindless Electrons", "MoreGun", "Nobody", "Nom Nom Nom", "NotMe", "Numnutz", "One-Man Cheeseburger Apocalypse", "Poopy Joe", "Pow!", "RageQuit", "Ribs Grow Back", "Saxton Hale", "Screamin' Eagles", "SMELLY UNFORTUNATE", "SomeDude", "Someone Else", "Soulless", "Still Alive", "TAAAAANK!", "Target Practice", "ThatGuy", "The Administrator", "The Combine", "The Freeman", "The G-Man", "THEM", "Tiny Baby Man", "Totally Not A Bot", "trigger_hurt", "WITCH", "ZAWMBEEZ", "Ze Ubermensch", "Zepheniah Mann", "0xDEADBEEF", "10001011101"}
 local names = {"TFBot"}
-local classtb = {"scout","soldier","pyro","demoman","heavy","spy","engineer","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","giantheavyshotgun","giantsoldierrapidfire","heavyshotgun","heavyweightchamp","melee_scout","ubermedic"}
+local classtb = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","superscout","giantheavyshotgun","giantheavyheater","giantsoldierrapidfire","giantsoldiercharged","soldierbuffed","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierbuffed","soldierbuffed","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","soldierbuffed","soldierbuffed","soldierbuffed","heavyshotgun","heavyshotgun","heavyshotgun","heavyshotgun","heavyweightchamp","heavyweightchamp","heavyweightchamp","heavyweightchamp","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic"}
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
 local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
@@ -210,6 +210,10 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 		local fintel
 		local intelcap
 		local fintelcap
+		local fsentry
+		local fsentrypoint
+		local fsentryred
+		local fsentrypointred
 		if string.find(game.GetMap(), "ctf_") then
 			for k, v in pairs(ents.FindByClass("item_teamflag")) do
 				if v.TeamNum ~= bot:Team() then
@@ -237,7 +241,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				targetpos2 = intel.Carrier:GetPos() -- follow that man
 			end
 		end
-		if string.find(game.GetMap(), "mvm_") and bot:Team() == TEAM_BLU then
+		if string.find(game.GetMap(), "mvm_") and bot:Team() == TEAM_BLU and bot:GetPlayerClass() != "engineer" and bot:GetPlayerClass() != "sentrybuster" then
 			for k, v in pairs(ents.FindByClass("item_teamflag_mvm")) do
 				if v.TeamNum ~= bot:Team() then
 					intel = v
@@ -270,6 +274,34 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			end
 		end
 
+
+
+		if bot:GetPlayerClass() == "engineer" and bot:Team() == TEAM_RED then
+			for k, v in pairs(ents.FindByClass("obj_sentrygun")) do
+				if GAMEMODE:EntityTeam(v) == bot:Team() then
+					fsentryred = v
+				end
+			end	
+				
+			for k, v in pairs(ents.FindByClass("bot_hint_sentrygun_RED")) do
+				fsentrypointred = v
+			end
+
+			targetpos2 = fsentrypointred:GetPos() -- goto enemy intel
+			ignoreback = true
+
+			if bot:GetPlayerClass() == "engineer" then	
+				for k, v in pairs(ents.FindByClass("bot_hint_sentrygun_red")) do
+					if bot:GetPos():Distance(v:GetPos()) >= 80 then
+						bot:Build(2,0)
+						cmd:SetForwardMove(1000)
+					elseif bot:GetPos():Distance(v:GetPos()) <= 80 then
+						cmd:SetButtons(IN_ATTACK)
+						cmd:SetForwardMove(120)
+					end
+				end
+			end
+		end
 		--[[for k, v in pairs(player.GetAll()) do
 			if v:Alive() and v:GetPos():Distance(bot:GetPos()) < 4096 and !v:IsBot() and !ignoreback then
 				if bot:GetPos():Distance(v:GetPos()) > 150 then
@@ -321,7 +353,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				end
 			end
 
-			if IsValid(targetply) and targetply:IsFriendly(bot) then
+			if IsValid(targetply) and targetply:Team() == bot:Team() then
 				targetpos2 = targetply:GetPos()
 				local trace = util.QuickTrace(bot:EyePos(), targetply:EyePos() - bot:EyePos(), bot)
 				debugoverlay.Line(trace.StartPos, trace.HitPos, 1, Color( 255, 255, 0 ))
@@ -341,7 +373,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 		--PrintTable(Entity(2):GetAttachments())
 
-		if bot:GetPlayerClass() == "pyro" then
+		if bot:GetPlayerClass() == "pyro" or bot:GetPlayerClass() == "giantpyro" then
 			for k,v in ipairs(ents.FindInSphere(bot:GetPos(), 120)) do
 				if v:GetClass() == "tf_projectile_arrow" or v:GetClass() == "tf_projectile_pipe_remote" or v:GetClass() == "tf_projectile_ball" or v:GetClass() == "tf_projectile_pipe" or v:GetClass() == "tf_projectile_flare" or v:GetClass() == "tf_projectile_sentryrocket" or v:GetClass() == "tf_projectile_rocket_airstrike" or v:GetClass() == "tf_projectile_rocket" or v:GetClass() == "rpg_missile" or v:GetClass() == "prop_combine_ball" or v:GetClass() == "npc_grenade_frag" or v:GetClass() == "crossbow_bolt" or v:GetClass() == "grenade_ar2" or v:GetClass() == "grenade_spit" or v:GetClass() == "soldierbot_rocket_launched" or v:GetClass() == "soldier_rocket_launched" then
 					cmd:SetButtons(IN_ATTACK2)
@@ -402,7 +434,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 							end
 						end
 					end
-					if bot:GetPlayerClass() != "spy" then
+					if bot:GetPlayerClass() != "spy" and bot:GetPlayerClass() != "engineer" then
 						for k, v in pairs(player.GetAll()) do
 							if v:Team() ~= bot:Team() and v:Alive() and v:Team() ~= TEAM_SPECTATOR and v:GetNoDraw() != true then
 
@@ -494,7 +526,22 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 		end
 
 		cmd:SetForwardMove(1000)
+		
+		if bot:GetPlayerClass() == "engineer" and bot:Team() == TEAM_BLU then
 
+			if bot:GetPlayerClass() == "engineer" then	
+				for k, v in pairs(ents.FindInSphere(bot:GetPos(), 2300)) do
+					if bot:GetPos():Distance(v:GetPos()) >= 40 and v:GetClass() == "bot_hint_sentrygun" then
+						cmd:SetForwardMove(800)
+						targetpos2 = v:GetPos()
+					elseif bot:GetPos():Distance(v:GetPos()) <= 10 and v:GetClass() == "bot_hint_sentrygun" then
+						cmd:SetButtons(IN_ATTACK)
+						cmd:SetForwardMove(20)
+						print("Buildin' a sentry!")
+					end
+				end
+			end
+		end
 		if IsValid(bot.TargetEnt) then
 			--for i=0, bot.TargetEnt:GetBoneCount()-1 do
 					--print(bot.TargetEnt:GetBoneName(i))
@@ -508,7 +555,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			else]]
 			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 450 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
 			
-				if bot:GetPlayerClass() == "charger" then
+				if bot:GetPlayerClass() == "demoknight" then
 					if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 80 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
 						cmd:SetButtons(IN_ATTACK)
 					else
@@ -520,7 +567,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			end
 
 			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
-				if bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" or bot:GetActiveWeapon():GetClass() != "tf_weapon_bat" then
+				if bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat_fish" and bot:GetActiveWeapon():GetClass() != "tf_weapon_sword" then
 					cmd:SetForwardMove(-250)
 				end
 				if bot:GetPlayerClass() == "pyro" then
