@@ -70,15 +70,6 @@ function SWEP:InitializeCModel()
 	end
 end
 
-function SWEP:InitializeWModel2()
-	self:CallBaseFunction("InitializeWModel2")
-	
-	if IsValid(self.WModel2) then
-		if string.lower(self.WModel2:GetModel()) == "models/weapons/c_models/c_leviathan/c_leviathan.mdl" then
-			self.WModel2.LeviathanBarrelFix = true
-		end
-	end
-end
 
 function SWEP:MinigunViewmodelReset()
 	if self.Owner==LocalPlayer() then
@@ -106,7 +97,9 @@ PrecacheParticleSystem("bullet_tracer01_red")
 PrecacheParticleSystem("bullet_tracer01_red_crit")
 PrecacheParticleSystem("bullet_tracer01_blue")
 PrecacheParticleSystem("bullet_tracer01_blue_crit")
-
+SWEP.barrelRotation 		= 0
+SWEP.barrelSpeed 			= 1
+SWEP.barrelValue1 			= 0
 SWEP.BaseDamage = 5
 SWEP.DamageRandomize = 0
 SWEP.MaxDamageRampUp = 1
@@ -143,6 +136,20 @@ function SWEP:CreateSounds()
 	self.ShootCritSoundLoop = CreateSound(self, self.ShootCritSound)
 	
 	self.SoundsCreated = true
+end
+
+if SERVER then
+
+function SWEP:InitializeWModel2()
+	self:CallBaseFunction("InitializeWModel2")
+	
+	if IsValid(self.WModel2) then
+		if string.lower(self.WModel2:GetModel()) == "models/weapons/c_models/c_leviathan/c_leviathan.mdl" then
+			self.WModel2.LeviathanBarrelFix = true
+		end
+	end
+end
+
 end
 
 function SWEP:SpinUp()
@@ -385,6 +392,52 @@ function SWEP:Think()
 		end
 	end
 	
+	if SERVER then
+	
+		if self:GetNetworkedBool("Spinning") then
+			--[[if self:GetItemData().attach_to_hands == 1 then
+				return
+			end]]
+			
+			if self.barrelSpeed <= 12 then
+			
+				self.barrelRotation = self.barrelRotation + self.barrelSpeed
+				self.barrelSpeed = self.barrelSpeed + ( CurTime() - self.barrelValue1 ) * 22
+					
+			end
+				
+			if self.barrelSpeed > 12 then
+				
+				self.barrelSpeed = 12
+					
+			end
+				
+			if self.barrelRotation > 360 then
+				
+				self.barrelRotation = self.barrelRotation - 360
+					
+			end
+				
+		end
+		
+		if not self:GetNetworkedBool("Spinning") then
+		
+			if self.barrelSpeed > 0 then
+			
+				self.barrelRotation = self.barrelRotation + self.barrelSpeed
+				self.barrelSpeed = self.barrelSpeed - ( CurTime() - self.barrelValue1 ) * 30
+				
+			end
+			
+			if self.barrelSpeed < 0 then
+			
+				self.barrelSpeed = 0
+				
+			end
+			
+		end
+		
+	end
 	if CLIENT then
 	
 		if self:GetNetworkedBool("Spinning") then
@@ -447,19 +500,20 @@ function SWEP:Think()
 		bone = self.CModel:LookupBone("barrel")
 			if bone then
 				self.CModel:ManipulateBoneAngles( bone, Angle(0,self.barrelRotation,0) )
-				self.WModel2:ManipulateBoneAngles( bone, Angle(0,self.barrelRotation,0) )
 			else
 				return
 			end
 			else
 				self.Owner:GetViewModel():ManipulateBoneAngles( 2, Angle(0,0,0) )
 		end
-		
-	else
-		//self.WModel2:ManipulateBoneAngles( bone, Angle(0,self.barrelRotation,0) )
 	end
-
-	self.barrelValue1 = CurTime()
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:ManipulateBoneAngles( self.WModel2:LookupBone("barrel"), Angle(0,self.barrelRotation,0) )
+		end
+	end
+	
+	self.barrelValue1 = CurTime() 
 	
 	self:Inspect()
 	

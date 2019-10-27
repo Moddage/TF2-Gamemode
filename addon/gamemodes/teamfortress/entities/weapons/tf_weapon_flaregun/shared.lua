@@ -44,12 +44,19 @@ SWEP.VM_RELOAD = ACT_ITEM1_VM_RELOAD
 
 function SWEP:PrimaryAttack()
 	if self.NextIdle then return end
-	
+	if SERVER and self:Ammo1() != 0 then
+		timer.Simple(0.7, function()
+			self.WModel2:SetBodygroup(1, 1) 
+		end)
+		timer.Simple(1.1, function()
+			self.WModel2:SetBodygroup(1, 0)
+			self:EmitSound("Weapon_GrenadeLauncher.WorldReload")
+		end)
+	end
 	if CLIENT and self:Ammo1() != 0 then
 		if self:GetClass() == "tf_weapon_flaregun" then
 			timer.Simple(0.7, function()
 				self.CModel:SetBodygroup(1, 1)
-				self.WModel2:SetBodygroup(1, 1) 
 			end)	
 			timer.Simple(0.9, function()
 				
@@ -60,7 +67,6 @@ function SWEP:PrimaryAttack()
 			end)
 			timer.Simple(1.1, function()
 				self.CModel:SetBodygroup(1, 0)
-				self.WModel2:SetBodygroup(1, 0)
 			end) 
 		end
 	end

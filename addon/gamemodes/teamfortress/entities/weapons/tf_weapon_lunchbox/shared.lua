@@ -64,11 +64,11 @@ function SWEP:PrimaryAttack()
 	if CLIENT then
 		timer.Simple(1, function()	
 			self.CModel:SetBodygroup(0, 1)
-			self.WModel2:SetBodygroup(0, 1)
 		end)
 	end
 	if SERVER then
 	timer.Simple(1, function()
+		self.WModel2:SetBodygroup(0, 1)
 		if self.Owner:GetInfoNum("tf_giant_robot",0) == 1 then
 			return
 		elseif self.Owner:GetInfoNum("tf_robot",0) == 1 then

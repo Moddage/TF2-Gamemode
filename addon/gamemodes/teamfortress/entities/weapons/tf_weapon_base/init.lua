@@ -38,7 +38,7 @@ function SWEP:CallOnClients(func, param, rp)
 		umsg.Entity(self)
 		umsg.String(func)
 		umsg.String(param or "")
-	umsg.End()
+	umsg.End()  
 end
 
 -- obsolete

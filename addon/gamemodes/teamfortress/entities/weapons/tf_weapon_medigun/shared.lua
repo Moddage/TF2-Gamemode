@@ -207,13 +207,13 @@ SWEP.MaxLastDamageTime = 15
 SWEP.UberchargeRate = 5
 
 tf2heavyuberchargesound = {
-	"vo/heavy_specialcompleted05.mp3",
-	"vo/heavy_specialcompleted06.mp3",
-	"vo/heavy_specialcompleted03.mp3",
-	"vo/taunts/heavy_taunts01.mp3",	
-	"vo/taunts/heavy_taunts02.mp3",
-	"vo/taunts/heavy_taunts03.mp3",
-	"vo/taunts/heavy_taunts04.mp3"
+	"vo/heavy_specialcompleted05.wav",
+	"vo/heavy_specialcompleted06.wav",
+	"vo/heavy_specialcompleted03.wav",
+	"vo/taunts/heavy_taunts01.wav",	
+	"vo/taunts/heavy_taunts02.wav",
+	"vo/taunts/heavy_taunts03.wav",
+	"vo/taunts/heavy_taunts04.wav"
 }
 
 tf2engineeruberchargesound = {
@@ -351,8 +351,10 @@ self.Owner:AddFlags(FL_GODMODE)
 self.ChargedALoop:Play()
 	if self.Owner:Team() == TEAM_RED or self.Owner:Team() == TEAM_NEUTRAL then
 		self.Owner:SetSkin( 2 )
+		self.WModel2:SetMaterial("models/effects/invulnfx_red")
 	else
 		self.Owner:SetSkin( 3 )
+		self.WModel2:SetMaterial("models/effects/invulnfx_blue")
 	end
 	timer.Create("NowGo!", 0.4, 1, function()
 		self:EmitSound( "vo/medic_specialcompleted0"..math.random(4,7)..".mp3", 80, 100, 1, CHAN_VOICE)
@@ -361,13 +363,13 @@ timer.Create("IamBulletproof!", 4.5, 1, function()
 	if self.Target:GetPlayerClass() == "heavy" then
 		self.Target:EmitSound( table.Random( tf2heavyuberchargesound ), 80, 100, 1, CHAN_VOICE)
 	elseif self.Target:GetPlayerClass() == "scout" then
-		self.Target:EmitSound( "vo/taunts/scout_taunts0"..math.random(4,9)..".mp3", 80, 100, 1, CHAN_VOICE)
+		self.Target:EmitSound( "vo/taunts/scout_taunts0"..math.random(4,9)..".wav", 80, 100, 1, CHAN_VOICE)
 	elseif self.Target:GetPlayerClass() == "engineer" then
 		self.Target:EmitSound( table.Random( tf2engineeruberchargesound ), 80, 100, 1, CHAN_VOICE)
 	elseif self.Target:GetPlayerClass() == "soldier" then
 		self.Target:EmitSound( "vo/taunts/soldier_taunts0"..math.random(6,8)..".mp3", 80, 100, 1, CHAN_VOICE)
 	elseif self.Target:IsHL2() then
-		self.Target:EmitSound( "vo/taunts/sniper_taunts0"..math.random(4,7)..".mp3", 80, 100, 1, CHAN_VOICE)
+		self.Target:EmitSound( "vo/coast/odessa/male01/nlo_cheer0"..math.random(1,4)..".wav", 80, 100, 1, CHAN_VOICE)
 	end
 end)
 --surface.PlaySound( "weapons/weapon_crit_charged_on.wav" )
@@ -387,12 +389,15 @@ end)
 				e = ""
 				if charge == 1 then
 				self.Target:AddFlags(FL_GODMODE) 
-
+	if SERVER then
 	if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
 		self.Target:SetSkin( 2 )
+		self.Target:GetActiveWeapon().WModel2:SetMaterial("models/effects/invulnfx_red")
 	else
 		self.Target:SetSkin( 3 )
+		self.Target:GetActiveWeapon().WModel2:SetMaterial("models/effects/invulnfx_blue")
 	end	
+	end
 else
 					self.Target:RemoveFlags(FL_GODMODE) 
 
@@ -436,19 +441,34 @@ end
 				if charge == 1 then
 					e = self.Target
 				self.Target:AddFlags(FL_GODMODE) 
-
-	if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
-		self.Target:SetSkin( 2 )
+	if self.Target:IsHL2() then
+		if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
+			self.Target:SetMaterial("models/effects/invulnfx_red")
+		else
+			self.Target:SetMaterial("models/effects/invulnfx_blue")
+		end
 	else
-		self.Target:SetSkin( 3 )
+		if SERVER then
+			if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
+				self.Target:SetSkin( 2 )
+				self.Target:GetActiveWeapon().WModel2:SetMaterial("models/effects/invulnfx_red")
+			else
+				self.Target:SetSkin( 3 )
+				self.Target:GetActiveWeapon().WModel2:SetMaterial("models/effects/invulnfx_blue")
+			end
+		end
 	end
 else
 					self.Target:RemoveFlags(FL_GODMODE) 
 
 	if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
 		self.Target:SetSkin( 0 )
+		self.Target:GetActiveWeapon().WModel2:SetMaterial("")
+		self.Owner:GetActiveWeapon().WModel2:SetMaterial("")
 	else
 		self.Target:SetSkin( 1 )
+		self.Target:GetActiveWeapon().WModel2:SetMaterial("")
+		self.Owner:GetActiveWeapon().WModel2:SetMaterial("")
 	end 
 end
 else
@@ -465,8 +485,10 @@ end
 
 	if blegh:Team() == TEAM_RED or blegh:Team() == TEAM_NEUTRAL then
 		blegh:SetSkin( 0 )
+		self.Target:GetActiveWeapon().WModel2:SetMaterial("")
 	else
 		blegh:SetSkin( 1 )
+		self.Target:GetActiveWeapon().WModel2:SetMaterial("")
 	end 
 end]]
 
@@ -489,8 +511,10 @@ end]]
 				--self.Owner:SendLua( surface.PlaySound( "weapons/weapon_crit_charged_off.wav" ) )
 				if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
 					self.Target:SetSkin( 0 )
+					self.Target:GetActiveWeapon().WModel2:SetMaterial("")
 				else
 					self.Target:SetSkin( 1 )
+					self.Target:GetActiveWeapon().WModel2:SetMaterial("")
 				end 
 				
 			end

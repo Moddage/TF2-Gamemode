@@ -77,68 +77,23 @@ function SWEP:InitializeCModel()
 	end
 end
 
-function SWEP:InitializeWModel2()
-	if not self.WorldModelOverride then return end
---Msg("InitializeWModel2\n")
-	local wmodel = self.WorldModelOverride2 or self.WorldModelOverride or self.WorldModel
+-- Attached viewmodels seem to lose their parent when the player exits a vehicle, we'll force ViewModelDrawn to re-parent them to the player's viewmodel if the player has entered a vehicle
+local LastVehicle = NULL
+hook.Add("Think", "TFCheckPlayerInVehicle", function()
+	local v = LocalPlayer():GetVehicle()
 	
-	if IsValid(self.WModel2) then
-		self.WModel2:SetModel(wmodel)
-	else
-		self.WModel2 = ents.CreateClientProp()
-		if not IsValid(self.WModel2) then return end
-		
-		self.WModel2:SetPos(self.Owner:GetPos())
-		self.WModel2:SetModel(wmodel)
-		self.WModel2:SetAngles(self.Owner:GetAngles())
-		self.WModel2:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE))
-		self.WModel2:SetParent(self.Owner)
-		self.WModel2:SetNoDraw(true)
-		self.WModel2:SetColor(Color(255, 255, 255))
-		
-		if wmodel == "models/weapons/w_models/w_shotgun.mdl" then
-			self.WModel2:SetMaterial("models/weapons/w_shotgun_tf/w_shotgun_tf")
+	if v ~= LastVehicle then
+		if IsValid(v) then
+			for _,w in pairs(LocalPlayer():GetWeapons()) do
+				w.FixViewModel = true
+			end
 		end
+		LastVehicle = v
 	end
-	
-	if IsValid(self.WModel2) then
-		self.WModel2.Player = self.Owner
-		self.WModel2.Weapon = self
-		
-		if self.MaterialOverride then
-			self.WModel2:SetMaterial(self.MaterialOverride)
-		end
-	end
-end
+end)
 
 function SWEP:InitializeAttachedModels()
 --Msg("InitializeAttachedModels\n")
-	if IsValid(self.AttachedWModel) then
-		if self.AttachedWorldModel then
-			self.AttachedWModel:SetModel(self.AttachedWorldModel)
-		else
-			self.AttachedWModel:Remove()
-		end
-	elseif self.AttachedWorldModel then
-		local ent = (IsValid(self.WModel2) and self.WModel2) or self
-		
-		self.AttachedWModel = ents.CreateClientProp()
-		self.AttachedWModel:SetPos(ent:GetPos())
-		self.AttachedWModel:SetModel(wmodel)
-		self.AttachedWModel:SetAngles(ent:GetzAngles())
-		self.AttachedWModel:AddEffects(EF_BONEMERGE)
-		self.AttachedWModel:SetParent(ent)
-		self.AttachedWModel:SetNoDraw(true)
-	end
-	
-	if IsValid(self.AttachedWModel) then
-		self.AttachedWModel.Player = self.Owner
-		self.AttachedWModel.Weapon = self
-		
-		if self.MaterialOverride then
-			self.AttachedWModel:SetMaterial(self.MaterialOverride)
-		end
-	end
 	
 	if IsValid(self.AttachedVModel) then
 		if self.AttachedViewModel then
@@ -442,11 +397,3 @@ usermessage.Hook("PlayTFWeaponWorldReload", function(msg)
 	end
 end)
 
-hook.Add("EntityRemoved", "TFWeaponRemoved", function(ent)
-	if ent.IsTFWeapon then
-		if IsValid(ent.CModel) then ent.CModel:Remove() end
-		if IsValid(ent.WModel2) then ent.WModel2:Remove() end
-		if IsValid(ent.AttachedVModel) then ent.AttachedVModel:Remove() end
-		if IsValid(ent.AttachedWModel) then ent.AttachedWModel:Remove() end
-	end
-end)

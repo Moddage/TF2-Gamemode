@@ -62,7 +62,7 @@ function EFFECT:Init(data)
 				effectdata:SetOrigin(pl:GetPos())
 				effectdata:SetAngles(pl:GetAngles())
 				effectdata:SetNormal(Vector(0,0,1))
-				effectdata:SetRadius(1)
+				effectdata:SetRadius(8)
 			util.Effect("tf_gib", effectdata)
 		end
 	end

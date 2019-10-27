@@ -217,7 +217,7 @@ function ENT:StartTouch(ent)
 			currentweapon.BaseDamage = 18
 			currentweapon.MaxDamageRampUp = 0.75
 			currentweapon.MaxDamageFalloff = 0.6
-			ent.AmmoMax[TF_PRIMARY] = 400
+			ent.AmmoMax[TF_PRIMARY] = 600
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $300 dollars for their "..currentweapon:GetItemData().item_name)
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
@@ -679,6 +679,7 @@ currentweapon.Primary.Delay          = 0.015
 		if currentweapon:GetClass() == "tf_weapon_pistol_scout" then
 			currentweapon.Primary.Delay          = 0.08
 			currentweapon.Primary.ClipSize         = 16
+			currentweapon.ReloadTime = 0.71
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
@@ -710,6 +711,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.08
 			currentweapon.BaseDamage = 12
 			currentweapon.Primary.ClipSize         = 16
+			currentweapon.ReloadTime = 0.71
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
@@ -841,6 +843,9 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.Primary.Delay          = 0.07
 			currentweapon.BaseDamage = 65
 			currentweapon.Primary.ClipSize			= 80
+			currentweapon.ReloadTime = 0.71
+			ent:ConCommand("tf_upgradeweprapidfire2clientonly")
+			ent.AmmoMax[TF_PRIMARY] = 400
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Upgrades with $400 dollars for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)
@@ -857,7 +862,7 @@ currentweapon.Primary.Delay          = 0.015
 			currentweapon.MaxHealRate = 252
 			currentweapon.MinLastDamageTime = 18
 			currentweapon.MaxLastDamageTime = 19
-			currentweapon.UberchargeRate = 12
+			currentweapon.UberchargeRate = 6
 			PrintMessage( HUD_PRINTTALK, "Player "..ent:Nick().." bought Medigun upgrades for their "..currentweapon:GetItemData().item_name )
 			timer.Simple(0.1, function()
 				ent:EmitSound("mvm/mvm_bought_upgrade.wav", 80, 100)

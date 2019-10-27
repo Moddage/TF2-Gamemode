@@ -1191,6 +1191,9 @@ end)
 concommand.Add("tf_upgradeweprapidfireclientonly", function(ply)
 	ply:GetActiveWeapon().Primary.Delay = 0.15 
 end)
+concommand.Add("tf_upgradeweprapidfire2clientonly", function(ply)
+	ply:GetActiveWeapon().Primary.Delay = 0.07
+end)
 concommand.Add("l4d_changeclass", L4DClassSelection)
 concommand.Add("l4d2_changeclass", L4DClassSelection)
 concommand.Add("tf_changeclass", ClassSelection)

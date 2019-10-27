@@ -550,12 +550,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		animent:SetAngles(ply:GetAngles())
 		animent:Spawn()
 		animent:Activate()
-		if ent:IsPlayer() and ent:HasDeathFlag(DF_DECAP) then
-			umsg.Start("GibPlayerHead")
-				umsg.Entity(ent)
-				umsg.Short(ent.DeathFlags)
-			umsg.End()
-		end
 
 		local b1 = animent:LookupBone("bip_head")
 		local b2 = animent:LookupBone("bip_neck")
@@ -592,7 +586,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			end
 			ply:EmitSound("MVM_Weapon_BaseballBat.HitFlesh")
 			local rag2 = ents.Create( 'prop_physics' )
-			rag2:SetPos(animent:GetPos())
+			rag2:SetPos(animent:GetBonePosition(animent:LookupBone("bip_head")))
 			rag2:SetAngles(animent:GetAngles())
 			if ply:GetPlayerClass() != "demoman" and ply:GetPlayerClass() != "engineer" then
 				rag2:SetModel("models/bots/gibs/"..ply:GetPlayerClass().."bot_gib_head.mdl")
@@ -607,7 +601,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			rag2:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
 		elseif not ply:IsBot() then
 			local rag2 = ents.Create( 'prop_physics' )
-			rag2:SetPos(animent:GetPos())
+			rag2:SetPos(animent:GetBonePosition(animent:LookupBone("bip_head")))
 			rag2:SetAngles(animent:GetAngles())
 			if ply:GetPlayerClass() == "scout" then
 				rag2:SetModel("models/player/gibs/scoutgib007.mdl")
@@ -654,7 +648,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			end
 			ply:EmitSound("MVM_Weapon_BaseballBat.HitFlesh")
 			local rag2 = ents.Create( 'prop_physics' )
-			rag2:SetPos(animent:GetPos())
+			rag2:SetPos(animent:GetBonePosition(animent:LookupBone("bip_head")))
 			rag2:SetAngles(animent:GetAngles())
 			if ply:GetPlayerClass() != "demoman" and ply:GetPlayerClass() != "engineer" then
 				rag2:SetModel("models/bots/gibs/"..ply:GetPlayerClass().."bot_gib_head.mdl")
@@ -671,7 +665,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		elseif ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 0 then
 			animent:EmitSound("player/flow.wav", 95, math.random(98, 100))
 			local rag2 = ents.Create( 'prop_physics' )
-			rag2:SetPos(animent:GetPos())
+			rag2:SetPos(animent:GetBonePosition(animent:LookupBone("bip_head")))
 			rag2:SetAngles(animent:GetAngles())
 			if ply:GetPlayerClass() == "scout" then
 				rag2:SetModel("models/player/gibs/scoutgib007.mdl")
@@ -713,6 +707,51 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		end
 	
 		timer.Simple( animent:SequenceDuration( "primary_death_headshot" ) + 0.2, function() -- After the sequence is done, spawn the ragdoll
+			ply:CreateRagdoll()
+			local rag = ply:GetRagdollEntity()
+			SetEntityStuff( rag, animent )
+			rag:Spawn() 
+			rag:Activate()
+			rag:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+			TransferBones( animent, rag )
+			animent:Remove()
+		end )
+	end	
+	if ply:HasDeathFlag(DF_DECAP) and ply:IsHL2() then
+		inflictor:EmitSound("TFPlayer.Decapitated")
+		local animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+		animent:SetModel(ply:GetModel())
+		animent:SetSkin(ply:GetSkin())
+		animent:SetPos(ply:GetPos())
+		animent:SetAngles(ply:GetAngles())
+		animent:Spawn()
+		animent:Activate()
+
+		local b1 = animent:LookupBone("ValveBiped.Bip01_Head1")
+	
+		local m1 = animent:GetBoneMatrix(b1)
+		animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
+		animent:PhysicsInit( SOLID_OBB )
+		animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+		animent:SetSequence( "death_01" )
+		animent:SetPlaybackRate( 1 )
+		animent.AutomaticFrameAdvance = true
+		animent:ManipulateBoneScale(b1, Vector(0,0,0))
+		if animent:GetModel() == "models/player/engineer.mdl" then
+			animent:ManipulateBoneScale(b3, Vector(0,0,0))
+		end
+		if ply:GetRagdollEntity():IsValid() then
+			ply:GetRagdollEntity():Remove()
+		end
+		function animent:Think() -- This makes the animation work
+			if ply:GetRagdollEntity():IsValid() then
+				ply:GetRagdollEntity():Remove()
+			end
+			self:NextThink( CurTime() )
+			return true
+		end
+	
+		timer.Simple( animent:SequenceDuration( "death_01" ) + 0.2, function() -- After the sequence is done, spawn the ragdoll
 			ply:CreateRagdoll()
 			local rag = ply:GetRagdollEntity()
 			SetEntityStuff( rag, animent )

@@ -365,7 +365,9 @@ function ITEM:SetupItem(item)
 						self:SetupCModelActivities(item)
 					end
 				else
-					self:SetupCModelActivities()
+					self:SetupCModelActivities() 
+					self:InitializeWModel2()
+					self.WorldModelOverride2 = item.model_world
 					self.ViewModelOverride = nil
 				end
 			end
@@ -382,6 +384,8 @@ function ITEM:SetupItem(item)
 					end
 				else
 					self:SetupCModelActivities()
+					self:InitializeWModel2()
+					self:InitializeAttachedModels()
 					self.ViewModelOverride = nil
 				end
 			end
@@ -428,11 +432,10 @@ function ITEM:SetupItem(item)
 					end
 				end
 			
-			self.WorldModelOverride2 = item.model_world
+			
 		
 			-- todo: optimize clientside models, certainly don't need to create up to 4 clientside entities for each weapon
 			self:InitializeCModel()
-			self:InitializeWModel2()
 			self:InitializeAttachedModels()
 		end
 	end

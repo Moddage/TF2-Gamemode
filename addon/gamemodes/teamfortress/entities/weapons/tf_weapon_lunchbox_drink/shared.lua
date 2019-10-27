@@ -5,6 +5,28 @@ end
 if CLIENT then
 	SWEP.PrintName			= "Bonk! Atomic Punch"
 SWEP.Slot				= 1
+ 
+function SWEP:ResetParticles(state_override)
+	self:CallBaseFunction("ResetParticles", state_override)
+	
+	if not self.DoneDeployParticle then
+		if self.Owner==LocalPlayer() and not LocalPlayer():ShouldDrawLocalPlayer() then
+			local ent = self:GetViewModelEntity()
+			if IsValid(ent) then
+				ParticleEffectAttach("energydrink_splash", PATTACH_POINT_FOLLOW, ent, ent:LookupAttachment("drink_spray"))
+			end
+		end
+		
+		self.DoneDeployParticle = true
+	end
+end 
+
+function SWEP:Deploy()
+	self:CallBaseFunction("Deploy")
+	
+	ParticleEffectAttach("energydrink_splash", PATTACH_POINT_FOLLOW, ent, ent:LookupAttachment("drink_spray"))
+end
+
 end
 
 SWEP.Base				= "tf_weapon_gun_base"

@@ -187,29 +187,33 @@ end)
 concommand.Add("tf_mvm_wins", function(ply, cmd)
 	for k,v in pairs( player.GetAll() ) do
 		if v:Team() != TEAM_BLU then
-			if v:Team() == TEAM_SPECTATOR then return end
-			v:SendLua([[surface.PlaySound("music/mvm_lost_wave.wav")]])
-			v:StripWeapons()	
-			timer.Simple(5, function() 
-				v:Spawn()
- 
+			if v:Team() == TEAM_SPECTATOR then
+				v:SendLua([[surface.PlaySound("misc/your_team_lost.wav")]])
+				v:PrintMessage( HUD_PRINTCENTER, "The robots deployed the bomb! Game over for Mann Co!" )
+			else
+				v:SendLua([[surface.PlaySound("music/mvm_lost_wave.wav")]])
+				v:StripWeapons()	
+				timer.Simple(5, function() 
+					v:Spawn()
+	 
 
-				v:SendLua([[surface.PlaySound("vo/mvm_get_to_upgrade01.mp3")]])
-			end)
-			for k,v in pairs(ents.FindByName("gate1_spawn_door")) do
-				v:Fire("SetSpeed", "80")
-				v:Fire("Close")
-			end
-			for k,v in pairs(ents.FindByName("gate2_spawn_door")) do
-				v:Fire("SetSpeed", "80")
-				v:Fire("Close")
-			end
-			for k,v in pairs(ents.FindByName("gate0_entrance_door")) do
-				v:Fire("SetSpeed", "80")
-				v:Fire("Open")
-			end
-			for k,v in pairs(ents.FindByClass("info_player_bluspawn")) do
-				v:Fire("Kill")
+					v:SendLua([[surface.PlaySound("vo/mvm_get_to_upgrade01.mp3")]])
+				end)
+				for k,v in pairs(ents.FindByName("gate1_spawn_door")) do
+					v:Fire("SetSpeed", "80")
+					v:Fire("Close")
+				end
+				for k,v in pairs(ents.FindByName("gate2_spawn_door")) do
+					v:Fire("SetSpeed", "80")
+					v:Fire("Close")
+				end
+				for k,v in pairs(ents.FindByName("gate0_entrance_door")) do
+					v:Fire("SetSpeed", "80")
+					v:Fire("Open")
+				end
+				for k,v in pairs(ents.FindByClass("info_player_bluspawn")) do
+					v:Fire("Kill")
+				end
 			end
 		end
 		if v:Team() == TEAM_BLU then 
@@ -218,7 +222,7 @@ concommand.Add("tf_mvm_wins", function(ply, cmd)
 				v:Spawn() 
 			end) 
 		end
-		if v:Team() == TEAM_SPECTATOR then 
+		if v:GetObserverMode() == OBS_MODE_ROAMING then 
 			v:SendLua([[surface.PlaySound("misc/your_team_lost.wav")]])
 			v:PrintMessage( HUD_PRINTCENTER, "The robots deployed the bomb! Game over for Mann Co!" )
 		end

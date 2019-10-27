@@ -5,13 +5,32 @@ end
 if CLIENT then
 
 SWEP.PrintName			= "The Eyelander"
-SWEP.HasCModel = true
 SWEP.Slot				= 2
 
-SWEP.RenderGroup 		= RENDERGROUP_BOTH
-
 function SWEP:InitializeCModel()
-	self:CallBaseFunction("InitializeCModel")
+	--Msg("InitializeCModel\n")
+	local vm = self.Owner:GetViewModel()
+	
+	if IsValid(self.CModel) then
+		self.CModel:SetModel(self:GetItemData().model_player)
+	elseif IsValid(vm) then
+		self.CModel = ents.CreateClientProp()
+		
+		self.CModel:SetPos(vm:GetPos())
+		self.CModel:SetModel(self:GetItemData().model_player)
+		self.CModel:SetAngles(vm:GetAngles())
+		self.CModel:AddEffects(EF_BONEMERGE)
+		self.CModel:SetParent(vm)
+	end
+	
+	if IsValid(self.CModel) then
+		self.CModel.Player = self.Owner
+		self.CModel.Weapon = self
+		
+		if self.MaterialOverride then
+			self.CModel:SetMaterial(self.MaterialOverride)
+		end
+	end	
 	
 	for _,v in pairs(self.Owner:GetTFItems()) do
 		if v:GetClass() == "tf_wearable_item_demoshield" then
@@ -28,7 +47,69 @@ function SWEP:InitializeCModel()
 end
 
 function SWEP:ViewModelDrawn()
-	self:CallBaseFunction("ViewModelDrawn")
+	local vm = self.Owner:GetViewModel()
+	vm.Player = self.Owner
+	
+	if not self.IsDeployed then
+		local seq = vm:GetSequence()
+		if vm:GetSequenceActivity(seq) == self.VM_DRAW then
+			self.DeploySequence = seq
+		end
+		
+		if self.Owner.TempAttributes and self.Owner.TempAttributes.DeployTimeMultiplier then
+			vm:SetPlaybackRate(1 / self.Owner.TempAttributes.DeployTimeMultiplier)
+		else
+			vm:SetPlaybackRate(1)
+		end
+	else
+		if self.DeploySequence ~= true and vm:GetSequence() ~= self.DeploySequence then
+			vm:SetPlaybackRate(1)
+			self.DeploySequence = true
+		end
+	end	
+	
+	if self.FixViewModel then
+		if IsValid(self.CModel) then
+			self.CModel:SetParent(vm)
+		end
+		self.FixViewModel = false
+	end
+	
+	if self.ViewModelOverride --[[and self:GetModel()~=self.ViewModelOverride]] then
+		self.ViewModel = self.ViewModelOverride
+		self:SetModel(self.ViewModelOverride)
+		vm:SetModel(self.ViewModelOverride)
+	end
+	
+	if self.HasCModel and not IsValid(self.CModel) then
+		return
+	end
+	
+	self.DrawingViewModel = true
+	if IsValid(self.CModel) then
+		self.CModel:SetSkin(self.WeaponSkin or 0)
+		self.CModel:SetMaterial(self.WeaponMaterial or 0)
+	end
+	if IsValid(self.AttachedVModel) then
+		self.AttachedVModel:SetSkin(self.WeaponSkin or 0)
+		//self.AttachedVModel:SetMaterial(self.WeaponMaterial or 0)
+	end
+	self.Owner:GetViewModel():SetSkin(self.WeaponSkin or 0)
+	self.Owner:GetViewModel():SetMaterial(self.WeaponMaterial or 0)
+	
+	if self.ViewModelFlip then
+		render.CullMode(MATERIAL_CULLMODE_CW)
+	end
+	self:StartVisualOverrides()
+	
+	self:RenderCModel()
+	
+	self:EndVisualOverrides()
+	if self.ViewModelFlip then
+		render.CullMode(MATERIAL_CULLMODE_CCW)
+	end
+	
+	self:ModelDrawn(true)
 	
 	if IsValid(self.ShieldEntity) and IsValid(self.ShieldEntity.CModel) then
 		self.ShieldEntity:StartVisualOverrides()

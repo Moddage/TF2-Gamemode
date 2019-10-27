@@ -164,25 +164,7 @@ function PANEL:Paint()
 					surface.DrawTexturedRect(30*Scale, ypos-7*Scale, 13*Scale, 13*Scale)
 				end
 			end
-		end		
-		if pl:GetModelScale() == 1.75 then
-			local crit = surface.GetTextureID("hud/leaderboard_class_critical")
-			surface.SetTexture(crit)
-			surface.SetDrawColor( 255, 0, 0, 255 )
-			surface.DrawTexturedRect(30*Scale, ypos-7*Scale, 13*Scale, 13*Scale)
-			if c and c.ScoreboardImage then
-				local tex
-				if d then
-					tex = c.ScoreboardImage[2]
-				else
-					tex = c.ScoreboardImage[1]
-				end
-				if tex then
-					surface.SetTexture(tex)
-					surface.DrawTexturedRect(30*Scale, ypos-7*Scale, 13*Scale, 13*Scale)
-				end
-			end
-		end
+		end	
 		ypos = ypos + math.floor(22*Scale) 
 	end
 	

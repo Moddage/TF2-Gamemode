@@ -126,9 +126,13 @@ local PlayerScore = {
 function PANEL:Init()
 	self:SetPaintBackgroundEnabled(false)
 	self:SetVisible(false)
-	
-	self.BluePlayerList = vgui.Create("TFMVMScoreboardPlayerList", self)
-	self.BluePlayerList:SetTeam(TEAM_BLU)
+	if string.find(game.GetMap(), "mvm_") then
+		self.BluePlayerList = vgui.Create("TFMVMScoreboardPlayerList", self)
+		self.BluePlayerList:SetTeam(TEAM_BLU)
+	else
+		self.BluePlayerList = vgui.Create("TFScoreboardPlayerList", self)
+		self.BluePlayerList:SetTeam(TEAM_BLU)	
+	end
 	self.RedPlayerList = vgui.Create("TFScoreboardPlayerList", self)
 	self.RedPlayerList:SetTeam(TEAM_RED)
 	

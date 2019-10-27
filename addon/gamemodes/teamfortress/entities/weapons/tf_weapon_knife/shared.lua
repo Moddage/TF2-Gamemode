@@ -203,7 +203,11 @@ function SWEP:Holster()
 	self.RequestedReload = nil
 	self.NextDeployed = nil
 	self.IsDeployed = nil
-	
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:Remove()
+		end
+	end
 	if IsValid(self.Owner) then
 		self.Owner.LastWeapon = self:GetClass()
 	end

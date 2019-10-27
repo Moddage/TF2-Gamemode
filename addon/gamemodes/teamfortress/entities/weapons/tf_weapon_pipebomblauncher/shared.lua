@@ -42,7 +42,7 @@ SWEP.ShootSound = Sound("Weapon_StickyBombLauncher.Single")
 SWEP.ShootCritSound = Sound("Weapon_StickyBombLauncher.SingleCrit")
 SWEP.DetonateSound = Sound("Weapon_StickyBombLauncher.ModeSwitch")
 SWEP.ChargeSound = Sound("Weapon_StickyBombLauncher.ChargeUp")
-SWEP.ReloadSound = Sound("Weapon_FlareGun.WorldReload")
+SWEP.ReloadSound = Sound("Weapon_StickyBombLauncher.WorldReload")
 SWEP.Primary.ClipSize		= 8
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_SECONDARY
@@ -232,7 +232,7 @@ function SWEP:Think()
 			HudBowCharge:SetProgress(0)
 		end
 	end
-
+	
 	
 	if self.NextReload and CurTime()>=self.NextReload then
 		self:SetClip1(self:Clip1() + self.AmmoAdded)
@@ -252,23 +252,40 @@ function SWEP:Think()
 			self.CanInspect = true
 			if self.ReloadSingle then
 				--self:SendWeaponAnim(ACT_RELOAD_FINISH)
-				self.Owner:DoAnimationEvent(ACT_DOD_IDLE_ZOOMED, true)	 
 				self:SendWeaponAnim(self.VM_RELOAD_FINISH)
 				self.CanInspect = true
-				--self.Owner:SetAnimation(10001) -- reload finish
+				--self.Owner:SetAnimation(10001) -- reload finish	
+				if self:GetHoldType() == "PRIMARY" and self.Owner:GetPlayerClass() == "engineer" or self.Owner:GetPlayerClass() == "scout" or self.Owner:GetPlayerClass() == "demoman" then
+					self.Owner:DoAnimationEvent(ACT_SMG2_DRAW2, true)
+				elseif self:GetHoldType() == "PRIMARY" and self.Owner:GetPlayerClass() != "engineer" then
+					self.Owner:DoAnimationEvent(ACT_SMG2_IDLE2, true)
+				elseif self:GetHoldType() == "SECONDARY" and self.Owner:GetPlayerClass() == "heavy" or self.Owner:GetPlayerClass() == "pyro" or self.Owner:GetPlayerClass() == "demoman" then 
+					self.Owner:DoAnimationEvent(ACT_SMG2_RELOAD2, true)	
+				elseif self:GetHoldType() == "SECONDARY" and self.Owner:GetPlayerClass() != "heavy"  then
+					self.Owner:DoAnimationEvent(ACT_SMG2_FIRE2, true)				
+				end
 				self.NextIdle = CurTime() + self:SequenceDuration()
 			else
-				self.Owner:DoAnimationEvent(ACT_DOD_IDLE_ZOOMED, true)	
 				self:SendWeaponAnim(self.VM_IDLE)
 				self.NextIdle = nil
 			end
 			self.NextReload = nil
 		else
 			self:SendWeaponAnim(self.VM_RELOAD)
-			--self.Owner:SetAnimation(10000)		
+			--self.Owner:SetAnimation(10000)	
+			if SERVER then	
 			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+			end
 			if self.ReloadTime == 0.2 then
 				self.Owner:GetViewModel():SetPlaybackRate(2)
+			end
+			if self.ReloadTime == 1.1 then 
+				if self:GetItemData().model_player == "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl" then
+					if CLIENT then
+						self.Owner:EmitSound("Weapon_DumpsterRocket.Reload")
+					end
+				end
+				self.Owner:GetViewModel():SetPlaybackRate(0.7)
 			end
 			self.NextReload = CurTime() + (self.ReloadTime)
 				
@@ -283,10 +300,20 @@ function SWEP:Think()
 	
 	if self.NextReloadStart and CurTime()>=self.NextReloadStart then
 		self:SendWeaponAnim(self.VM_RELOAD)
-		--self.Owner:SetAnimation(10000) -- reload loop
-		self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+		--self.Owner:SetAnimation(10000) -- reload loop	
+		if SERVER then	
+			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+		end
 		if self.ReloadTime == 0.2 then
 			self.Owner:GetViewModel():SetPlaybackRate(2)
+		end
+		if self.ReloadTime == 1.1 then 
+			if self:GetItemData().model_player == "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl" then
+				if CLIENT then
+					self.Owner:EmitSound("Weapon_DumpsterRocket.Reload")
+				end
+			end
+			self.Owner:GetViewModel():SetPlaybackRate(0.7)
 		end
 		self.NextReload = CurTime() + (self.ReloadTime)
 		
@@ -300,6 +327,7 @@ function SWEP:Think()
 		
 		self.NextReloadStart = nil
 	end
+	
 	
 	if self.Charging then
 		if (not self.Owner:KeyDown(IN_ATTACK) or CurTime() - self.ChargeStartTime > 4) then

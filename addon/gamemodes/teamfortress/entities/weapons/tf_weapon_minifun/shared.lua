@@ -14,20 +14,9 @@ end
 
 end
 
-
-sound.Add(
-{
-name = "Weapon_Tomislav.ShootLoop",
-channel = "CHAN_AUTO",
-pitch = 95,
-volume = "VOL_NORM",
-level = 95,
-sound = ")weapons/tomislav_shoot.wav"
-} )
-
 if CLIENT then
 
-SWEP.PrintName			= "Tomislav	"
+SWEP.PrintName			= "Minigun"
 SWEP.Slot				= 0
 SWEP.barrelRotation 		= 0
 SWEP.barrelSpeed 			= 1
@@ -81,15 +70,6 @@ function SWEP:InitializeCModel()
 	end
 end
 
-function SWEP:InitializeWModel2()
-	self:CallBaseFunction("InitializeWModel2")
-	
-	if IsValid(self.WModel2) then
-		if string.lower(self.WModel2:GetModel()) == "models/weapons/c_models/c_leviathan/c_leviathan.mdl" then
-			self.WModel2.LeviathanBarrelFix = true
-		end
-	end
-end
 
 function SWEP:MinigunViewmodelReset()
 	if self.Owner==LocalPlayer() then
@@ -101,9 +81,13 @@ end
 
 SWEP.Base				= "tf_weapon_gun_base"
 
-SWEP.ViewModel			= "models/weapons/c_models/c_heavy_arms.mdl"
+SWEP.ViewModel			= "models/weapons/v_models/v_minigun_heavy.mdl"
 SWEP.WorldModel			= "models/weapons/c_models/c_minigun/c_minigun_natascha.mdl"
 SWEP.Crosshair = "tf_crosshair4"
+
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
 
 SWEP.MuzzleEffect = "muzzle_minigun_constant"
 SWEP.MuzzleOffset = Vector(20, 3, -10)
@@ -113,13 +97,15 @@ PrecacheParticleSystem("bullet_tracer01_red")
 PrecacheParticleSystem("bullet_tracer01_red_crit")
 PrecacheParticleSystem("bullet_tracer01_blue")
 PrecacheParticleSystem("bullet_tracer01_blue_crit")
-
-SWEP.BaseDamage = 1.9
+SWEP.barrelRotation 		= 0
+SWEP.barrelSpeed 			= 1
+SWEP.barrelValue1 			= 0
+SWEP.BaseDamage = 5
 SWEP.DamageRandomize = 0
-SWEP.MaxDamageRampUp = 0.9
+SWEP.MaxDamageRampUp = 1
 SWEP.MaxDamageFalloff = 0.2
 
-SWEP.BulletsPerShot = 6
+SWEP.BulletsPerShot = 4
 SWEP.BulletSpread = 0.08
 
 SWEP.Primary.ClipSize		= -1
@@ -131,6 +117,7 @@ SWEP.Secondary.Delay          = 0.1
 SWEP.IsRapidFire = true
 
 SWEP.HoldType = "PRIMARY"
+SWEP.HoldTypeHL2 = "crossbow"
 
 SWEP.ReloadSound = Sound("Weapon_Minifun.Reload")
 SWEP.EmptySound = Sound("Weapon_Minifun.ClipEmpty")
@@ -139,16 +126,30 @@ SWEP.SpecialSound1 = Sound("Weapon_Minifun.WindUp")
 SWEP.SpecialSound2 = Sound("Weapon_Minifun.WindDown")
 SWEP.SpecialSound3 = Sound("Weapon_Minifun.Spin")
 SWEP.ShootCritSound = Sound("Weapon_Minifun.FireCrit")
+SWEP.DeploySound = Sound("weapons/draw_default.wav")
 
 function SWEP:CreateSounds()
-	self.SpinUpSound = CreateSound(self.Owner, self.SpecialSound1)
-	self.SpinDownSound = CreateSound(self.Owner, self.SpecialSound2)
-	self.SpinSound = CreateSound(self.Owner, self.SpecialSound3)
-	self.EmptySound = CreateSound(self.Owner, self.EmptySound)
-	self.ShootSoundLoop = CreateSound(self.Owner, self.ShootSound2)
-	self.ShootCritSoundLoop = CreateSound(self.Owner, self.ShootCritSound)
+	self.SpinUpSound = CreateSound(self, self.SpecialSound1)
+	self.SpinDownSound = CreateSound(self, self.SpecialSound2)
+	self.SpinSound = CreateSound(self, self.SpecialSound3)
+	self.ShootSoundLoop = CreateSound(self, self.ShootSound2)
+	self.ShootCritSoundLoop = CreateSound(self, self.ShootCritSound)
 	
 	self.SoundsCreated = true
+end
+
+if SERVER then
+
+function SWEP:InitializeWModel2()
+	self:CallBaseFunction("InitializeWModel2")
+	
+	if IsValid(self.WModel2) then
+		if string.lower(self.WModel2:GetModel()) == "models/weapons/c_models/c_leviathan/c_leviathan.mdl" then
+			self.WModel2.LeviathanBarrelFix = true
+		end
+	end
+end
+
 end
 
 function SWEP:SpinUp()
@@ -169,8 +170,8 @@ function SWEP:SpinUp()
 	
 	self.Spinning = true
 	
-	self.NextEndSpinUp = CurTime() + 1 * (self.MinigunSpinupMultiplier or 1)
-	self.NextEndSpinUpSound = CurTime() + 1
+	self.NextEndSpinUp = CurTime() + 0.87 * (self.MinigunSpinupMultiplier or 1)
+	self.NextEndSpinUpSound = CurTime() + 0.87
 	self.NextEndSpinDown = nil
 	self.NextIdle = nil
 	
@@ -318,7 +319,8 @@ function SWEP:SecondaryAttack()
 		self:SpinUp()
 	end
 end
-function SWEP:Reload()	
+
+function SWEP:Reload()
 end
 
 function SWEP:Think()
@@ -360,8 +362,8 @@ function SWEP:Think()
 	end
 	
 	if self.NextEndSpinUpSound and CurTime()>=self.NextEndSpinUpSound then
-		self.SpinUpSound:Stop()
-		self.SpinSound:Play()
+		self:StopSound(self.SpecialSound1)
+		self:EmitSound(self.SpecialSound3)
 		if self.Primary.Delay == 0.06 then
 			self.SpinSound:ChangePitch(120)
 		end
@@ -390,6 +392,52 @@ function SWEP:Think()
 		end
 	end
 	
+	if SERVER then
+	
+		if self:GetNetworkedBool("Spinning") then
+			--[[if self:GetItemData().attach_to_hands == 1 then
+				return
+			end]]
+			
+			if self.barrelSpeed <= 12 then
+			
+				self.barrelRotation = self.barrelRotation + self.barrelSpeed
+				self.barrelSpeed = self.barrelSpeed + ( CurTime() - self.barrelValue1 ) * 22
+					
+			end
+				
+			if self.barrelSpeed > 12 then
+				
+				self.barrelSpeed = 12
+					
+			end
+				
+			if self.barrelRotation > 360 then
+				
+				self.barrelRotation = self.barrelRotation - 360
+					
+			end
+				
+		end
+		
+		if not self:GetNetworkedBool("Spinning") then
+		
+			if self.barrelSpeed > 0 then
+			
+				self.barrelRotation = self.barrelRotation + self.barrelSpeed
+				self.barrelSpeed = self.barrelSpeed - ( CurTime() - self.barrelValue1 ) * 30
+				
+			end
+			
+			if self.barrelSpeed < 0 then
+			
+				self.barrelSpeed = 0
+				
+			end
+			
+		end
+		
+	end
 	if CLIENT then
 	
 		if self:GetNetworkedBool("Spinning") then
@@ -439,7 +487,7 @@ function SWEP:Think()
 	
 	if self.barrelSpeed == 0 then
 		if self:GetItemData().attach_to_hands == 1 then
-			if CLIENT and self.CModel:LookupBone("barrel") then
+			if CLIENT and IsValid(self.CModel) and self.CModel:LookupBone("barrel") then
 				self:StopSound(self.SpecialSound2)
 			end
 		else
@@ -448,23 +496,24 @@ function SWEP:Think()
 	end
 	
 	if ( CLIENT ) then
-		if self:GetItemData().attach_to_hands == 1 then
+		if self:GetItemData().attach_to_hands == 1 and IsValid(self.CModel) then
 		bone = self.CModel:LookupBone("barrel")
 			if bone then
 				self.CModel:ManipulateBoneAngles( bone, Angle(0,self.barrelRotation,0) )
-				self.WModel2:ManipulateBoneAngles( bone, Angle(0,self.barrelRotation,0) )
 			else
 				return
 			end
 			else
-				self.Owner:GetViewModel():ManipulateBoneAngles( 2, Angle(0,0,self.barrelRotation) )
+				self.Owner:GetViewModel():ManipulateBoneAngles( 2, Angle(0,0,0) )
 		end
-		
-	else
-		//self.WModel2:ManipulateBoneAngles( bone, Angle(0,self.barrelRotation,0) )
 	end
-
-	self.barrelValue1 = CurTime()
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:ManipulateBoneAngles( self.WModel2:LookupBone("barrel"), Angle(0,self.barrelRotation,0) )
+		end
+	end
+	
+	self.barrelValue1 = CurTime() 
 	
 	self:Inspect()
 	
@@ -507,7 +556,7 @@ function SWEP:Holster()
 	
 	if self:GetItemData().attach_to_hands == 1 then
 
-	else
+	elseif self.Owner and IsValid(self.Owner:GetViewModel()) then
 		self.Owner:GetViewModel():ManipulateBoneAngles( 2, Angle(0,0,0) )
 	end
 	

@@ -146,6 +146,8 @@ function SWEP:Precache()
 	end
 end
 
+
+
 function SWEP:PreCalculateDamage(ent)
 	
 end
@@ -212,6 +214,137 @@ function SWEP:CalcViewModelView(vm, oldpos, oldang, newpos, newang)
 end
 
 
+hook.Add("EntityRemoved", "TFWeaponRemoved", function(ent)
+	if ent.IsTFWeapon then
+		if IsValid(ent.WModel2) then ent.WModel2:Remove() end
+		if IsValid(ent.AttachedWModel) then ent.AttachedWModel:Remove() end
+	end
+end)
+
+
+function SWEP:DrawWorldModel(from_postplayerdraw)
+	--self:CheckUpdateItem()
+	--self:SetNoDraw(true)
+	
+	-- this function is now called from PostPlayerDraw, don't do anything if it isn't
+	if IsValid(self.WModel2) and not from_postplayerdraw then
+		return
+	end
+	
+	if not gamemode.Call("ShouldDrawWorldModel", self.Owner) then
+		return
+	end
+	
+	self:StartVisualOverrides()
+	
+	self.DrawingViewModel = false
+	--if self.WorldModel and self.WorldModel~="" then
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:SetSkin(self.WeaponSkin or 0)
+			self.WModel2:SetMaterial(self.WeaponMaterial or 0)
+		end
+		if IsValid(self.AttachedWModel) then
+			self.AttachedWModel:SetSkin(self.WeaponSkin or 0)
+			self.AttachedWModel:SetMaterial(self.WeaponMaterial or 0)
+		end
+		--self:SetSkin(self.WeaponSkin or 0)
+	end
+	--end
+	
+	--[[
+	for _,v in pairs(self.Owner:GetWeapons()) do
+		if v~=self and v.PermanentWorldModel then
+			v:DrawWorldModel(from_postplayerdraw)
+		end
+	end
+	]]
+	
+	self:EndVisualOverrides()
+	--render.SetBlend(0)	-- Rendering the world model also re-renders the player
+	
+	self:ModelDrawn(false)
+end
+
+
+-- Instead of using using DrawWorldModel to render the world model, do it here (at least it guarantees that it will be always drawn if the player is visible)
+-- any potential problem with this?
+hook.Add("PostPlayerDraw", "ForceDrawTFWorldModel", function(pl)
+	if pl.RenderingWorldModel then
+		render.SetBlend(1)
+		return
+	end
+	
+	if IsValid(pl:GetActiveWeapon()) and IsValid(pl:GetActiveWeapon().WModel2) then
+		pl.RenderingWorldModel = true
+		pl:GetActiveWeapon():DrawWorldModel(true)
+		pl.RenderingWorldModel = false
+	end
+end)
+
+function SWEP:InitializeWModel2()
+--Msg("InitializeWModel2\n")
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:SetModel(self:GetItemData().model_player)
+		else
+			self.WModel2 = ents.Create( 'base_gmodentity' )
+			if not IsValid(self.WModel2) then return end
+			
+			self.WModel2:SetPos(self.Owner:GetPos())
+			self.WModel2:SetModel(self:GetItemData().model_player)
+			self.WModel2:SetAngles(self.Owner:GetAngles())
+			self.WModel2:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE))
+			self.WModel2:SetParent(self.Owner)
+			self.WModel2:SetColor(Color(255, 255, 255))
+			self.WModel2:DrawShadow( false )
+			
+			if wmodel == "models/weapons/w_models/w_shotgun.mdl" then
+				self.WModel2:SetMaterial("models/weapons/w_shotgun_tf/w_shotgun_tf")
+			end
+		end
+		
+		if IsValid(self.WModel2) then
+			self.WModel2.Player = self.Owner
+			self.WModel2.Weapon = self
+			
+			if self.MaterialOverride then
+				self.WModel2:SetMaterial(self.MaterialOverride)
+			end
+		end
+	end
+end
+
+function SWEP:InitializeAttachedModels()
+--Msg("InitializeAttachedModels\n")
+	if SERVER then
+		if IsValid(self.AttachedWModel) then
+			if self.AttachedWorldModel then
+				self.AttachedWModel:SetModel(self.AttachedWorldModel)
+			else
+				self.AttachedWModel:Remove()
+			end
+		elseif self.AttachedWorldModel then
+			local ent = (IsValid(self.WModel2) and self.WModel2) or self
+			
+			self.AttachedWModel = ents.Create( 'base_gmodentity' )
+			self.AttachedWModel:SetPos(ent:GetPos())
+			self.AttachedWModel:SetModel(self:GetItemData().model_player)
+			self.AttachedWModel:SetAngles(ent:GetAngles())
+			self.AttachedWModel:AddEffects(EF_BONEMERGE)
+			self.AttachedWModel:SetParent(ent)
+		end
+		
+		if IsValid(self.AttachedWModel) then
+			self.AttachedWModel.Player = self.Owner
+			self.AttachedWModel.Weapon = self
+			
+			if self.MaterialOverride then
+				self.AttachedWModel:SetMaterial(self.MaterialOverride)
+			end
+		end
+	end
+end
 
 function SWEP:Deploy()
 	--MsgFN("Deploy %s", tostring(self))
@@ -227,7 +360,14 @@ function SWEP:Deploy()
 			end
 		end
 	end	
-				
+	self:InitializeWModel2()
+	self:InitializeAttachedModels()
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:SetSkin(self.WeaponSkin or self.Owner:GetSkin())
+			self.WModel2:SetMaterial(self.WeaponMaterial or 0)
+		end
+	end
 	if self.Owner:IsPlayer() and not self.Owner:IsHL2() and self.Owner:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
 		if SERVER then
 			self.Owner:SetBloodColor(BLOOD_COLOR_MECH)
@@ -510,7 +650,11 @@ function SWEP:Holster()
 	self.RequestedReload = nil
 	self.NextDeployed = nil
 	self.IsDeployed = nil
-	
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:Remove()
+		end
+	end
 	if IsValid(self.Owner) then
 		self.Owner.LastWeapon = self:GetClass()
 	end
@@ -766,13 +910,13 @@ function SWEP:Think()
 				self:SendWeaponAnim(self.VM_RELOAD_FINISH)
 				self.CanInspect = true
 				--self.Owner:SetAnimation(10001) -- reload finish	
-				if self.Slot == 0 and self.Owner:GetPlayerClass() == "engineer" or self.Owner:GetPlayerClass() == "scout" or self.Owner:GetPlayerClass() == "demoman" then
+				if self:GetHoldType() == "PRIMARY" and self.Owner:GetPlayerClass() == "engineer" or self.Owner:GetPlayerClass() == "scout" or self.Owner:GetPlayerClass() == "demoman" then
 					self.Owner:DoAnimationEvent(ACT_SMG2_DRAW2, true)
-				elseif self.Slot == 0 and self.Owner:GetPlayerClass() != "engineer" then
+				elseif self:GetHoldType() == "PRIMARY" and self.Owner:GetPlayerClass() != "engineer" then
 					self.Owner:DoAnimationEvent(ACT_SMG2_IDLE2, true)
-				elseif self.Slot == 1 and self.Owner:GetPlayerClass() == "heavy" or self.Owner:GetPlayerClass() == "pyro" or self.Owner:GetPlayerClass() == "demoman" then 
+				elseif self:GetHoldType() == "SECONDARY" and self.Owner:GetPlayerClass() == "heavy" or self.Owner:GetPlayerClass() == "pyro" or self.Owner:GetPlayerClass() == "demoman" then 
 					self.Owner:DoAnimationEvent(ACT_SMG2_RELOAD2, true)	
-				elseif self.Slot == 1  and self.Owner:GetPlayerClass() != "heavy"  then
+				elseif self:GetHoldType() == "SECONDARY" and self.Owner:GetPlayerClass() != "heavy"  then
 					self.Owner:DoAnimationEvent(ACT_SMG2_FIRE2, true)				
 				end
 				self.NextIdle = CurTime() + self:SequenceDuration()
