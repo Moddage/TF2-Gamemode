@@ -79,6 +79,8 @@ end
 
 end
 
+PrecacheParticleSystem("eject_minigunbrass")
+
 SWEP.Base				= "tf_weapon_gun_base"
 
 SWEP.ViewModel			= "models/weapons/v_models/v_minigun_heavy.mdl"
@@ -89,10 +91,10 @@ SWEP.Spawnable = true
 SWEP.AdminSpawnable = false
 SWEP.Category = "Team Fortress 2"
 
-SWEP.MuzzleEffect = "muzzle_minigun_constant"
+SWEP.MuzzleEffect = "muzzle_minigun"
 SWEP.MuzzleOffset = Vector(20, 3, -10)
 SWEP.TracerEffect = "bullet_tracer01"
-PrecacheParticleSystem("muzzle_minigun_constant")
+PrecacheParticleSystem("muzzle_minigun")
 PrecacheParticleSystem("bullet_tracer01_red")
 PrecacheParticleSystem("bullet_tracer01_red_crit")
 PrecacheParticleSystem("bullet_tracer01_blue")
@@ -203,6 +205,9 @@ function SWEP:SpinDown()
 	self:StopSound(self.SpecialSound1)
 	self:StopSound(self.SpecialSound3)
 	self:EmitSound(self.SpecialSound2)
+	if SERVER then
+		self.WModel2:StopParticles()
+	end
 	if self.Primary.Delay == 0.06 then
 		self.SpinDownSound:ChangePitch(120)
 	end
@@ -221,6 +226,9 @@ function SWEP:StopFiring()
 	self:EmitSound(self.SpecialSound3)
 	self:StopSound(self.ShootSound2)
 	self:StopSound(self.ShootCritSound)
+	if SERVER then
+		self.WModel2:StopParticles()
+	end
 	self.Firing = false
 end
 
@@ -280,6 +288,10 @@ function SWEP:PrimaryAttack(vampire)
 			self:StopSound(self.SpecialSound3)
 			self:StopSound(self.ShootSound2)
 			self:EmitSound(self.ShootCritSound)
+			
+			if SERVER then
+				ParticleEffectAttach("eject_minigunbrass", PATTACH_POINT_FOLLOW, self.WModel2, self.WModel2:LookupAttachment("eject_brass"))
+			end
 			if self.Primary.Delay == 0.06 then
 				self.ShootCritSoundLoop:ChangePitch(120)
 			end
@@ -292,6 +304,10 @@ function SWEP:PrimaryAttack(vampire)
 			self:StopSound(self.SpecialSound3)
 			self:StopSound(self.ShootCritSound)
 			self:EmitSound(self.ShootSound2)
+	
+			if SERVER then
+				ParticleEffectAttach("eject_minigunbrass", PATTACH_POINT_FOLLOW, self.WModel2, self.WModel2:LookupAttachment("eject_brass"))
+			end
 			if self.Primary.Delay == 0.06 then
 				self.ShootSoundLoop:ChangePitch(120)
 			end
@@ -304,6 +320,7 @@ function SWEP:PrimaryAttack(vampire)
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
 	
 	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
+
 	self:TakePrimaryAmmo(1)
 	self:RustyBulletHole()
 end
@@ -402,7 +419,7 @@ function SWEP:Think()
 			if self.barrelSpeed <= 12 then
 			
 				self.barrelRotation = self.barrelRotation + self.barrelSpeed
-				self.barrelSpeed = self.barrelSpeed + ( CurTime() - self.barrelValue1 ) * 22
+				self.barrelSpeed = self.barrelSpeed + ( CurTime() - self.barrelValue1 ) * 8
 					
 			end
 				
@@ -425,7 +442,7 @@ function SWEP:Think()
 			if self.barrelSpeed > 0 then
 			
 				self.barrelRotation = self.barrelRotation + self.barrelSpeed
-				self.barrelSpeed = self.barrelSpeed - ( CurTime() - self.barrelValue1 ) * 30
+				self.barrelSpeed = self.barrelSpeed - ( CurTime() - self.barrelValue1 ) * 4
 				
 			end
 			
@@ -448,7 +465,7 @@ function SWEP:Think()
 			if self.barrelSpeed <= 12 then
 			
 				self.barrelRotation = self.barrelRotation + self.barrelSpeed
-				self.barrelSpeed = self.barrelSpeed + ( CurTime() - self.barrelValue1 ) * 22
+				self.barrelSpeed = self.barrelSpeed + ( CurTime() - self.barrelValue1 ) * 8
 					
 			end
 				
@@ -471,7 +488,7 @@ function SWEP:Think()
 			if self.barrelSpeed > 0 then
 			
 				self.barrelRotation = self.barrelRotation + self.barrelSpeed
-				self.barrelSpeed = self.barrelSpeed - ( CurTime() - self.barrelValue1 ) * 30
+				self.barrelSpeed = self.barrelSpeed - ( CurTime() - self.barrelValue1 ) * 4
 				
 			end
 			
@@ -488,7 +505,7 @@ function SWEP:Think()
 	if self.barrelSpeed == 0 then
 		if self:GetItemData().attach_to_hands == 1 then
 			if CLIENT and IsValid(self.CModel) and self.CModel:LookupBone("barrel") then
-				self:StopSound(self.SpecialSound2)
+				self:StopSound(self.SpecialSound2) 
 			end
 		else
 			self.Owner:GetViewModel():ManipulateBoneAngles( 2, Angle(0,0,self.barrelRotation) )

@@ -234,6 +234,29 @@ function GM:GrabAndSwitch()
 
 end
 
+
+function GM:ShouldDrawWorldModel(pl) 
+	
+	if pl:GetNWBool("NoWeapon") == true then 
+		if SERVER then
+			pl:GetActiveWeapon().WModel2:SetNoDraw(true)
+		end
+		return false 
+	end
+	if SERVER then
+		pl:GetActiveWeapon().WModel2:SetNoDraw(false)
+	end
+	return true
+end
+
+function GM:PlayerButtonDown( pl, key )
+	if key == KEY_G then
+		pl:ConCommand("tf_taunt "..pl:GetActiveWeapon():GetSlotPos())
+		print("taunt")
+		print(pl:GetActiveWeapon():GetSlot())
+	end
+end
+
 function RandomWeapon2(ply, wepslot)
 	local weps = tf_items.ReturnItems()
 	local class = ply:GetPlayerClass()
@@ -279,6 +302,39 @@ concommand.Add("randomweapon", function(ply, _, args)
 	end
 end)
 
+function GM:MouthMoveAnimation( ply )
+
+	local flexes = {
+		ply:GetFlexIDByName( "jaw_drop" ),
+		ply:GetFlexIDByName( "left_part" ),
+		ply:GetFlexIDByName( "right_part" ),
+		ply:GetFlexIDByName( "left_mouth_drop" ),
+		ply:GetFlexIDByName( "right_mouth_drop" )
+	}
+	
+	local flexes2 ={
+		ply:GetFlexIDByName( "ah" )
+	}
+	
+	local weight = ply:IsSpeaking() && math.Clamp( ply:VoiceVolume() * 2, 0, 2 ) || 0
+
+	for k, v in pairs( flexes ) do
+		if ply:IsHL2() then
+			ply:SetFlexWeight( v, weight )
+		end
+
+	end
+
+	for k, v in pairs( flexes2 ) do
+
+		if not ply:IsHL2() then
+			ply:SetFlexWeight( v, weight )
+		end
+
+	end
+end
+
+
 function GM:PlayerSpawn(ply)
 	if ply.CPPos and ply.CPAng then
 		ply:SetPos(ply.CPPos)
@@ -289,6 +345,14 @@ function GM:PlayerSpawn(ply)
 		timer.Simple(0.8, function()
 			ply:SelectWeapon("tf_weapon_buff_item_conch")
 			ply:GetActiveWeapon():PrimaryAttack()
+		end)
+	end
+	if ply:GetPlayerClass() == "engineer" and ply:IsBot() and string.find(game.GetMap(), "mvm_") then 
+		timer.Simple(0.1, function()
+			ply:SelectWeapon("tf_weapon_wrench")
+		end)
+		timer.Simple(0.8, function()
+			ply:Build(2,0)
 		end)
 	end
 	--ply:ShouldDropWeapon(true)

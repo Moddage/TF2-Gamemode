@@ -3,7 +3,7 @@ if SERVER then
 end
 
 if CLIENT then
-	SWEP.PrintName			= "Engineer's Fist"
+	SWEP.PrintName			= "The Gunslinger"
 	SWEP.Slot				= 2
 	SWEP.GlobalCustomHUD = {HudAccountPanel = true}
 end
@@ -11,7 +11,7 @@ end
 SWEP.Base				= "tf_weapon_melee_base"
 
 SWEP.ViewModel			= "models/weapons/c_models/c_engineer_gunslinger.mdl"
-SWEP.WorldModel			= ""
+SWEP.WorldModel			= "model/weapons/v_models/v_fists_heavy.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
 SWEP.DropPrimaryWeaponInstead = true
@@ -36,15 +36,21 @@ SWEP.HoldType = "ITEM2"
 
 SWEP.NoHitSound = true
 SWEP.UpgradeSpeed = 25
-SWEP.HasThirdpersonCritAnimation = true
 
 SWEP.AltIdleAnimationProbability = 0.1
 
-//function SWEP:SetupWModel
 
 function SWEP:SetupDataTables()
 	self:CallBaseFunction("SetupDataTables")
 	self:DTVar("Int", 1, "Combo")
+end
+
+function SWEP:Equip() -- weird workaround hack for viewmodel bug
+	if IsValid(self) and IsValid(self.Owner) then
+		local lastwep = self.Owner:GetActiveWeapon():GetClass()
+		self.Owner:SelectWeapon(self:GetClass())
+		timer.Simple(0.1, function() if IsValid(self) and IsValid(self.Owner) then self.Owner:SelectWeapon(lastwep) end end)
+	end
 end
 
 function SWEP:OnMeleeAttack(tr)
@@ -54,7 +60,12 @@ function SWEP:OnMeleeAttack(tr)
 		if IsValid(tr.Entity) and tr.Entity:IsTFPlayer() and !tr.Entity:IsBuilding() then
 			hit = true
 		end
-		
+		if IsValid(tr.Entity) and tr.Entity:IsNPC() and !tr.Entity:IsBuilding() then
+			hit = true
+		end
+		if self:CriticalEffect() then
+			self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_HARD_ITEM2,true)
+		end
 		if hit then
 			self.HasHit = true
 		else
@@ -62,6 +73,7 @@ function SWEP:OnMeleeAttack(tr)
 		end
 	end
 end
+
 
 function SWEP:OnMeleeHit(tr)
 	if tr.Entity and tr.Entity:IsValid() then
@@ -95,11 +107,11 @@ function SWEP:OnMeleeHit(tr)
 			self:EmitSound(self.HitFlesh)
 		else
 			self:EmitSound(self.HitWorld)
-		end
+		end 
 	elseif tr.HitWorld then
 		self:EmitSound(self.HitWorld)
 	end
-
+	
 	if SERVER then
 		if self.HasHit then
 			self.dt.Combo = self.dt.Combo + 1
@@ -116,7 +128,6 @@ function SWEP:Critical(ent,dmginfo)
 	if self.dt.Combo >= 2 then
 		return true
 	end
-	
 	return self:CallBaseFunction("Critical", ent, dmginfo)
 end
 
@@ -130,7 +141,7 @@ function SWEP:PredictCriticalHit()
 end
 
 function SWEP:Think()
-	--self.Owner:SetBodygroup( 2, 1 )
+	self.Owner:SetBodygroup( 2, 1 )
 	--self.Owner:GetViewModel():SetBodygroup(1, 0)
 	
 	if not game.SinglePlayer() or SERVER then
@@ -201,6 +212,3 @@ function SWEP:SecondaryAttack()
 		end
 	end
 end 	
-
-
-

@@ -21,27 +21,27 @@ local PhysBones = {
 }
 
 local function BuildBoneLookupTable(ent)
-	ent.Bousermessageable = {}
+	ent.BoneTable = {}
 	for _,v in ipairs(PhysBones) do
-		ent.Bousermessageable[v] = ent:LookupBone(v)
+		ent.Bonetable[v] = ent:LookupBone(v)
 	end
 	
-	ent.PhysBousermessageable = {}
+	ent.PhysBoneable = {}
 	for i=0,ent:GetPhysicsObjectCount()-1 do
-		ent.PhysBousermessageable[ent:TranslatePhysBoneToBone(i)] = i
+		ent.PhysBoneTable[ent:TranslatePhysBoneToBone(i)] = i
 	end
 end
 
-local function BousermessageoPhysBone(ent, bone)
-	if not ent.Bousermessageable or not ent.PhysBousermessageable then
+local function BoneToPhysBone(ent, bone)
+	if not ent.BoneTable or not ent.PhysBoneTable then
 		BuildBoneLookupTable(ent)
 	end
 	
-	if not ent.Bousermessageable[bone] or not ent.PhysBousermessageable[ent.Bousermessageable[bone]] then
+	if not ent.Bonetable[bone] or not ent.PhysBoneTable[ent.PhysBoneTable[bone]] then
 		return
 	end
 	
-	return ent.PhysBousermessageable[ent.Bousermessageable[bone]]
+	return ent.PhysBoneTable[ent.BoneTable[bone]]
 end
 
 DecapDeathPose = {
@@ -102,7 +102,7 @@ local function StartDeathPose(ent, dp)
 	if not IsValid(ent) then return end
 	ent.OldPhysParams = {}
 	for k,v in pairs(dp.PhysParams) do
-		local p = BousermessageoPhysBone(ent, k)
+		local p = BonetoPhysBone(ent, k)
 		if p then
 			local phys = ent:GetPhysicsObjectNum(p)
 			if phys then
@@ -352,6 +352,8 @@ function GM:SetupNPCRagdoll(ent, rag)
 		self:DecapitateRagdoll(rag, ent, dp)
 	elseif ent:HasDeathFlag(DF_HEADSHOT) then
 		PlayDeathPose(rag, HeadshotDeathPose)
+	elseif ent.LastDamageInfo == DMG_BLAST then
+		rag:Fire("Kill", "", 0.1)
 	end
 	
 	rag.NPCRagdollProcessed = true
@@ -536,7 +538,7 @@ hook.Add("CreateEntityRagdoll", "TFServersideNPCRagdoll", function(npc, rag)
 		-- Weld each physics object together
 		
 		for k,v in pairs(GoldenMassParams) do
-			local p = BousermessageoPhysBone(rag, k)
+			local p = BoneToPhysBone(rag, k)
 			if p then
 				local phys = rag:GetPhysicsObjectNum(p)
 				if phys and phys:IsValid() then

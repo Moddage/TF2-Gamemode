@@ -42,6 +42,8 @@ function ENT:Initialize()
 	end
 	if obj.class_name == "obj_dispenser" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
 		self:SetModel("models/buildables/repair_level1.mdl")
+	elseif obj.class_name == "obj_sentrygun" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
+		self:SetModel("models/combine_turrets/floor_turret.mdl")
 	end
 	self.CurrentYaw = 0
 	self.TargetYaw = 0
@@ -157,6 +159,27 @@ function ENT:Build()
 		ent:SetAmmo2(ent.MaxAmmo2)
 		ent:SetLevel(3)
 		end)
+	elseif obj.class_name == "obj_sentrygun" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then 
+
+		timer.Create("SEtModel", 0.1, 80, function()
+		ent:SetModel("models/combine_turrets/floor_turret.mdl")
+		ent.Model:SetModel("models/combine_turrets/floor_turret.mdl")
+		ent.FireRate = 0.08
+		ent.Shoot_Sound = "NPC_CeilingTurret.Shoot"
+		ent.Idle_Sound = CreateSound(ent, "NPC_Turret.Ping")
+		ent.Sound_Alert = Sound("NPC_CeilingTurret.Active")
+		ent.NameOverride = "npc_turret_floor"
+		
+		local health_frac = ent:Health() / ent:GetMaxHealth()
+		ent:SetMaxHealth(ent:GetObjectHealth())
+		ent:SetHealth(ent:GetObjectHealth() * health_frac)
+		
+		ent.MaxAmmo1 = 144
+		ent.MaxAmmo2 = 20
+		ent:SetAmmo1(ent.MaxAmmo1)
+		ent:SetAmmo2(ent.MaxAmmo2)
+		ent:SetLevel(1)
+		end)
 	end
 	if obj.class_name == "obj_sentrygun" and self.Player.TempAttributes.BuildsMiniSentries then
 		ent:SetBuildingType(1)
@@ -164,6 +187,8 @@ function ENT:Build()
 		ent:SetBuildingType(1)
 	elseif obj.class_name == "obj_dispenser" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
 		ent:SetBuildingType(2)
+	elseif obj.class_name == "obj_sentrygun" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
+		ent:SetBuildingType(3) 
 	elseif obj.class_name == "obj_sentrygun" and self.Player.TempAttributes.BuildsMegaSentries then
 		ent:SetBuildingType(2)
 	elseif obj.class_name == "obj_teleporter" and self.Player:GetInfoNum("tf_robot", 0) == 1 and self.Player:Team() == TEAM_BLU then

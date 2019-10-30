@@ -6,7 +6,9 @@ local bots = {}
 --local names = {"LeadKiller", "A Random Person", "Foxie117", "G.A.M.E.R v24", "Agent Agrimar"}
 --local names = {"A Professional With Standards", "AimBot", "AmNot", "Aperture Science Prototype XR7", "Archimedes!", "BeepBeepBoop", "Big Mean Muther Hubbard", "Black Mesa", "BoomerBile", "Cannon Fodder", "CEDA", "Chell", "Chucklenuts", "Companion Cube", "Crazed Gunman", "CreditToTeam", "CRITRAWKETS", "Crowbar", "CryBaby", "CrySomeMore", "C++", "DeadHead", "Delicious Cake", "Divide by Zero", "Dog", "Force of Nature", "Freakin' Unbelievable", "Gentlemanne of Leisure", "GENTLE MANNE of LEISURE ", "GLaDOS", "Glorified Toaster with Legs", "Grim Bloody Fable", "GutsAndGlory!", "Hat-Wearing MAN", "Headful of Eyeballs", "Herr Doktor", "HI THERE", "Hostage", "Humans Are Weak", "H@XX0RZ", "I LIVE!", "It's Filthy in There!", "IvanTheSpaceBiker", "Kaboom!", "Kill Me", "LOS LOS LOS", "Maggot", "Mann Co.", "Me", "Mega Baboon", "Mentlegen", "Mindless Electrons", "MoreGun", "Nobody", "Nom Nom Nom", "NotMe", "Numnutz", "One-Man Cheeseburger Apocalypse", "Poopy Joe", "Pow!", "RageQuit", "Ribs Grow Back", "Saxton Hale", "Screamin' Eagles", "SMELLY UNFORTUNATE", "SomeDude", "Someone Else", "Soulless", "Still Alive", "TAAAAANK!", "Target Practice", "ThatGuy", "The Administrator", "The Combine", "The Freeman", "The G-Man", "THEM", "Tiny Baby Man", "Totally Not A Bot", "trigger_hurt", "WITCH", "ZAWMBEEZ", "Ze Ubermensch", "Zepheniah Mann", "0xDEADBEEF", "10001011101"}
 local names = {"TFBot"}
-local classtb = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","superscout","giantheavyshotgun","giantheavyheater","giantsoldierrapidfire","giantsoldiercharged","soldierbuffed","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierbuffed","soldierbuffed","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","soldierbuffed","soldierbuffed","soldierbuffed","heavyshotgun","heavyshotgun","heavyshotgun","heavyshotgun","heavyweightchamp","heavyweightchamp","heavyweightchamp","heavyweightchamp","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic"}
+local classtb = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","demoknight","ubermedic"}
+--local classtb = {"demoknight"}
+local classtbmvm = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","superscout","giantheavyshotgun","giantheavyheater","giantsoldierrapidfire","giantsoldiercharged","soldierbuffed","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierbuffed","soldierbuffed","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","soldierbuffed","soldierbuffed","soldierbuffed","heavyshotgun","heavyshotgun","heavyshotgun","heavyshotgun","heavyweightchamp","heavyweightchamp","heavyweightchamp","heavyweightchamp","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic"}
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
 local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
@@ -39,21 +41,35 @@ function LBAddBot(team)
 	local name = table.Random(names) -- .." (bot) "..diffn --"Bot"..math.random(0, 99)
 	local bot = player.CreateNextBot(name)
 	local teamd = TEAM_RED
-	if team == 1 then
-		teamd = TEAM_BLU
+	if !string.find(game.GetMap(), "mvm_") then
+		if team == 1 then
+			teamd = table.Random({TEAM_RED,TEAM_BLU})
+		end	
+	else
+		if team == 1 then
+			teamd = TEAM_BLU
+		end
 	end
 	bot.ControllerBot = ents.Create("ctf_bot_navigator")
 	bot.ControllerBot:Spawn() 
 	bot.LastPath = nil
 	bot.CurSegment = 2
-	bot:SetPlayerClass(table.Random(classtb))
+	if string.find(game.GetMap(), "mvm_") and bot:Team() == TEAM_BLU then
+		bot:SetPlayerClass(table.Random(classtbmvm))
+	else
+		bot:SetPlayerClass(table.Random(classtb))
+	end
 	for k, v in pairs(player.GetAll()) do
 		v:ChatPrint(tostring(team))
 	end
 	timer.Simple(3, function()
 		if IsValid(bot) then
 			bot.LKBot = true
-			bot:SetTeam(TEAM_BLU)
+			if !string.find(game.GetMap(), "mvm_") then
+				bot:SetTeam(table.Random({TEAM_RED,TEAM_BLU}))
+			elseif string.find(game.GetMap(), "mvm_") then
+				bot:SetTeam(TEAM_BLU)
+			end
 			bot:Kill()
 			bot.Difficulty = diff
 			table.insert(bots, bot)
@@ -214,7 +230,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 		local fsentrypoint
 		local fsentryred
 		local fsentrypointred
-		if string.find(game.GetMap(), "ctf_") then
+		if string.find(game.GetMap(), "ctf_") then 
 			for k, v in pairs(ents.FindByClass("item_teamflag")) do
 				if v.TeamNum ~= bot:Team() then
 					intel = v
@@ -277,27 +293,18 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 
 		if bot:GetPlayerClass() == "engineer" and bot:Team() == TEAM_RED then
-			for k, v in pairs(ents.FindByClass("obj_sentrygun")) do
-				if GAMEMODE:EntityTeam(v) == bot:Team() then
-					fsentryred = v
-				end
-			end	
-				
-			for k, v in pairs(ents.FindByClass("bot_hint_sentrygun_RED")) do
-				fsentrypointred = v
-			end
-
-			targetpos2 = fsentrypointred:GetPos() -- goto enemy intel
-			ignoreback = true
 
 			if bot:GetPlayerClass() == "engineer" then	
-				for k, v in pairs(ents.FindByClass("bot_hint_sentrygun_red")) do
-					if bot:GetPos():Distance(v:GetPos()) >= 80 then
+				for k, v in pairs(ents.FindInSphere(bot:GetPos(), 2300)) do
+					if bot:GetPos():Distance(v:GetPos()) >= 40 and v:GetClass() == "bot_hint_sentrygun_red" then
 						bot:Build(2,0)
-						cmd:SetForwardMove(1000)
-					elseif bot:GetPos():Distance(v:GetPos()) <= 80 then
+						cmd:SetForwardMove(800)
+						targetpos2 = v:GetPos()
+					elseif bot:GetPos():Distance(v:GetPos()) <= 20 and v:GetClass() == "bot_hint_sentrygun_red" then
 						cmd:SetButtons(IN_ATTACK)
-						cmd:SetForwardMove(120)
+						cmd:SetForwardMove(0)
+						print("Buildin' a sentry!")
+						targetpos2 = v:GetPos()
 					end
 				end
 			end
@@ -348,7 +355,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				--print(intel)
 			local targetply = player.GetAll()[1]
 			for k, v in pairs(player.GetAll()) do
-				if v ~= bot and v:Team() == bot:Team() and v:Health() < v:GetMaxHealth() / 2 then
+				if v ~= bot and v:Team() == bot:Team() then
 					targetply = v
 				end
 			end
@@ -532,12 +539,13 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			if bot:GetPlayerClass() == "engineer" then	
 				for k, v in pairs(ents.FindInSphere(bot:GetPos(), 2300)) do
 					if bot:GetPos():Distance(v:GetPos()) >= 40 and v:GetClass() == "bot_hint_sentrygun" then
+						bot:Build(2,0)
 						cmd:SetForwardMove(800)
 						targetpos2 = v:GetPos()
-					elseif bot:GetPos():Distance(v:GetPos()) <= 10 and v:GetClass() == "bot_hint_sentrygun" then
+					elseif bot:GetPos():Distance(v:GetPos()) <= 20 and v:GetClass() == "bot_hint_sentrygun" then
 						cmd:SetButtons(IN_ATTACK)
-						cmd:SetForwardMove(20)
 						print("Buildin' a sentry!")
+						targetpos2 = v:GetPos()
 					end
 				end
 			end
@@ -556,7 +564,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 450 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
 			
 				if bot:GetPlayerClass() == "demoknight" then
-					if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 80 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
+					if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 140 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
 						cmd:SetButtons(IN_ATTACK)
 					else
 						cmd:SetButtons(IN_ATTACK2)
@@ -567,7 +575,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			end
 
 			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
-				if bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat_fish" and bot:GetActiveWeapon():GetClass() != "tf_weapon_sword" then
+				if !bot.TargetEnt:IsFriendly(bot) and bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat_fish" and bot:GetActiveWeapon():GetClass() != "tf_weapon_sword" then
 					cmd:SetForwardMove(-250)
 				end
 				if bot:GetPlayerClass() == "pyro" then

@@ -39,28 +39,11 @@ SWEP.UpgradeSpeed = 25
 
 SWEP.AltIdleAnimationProbability = 0.1
 
-//function SWEP:SetupWModel
 
 function SWEP:SetupDataTables()
 	self:CallBaseFunction("SetupDataTables")
 	self:DTVar("Int", 1, "Combo")
 end
-
-//Do not enable as this it breaks the gunslinger anims
---[[function SWEP:SetupCModelActivities(item, noreplace)
-	self:CallBaseFunction("SetupCModelActivities", item, noreplace)
-	
-	if item then
-		local hold = string.upper(item.anim_slot or item.item_slot)
-		
-		self.VM_HITCENTER		= debug.getregistry()["ACT_"..hold.."_VM_HITCENTER"] or ACT_VM_HITCENTER
-		self.VM_SWINGHARD		= debug.getregistry()["ACT_"..hold.."_VM_SWINGHARD"] or ACT_VM_SWINGHARD
-	end
-end]]
-
---[[function SWEP:Deploy()
-
-end]]
 
 function SWEP:Equip() -- weird workaround hack for viewmodel bug
 	if IsValid(self) and IsValid(self.Owner) then
@@ -124,7 +107,7 @@ function SWEP:OnMeleeHit(tr)
 			self:EmitSound(self.HitFlesh)
 		else
 			self:EmitSound(self.HitWorld)
-		end
+		end 
 	elseif tr.HitWorld then
 		self:EmitSound(self.HitWorld)
 	end

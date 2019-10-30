@@ -62,6 +62,7 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 	self.Owner:DoAnimationEvent(ACT_DOD_SPRINT_AIM_SPADE, true)
 	self.Owner:SetNWBool("Taunting", true)
+	self.Owner:SetNWBool("Bonked", true)
 	self.Owner:ConCommand("tf_thirdperson")
 	timer.Simple(0.5, function()
 		if SERVER then
@@ -70,7 +71,14 @@ function SWEP:PrimaryAttack()
 	end)
 	timer.Simple(0.92, function() 
 		self.Owner:SetNWBool("Taunting", false)  
-		ParticleEffectAttach( 'scout_dodge_red', PATTACH_POINT_FOLLOW, self.Owner, 3 )
+		ParticleEffectAttach( 'warp_version', PATTACH_POINT_FOLLOW, self.Owner, 0)
+		ParticleEffectAttach( 'scout_dodge_socks', PATTACH_POINT_FOLLOW, self.Owner, 0 )
+		ParticleEffectAttach( 'scout_dodge_pants', PATTACH_POINT_FOLLOW, self.Owner, 0 )
+		if self.Owner:Team() == TEAM_BLU then
+			ParticleEffectAttach( 'scout_dodge_blue', PATTACH_POINT_FOLLOW, self.Owner, 3 )
+		else
+			ParticleEffectAttach( 'scout_dodge_red', PATTACH_POINT_FOLLOW, self.Owner, 3 )
+		end
 		if SERVER then
 		self.Owner:GodEnable()
 		end
@@ -80,7 +88,8 @@ function SWEP:PrimaryAttack()
 			self:EmitSound("player/pl_scout_dodge_tired.wav", 85)
 		self.Owner:ConCommand("tf_firstperson")
 		self.Owner:GodDisable()
-		self.Owner:StopParticleNamed("scout_dodge_red")
+		self.Owner:StopParticles() 
+		self.Owner:SetNWBool("Bonked", false)
 		end
 	end)
 	timer.Simple(40, function()

@@ -97,6 +97,7 @@ PrecacheParticleSystem("bullet_tracer01_red")
 PrecacheParticleSystem("bullet_tracer01_red_crit")
 PrecacheParticleSystem("bullet_tracer01_blue")
 PrecacheParticleSystem("bullet_tracer01_blue_crit")
+PrecacheParticleSystem("eject_minigunbrass")
 SWEP.barrelRotation 		= 0
 SWEP.barrelSpeed 			= 1
 SWEP.barrelValue1 			= 0
@@ -137,6 +138,7 @@ function SWEP:CreateSounds()
 	
 	self.SoundsCreated = true
 end
+
 
 if SERVER then
 
@@ -203,6 +205,9 @@ function SWEP:SpinDown()
 	self:StopSound(self.SpecialSound1)
 	self:StopSound(self.SpecialSound3)
 	self:EmitSound(self.SpecialSound2)
+	if SERVER then
+		self.WModel2:StopParticles()
+	end
 	if self.Primary.Delay == 0.06 then
 		self.SpinDownSound:ChangePitch(120)
 	end
@@ -221,6 +226,9 @@ function SWEP:StopFiring()
 	self:EmitSound(self.SpecialSound3)
 	self:StopSound(self.ShootSound2)
 	self:StopSound(self.ShootCritSound)
+	if SERVER then
+		self.WModel2:StopParticles()
+	end
 	self.Firing = false
 end
 
@@ -280,6 +288,10 @@ function SWEP:PrimaryAttack(vampire)
 			self:StopSound(self.SpecialSound3)
 			self:StopSound(self.ShootSound2)
 			self:EmitSound(self.ShootCritSound)
+			
+			if SERVER then
+				ParticleEffectAttach("eject_minigunbrass", PATTACH_POINT_FOLLOW, self.WModel2, self.WModel2:LookupAttachment("eject_brass"))
+			end
 			if self.Primary.Delay == 0.06 then
 				self.ShootCritSoundLoop:ChangePitch(120)
 			end
@@ -292,6 +304,10 @@ function SWEP:PrimaryAttack(vampire)
 			self:StopSound(self.SpecialSound3)
 			self:StopSound(self.ShootCritSound)
 			self:EmitSound(self.ShootSound2)
+	
+			if SERVER then
+				ParticleEffectAttach("eject_minigunbrass", PATTACH_POINT_FOLLOW, self.WModel2, self.WModel2:LookupAttachment("eject_brass"))
+			end
 			if self.Primary.Delay == 0.06 then
 				self.ShootSoundLoop:ChangePitch(120)
 			end
@@ -304,6 +320,7 @@ function SWEP:PrimaryAttack(vampire)
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
 	
 	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
+
 	self:TakePrimaryAmmo(1)
 	self:RustyBulletHole()
 end
@@ -394,7 +411,7 @@ function SWEP:Think()
 	
 	if SERVER then
 	
-		if self:GetNetworkedBool("Spinning") then
+		if self.Spinning then
 			--[[if self:GetItemData().attach_to_hands == 1 then
 				return
 			end]]
@@ -420,7 +437,7 @@ function SWEP:Think()
 				
 		end
 		
-		if not self:GetNetworkedBool("Spinning") then
+		if not self.Spinning then
 		
 			if self.barrelSpeed > 0 then
 			

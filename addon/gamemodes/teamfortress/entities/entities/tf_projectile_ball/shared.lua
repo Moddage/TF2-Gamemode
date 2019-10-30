@@ -261,6 +261,7 @@ function ENT:PhysicsCollide(data, physobj)
 		data.HitEntity:SetNWBool("NoWeapon", true)
 		net.Start("ActivateTauntCam")
 		net.Send(data.HitEntity)
+		ParticleEffectAttach("bonk_text", PATTACH_POINT_FOLLOW, data.HitEntity, data.HitEntity:LookupAttachment("head"))
 		timer.Simple(5, function()
 			if not IsValid(data.HitEntity) or (not data.HitEntity:Alive() and not data.HitEntity:GetNWBool("Taunting")) then data.HitEntity:Freeze(false) return end
 			timer.Stop("StunRobotloop3")
@@ -281,6 +282,7 @@ function ENT:PhysicsCollide(data, physobj)
 		data.HitEntity:SetNWBool("NoWeapon", true)
 		data.HitEntity:ConCommand("tf_thirdperson")
 		data.HitEntity:StripWeapons()
+		ParticleEffectAttach("bonk_text", PATTACH_POINT_FOLLOW, data.HitEntity, data.HitEntity:LookupAttachment("head"))
 		timer.Simple(5, function()
 			if not IsValid(data.HitEntity) or (not data.HitEntity:Alive() and not data.HitEntity:GetNWBool("Taunting")) then data.HitEntity:Freeze(false) return end
 			timer.Stop("StunRobotloop3")
@@ -291,7 +293,7 @@ function ENT:PhysicsCollide(data, physobj)
 			data.HitEntity:Freeze(false)
 			data.HitEntity:SetNWBool("Taunting", false)
 		end)
-	end
+	end 
 	if data.HitEntity and data.HitEntity:IsValid() and (data.HitEntity:IsNPC() or data.HitEntity:IsPlayer()) and data.HitEntity:Health()>0 then
 		if self.BouncesLeft>0 then
 			if self.critical then

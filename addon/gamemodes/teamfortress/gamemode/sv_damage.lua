@@ -363,6 +363,25 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 		return true
 	end
 	
+	if ent:IsPlayer() and ent:Armor() <= 70 then
+		if ent:Armor() != 0 then
+			ent:EmitSound("player/resistance_light"..math.random(1,4)..".wav", 90, math.random(90,105))
+		end
+	end
+	if ent:IsPlayer() and ent:Armor() >= 80 then
+		ent:EmitSound("player/resistance_medium"..math.random(1,4)..".wav", 90, math.random(90,105))
+	end
+	if ent:IsPlayer() and ent:Armor() >= 99 then
+		ent:EmitSound("player/resistance_medium"..math.random(1,4)..".wav", 90, math.random(90,105))
+	end
+	
+	if ent:IsPlayer() and ent:Armor() >= 180 then
+		ent:EmitSound("player/resistance_heavy"..math.random(1,4)..".wav", 90, math.random(90,105))
+	end
+	
+	if ent:IsPlayer() and ent:Armor() >= 200 then
+		ent:EmitSound("player/resistance_heavy"..math.random(1,4)..".wav", 90, math.random(90,105))
+	end
 	--print("EntityTakeDamage",ent,dmginfo)
 	
 	-- Some HL2 projectiles seem to keep the original attacker, even though their owner got changed (by Pyro's airblast, for instance)

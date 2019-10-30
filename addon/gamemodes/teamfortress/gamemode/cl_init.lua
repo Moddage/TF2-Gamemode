@@ -42,10 +42,7 @@ CreateClientConVar( "tf_robot", "0", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE
 
 
 
-function GM:ShouldDrawWorldModel(pl) 
-	if pl:GetNWBool("NoWeapon") == true then return false end
-	return true
-end
+
 
 --[[
 timer.Create("lol",0.2,0,function() m=T:GetBoneMatrix(T:LookupBone("bip_head")) m:Translate(Vector(0,-5,0)) local e=EffectData() e:SetOrigin(m:GetTranslation()) e:SetAngles(Angle(180,0,0)) util.Effect("BloodImpact",e) end)
@@ -129,13 +126,14 @@ usermessage.Hook("GibPlayerHead", function(um)
 end)
 
 usermessage.Hook("GibNPCHead", function(um)
-	local pl = GetPlayerByUserID(um:ReadLong())
-	if not IsValid(pl) then return end
+	local npc = um:ReadEntity()
+	if not IsValid(npc) then return end
 	
-	pl.DeathFlags = um:ReadShort()
+	npc.DeathFlags = um:ReadShort()
 	
 	local effectdata = EffectData()
-		effectdata:SetEntity(pl)
+		effectdata:SetEntity(npc)
+		effectdata:SetOrigin(npc:GetPos())
 	util.Effect("tf_hl2_head_gib", effectdata)
 end)
 
@@ -444,6 +442,14 @@ list.Set(
 			DImageButton:SetImage( "backpack/player/items/all_class/taunt_party_trick_large" )
 			DImageButton.DoClick = function()
 				RunConsoleCommand( "tf_taunt_pyro_partytrick" ) 
+			end			
+			local DImageButton = pnl:Add( "DImageButton" )
+			DImageButton:SetPos( 105, 205 )
+			DImageButton:SetTooltip( "Taunt: Schadenfreude" )
+			DImageButton:SetSize( 128, 128 )
+			DImageButton:SetImage( "backpack/player/items/all_class/all_laugh_taunt" )
+			DImageButton.DoClick = function()
+				RunConsoleCommand( "tf_taunt_laugh" ) 
 			end
 		end
 	}

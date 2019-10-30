@@ -61,12 +61,8 @@ function SWEP:PrimaryAttack()
 	self:EmitSound("items/samurai/tf_conch.wav", 90, 100)
 	timer.Simple(3, function()
 		if SERVER then
-		timer.Create("SetFasterSpeed1", 0.001, 0, function()
-			if self.Owner:GetPlayerClass() == "soldier" then
-				self.Owner:SetClassSpeed(110)
-			elseif self.Owner:GetPlayerClass() == "scout" then
-				self.Owner:SetClassSpeed(150)
-			end
+		timer.Create("SetFasterSpeed1", 1, 20, function()
+			self.Owner:SetClassSpeed(self.Owner:GetClassSpeed() * 1.003)	
 		end)
 		if SERVER then
 		animent3 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
@@ -91,8 +87,18 @@ function SWEP:PrimaryAttack()
 		end
 		self.Ready = false
 		timer.Create("HealFor20Secs", 1, 20, function()
-			GAMEMODE:HealPlayer(self.Owner, self.Owner, 10, false, false)
+			GAMEMODE:HealPlayer(self.Owner, self.Owner, 30, false, false)
+			self.Owner:SetArmor(120) 
 		end)
+		for k,v in ipairs(team.GetPlayers(self.Owner:Team())) do
+			GAMEMODE:StartMiniCritBoost(v)
+			ParticleEffectAttach("soldierbuff_red_buffed", PATTACH_ABSORIGIN_FOLLOW, v, 0)
+			timer.Create("HealFor20Secs"..v:EntIndex(), 1, 20, function()
+				GAMEMODE:HealPlayer(self.Owner, v, 30, false, false)
+				v:SetArmor(120)
+				v:SetClassSpeed(v:GetClassSpeed() * 1.003)				
+			end)
+		end
 		self.SpeedEnabled = true
 		self.Owner:Speak("TLK_PLAYER_BATTLECRY")
 		self.Owner:SelectWeapon("tf_weapon_rocketlauncher")
@@ -108,22 +114,36 @@ function SWEP:PrimaryAttack()
 	if self.Owner:GetPlayerClass() == "soldierbuffed" then
 		timer.Simple(120, function()
 			if SERVER then
+				for k,v in ipairs(team.GetPlayers(self.Owner:Team())) do
+					timer.Stop("SetFasterSpeed1"..v:EntIndex())
+					GAMEMODE:StopCritBoost(v) 
+					v:ResetClassSpeed()
+					v:StopParticles() 
+				end
 				timer.Stop("SetFasterSpeed1")
 				GAMEMODE:StopCritBoost(self.Owner) 
-				self.Owner:SetClassSpeed(80)			
+				self.Owner:ResetClassSpeed()	
+								
 			end
-			self.Owner:StopParticlesNamed("soldierbuff_red_buffed")
+			self.Owner:StopParticles()
 			self.SpeedEnabled = false
 			self.Ready = true
 		end)
 	else
 		timer.Simple(20, function()
 			if SERVER then
+				for k,v in ipairs(team.GetPlayers(self.Owner:Team())) do
+					timer.Stop("SetFasterSpeed1"..v:EntIndex())
+					GAMEMODE:StopCritBoost(v) 
+					v:ResetClassSpeed()
+					v:StopParticles() 
+				end
 				timer.Stop("SetFasterSpeed1")
 				GAMEMODE:StopCritBoost(self.Owner) 
-				self.Owner:SetClassSpeed(80)			
+				self.Owner:ResetClassSpeed()	
+								
 			end
-			self.Owner:StopParticlesNamed("soldierbuff_red_buffed")
+			self.Owner:StopParticles()
 			self.SpeedEnabled = false
 			self.Ready = true
 		end)
@@ -156,14 +176,10 @@ function SWEP:Holster()
 	self.NextMeleeAttack = nil
 	if SERVER then
 	timer.Create("RemoveBackpack"..self.Owner:EntIndex(), 0.01, 0, function()
-		if !self.Owner:Alive() then
-			animent2:Remove()
-		end
+		animent2:Remove()
 	end)
 	timer.Create("RemoveBanner2"..self.Owner:EntIndex(), 0.01, 0, function()
-		if !self.Owner:Alive() then
-			animent3:Remove()
-		end
+		animent3:Remove()
 	end)
 	end
 	return self:CallBaseFunction("Holster")

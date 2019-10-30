@@ -22,6 +22,18 @@ CLASS.AdditionalAmmo = {
 	SMG1_Grenade = 6,
 }
 
+CLASS.Gibs = {
+	[GIB_LEFTLEG]		= GIBS_LAST+1,
+	[GIB_RIGHTLEG]		= GIBS_LAST+1, 
+	[GIB_RIGHTARM]		= GIBS_LAST+1,
+	[GIB_TORSO]			= GIBS_LAST+1,
+	[GIB_TORSO2]		= GIBS_LAST+1,
+	[GIB_EQUIPMENT1]	= GIBS_LAST+1,
+	[GIB_EQUIPMENT2]	= GIBS_LAST+1,
+	[GIB_HEAD]			= GIBS_LAST+1,
+	[GIB_ORGAN]			= GIBS_ORGANS_START,
+}
+
 CLASS.Loadout = {
 	"weapon_crowbar",
 	"weapon_pistol",

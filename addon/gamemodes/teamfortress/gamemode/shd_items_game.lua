@@ -28,6 +28,10 @@ for k, v in pairs(items_game["items"]) do
 
     if v.item_class == "saxxy" then
         v.item_class = "tf_weapon_allclass"
+    elseif v.item_class == "tf_weapon_grenadelauncher" then
+		v.item_slot = "secondary"
+    elseif v.item_class == "tf_weapon_pipebomblauncher" then
+		v.item_slot = "primary"
     elseif v.item_class == "tf_weapon_sniperrifle_classic" then
         v.item_class = "tf_weapon_sniperrifle"
     elseif v.item_class == "tf_weapon_sniperrifle_decap" then
@@ -38,6 +42,8 @@ for k, v in pairs(items_game["items"]) do
         v.item_class = "tf_weapon_shotgun_soldier"
     elseif v.item_class == "tf_wearable_demoshield" then
         v.item_class = "tf_wearable_item_demoshield"
+    elseif v.item_class == "tf_weapon_particle_cannon" then
+        v.item_class = "tf_weapon_particle_launcher"
     elseif v.item_class == "tf_weapon_handgun_scout_secondary" then
         v.item_class = "tf_weapon_pistol_scout"
     elseif v.item_class == "tf_weapon_laser_pointer" then

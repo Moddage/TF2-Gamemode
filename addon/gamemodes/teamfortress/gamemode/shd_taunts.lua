@@ -356,7 +356,6 @@ concommand.Add("tf_mvm_wave_start_final", function(ply, cmd)
 	timer.Create("WaveStart5", 8, 1, function() ply:EmitSound("vo/announcer_begins_1sec.mp3", 0, 100) end )
 end)
 
-
 concommand.Add("tf_taunt_laugh", function(ply)
 	if ply:GetNWBool("Taunting") == true then return end
 	if ply:IsHL2() then ply:ConCommand("act laugh") return end
@@ -1181,7 +1180,7 @@ concommand.Add("tf_taunt_rockpaperscissors", function(ply)
 	if not ply:IsOnGround() then return end
 	if ply:WaterLevel() ~= 0 then return end
 	if ply:GetInfoNum("tf_robot", 0) == 1 then ply:ChatPrint("You can't taunt as a robot!") return end
-	if ply:GetInfoNum("tf_giantrobot", 0) == 1 then ply:ChatPrint("You can't taunt as a mighty robot!") return end
+	if ply:GetInfoNum("tf_giant_robot", 0) == 1 then ply:ChatPrint("You can't taunt as a mighty robot!") return end
 	local time = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/"..table.Random(rockpaperscissors)..".vcd", 0)
 	ply:DoAnimationEvent(table.Random(rockpaperscissorsact), true)
 	ply:SetNWBool("Taunting", true)
@@ -1222,13 +1221,45 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 	if ply:IsHL2() then ply:ConCommand("act laugh") return end
 	if not ply:IsOnGround() then return end
 	if ply:WaterLevel() ~= 0 then return end
-	if ply:GetInfoNum("tf_robot", 0) == 1 then ply:ChatPrint("You can't taunt as a robot!") return end
-	if ply:GetInfoNum("tf_giantrobot", 0) == 1 then ply:ChatPrint("You can't taunt as a mighty robot!") return end
+	--[[if ply:GetInfoNum("tf_robot", 0) == 1 then ply:ChatPrint("You can't taunt as a robot!") return end
+	if ply:GetInfoNum("tf_giantrobot", 0) == 1 then ply:ChatPrint("You can't taunt as a mighty robot!") return end]]
 	if not table.HasValue(allowedtaunts, args[1]) then return end
 	if ply:GetPlayerClass() != "spy" then
 		if table.KeyFromValue(allowedtaunts,args[1]) == 1 then
-			ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
-			ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
+			if ply:GetPlayerClass() == "engineer" then
+				if ply:GetWeapons()[1]:GetClass() == "tf_weapon_sentry_revenge" then
+					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED, true)
+					ply:PlayScene("scenes/player/engineer/low/taunt07.vcd")
+					ply:SetNWBool("NoWeapon", true)
+					timer.Simple(1.5, function()
+						ply:EmitSound("player/taunt_eng_strum.wav")
+					end)
+					timer.Simple(4, function()
+						if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+						ply:SetNWBool("Taunting", false)
+						ply:SetNWBool("NoWeapon", false)
+						print("Thegay.")
+						net.Start("DeActivateTauntCam")
+						net.Send(ply)
+					end)
+					timer.Simple(3.5, function()
+						ply:EmitSound("player/taunt_eng_smash"..math.random(1,3)..".wav")
+						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
+							if v:IsNPC() and not v:IsFriendly(ply) then
+								v:TakeDamage(500, ply, ply)
+								ply:GetActiveWeapon().NameOverride = "taunt_guitar_kill"
+							elseif v:IsPlayer() and not v:IsFriendly(ply) then
+								v:TakeDamage(500, ply, ply)
+								ply:GetActiveWeapon().NameOverride = "taunt_guitar_kill"
+							end
+						end
+					end)
+				end
+			else
+				ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+				ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
+			end
 		elseif table.KeyFromValue(allowedtaunts,args[1]) == 2 then
 			if ply:GetPlayerClass() == "pyro" then
 				timer.Simple(2, function()

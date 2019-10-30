@@ -338,6 +338,14 @@ function ENT:StartCharging()
 	self.SpeedBonus = 2.69
 	self.Owner:ResetClassSpeed()
 	self.Owner:SetJumpPower(0)
+	ParticleEffectAttach( 'warp_version', PATTACH_ABSORIGIN_FOLLOW, self.Owner, 0)
+	ParticleEffectAttach( 'scout_dodge_socks', PATTACH_POINT_FOLLOW, self.Owner, 0 )
+	ParticleEffectAttach( 'scout_dodge_pants', PATTACH_POINT_FOLLOW, self.Owner, 0 )
+	if self.Owner:Team() == TEAM_BLU then
+		ParticleEffectAttach( 'scout_dodge_blue', PATTACH_POINT_FOLLOW, self.Owner, 3 )
+	else
+		ParticleEffectAttach( 'scout_dodge_red', PATTACH_POINT_FOLLOW, self.Owner, 3 )
+	end
 	
 	if not self.ChargeSoundEnt then
 		self.ChargeSoundEnt = CreateSound(self.Owner, "DemoCharge.Charging")
@@ -356,7 +364,7 @@ function ENT:StopCharging()
 	self.SpeedBonus = nil
 	self.Owner:ResetClassSpeed()
 	self.Owner:SetJumpPower(250)
-	
+	self.Owner:StopParticles()
 	if self.ChargeSoundEnt then
 		self.ChargeSoundEnt:Stop()
 		self.ChargeSoundEnt = nil

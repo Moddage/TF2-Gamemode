@@ -445,7 +445,6 @@ local function TFBulletCallback(attacker, trace, dmginfo)
 	
 	local self = dmginfo:GetInflictor()
 	local dmg = self.TempDamageInfo
-	
 	if dmg then
 		if trace.Entity and trace.Entity:IsValid() then
 			dmg.HitPos = trace.HitPos

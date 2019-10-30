@@ -234,7 +234,7 @@ function ENT:OnStartBuilding()
 		self.InitialHealth = self:GetObjectHealth()
 		self:SetMaxHealth(self:GetObjectHealth())
 		
-		self.BaseDamage = 8
+		self.BaseDamage = 10
 		
 		if not tf_minisentry_allow_upgrade:GetBool() then
 			self.RepairRate = 0
@@ -245,6 +245,13 @@ function ENT:OnStartBuilding()
 		self.UpgradeRate = 15
 		self:SetBodygroup(2, 0)
 		self.Model:SetBuildingScale(1.2)
+	elseif self:GetBuildingType() == 3 then
+		self.BaseDamage = 6
+		self.UpgradeRate = 0
+		self:SetBodygroup(2, 0)
+		self.Model:SetBuildingScale(1.0)
+		self.Model:SetModel("models/combine_turrets/floor_turret.mdl")
+		self:SetModel("models/combine_turrets/floor_turret.mdl")
 	end
 end
 
@@ -375,10 +382,17 @@ function ENT:OnThink()
 		end
 	end
 	if self.Wrangled == false then
-	self:SetPoseParameter("aim_pitch", self.VisualTurretPitch)
-	self:SetPoseParameter("aim_yaw", self.TurretYaw)
-	self.Model:SetPoseParameter("aim_pitch", self.VisualTurretPitch)
-	self.Model:SetPoseParameter("aim_yaw", self.TurretYaw)
+		if self:GetBuildingType() == 3 then
+			self:SetPoseParameter("aim_pitch", -self.VisualTurretPitch)
+			self:SetPoseParameter("aim_yaw", -self.TurretYaw)
+			self.Model:SetPoseParameter("aim_pitch", -self.VisualTurretPitch)
+			self.Model:SetPoseParameter("aim_yaw", -self.TurretYaw)
+		else
+			self:SetPoseParameter("aim_pitch", self.VisualTurretPitch)
+			self:SetPoseParameter("aim_yaw", self.TurretYaw)
+			self.Model:SetPoseParameter("aim_pitch", self.VisualTurretPitch)
+			self.Model:SetPoseParameter("aim_yaw", self.TurretYaw)		
+		end
 	end
 end
 
@@ -395,7 +409,11 @@ function ENT:ShootPos(right)
 	local p
 	
 	if self:GetLevel()==1 then
-		p = self:GetAttachment(self:LookupAttachment("muzzle"))
+		if self:GetBuildingType() == 3 then
+			p = self:GetBonePosition(self:LookupBone("Barrel"))
+		else
+			p = self:GetAttachment(self:LookupAttachment("muzzle"))
+		end
 	else
 		if right then
 			p = self:GetAttachment(self:LookupAttachment("muzzle_r"))
@@ -403,8 +421,11 @@ function ENT:ShootPos(right)
 			p = self:GetAttachment(self:LookupAttachment("muzzle_l"))
 		end
 	end
-	
-	return p.Pos
+	if self:GetBuildingType() == 3 then
+		return p
+	else
+		return p.Pos
+	end
 end
 
 function ENT:TargetOrigin()
@@ -642,8 +663,12 @@ function ENT:ThinkIdle()
 			if self.AlertSoundEnt then
 				self.AlertSoundEnt:Stop()
 			end
-			self.AlertSoundEnt = CreateSound(self, self.Sound_Alert)
-			self.AlertSoundEnt:PlayEx(1, self.SoundPitch)
+			if self:GetBuildingType() == 3 then
+				self:EmitSound("NPC_CeilingTurret.Active")
+			else
+				self.AlertSoundEnt = CreateSound(self, self.Sound_Alert)
+				self.AlertSoundEnt:PlayEx(1, self.SoundPitch)
+			end
 			
 			if self.Target:IsPlayer() then
 				umsg.Start("NotifySentrySpotted", self.Target)

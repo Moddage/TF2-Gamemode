@@ -215,7 +215,6 @@ hook.Add("OnEntityCreated","lo",function(e) if e:GetClass()=="entityflame" then 
 PlayerStates = {
 	[PLAYERSTATE_ONFIRE] = {
 		particle = "burningplayer_%s",
-		overlay = "Effects/imcookin_2",
 		proxyvars = {
 			{"BurnLevel", 0.5}
 		},

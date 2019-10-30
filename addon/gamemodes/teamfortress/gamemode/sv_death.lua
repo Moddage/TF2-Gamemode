@@ -29,12 +29,6 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 	ent:StopSound("Weapon_Minifun.FireCrit")
 	ent:StopSound("Weapon_Minigun.FireCrit")
 	ent:StopSound("Weapon_Tomislav.FireCrit")
-	if ent:IsNPC() and ent:HasDeathFlag(DF_DECAP) then
-		umsg.Start("GibNPCHead")
-			umsg.Entity(ent)
-			umsg.Short(ent.DeathFlags)
-		umsg.End()
-	end
 	if ent:IsNPC() and dmginfo:IsDamageType(DMG_BLAST) then
 		umsg.Start("GibNPC")
 			umsg.Entity(ent)
@@ -543,6 +537,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	if ply:HasDeathFlag(DF_DECAP) and not ply:IsHL2() then
 		ply:RandomSentence("CritDeath")
 		inflictor:EmitSound("TFPlayer.Decapitated")
+		ply:Decap()
 		local animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
 		animent:SetModel(ply:GetModel())
 		animent:SetSkin(ply:GetSkin())
@@ -565,133 +560,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		animent:SetPlaybackRate( 1 )
 		animent.AutomaticFrameAdvance = true
 		animent:ManipulateBoneScale(b1, Vector(0,0,0))
-		animent:ManipulateBoneScale(b2, Vector(0,0,0))		
-		if ply:GetInfoNum("tf_robot", 0) == 1 and not ply:IsBot() then
-			if ply:GetPlayerClass() == "heavy" then
-				local animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
-				animent2:SetModel(ply:GetActiveWeapon():GetModel()) 
-				animent2:SetAngles(ply:GetAngles())
-				animent2:SetPos(animent:GetPos())
-				animent2:Spawn()
-				animent2:Activate()
-				animent2:SetParent(animent)
-				animent2:AddEffects(EF_BONEMERGE)
-				local rag2 = ents.Create( 'prop_physics' )
-				rag2:SetPos(animent:GetPos())
-				rag2:SetAngles(animent:GetAngles())
-				rag2:SetModel("models/bots/gibs/heavybot_gib_head.mdl")
-				rag2:Spawn()
-				rag2:Activate()
-				rag2:SetCollisionGroup( COLLISION_GROUP_DEBRIS ) 
-			end
-			ply:EmitSound("MVM_Weapon_BaseballBat.HitFlesh")
-			local rag2 = ents.Create( 'prop_physics' )
-			rag2:SetPos(animent:GetBonePosition(animent:LookupBone("bip_head")))
-			rag2:SetAngles(animent:GetAngles())
-			if ply:GetPlayerClass() != "demoman" and ply:GetPlayerClass() != "engineer" then
-				rag2:SetModel("models/bots/gibs/"..ply:GetPlayerClass().."bot_gib_head.mdl")
-			elseif ply:GetPlayerClass() == "demoman" then	
-				rag2:SetModel("models/bots/gibs/demobot_gib_head.mdl")
-			elseif ply:GetPlayerClass() == "engineer" then
-				rag2:SetModel("models/player/gibs/engineergib006.mdl")
-			end
-			rag2:SetSkin(ply:GetSkin())
-			rag2:Spawn()
-			rag2:Activate()
-			rag2:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-		elseif not ply:IsBot() then
-			local rag2 = ents.Create( 'prop_physics' )
-			rag2:SetPos(animent:GetBonePosition(animent:LookupBone("bip_head")))
-			rag2:SetAngles(animent:GetAngles())
-			if ply:GetPlayerClass() == "scout" then
-				rag2:SetModel("models/player/gibs/scoutgib007.mdl")
-			elseif ply:GetPlayerClass() == "soldier" then
-				rag2:SetModel("models/player/gibs/soldiergib007.mdl")
-			elseif ply:GetPlayerClass() == "pyro" then
-				rag2:SetModel("models/player/gibs/pyrogib008.mdl")
-			elseif ply:GetPlayerClass() == "demoman" then
-				rag2:SetModel("models/player/gibs/demogib006.mdl")
-			elseif ply:GetPlayerClass() == "heavy" then
-				rag2:SetModel("models/player/gibs/heavygib007.mdl")
-			elseif ply:GetPlayerClass() == "engineer" then
-				rag2:SetModel("models/player/gibs/engineergib006.mdl")
-			elseif ply:GetPlayerClass() == "medic" then
-				rag2:SetModel("models/player/gibs/medicgib007.mdl")
-			elseif ply:GetPlayerClass() == "sniper" then
-				rag2:SetModel("models/player/gibs/snipergib005.mdl")
-			elseif ply:GetPlayerClass() == "spy" then
-				rag2:SetModel("models/player/gibs/spygib007.mdl")
-			end
-			rag2:SetSkin(ply:GetSkin())
-			rag2:Spawn()
-			rag2:Activate()
-			rag2:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-			animent:EmitSound("player/flow.wav", 95, math.random(98, 100))
-		end
-		if ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 and ply:Team() == TEAM_BLU then
-			if ply:GetPlayerClass() == "heavy" then
-				local animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
-				animent2:SetModel(ply:GetActiveWeapon():GetModel()) 
-				animent2:SetAngles(ply:GetAngles())
-				animent2:SetPos(animent:GetPos())
-				animent2:Spawn()
-				animent2:Activate()
-				animent2:SetParent(animent)
-				animent2:AddEffects(EF_BONEMERGE)
-				local rag2 = ents.Create( 'prop_physics' )
-				rag2:SetPos(animent:GetPos())
-				rag2:SetAngles(animent:GetAngles())
-				rag2:SetModel("models/bots/gibs/heavybot_gib_head.mdl")
-				rag2:Spawn()
-				rag2:Activate()
-				rag2:SetCollisionGroup( COLLISION_GROUP_DEBRIS ) 
-			end
-			ply:EmitSound("MVM_Weapon_BaseballBat.HitFlesh")
-			local rag2 = ents.Create( 'prop_physics' )
-			rag2:SetPos(animent:GetBonePosition(animent:LookupBone("bip_head")))
-			rag2:SetAngles(animent:GetAngles())
-			if ply:GetPlayerClass() != "demoman" and ply:GetPlayerClass() != "engineer" then
-				rag2:SetModel("models/bots/gibs/"..ply:GetPlayerClass().."bot_gib_head.mdl")
-			elseif ply:GetPlayerClass() == "demoman" then	
-				rag2:SetModel("models/bots/gibs/demobot_gib_head.mdl")
-			elseif ply:GetPlayerClass() == "engineer" then
-				rag2:SetModel("models/player/gibs/engineergib006.mdl")
-			end
-			rag2:SetSkin(ply:GetSkin())
-			rag2:Spawn()
-			rag2:Activate()
-			rag2:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-
-		elseif ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 0 then
-			animent:EmitSound("player/flow.wav", 95, math.random(98, 100))
-			local rag2 = ents.Create( 'prop_physics' )
-			rag2:SetPos(animent:GetBonePosition(animent:LookupBone("bip_head")))
-			rag2:SetAngles(animent:GetAngles())
-			if ply:GetPlayerClass() == "scout" then
-				rag2:SetModel("models/player/gibs/scoutgib007.mdl")
-			elseif ply:GetPlayerClass() == "soldier" then
-				rag2:SetModel("models/player/gibs/soldiergib007.mdl")
-			elseif ply:GetPlayerClass() == "pyro" then
-				rag2:SetModel("models/player/gibs/pyrogib008.mdl")
-			elseif ply:GetPlayerClass() == "demoman" then
-				rag2:SetModel("models/player/gibs/demogib006.mdl")
-			elseif ply:GetPlayerClass() == "heavy" then
-				rag2:SetModel("models/player/gibs/heavygib007.mdl")
-			elseif ply:GetPlayerClass() == "engineer" then
-				rag2:SetModel("models/player/gibs/engineergib006.mdl")
-			elseif ply:GetPlayerClass() == "medic" then
-				rag2:SetModel("models/player/gibs/medicgib007.mdl")
-			elseif ply:GetPlayerClass() == "sniper" then
-				rag2:SetModel("models/player/gibs/snipergib005.mdl")
-			elseif ply:GetPlayerClass() == "spy" then
-				rag2:SetModel("models/player/gibs/spygib007.mdl")
-			end
-			rag2:SetSkin(ply:GetSkin())
-			rag2:Spawn()
-			rag2:Activate()
-			rag2:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-			animent:EmitSound("player/flow.wav", 95, math.random(98, 100))
-		end
+		animent:ManipulateBoneScale(b2, Vector(0,0,0))	
 		if animent:GetModel() == "models/player/engineer.mdl" then
 			animent:ManipulateBoneScale(b3, Vector(0,0,0))
 		end
@@ -719,6 +588,10 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	end	
 	if ply:HasDeathFlag(DF_DECAP) and ply:IsHL2() then
 		inflictor:EmitSound("TFPlayer.Decapitated")
+		umsg.Start("GibNPCHead")
+			umsg.Entity(ply)
+			umsg.Short(ply.DeathFlags)
+		umsg.End()
 		local animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
 		animent:SetModel(ply:GetModel())
 		animent:SetSkin(ply:GetSkin())
@@ -946,6 +819,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 				ply:GibBreakClient( Vector(math.random(1,4), math.random(1,4), math.random(1,4)) )
 				ply:GetRagdollEntity():Remove()
 			end
+		else
+			ply:Explode()
+			ply:GetRagdollEntity():Remove()
 		end
 	elseif inflictor.Critical and inflictor:Critical() then -- Critical damage
 		if not inflictor.IsSilentKiller then
@@ -985,7 +861,11 @@ function GM:OnNPCKilled(ent, attacker, inflictor)
 			umsg.Entity(ent)
 		umsg.End()
 	end
-
+	
+	if inflictor and inflictor.OnPlayerKilled then
+		inflictor:OnPlayerKilled(ent)
+	end
+	
 	gamemode.Call("DoTFPlayerDeath", ent, attacker, ent.LastDamageInfo)
 	
 	-- for Gran <3

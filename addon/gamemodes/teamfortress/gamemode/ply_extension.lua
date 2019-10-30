@@ -154,6 +154,21 @@ function meta:Explode()
 	umsg.End()
 end
 
+function meta:Decap()
+	self.ShouldGib = true
+	if self:IsHL2() then
+		umsg.Start("GibNPCHead")
+			umsg.Long(self:UserID())
+			umsg.Short(self.DeathFlags)
+		umsg.End()
+	else
+		umsg.Start("GibPlayerHead")
+			umsg.Long(self:UserID())
+			umsg.Short(self.DeathFlags)
+		umsg.End()
+	end
+end
+
 
 function meta:SetBuilding(group, mode)
 	local builder = self:GetWeapon("tf_weapon_builder")

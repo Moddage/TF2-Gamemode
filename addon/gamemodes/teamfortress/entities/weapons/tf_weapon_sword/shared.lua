@@ -81,10 +81,6 @@ function SWEP:ViewModelDrawn()
 		vm:SetModel(self.ViewModelOverride)
 	end
 	
-	if self.HasCModel and not IsValid(self.CModel) then
-		return
-	end
-	
 	self.DrawingViewModel = true
 	if IsValid(self.CModel) then
 		self.CModel:SetSkin(self.WeaponSkin or 0)
@@ -195,6 +191,7 @@ SWEP.Primary.Ammo			= "none"
 SWEP.Primary.Delay = 0.8
 
 SWEP.HoldType = "ITEM1"
+SWEP.HoldTypeHL2 = "melee2"
 
 SWEP.UsesSpecialAnimations = true
 
@@ -268,6 +265,11 @@ function SWEP:OnPlayerKilled(ent)
 			umsg.End()
 		else					
 			prob = self.WhisperKillProbabilityNPC
+			umsg.Start("GibNPCHead")
+				umsg.Entity(ent)
+				umsg.Short(ent.DeathFlags)
+			umsg.End()
+			ent:EmitSound("player/flow.wav")
 		end
 		
 		if math.random()<prob then
@@ -279,8 +281,10 @@ end
 
 function SWEP:Think()
 	self:CallBaseFunction("Think")
-	
 	if SERVER and self.dt.IsEyelander then
+		if self.Owner:Armor() <= 60 then
+			self.Owner:SetArmor(60)
+		end
 		if not self.NextWhisper then
 			self.WhisperType = 1
 			self.NextWhisper = CurTime() + math.Rand(self.WhisperIdleMinDelay, self.WhisperIdleMaxDelay)

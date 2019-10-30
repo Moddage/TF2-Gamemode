@@ -715,6 +715,12 @@ d_rescue_ranger={
 	y=416,
 	w=128,
 	h=32,
+},	
+d_apocofists={
+	x=5,
+	y=256,
+	w=82,
+	h=31,
 },
 	
 d_shortcircuit_ball={

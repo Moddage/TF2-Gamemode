@@ -240,13 +240,15 @@ function SWEP:DrawWorldModel(from_postplayerdraw)
 	self.DrawingViewModel = false
 	--if self.WorldModel and self.WorldModel~="" then
 	if SERVER then
-		if IsValid(self.WModel2) then
-			self.WModel2:SetSkin(self.WeaponSkin or 0)
-			self.WModel2:SetMaterial(self.WeaponMaterial or 0)
-		end
-		if IsValid(self.AttachedWModel) then
-			self.AttachedWModel:SetSkin(self.WeaponSkin or 0)
-			self.AttachedWModel:SetMaterial(self.WeaponMaterial or 0)
+		if self.IsRoboArm != true then
+			if IsValid(self.WModel2) then
+				self.WModel2:SetSkin(self.WeaponSkin or 0)
+				self.WModel2:SetMaterial(self.WeaponMaterial or 0)
+			end
+			if IsValid(self.AttachedWModel) then
+				self.AttachedWModel:SetSkin(self.WeaponSkin or 0)
+				self.AttachedWModel:SetMaterial(self.WeaponMaterial or 0)
+			end
 		end
 		--self:SetSkin(self.WeaponSkin or 0)
 	end
@@ -285,31 +287,33 @@ end)
 function SWEP:InitializeWModel2()
 --Msg("InitializeWModel2\n")
 	if SERVER then
-		if IsValid(self.WModel2) then
-			self.WModel2:SetModel(self:GetItemData().model_player)
-		else
-			self.WModel2 = ents.Create( 'base_gmodentity' )
-			if not IsValid(self.WModel2) then return end
-			
-			self.WModel2:SetPos(self.Owner:GetPos())
-			self.WModel2:SetModel(self:GetItemData().model_player)
-			self.WModel2:SetAngles(self.Owner:GetAngles())
-			self.WModel2:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE))
-			self.WModel2:SetParent(self.Owner)
-			self.WModel2:SetColor(Color(255, 255, 255))
-			self.WModel2:DrawShadow( false )
-			
-			if wmodel == "models/weapons/w_models/w_shotgun.mdl" then
-				self.WModel2:SetMaterial("models/weapons/w_shotgun_tf/w_shotgun_tf")
+		if self.IsRoboArm != true then
+			if IsValid(self.WModel2) then
+				self.WModel2:SetModel(self:GetItemData().model_player)
+			else
+				self.WModel2 = ents.Create( 'base_gmodentity' )
+				if not IsValid(self.WModel2) then return end
+				
+				self.WModel2:SetPos(self.Owner:GetPos())
+				self.WModel2:SetModel(self:GetItemData().model_player)
+				self.WModel2:SetAngles(self.Owner:GetAngles())
+				self.WModel2:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE))
+				self.WModel2:SetParent(self.Owner)
+				self.WModel2:SetColor(Color(255, 255, 255))
+				self.WModel2:DrawShadow( false )
+				
+				if wmodel == "models/weapons/w_models/w_shotgun.mdl" then
+					self.WModel2:SetMaterial("models/weapons/w_shotgun_tf/w_shotgun_tf")
+				end
 			end
-		end
 		
-		if IsValid(self.WModel2) then
-			self.WModel2.Player = self.Owner
-			self.WModel2.Weapon = self
-			
-			if self.MaterialOverride then
-				self.WModel2:SetMaterial(self.MaterialOverride)
+			if IsValid(self.WModel2) then
+				self.WModel2.Player = self.Owner
+				self.WModel2.Weapon = self
+				
+				if self.MaterialOverride then
+					self.WModel2:SetMaterial(self.MaterialOverride)
+				end
 			end
 		end
 	end
@@ -671,9 +675,13 @@ function SWEP:OnRemove()
 	--self:Holster()
 end
 
-function SWEP:CanPrimaryAttack()
-	if (self.Primary.ClipSize == -1 and self:Ammo1() > 0) or self:Clip1() > 0 then
+function SWEP:CanPrimaryAttack() 
+	if (self.Primary.ClipSize == -1 and self:Ammo1() > 0 and self.Owner:GetNWBool("Bonked") == false) or self:Clip1() > 0 then
 		return true
+	end
+	
+	if (self.Owner:GetNWBool("Bonked") != false) then
+		return false
 	end
 	
 	return false
@@ -688,7 +696,6 @@ function SWEP:CanSecondaryAttack()
 end
 
 function SWEP:PrimaryAttack(noscene)
-	 
 	if self.Owner:GetMaterial() == "models/shadertest/predator" then return false end
 	if not self.IsDeployed then return false end
 	//if self.Reloading then return false end
@@ -856,6 +863,17 @@ end
 function SWEP:Think()
 	self:TFViewModelFOV()
 	self:TFFlipViewmodel()
+	if self.IsRoboArm == false then
+		if self.Owner:GetNWBool("NoWeapon") == true then 
+			if SERVER then
+				self.WModel2:SetNoDraw(true)
+			end
+		else
+			if SERVER then
+				self.WModel2:SetNoDraw(false)
+			end
+		end
+	end
 	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat() - GetConVar("tf_weapon_deploy_speed"):GetInt(), 2)
 	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat(),2)
 	if SERVER and self.NextReplayDeployAnim then

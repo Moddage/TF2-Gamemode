@@ -47,18 +47,15 @@ SWEP.ReloadSingle = true
 
 SWEP.HoldType = "PRIMARY"
 
-function SWEP:Think()
+function SWEP:Deploy()
+
 	for k,v in ipairs(ents.FindByClass("obj_sentrygun")) do
 		if v:GetBuilder() == self.Owner then
-			if v:Health() <= 20 then
+			if v:Health() <= 80 then
 				if SERVER then
 					GAMEMODE:StartCritBoost(self.Owner)
 					
-					if self.Owner:Team() != TEAM_BLU then
-						ParticleEffectAttach("soldierbuff_red_buffed", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 0)
-					else
-						ParticleEffectAttach("soldierbuff_blue_buffed", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 0)		
-					end
+					ParticleEffectAttach("soldierbuff_red_buffed", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 0)
 				end
 			end
 		end
@@ -74,5 +71,5 @@ function SWEP:Think()
 			end
 		end
 	end
-	return self:CallBaseFunction("Think")
+	return self:CallBaseFunction("Deploy")
 end

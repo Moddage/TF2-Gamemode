@@ -1,6 +1,7 @@
 
-EFFECT.LifeTime = 10
+EFFECT.LifeTime = 20
 EFFECT.FadeTime = 2
+EFFECT.DoneFirstThink = false
 
 local BoneList = {
 	"ValveBiped.Bip01_Pelvis",
@@ -35,42 +36,13 @@ local BoneList = {
 	"ValveBiped.Bip01_L_Ulna",
 }
 
-local function HeadGibBuildBones(ent)
-	local b, m
-	
-	b = ent:LookupBone("ValveBiped.Bip01_Head1")
-	m = ent:GetBoneMatrix(b)
-	m:SetTranslation(Vector(0,0,0))
-	m:Scale(Vector(4,4,4))
-	ent:SetBoneMatrix(b,m)
-	
-	b = ent:LookupBone("ValveBiped.Bip01_Spine4")
-	m = ent:GetBoneMatrix(b)
-	m:Scale(Vector(0.25,0.25,0.25))
-	ent:SetBoneMatrix(b,m)
-	
-	local pos = ent:GetPos() + ent:GetUp() * 65
-	
-	for _,bone in ipairs(BoneList) do
-		b = ent:LookupBone(bone)
-		if b and b>=0 then
-			m = ent:GetBoneMatrix(b)
-			if m then
-				m:Scale(Vector(0,0,0))
-				m:SetTranslation(pos)
-				ent:SetBoneMatrix(b, m)
-			end
-		end
-	end
-end
-
 function EFFECT:Init(data)
-	local pl = data:GetEntity()
+	local pl = data:GetEntity()  
 	local pos = data:GetOrigin()
 	local ang = data:GetAngles()
 	
 	self:SetModel("models/player/gibs/spygib007.mdl")
-	--self:SetMaterial("models/wireframe")
+	self:SetMaterial("Models/effects/vol_light001")
 	self:SetPos(pos)
 	self:SetAngles(ang)
 	self:PhysicsInit(SOLID_VPHYSICS)
@@ -99,8 +71,21 @@ function EFFECT:Think()
 		self.Ragdoll:SetAngles(self:GetAngles())
 		self.Ragdoll:SetParent(self)
 		self.Ragdoll.Parent = self
+		local b1 = self.Ragdoll:LookupBone("ValveBiped.Bip01_Head1")
+		self.Ragdoll:ManipulateBoneScale( self.Ragdoll:LookupBone("ValveBiped.Bip01_Head1"), Vector(1,1,1))
+		
+		local b2 = self.Ragdoll:LookupBone("ValveBiped.Bip01_Spine4")
+		self.Ragdoll:ManipulateBoneScale( self.Ragdoll:LookupBone("ValveBiped.Bip01_Spine4"), Vector(0,0,0))
+		
+		local pos = self.Ragdoll:GetPos() + self.Ragdoll:GetUp() * 65
+		
+		for _,bone in ipairs(BoneList) do
+			local bones = self.Ragdoll:LookupBone(bone)
+			if bones and bones>=0 then
+				self.Ragdoll:ManipulateBoneScale( bones, Vector(0,0,0))
+			end
+		end
 		--self.Ragdoll.BuildBonePositions = HeadGibBuildBones
-		self.Ragdoll:AddBuildBoneHook("Head", HeadGibBuildBones)
 		
 		self.Ragdoll:InvalidateBoneCache()
 		self.Ragdoll:SetupBones()
@@ -127,5 +112,5 @@ function EFFECT:Render()
 	
 	self.Ragdoll:SetRenderOrigin(self:GetPos() + self:GetUp() * 14)
 	self.Ragdoll:DrawModel()
-	--self:DrawModel()
+	self:DrawModel()
 end
