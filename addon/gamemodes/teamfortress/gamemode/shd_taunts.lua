@@ -1232,26 +1232,35 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED, true)
 					ply:PlayScene("scenes/player/engineer/low/taunt07.vcd")
 					ply:SetNWBool("NoWeapon", true)
+					ply:GetActiveWeapon().NameOverride = "taunt_guitar_kill"
+					local animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+					animent2:SetModel("models/player/items/engineer/guitar.mdl") 
+					animent2:SetAngles(ply:GetAngles())
+					animent2:SetPos(ply:GetPos())
+					animent2:Spawn()
+					animent2:Activate()
+					animent2:SetParent(ply)
+					animent2:AddEffects(EF_BONEMERGE)
+					animent2:SetName("GuitarModel"..ply:EntIndex())
 					timer.Simple(1.5, function()
 						ply:EmitSound("player/taunt_eng_strum.wav")
 					end)
-					timer.Simple(4, function()
+					timer.Simple(4.2, function()
 						if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
 						ply:SetNWBool("Taunting", false)
 						ply:SetNWBool("NoWeapon", false)
 						print("Thegay.")
 						net.Start("DeActivateTauntCam")
 						net.Send(ply)
+						animent2:Fire("Kill", "", 0.1)
 					end)
-					timer.Simple(3.5, function()
+					timer.Simple(3.7, function()
 						ply:EmitSound("player/taunt_eng_smash"..math.random(1,3)..".wav")
 						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
 							if v:IsNPC() and not v:IsFriendly(ply) then
 								v:TakeDamage(500, ply, ply)
-								ply:GetActiveWeapon().NameOverride = "taunt_guitar_kill"
 							elseif v:IsPlayer() and not v:IsFriendly(ply) then
 								v:TakeDamage(500, ply, ply)
-								ply:GetActiveWeapon().NameOverride = "taunt_guitar_kill"
 							end
 						end
 					end)
