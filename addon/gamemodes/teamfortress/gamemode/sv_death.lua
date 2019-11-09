@@ -804,9 +804,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		
 		if not ply:IsHL2() then
 			if ply:GetInfoNum("tf_robot", 0) == 0 then
-				if not ply:IsHL2() and ply:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then
-					return
-				end
 				ply:Explode()
 				ply:EmitSound("physics/flesh/flesh_squishy_impact_hard2.wav", 80, 100)
 				shouldgib = true

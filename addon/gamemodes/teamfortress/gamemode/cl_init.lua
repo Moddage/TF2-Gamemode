@@ -483,7 +483,9 @@ for k, v in pairs(tf_items.ReturnItems()) do
 end
 end
 
+-- USELESS!
 
+--[[
 function L4DClassSelection()
 
 
@@ -605,7 +607,7 @@ function L4DClassSelection()
 	
 	L4DZombie.OnCursorEntered = function() icon:SetModel( "models/cpthazama/l4d1/common/male_01.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE)icon2:GetEntity():SetModel("models/empty.mdl") surface.PlaySound( "/music/class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "Run_01" ) icon:GetEntity():SetSequence( dance ) end
 
-end
+end]]
 function DoorClose()
 local ply = LocalPlayer()local ClassFrame = vgui.Create("DFrame") --create a frame
 ClassFrame:SetSize( ScrW() * 1, ScrH() * 1 ) --set its size
@@ -821,25 +823,6 @@ local Hint = vgui.Create( "DLabel", ClassFrame )
 Hint:SetPos( 10, 94 )
 Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showspare2" )) or "F4" ).." to open the weapon picker" )
 Hint:SizeToContents()
-
-local TeamRed = vgui.Create( "DButton", ClassFrame )
-function TeamRed.DoClick() RunConsoleCommand( "changeteam", 1 ) ClassFrame:Close() end
-TeamRed:SetPos( 700, 65 )
-TeamRed:SetSize( 130, 20 )
-TeamRed:SetText( "RED Team" )
-local TeamBlu = vgui.Create( "DButton", ClassFrame )
-function TeamBlu.DoClick() RunConsoleCommand( "changeteam", 2 ) ClassFrame:Close() end
-TeamBlu:SetPos( 700, 105 )
-TeamBlu:SetSize( 130, 20 )
-TeamBlu:SetText( "BLU Team" )
-
-if !GetConVar("tf_competitive"):GetBool() then
-	local TeamNeu = vgui.Create( "DButton", ClassFrame )
-	function TeamNeu.DoClick() RunConsoleCommand( "changeteam", 4 ) ClassFrame:Close() end
-	TeamNeu:SetPos( 700, 85 )
-	TeamNeu:SetSize( 130, 20 )
-	TeamNeu:SetText( "Neutral Team" )
-end
 
 local Option1 = vgui.Create( "DCheckBox", ClassFrame )
 Option1:SetPos( 10, 110 )

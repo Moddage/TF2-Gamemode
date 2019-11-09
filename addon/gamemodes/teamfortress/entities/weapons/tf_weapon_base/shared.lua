@@ -239,16 +239,14 @@ function SWEP:DrawWorldModel(from_postplayerdraw)
 	
 	self.DrawingViewModel = false
 	--if self.WorldModel and self.WorldModel~="" then
-	if SERVER then
-		if self.IsRoboArm != true then
-			if IsValid(self.WModel2) then
-				self.WModel2:SetSkin(self.WeaponSkin or 0)
-				self.WModel2:SetMaterial(self.WeaponMaterial or 0)
-			end
-			if IsValid(self.AttachedWModel) then
-				self.AttachedWModel:SetSkin(self.WeaponSkin or 0)
-				self.AttachedWModel:SetMaterial(self.WeaponMaterial or 0)
-			end
+	if SERVER and self:GetClass() != "tf_weapon_robo_arm" then
+		if IsValid(self.WModel2) then
+			self.WModel2:SetSkin(self.WeaponSkin or 0)
+			self.WModel2:SetMaterial(self.WeaponMaterial or 0)
+		end
+		if IsValid(self.AttachedWModel) then
+			self.AttachedWModel:SetSkin(self.WeaponSkin or 0)
+			self.AttachedWModel:SetMaterial(self.WeaponMaterial or 0)
 		end
 		--self:SetSkin(self.WeaponSkin or 0)
 	end
@@ -287,13 +285,13 @@ end)
 function SWEP:InitializeWModel2()
 --Msg("InitializeWModel2\n")
 	if SERVER then
-		if self.IsRoboArm != true then
+		if self:GetItemData().model_player then
 			if IsValid(self.WModel2) then
 				self.WModel2:SetModel(self:GetItemData().model_player)
 			else
 				self.WModel2 = ents.Create( 'base_gmodentity' )
 				if not IsValid(self.WModel2) then return end
-				
+					
 				self.WModel2:SetPos(self.Owner:GetPos())
 				self.WModel2:SetModel(self:GetItemData().model_player)
 				self.WModel2:SetAngles(self.Owner:GetAngles())
@@ -301,16 +299,16 @@ function SWEP:InitializeWModel2()
 				self.WModel2:SetParent(self.Owner)
 				self.WModel2:SetColor(Color(255, 255, 255))
 				self.WModel2:DrawShadow( false )
-				
+					
 				if wmodel == "models/weapons/w_models/w_shotgun.mdl" then
 					self.WModel2:SetMaterial("models/weapons/w_shotgun_tf/w_shotgun_tf")
 				end
 			end
-		
+			
 			if IsValid(self.WModel2) then
 				self.WModel2.Player = self.Owner
 				self.WModel2.Weapon = self
-				
+					
 				if self.MaterialOverride then
 					self.WModel2:SetMaterial(self.MaterialOverride)
 				end
@@ -863,7 +861,7 @@ end
 function SWEP:Think()
 	self:TFViewModelFOV()
 	self:TFFlipViewmodel()
-	if self.IsRoboArm == false then
+	if self:GetClass() != "tf_weapon_robo_arm" and self:GetClass() != "tf_weapon_trenchknife" and self:GetClass() != "tf_weapon_capsulelauncher" then
 		if self.Owner:GetNWBool("NoWeapon") == true then 
 			if SERVER then
 				self.WModel2:SetNoDraw(true)

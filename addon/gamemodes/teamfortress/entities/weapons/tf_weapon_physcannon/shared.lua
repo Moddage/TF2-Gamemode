@@ -21,7 +21,7 @@ SWEP.AdminSpawnable		= false
 SWEP.ViewModel			= "models/weapons/v_physcannon.mdl"
 
 --SWEP.WorldModel		= "models/weapons/errolliamp/w_superphyscannon.mdl"
-SWEP.WorldModel		= "models/weapons/w_models/w_physcannon_dm.mdl"
+SWEP.WorldModel		= "models/weapons/w_models/w_scattergun.mdl"
 
 SWEP.HoldType			= "SECONDARY"
 	
@@ -1400,8 +1400,6 @@ function SWEP:Deploy()
 		end
 		local vm = self.Owner:GetViewModel()
 		local duration = 0
-		self.ViewModel = "models/weapons/v_models/v_physcannon_"..self.Owner:GetPlayerClass()..".mdl"
-		vm:SetModel("models/weapons/v_models/v_physcannon_"..self.Owner:GetPlayerClass()..".mdl")
 		--if GetConVar("gg_style"):GetInt() <= 0 then
 		duration = vm:SequenceDuration()
 		--else

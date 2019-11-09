@@ -8,10 +8,11 @@ include("sv_gamelogic.lua")
 include("sv_damage.lua")
 include("sv_death.lua")
 include("sv_ctf_bots.lua")
+include("sv_mvm_bots_red.lua")
 include("shd_gravitygun.lua")
 include("sv_chat.lua")
 include("shd_taunts.lua")
-
+ 
 local LOGFILE = "teamfortress/log_server.txt"
 file.Delete(LOGFILE)
 file.Append(LOGFILE, "Loading serverside script\n")
@@ -90,6 +91,12 @@ concommand.Add( "changeteam", function( pl, cmd, args )
 	if ( pl:Team() == tonumber( args[ 1 ] ) ) then return false end
 	if ( GetConVar("tf_competitive"):GetBool() and tonumber( args[ 1 ] ) == 4 ) then pl:ChatPrint("Competitive mode is on!") return end
 	if ( string.find(game.GetMap(), "mvm_") and tonumber( args[ 1 ] ) == 4 ) then pl:ChatPrint("Neutral Team is disabled!") return end
+
+	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "syn_") and tonumber( args[ 1 ] ) == 2 ) and !pl:IsAdmin() then pl:ChatPrint("Blue Team is disabled!") return end
+	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "bb_coop_") and tonumber( args[ 1 ] ) == 2 ) and !pl:IsAdmin() then pl:ChatPrint("Blue Team is disabled!") return end
+	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "cl_coop_") and tonumber( args[ 1 ] ) == 2 ) and !pl:IsAdmin() then pl:ChatPrint("Blue Team is disabled!") return end
+	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "js_coop_") and tonumber( args[ 1 ] ) == 2 ) and !pl:IsAdmin() then pl:ChatPrint("Blue Team is disabled!") return end
+	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "coop_") and tonumber( args[ 1 ] ) == 2 ) and !pl:IsAdmin() then pl:ChatPrint("Blue Team is disabled!") return end
 	if ( GetConVar("tf_disable_nonred_mvm"):GetBool() and string.find(game.GetMap(), "mvm_") and tonumber( args[ 1 ] ) == 2 ) and !pl:IsAdmin() then pl:ChatPrint("Blue Team is disabled!") return end
 	if pl:Team() == TEAM_SPECTATOR then
 		pl:KillSilent()
@@ -255,6 +262,24 @@ function GM:PlayerButtonDown( pl, key )
 		print("taunt")
 		print(pl:GetActiveWeapon():GetSlot())
 	end
+	if key == KEY_Z then
+		pl:ConCommand("voice_menu_1") 
+	end
+	if key == KEY_X then
+		pl:ConCommand("voice_menu_2") 
+	end
+	if key == KEY_C then
+		pl:ConCommand("voice_menu_3") 
+	end
+	if key == KEY_COMMA then
+		pl:ConCommand("tf_changeclass")
+	end
+	if key == KEY_M then
+		pl:ConCommand("gm_showspare1")
+	end
+	if key == KEY_PERIOD then
+		pl:ConCommand("tf_changeteam")
+	end
 end
 
 function RandomWeapon2(ply, wepslot)
@@ -366,7 +391,16 @@ function GM:PlayerSpawn(ply)
 	self:ResetDamageCounter(ply)
 	self:ResetCooperations(ply)
 	self:StopCritBoost(ply)
-	
+	for k,v in ipairs(ents.FindByClass("trigger_weapon_strip")) do
+		if IsValid(v) then
+			v:Fire("Kill", "", 0.1)
+		end
+	end
+	for k,v in ipairs(ents.FindByClass("player_weaponstrip")) do
+		if IsValid(v) then
+			v:Fire("Kill", "", 0.1)
+		end
+	end
 	-- Reinitialize class
 	if ply:GetPlayerClass()=="" then
 		ply:ConCommand("tf_changeclass")

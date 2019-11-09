@@ -92,7 +92,7 @@ function ENT:Initialize()
 	end
 	
 	self:SetMoveType(MOVETYPE_VPHYSICS)
-	self:SetSolid(SOLID_CUSTOM)
+	self:PhysicsInit(SOLID_CUSTOM)
 	self:SetHealth(1)
 	
 	if self.GrenadeMode==1 then
@@ -114,7 +114,7 @@ function ENT:Initialize()
 		phys:Wake()
 		if self.GrenadeMode==1 then
 			self.Bounciness = 1
-			phys:SetMass(self.Mass * 2)
+			phys:SetMass(self.Mass)
 		else
 			phys:SetMass(self.Mass)
 		end
@@ -160,6 +160,16 @@ function ENT:Initialize()
 		self.particle_crit:Spawn()
 		self.particle_crit:Activate()
 	end
+end
+
+function ENT:GravGunPunt( ply )
+	self:GetPhysicsObject():EnableMotion( true )
+	return true
+end
+
+function ENT:GravGunPickupAllowed( ply )
+	self:GetPhysicsObject():EnableMotion( true )
+	return true
 end
 
 function ENT:OnRemove()

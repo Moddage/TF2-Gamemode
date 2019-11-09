@@ -67,8 +67,6 @@ if SERVER then
 
 function CLASS:Initialize()
 	self:SetModel("models/player/mercenary.mdl")
-	self:Give("tf_weapon_fists_merc") 
-	self:Give("tf_weapon_pistol_merc")
 	if self:IsBot() then
 		self:SelectWeapon("tf_weapon_pistol_merc")
 	else

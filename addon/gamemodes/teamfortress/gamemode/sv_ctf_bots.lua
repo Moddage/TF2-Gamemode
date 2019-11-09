@@ -9,11 +9,13 @@ local names = {"TFBot"}
 local classtb = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","demoknight","ubermedic"}
 --local classtb = {"demoknight"}
 local classtbmvm = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","superscout","giantheavyshotgun","giantheavyheater","giantsoldierrapidfire","giantsoldiercharged","soldierbuffed","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierbuffed","soldierbuffed","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","soldierbuffed","soldierbuffed","soldierbuffed","heavyshotgun","heavyshotgun","heavyshotgun","heavyshotgun","heavyweightchamp","heavyweightchamp","heavyweightchamp","heavyweightchamp","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic"}
+--local classtbmvm = {"combinesoldier","combinesoldier"}
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
 local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
 local tf_bot_melee_only = CreateConVar("tf_bot_melee_only", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local seensentry = false
+local combinesoldierweps = {"tf_weapon_capsulelauncher","tf_weapon_trenchknife"}
 function LBAddProfile(tab) 
 	if profiles[tab["name"]] then return end
 	table.insert(profiles, tab) 
@@ -32,7 +34,7 @@ function LBAddBot(team)
 	if diff == 0 then
 		diffn = "Easy"
 	if diff == 1 then 
-		diffn = "Normal"
+		diffn = "Normal" 
 	elseif diff == 2 then
 		diffn = "Hard"
 	elseif diff == 3 then
@@ -40,7 +42,7 @@ function LBAddBot(team)
 	end]]
 	local name = table.Random(names) -- .." (bot) "..diffn --"Bot"..math.random(0, 99)
 	local bot = player.CreateNextBot(name)
-	local teamd = TEAM_RED
+	local teamd = TEAM_BLU
 	if !string.find(game.GetMap(), "mvm_") then
 		if team == 1 then
 			teamd = table.Random({TEAM_RED,TEAM_BLU})
@@ -54,11 +56,12 @@ function LBAddBot(team)
 	bot.ControllerBot:Spawn() 
 	bot.LastPath = nil
 	bot.CurSegment = 2
-	if string.find(game.GetMap(), "mvm_") and bot:Team() == TEAM_BLU then
+	--[[if string.find(game.GetMap(), "mvm_") and bot:Team() == TEAM_BLU then
 		bot:SetPlayerClass(table.Random(classtbmvm))
-	else
+	elseif !string.find(game.GetMap(), "mvm_") then
 		bot:SetPlayerClass(table.Random(classtb))
-	end
+	end]]
+	bot:SetPlayerClass(table.Random(classtbmvm))
 	for k, v in pairs(player.GetAll()) do
 		v:ChatPrint(tostring(team))
 	end
@@ -108,23 +111,38 @@ hook.Add("PlayerSpawn", "leadbot_spawn", function(ply)
 		if ply.LKBot then
 			--[[ply:StripWeapons()
 			ply:Give("cw_m1911")]]
+			local classmvm = table.Random(classtbmvm)
 			local class = table.Random(classtb)
 
 			timer.Simple(1, function()
 				if bot_class:GetFloat() == 0 then
-					ply:SetPlayerClass(class)
+					if string.find(game.GetMap(), "mvm_") then
+						ply:SetPlayerClass(classmvm)
+					else
+						ply:SetPlayerClass(class)
+					end
 				end
 
 				timer.Simple(0.1, function()				
 					if bot_class:GetFloat() == 0 then
 						ply:SetPlayerClass(ply:GetPlayerClass()	)
-					end
+					end 
 					RandomWeapon2(ply, "primary")
 					RandomWeapon2(ply, "secondary")
 					RandomWeapon2(ply, "melee")
 				end)
+				if ply:GetPlayerClass() == "combinesoldier" then
+					ply:SelectWeapon(table.Random(combinesoldierweps))
+				end
 				ply:SetPlayerColor(Vector(math.random(0, 255) / 255,  math.random(0, 255) / 255, math.random(0, 255) / 255))
 				ply:SetFOV(100, 0)
+						
+				timer.Create("CombineSoldierAttack2"..bot:EntIndex(), 15, 0, function()
+					if bot:GetPlayerClass() == "combinesoldier" then
+						if !bot:Alive() then timer.Stop("CombineSoldierAttack2"..bot:EntIndex()) return end
+						bot:GetActiveWeapon():SecondaryAttack()
+					end
+				end)
 			end)
 
 			if tf_bot_melee_only:GetBool() then
@@ -309,6 +327,8 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				end
 			end
 		end
+		
+
 		--[[for k, v in pairs(player.GetAll()) do
 			if v:Alive() and v:GetPos():Distance(bot:GetPos()) < 4096 and !v:IsBot() and !ignoreback then
 				if bot:GetPos():Distance(v:GetPos()) > 150 then
@@ -418,36 +438,17 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 					end
 
 				else
-					for k, v in pairs(ents.GetAll()) do
-						if v:GetClass() == "obj_sentrygun" and !v:IsFriendly(bot) and v:Health() >= 0 and GAMEMODE:EntityTeam(v) ~= TEAM_SPECTATOR then
-							local att
-							att = v:GetBonePosition(v:LookupBone("weapon_bone"))
-							local trace = util.QuickTrace(bot:EyePos(), att - bot:EyePos(), team.GetPlayers(bot:Team()))
-							if bot:GetPlayerClass() == "spy" then
-								bot:SelectWeapon("tf_weapon_rtr")
-								bot:SelectWeapon("tf_weapon_sapper")
-								bot:SelectWeapon("tf_weapon_builder")
-								bot:SetModel("models/player/"..table.Random(randomclassmodel)..".mdl")
-								if bot:Team() != TEAM_RED then
-									bot:SetSkin(0)
-								else
-									bot:SetSkin(1)
-								end
-							end
-							for _,ents in ipairs(ents.FindInSphere(bot:GetPos(), 800)) do
-								if ents == v then
-									bot.TargetEnt = v
-								end
-							end
-						end
-					end
 					if bot:GetPlayerClass() != "spy" and bot:GetPlayerClass() != "engineer" then
 						for k, v in pairs(player.GetAll()) do
 							if v:Team() ~= bot:Team() and v:Alive() and v:Team() ~= TEAM_SPECTATOR and v:GetNoDraw() != true then
 
 								local att
 								if !v:IsHL2() then
-									att = v:GetAttachment(v:LookupAttachment("head")).Pos
+									if v:GetPlayerClass() == "combinesoldier" then
+										att = v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1"))
+									else
+										att = v:GetAttachment(v:LookupAttachment("head")).Pos
+									end
 								else
 									att = v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1"))
 								end

@@ -1231,6 +1231,7 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
 					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED, true)
 					ply:PlayScene("scenes/player/engineer/low/taunt07.vcd")
+					ply:SetNWBool("Taunting", true)
 					ply:SetNWBool("NoWeapon", true)
 					ply:GetActiveWeapon().NameOverride = "taunt_guitar_kill"
 					local animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	

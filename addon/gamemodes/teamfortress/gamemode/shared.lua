@@ -15,7 +15,7 @@ sound.Add( {
 	level = 120,
 	channel = CHAN_WEAPON,
 	pitch = { 94, 105 },
-	sound = { "^weapons/smg1/npc_smg1_fire1.wav" } 
+	sound = { ")weapons/smg1/smg1_fire1.wav" } 
 } )
 sound.Add( {
 	name = "Weapon_SMG1.Burst",
@@ -69,9 +69,17 @@ sound.Add( {
 	name = "Weapon_Shotgun.Single",
 	volume = 1.0,
 	level = 150,
-	pitch = { 100 },
+	pitch = { 92, 103 },
 	channel = CHAN_WEAPON,
 	sound = { "weapons/shotgun/shotgun_fire6.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Shotgun.Double",
+	volume = 1.0,
+	level = 150,
+	pitch = { 92, 103 },
+	channel = CHAN_WEAPON,
+	sound = { "weapons/shotgun/shotgun_dbl_fire.wav" } 
 } )
 sound.Add( {
 	name = "Weapon_Pistol.Single",

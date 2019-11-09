@@ -169,6 +169,7 @@ function ENT:Build()
 		ent.Idle_Sound = CreateSound(ent, "NPC_Turret.Ping")
 		ent.Sound_Alert = Sound("NPC_CeilingTurret.Active")
 		ent.NameOverride = "npc_turret_floor"
+		ent.AimSpeedMultiplier = 0.7
 		
 		local health_frac = ent:Health() / ent:GetMaxHealth()
 		ent:SetMaxHealth(ent:GetObjectHealth())

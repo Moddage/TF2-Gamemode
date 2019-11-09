@@ -213,6 +213,7 @@ function SWEP:ShootProjectile()
 			flame.Force = self.Force
 		end
 		flame:SetOwner(self.Owner)
+		flame.CritsFromBehind = true
 		self:InitProjectileAttributes(flame)
 		
 		local d = self:GetItemData()

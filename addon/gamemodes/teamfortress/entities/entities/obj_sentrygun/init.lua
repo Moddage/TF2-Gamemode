@@ -266,7 +266,6 @@ function ENT:OnDoneBuilding()
 	self.TargetYaw = 0
 	self.DPitch = 0
 	self.DYaw = 0
-	
 	self.IdlePitchSpeed = 0.3
 	self.IdleYawSpeed = 0.75
 	
@@ -765,9 +764,17 @@ function ENT:ThinkTarget()
 		if self.AlertSoundEnt then
 			self.AlertSoundEnt:Stop()
 		end
-		self.AlertSoundEnt = CreateSound(self, self.Sound_Alert)
-		self.AlertSoundEnt:PlayEx(1, self.SoundPitch)
-		
+		if self:GetBuildingType() == 3 then
+			self:EmitSound("NPC_CeilingTurret.Alert")
+			timer.Simple(2, function()
+				self.AlertSoundEnt = CreateSound(self, self.Sound_Alert)
+				self.AlertSoundEnt:PlayEx(1, self.SoundPitch)
+				self:StopSound("NPC_CeilingTurret.Alert")
+			end)
+		else
+			self.AlertSoundEnt = CreateSound(self, self.Sound_Alert)
+			self.AlertSoundEnt:PlayEx(1, self.SoundPitch)
+		end 
 		if self.Target:IsPlayer() then
 			umsg.Start("NotifySentrySpotted", self.Target)
 			umsg.End()

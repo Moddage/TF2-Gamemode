@@ -1,5 +1,4 @@
 
-//Commands
 
 if !ConVarExists("gg_style") then	
    CreateConVar("gg_style", '0', (FCVAR_ARCHIVE), "to change if the weapon is styled like Half-Life 2 or Garry's Mod.", true, true)
