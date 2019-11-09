@@ -275,6 +275,9 @@ function GM:PlayerButtonDown( pl, key )
 		pl:ConCommand("tf_changeclass")
 	end
 	if key == KEY_M then
+		pl:ConCommand("gm_showspare2")
+	end
+	if key == KEY_N then
 		pl:ConCommand("gm_showspare1")
 	end
 	if key == KEY_PERIOD then
