@@ -9,3 +9,7 @@ If you're wondering why _Kilburn ended the development was because he had a hard
 ## Installation
 
 Install like a regular addon
+
+## Workshop Info goes here
+
+Theres an more updated version of this gamemode. Go here for more updates: https://steamcommunity.com/sharedfiles/filedetails/?id=1932936017
