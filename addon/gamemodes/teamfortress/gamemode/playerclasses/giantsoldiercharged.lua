@@ -72,6 +72,8 @@ function CLASS:Initialize()
 	self:SetModelScale(1.75)
 	self:SetViewOffset(Vector(0, 0, 126))
 	GAMEMODE:StartCritBoost(self)
+	self:EmitSound("ui/survival_playerrec.wav", 0, 100)
+	PrintMessage(HUD_PRINTCENTER, "Team "..self:Team().." has recieved an Giant Charged Soldier! Beware of the CROCKETS!")
 end
 
 end

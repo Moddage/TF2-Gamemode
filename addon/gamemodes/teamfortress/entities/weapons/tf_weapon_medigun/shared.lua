@@ -293,7 +293,12 @@ local function medigun_trace_condition(tr, wep)
 		tr.Entity:IsTFPlayer() and
 		tr.Entity:EntityTeam()==wep.Owner:EntityTeam() and
 		tr.Entity:Health()>0 and
-		not tr.Entity:HasNPCFlag(NPC_CANNOTHEAL)
+		not tr.Entity:HasNPCFlag(NPC_CANNOTHEAL) 
+end
+
+
+local function medigun_trace_condition_reviver(tr, wep)
+	return IsValid(tr.Entity) and tr.Entity.IsReviveMark
 end
 
 function SWEP:PrimaryAttack()
@@ -308,12 +313,51 @@ function SWEP:PrimaryAttack()
 			maxs = Vector(5, 5, 5),
 		}, medigun_trace_condition, self)
 		
-		self.CanInspect = false
+		local tr2 = tf_util.MixedTrace({
+			start = start,
+			endpos = endpos,
+			filter = self.Owner,
+			mins = Vector(-5, -5, -5),
+			maxs = Vector(5, 5, 5),
+		}, medigun_trace_condition_reviver, self)
 		
-		if medigun_trace_condition(tr, self) then
+		self.CanInspect = false
+		if medigun_trace_condition_reviver(tr2, self) then
+			
 			self.Firing = true
 			self:SetHealTarget(tr.Entity)
+			self.NextIdle = nil
+			self.NextIdle2 = CurTime() + self:SequenceDuration()
 			
+			timer.Create("LoopPlayerAttack1", 0.2, 0, function()
+			if self.Owner:IsValid() and !self.Owner:KeyDown(IN_ATTACK) then self.Owner:AnimRestartGesture( GESTURE_SLOT_CUSTOM , ACT_MP_ATTACK_STAND_PREFIRE, true ) timer.Stop("LoopPlayerAttack1") return end
+			timer.Simple(0.01, function()
+				if self.Owner:IsValid() and !self.Owner:KeyDown(IN_ATTACK) then self.Owner:AnimRestartGesture( GESTURE_SLOT_CUSTOM , ACT_MP_ATTACK_STAND_PREFIRE, true ) timer.Stop("LoopPlayerAttack1") return end
+				self.Owner:SetAnimation(PLAYER_ATTACK1)
+			end)
+			end) 
+			self.Owner:AnimRestartGesture( GESTURE_SLOT_CUSTOM , ACT_MP_ATTACK_STAND_PREFIRE, true )
+			self:SendWeaponAnim(ACT_SECONDARY_ATTACK_STAND_PREFIRE)
+			self.ShootSoundLoop:Play()
+			timer.Simple(3, function()
+				if tr.Entity:GetClass() == "reviver" then
+					tr.Entity:GetOwner():Spawn()
+					tr.Entity:GetOwner():SetPlayerClass(tr.Entity:GetOwner():GetPlayerClass())
+					tr.Entity:GetOwner():SetPos(tr.Entity:GetPos())
+					tr.Entity:GetOwner():EmitSound("mvm/mvm_revive.wav", 90)
+					tr.Entity:Remove()
+				end
+			end)
+		elseif medigun_trace_condition(tr, self) then
+			self.Firing = true
+			self:SetHealTarget(tr.Entity)
+			timer.Simple(3, function()
+				if tr.Entity:GetClass() == "reviver" then
+					tr.Entity:GetOwner():Spawn()
+					tr.Entity:GetOwner():SetPos(tr.Entity:GetPos())
+					tr.Entity:Remove()
+				end
+			end)
 			
 			timer.Create("LoopPlayerAttack1", 0.2, 0, function()
 			if self.Owner:IsValid() and !self.Owner:KeyDown(IN_ATTACK) then self.Owner:AnimRestartGesture( GESTURE_SLOT_CUSTOM , ACT_MP_ATTACK_STAND_PREFIRE, true ) timer.Stop("LoopPlayerAttack1") return end
@@ -546,6 +590,8 @@ function SWEP:StopFiring()
 	self.ShootSoundLoop:Stop()
 	self:SendWeaponAnim(ACT_SECONDARY_ATTACK_STAND_POSTFIRE)
 	self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_POSTFIRE)
+	
+	self.Owner:EmitSound("weapons/medigun_heal_detach.wav", 95, 100)
 	self.NextIdle = CurTime() + self:SequenceDuration()
 end
 

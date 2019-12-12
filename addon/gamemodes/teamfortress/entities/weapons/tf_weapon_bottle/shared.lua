@@ -61,14 +61,16 @@ function SWEP:ViewModelDrawn()
 end
 
 function SWEP:DrawWorldModel(from_postplayerdraw)
-	if IsValid(self.WModel2) then
-		if self.dt.Broken ~= self.BrokenState then
-			if self.dt.Broken then
-				MsgN("Breaking bottle worldmodel")
+	if SERVER then
+		if IsValid(self.WModel2) then
+			if self.dt.Broken ~= self.BrokenState then
+				if self.dt.Broken then
+					MsgN("Breaking bottle worldmodel")
+				end
+				
+				self.WModel2:SetBodygroup(0,(self.dt.Broken and 1) or 0)
+				self.BrokenState = self.dt.Broken
 			end
-			
-			self.WModel2:SetBodygroup(0,(self.dt.Broken and 1) or 0)
-			self.BrokenState = self.dt.Broken
 		end
 	end
 	
@@ -79,6 +81,9 @@ function SWEP:OnMeleeHit(trace)
 	if self:Critical() and not self.dt.Broken then
 		if SERVER then
 			self.dt.Broken = true
+				
+			self.WModel2:SetBodygroup(0,(self.dt.Broken and 1) or 0)
+			
 			self.Owner:GetViewModel():SetBodygroup(1,1)
 		end
 		

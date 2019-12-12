@@ -1,5 +1,5 @@
 // Choreo version 1
-actor "!target1"
+actor "spy"
 {
   channel "face"
   {
@@ -9,7 +9,7 @@ actor "!target1"
       param "taunt_laugh"
       fixedlength
     }
-    event speak "Spy.LaughLong01"
+    event speak "spy.laughlong01"
     {
       time 0.000000 6.466757
       param "Spy.LaughLong01"
@@ -24,8 +24,8 @@ actor "!target1"
       param2 "scaredUpper"
       event_ramp
       {
-        0.1159 1.0000
-        2.2136 1.0000
+        0.1159 1.0000 "curve_easein_to_curve_easeout"
+        2.2136 1.0000 "curve_easein_to_curve_easeout"
       }
     }
     event expression "painBig"
@@ -35,8 +35,8 @@ actor "!target1"
       param2 "painBig"
       event_ramp
       {
-        0.1182 0.8431
-        0.8773 0.8392
+        0.1182 0.8467 "curve_easein_to_curve_easeout"
+        0.8773 0.8421 "curve_easeout_to_curve_easeout"
       }
     }
     event expression "scaredUpper"
@@ -46,8 +46,8 @@ actor "!target1"
       param2 "painBigUpper"
       event_ramp
       {
-        0.1382 0.9137
-        3.4441 0.9216
+        0.1382 0.9176 "curve_easein_to_curve_easeout"
+        3.4441 0.9222 "curve_easeout_to_curve_easeout"
       }
     }
     event expression "Smile02"
@@ -57,8 +57,8 @@ actor "!target1"
       param2 "Smile02"
       event_ramp
       {
-        0.1632 1.0000
-        3.0628 1.0000
+        0.1632 1.0000 "curve_easein_to_curve_easeout"
+        3.0628 1.0000 "curve_easeout_to_curve_easeout"
       }
     }
     event expression "happyBig"
@@ -68,20 +68,21 @@ actor "!target1"
       param2 "happyBig"
       event_ramp
       {
-        0.2474 1.0000
-        3.2579 1.0000
+        0.2474 1.0000 "curve_easein_to_curve_easeout"
+        3.2579 1.0000 "curve_easeout_to_curve_easeout"
       }
     }
   }
 }
-mapname "maps\lol.bsp"
+
 scalesettings
 {
-  "CChoreoView" "100"
-  "SceneRampTool" "100"
-  "ExpressionTool" "100"
+  "CChoreoView" "108"
+  "RampTool" "38"
+  "ExpressionTool" "74"
   "GestureTool" "100"
-  "RampTool" "100"
+  "SceneRampTool" "100"
 }
 fps 60
 snap off
+ignorePhonemes off

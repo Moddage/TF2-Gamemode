@@ -4,9 +4,9 @@ event stoppoint "end"
   time 2.831051 -1.000000
   param "noaction"
 }
-actor "!target1"
+actor "Heavy"
 {
-  channel "animation"
+  channel "Animation"
   {
     event sequence "scout_taunt_replay"
     {
@@ -24,8 +24,8 @@ actor "!target1"
       param2 "happyBig"
       event_ramp
       {
-        0.0800 0.9922
-        2.0695 1.0000
+        0.0800 0.9953 "curve_easein_to_curve_easeout"
+        2.0695 1.0000 "curve_easein_to_curve_easeout"
       }
     }
     event expression "painSmall"
@@ -35,8 +35,8 @@ actor "!target1"
       param2 "painSmall"
       event_ramp
       {
-        0.0467 0.3176
-        0.3567 0.3176
+        0.0467 0.3193 "curve_easein_to_curve_easein"
+        0.3567 0.3193 "curve_easeout_to_curve_easeout"
       }
     }
     event expression "aa"
@@ -46,20 +46,22 @@ actor "!target1"
       param2 "aa"
       event_ramp
       {
-        0.1967 0.6275
-        2.0004 0.6196
+        0.1967 0.6294 "curve_easein_to_curve_easein"
+        2.0004 0.6200 "curve_easeout_to_curve_easeout"
       }
     }
   }
+  faceposermodel "D:\dev\staging\game\tf\models\player\scout.mdl"
 }
-mapname "maps\lol.bsp"
+
 scalesettings
 {
-  "CChoreoView" "100"
+  "CChoreoView" "292"
+  "RampTool" "60"
   "SceneRampTool" "100"
   "ExpressionTool" "100"
   "GestureTool" "100"
-  "RampTool" "100"
 }
 fps 60
 snap off
+ignorePhonemes off

@@ -1,6 +1,6 @@
-CLASS.Name = "Combine Soldier"
-CLASS.Speed = 100
-CLASS.Health = 170
+CLASS.Name = "Civilian"
+CLASS.Speed = 120
+CLASS.Health = 140
 
 if CLIENT then
 	CLASS.CharacterImage = {
@@ -13,7 +13,7 @@ if CLIENT then
 	}
 end
 
-CLASS.Loadout = {"tf_weapon_capsulelauncher","tf_weapon_trenchknife","tf_weapon_tranqulizer"}
+CLASS.Loadout = {"tf_weapon_capsulelauncher","tf_weapon_trenchknife"}
 CLASS.ModelName = "scout"
 
 CLASS.AmmoMax = {
@@ -47,6 +47,6 @@ CLASS.Sounds = {
 
 if SERVER then
 	function CLASS:Initialize()
-		self:SetModel("models/combine_soldier.mdl")
+		self:SetModel("models/humans/group03/male_0"..math.random(1,9)..".mdl")
 	end
 end

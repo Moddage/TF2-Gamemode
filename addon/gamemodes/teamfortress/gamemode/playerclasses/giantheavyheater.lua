@@ -134,6 +134,8 @@ function CLASS:Initialize()
 	self:SetModel("models/bots/heavy_boss/bot_heavy_boss.mdl")
 	self:SetViewOffset(Vector(0, 0, 126))
 	self:SetModelScale(1.75)
+	self:EmitSound("ui/survival_playerrec.wav", 0, 100)
+	PrintMessage(HUD_PRINTCENTER, "Team "..self:Team().." has recieved an Giant Heavy!")
 end
 
 end

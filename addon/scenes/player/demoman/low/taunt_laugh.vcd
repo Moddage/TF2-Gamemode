@@ -4,9 +4,9 @@ event stoppoint "end"
   time 5.299650 -1.000000
   param "noaction"
 }
-actor "!target1"
+actor "Demo"
 {
-  channel "animation"
+  channel "Animation"
   {
     event sequence "taunt_laugh"
     {
@@ -30,7 +30,7 @@ actor "!target1"
       event_ramp
       {
         0.1200 1.0000
-        2.3409 0.9961
+        2.3409 0.9980
       }
     }
     event expression "uw"
@@ -41,9 +41,9 @@ actor "!target1"
       event_ramp
       {
         0.0600 0.0000
-        0.2733 0.9843
-        0.3667 1.0000
-        0.4800 0.0157
+        0.2733 0.9861 "curve_easein_to_curve_easein"
+        0.3667 1.0000 "curve_easeout_to_curve_easeout"
+        0.4800 0.0179
       }
     }
     event expression "drunkHappy"
@@ -53,10 +53,10 @@ actor "!target1"
       param2 "drunkHappy"
       event_ramp
       {
-        0.0000 0.0000
-        0.1000 0.9922
-        0.5867 1.0000
-        0.6933 0.0078
+        0.0000 0.0020 "curve_easein_to_curve_easeout"
+        0.1000 0.9960 "curve_easein_to_curve_easein"
+        0.5867 1.0000 "curve_easein_to_curve_easein"
+        0.6933 0.0100 "curve_easein_to_curve_easein"
       }
     }
     event expression "openJaw"
@@ -66,38 +66,38 @@ actor "!target1"
       param2 "openJaw"
       event_ramp
       {
-        0.0733 0.9333
-        0.1867 0.0824
-        0.2867 1.0000
-        0.3967 0.0314
-        0.5100 0.9961
-        0.6100 0.0471
+        0.0733 0.9363 "curve_easein_to_curve_easeout"
+        0.1867 0.0837
+        0.2867 1.0000 "curve_easein_to_curve_easeout"
+        0.3967 0.0319
+        0.5100 0.9980
+        0.6100 0.0478
         0.7733 1.0000
-        0.8833 0.2627
-        0.9867 0.9882
-        1.0833 0.0431
-        1.2667 0.7922
-        1.3833 0.2039
-        1.5300 0.9294
-        1.6233 0.0196
-        1.7300 0.7765
-        1.8067 0.1804
-        1.9700 0.8353
-        2.0833 0.0196
-        2.4067 0.6157
-        2.5067 0.6392
-        2.5767 0.9843
-        2.7067 0.4431
-        2.8133 0.9922
-        2.9667 0.1569
-        3.1967 0.9843
-        3.4767 0.6157
-        3.6500 0.5686
-        3.7800 0.8745
-        3.8333 0.3529
-        3.9800 0.6902
-        4.1000 0.1490
-        4.2633 0.7608
+        0.8833 0.2649
+        0.9867 0.9920
+        1.0833 0.0438 "curve_easein_to_curve_easein"
+        1.2667 0.7948
+        1.3833 0.2052
+        1.5300 0.9303
+        1.6233 0.0199
+        1.7300 0.7789
+        1.8067 0.1833
+        1.9700 0.8367
+        2.0833 0.0219
+        2.4067 0.6175 "curve_easein_to_curve_easeout"
+        2.5067 0.6394 "curve_easein_to_curve_easein"
+        2.5767 0.9861
+        2.7067 0.4442
+        2.8133 0.9940
+        2.9667 0.1574
+        3.1967 0.9880
+        3.4767 0.6175
+        3.6500 0.5717
+        3.7800 0.8765
+        3.8333 0.3566
+        3.9800 0.6912
+        4.1000 0.1514
+        4.2633 0.7610
       }
     }
     event expression "happyUpper"
@@ -108,7 +108,7 @@ actor "!target1"
       event_ramp
       {
         0.1533 1.0000
-        0.5700 0.9961
+        0.5700 0.9980
       }
     }
     event expression "openJaw"
@@ -118,7 +118,7 @@ actor "!target1"
       param2 "openJaw"
       event_ramp
       {
-        0.2000 0.9961
+        0.2000 0.9980
       }
     }
     event expression "happy"
@@ -128,10 +128,10 @@ actor "!target1"
       param2 "happy"
       event_ramp
       {
-        0.0700 0.9961
-        0.8700 0.9882
-        1.1300 0.7020
-        1.4233 0.6824
+        0.0700 0.9980
+        0.8700 0.9920
+        1.1300 0.7052 "curve_easein_to_curve_easein"
+        1.4233 0.6853 "curve_easeout_to_curve_easeout"
         1.6148 1.0000
       }
     }
@@ -142,8 +142,8 @@ actor "!target1"
       param2 "happyUpper"
       event_ramp
       {
-        0.1867 0.9765
-        0.5067 0.0118
+        0.1867 0.9781
+        0.5067 0.0120
       }
     }
     event expression "happy"
@@ -153,7 +153,7 @@ actor "!target1"
       param2 "happy"
       event_ramp
       {
-        0.0333 0.9961
+        0.0333 0.9980
         0.3065 1.0000
       }
     }
@@ -164,10 +164,10 @@ actor "!target1"
       param2 "openJaw"
       event_ramp
       {
-        0.0300 0.0078
-        0.1733 0.9922
-        0.3000 0.0314
-        0.4667 0.9882
+        0.0300 0.0100
+        0.1733 0.9940
+        0.3000 0.0319
+        0.4667 0.9920
       }
     }
     event expression "uw"
@@ -177,9 +177,9 @@ actor "!target1"
       param2 "uw"
       event_ramp
       {
-        0.2200 0.6588
-        0.3933 0.1020
-        0.5300 0.5333
+        0.2200 0.6614
+        0.3933 0.1056
+        0.5300 0.5339
       }
     }
     event expression "ao"
@@ -189,23 +189,25 @@ actor "!target1"
       param2 "ao"
       event_ramp
       {
-        0.1833 0.0196
-        0.3167 0.6510
-        0.4333 0.0549
-        0.5700 0.6353
-        0.7167 0.0510
+        0.1833 0.0219
+        0.3167 0.6514
+        0.4333 0.0558
+        0.5700 0.6355
+        0.7167 0.0518
       }
     }
   }
+  faceposermodel "D:\dev\staging\game\tf\models\player\demo.mdl"
 }
-mapname "maps\lol.bsp"
+
 scalesettings
 {
-  "CChoreoView" "100"
+  "CChoreoView" "276"
+  "RampTool" "60"
   "SceneRampTool" "100"
   "ExpressionTool" "100"
   "GestureTool" "100"
-  "RampTool" "100"
 }
 fps 60
 snap off
+ignorePhonemes off

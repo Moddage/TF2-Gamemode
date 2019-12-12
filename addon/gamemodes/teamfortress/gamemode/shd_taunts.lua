@@ -261,6 +261,7 @@ concommand.Add("tf_mvm_wave_end_bonus", function(ply, cmd)
 	timer.Create("HaveABonus", 4, 1, function()
 		ply:EmitSound("vo/mvm_bonus0"..math.random(1,3)..".mp3", 0, 100)
 	end)
+	RunConsoleCommand("tf_bot_kick_all")
 end)
 concommand.Add("tf_help_cap_flag", function(ply, cmd)
 	local HelpMeCapture = CurTime() + 3
@@ -289,18 +290,22 @@ end)
 concommand.Add("tf_mvm_wave_end", function(ply, cmd)
 	ply:EmitSound("vo/mvm_wave_end0"..math.random(1,8)..".mp3", 0, 100)
 	ply:EmitSound("music/mvm_end_wave.wav", 0, 100)
+	RunConsoleCommand("tf_bot_kick_all")
 end)
 concommand.Add("tf_mvm_wave_mid_end", function(ply, cmd)
 	ply:EmitSound("vo/mvm_wave_end0"..math.random(1,8)..".mp3", 0, 100)
 	ply:EmitSound("music/mvm_end_mid_wave.wav", 0, 100)
+	RunConsoleCommand("tf_bot_kick_all")
 end)
 concommand.Add("tf_mvm_wave_end_tank", function(ply, cmd)
 	ply:EmitSound("vo/mvm_wave_end0"..math.random(1,8)..".mp3", 0, 100)
 	ply:EmitSound("music/mvm_end_tank_wave.wav", 0, 100)
+	RunConsoleCommand("tf_bot_kick_all")
 end)
 concommand.Add("tf_mvm_wave_end_final", function(ply, cmd)
-	ply:EmitSound("vo/mvm_wave_end0"..math.random(1,8)..".mp3", 0, 100)
+	ply:EmitSound("vo/mvm_final_wave_end0"..math.random(1,6)..".mp3", 0, 100)
 	ply:EmitSound("music/mvm_end_last_wave.wav", 0, 100)
+	RunConsoleCommand("tf_bot_kick_all")
 end)
 concommand.Add("tf_mvm_wave_start", function(ply, cmd)
 	ply:EmitSound("vo/mvm_wave_start0"..math.random(1,9)..".mp3", 0, 100)
@@ -311,6 +316,7 @@ concommand.Add("tf_mvm_wave_start", function(ply, cmd)
 	timer.Create("WaveStart3", 6, 1, function() ply:EmitSound("vo/announcer_begins_3sec.mp3", 0, 100) end )
 	timer.Create("WaveStart4", 7, 1, function() ply:EmitSound("vo/announcer_begins_2sec.mp3", 0, 100) end )
 	timer.Create("WaveStart5", 8, 1, function() ply:EmitSound("vo/announcer_begins_1sec.mp3", 0, 100) end )
+	timer.Create("WaveStart6", 10, 1, function() RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add")  end )
 end)
 
 
@@ -323,6 +329,7 @@ concommand.Add("tf_mvm_wave_666_start", function(ply, cmd)
 	timer.Create("WaveStart3", 6, 1, function() ply:EmitSound("vo/announcer_begins_3sec.mp3", 0, 100) end )
 	timer.Create("WaveStart4", 7, 1, function() ply:EmitSound("vo/announcer_begins_2sec.mp3", 0, 100) end )
 	timer.Create("WaveStart5", 8, 1, function() ply:EmitSound("vo/announcer_begins_1sec.mp3", 0, 100) end )
+	timer.Create("WaveStart6", 10, 1, function() RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add")  end )
 end)
 
 concommand.Add("tf_mvm_wave_start_mid", function(ply, cmd)
@@ -334,6 +341,7 @@ concommand.Add("tf_mvm_wave_start_mid", function(ply, cmd)
 	timer.Create("WaveStart3", 6, 1, function() ply:EmitSound("vo/announcer_begins_3sec.mp3", 0, 100) end )
 	timer.Create("WaveStart4", 7, 1, function() ply:EmitSound("vo/announcer_begins_2sec.mp3", 0, 100) end )
 	timer.Create("WaveStart5", 8, 1, function() ply:EmitSound("vo/announcer_begins_1sec.mp3", 0, 100) end )
+	timer.Create("WaveStart6", 10, 1, function() RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add")  end )
 end)
 concommand.Add("tf_mvm_wave_start_tank", function(ply, cmd)
 	ply:EmitSound("vo/mvm_wave_start0"..math.random(1,9)..".mp3", 0, 100)
@@ -344,9 +352,10 @@ concommand.Add("tf_mvm_wave_start_tank", function(ply, cmd)
 	timer.Create("WaveStart3", 6, 1, function() ply:EmitSound("vo/announcer_begins_3sec.mp3", 0, 100) end )
 	timer.Create("WaveStart4", 7, 1, function() ply:EmitSound("vo/announcer_begins_2sec.mp3", 0, 100) end )
 	timer.Create("WaveStart5", 8, 1, function() ply:EmitSound("vo/announcer_begins_1sec.mp3", 0, 100) end )
+	timer.Create("WaveStart6", 10, 1, function() RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add")  end )
 end)
 concommand.Add("tf_mvm_wave_start_final", function(ply, cmd)
-	ply:EmitSound("vo/mvm_wave_start0"..math.random(1,9)..".mp3", 0, 100)
+	ply:EmitSound("vo/mvm_final_wave_start0"..math.random(1,9)..".mp3", 0, 100)
 	ply:EmitSound("music/mvm_start_last_wave.wav", 0, 100)
 
 	timer.Create("WaveStart1", 4, 1, function() ply:EmitSound("vo/announcer_begins_5sec.mp3", 0, 100) end )
@@ -354,6 +363,7 @@ concommand.Add("tf_mvm_wave_start_final", function(ply, cmd)
 	timer.Create("WaveStart3", 6, 1, function() ply:EmitSound("vo/announcer_begins_3sec.mp3", 0, 100) end )
 	timer.Create("WaveStart4", 7, 1, function() ply:EmitSound("vo/announcer_begins_2sec.mp3", 0, 100) end )
 	timer.Create("WaveStart5", 8, 1, function() ply:EmitSound("vo/announcer_begins_1sec.mp3", 0, 100) end )
+	timer.Create("WaveStart6", 10, 1, function() RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add") RunConsoleCommand("tf_bot_add")  end )
 end)
 
 concommand.Add("tf_taunt_laugh", function(ply)
@@ -1221,11 +1231,53 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 	if ply:IsHL2() then ply:ConCommand("act laugh") return end
 	if not ply:IsOnGround() then return end
 	if ply:WaterLevel() ~= 0 then return end
+
+	if ply:GetPlayerClass() == "combinesoldier" then
+		EmitSentence( "COMBINE_THROW_GRENADE" .. math.random( 0, 4 ), ply:GetPos(), 1, CHAN_AUTO, 1, 75, 0, 100 )
+	end
 	--[[if ply:GetInfoNum("tf_robot", 0) == 1 then ply:ChatPrint("You can't taunt as a robot!") return end
 	if ply:GetInfoNum("tf_giantrobot", 0) == 1 then ply:ChatPrint("You can't taunt as a mighty robot!") return end]]
 	if not table.HasValue(allowedtaunts, args[1]) then return end
 	if ply:GetPlayerClass() != "spy" then
 		if table.KeyFromValue(allowedtaunts,args[1]) == 1 then
+	
+			if ply:GetPlayerClass() == "combinesoldier" then
+				ply:DoAnimationEvent(ACT_SPECIAL_ATTACK1, true)
+				ply:SetNWBool("Taunting", true)
+				ply:SetNWBool("NoWeapon", true) 
+				local frag = ents.Create("npc_grenade_frag")
+				net.Start("ActivateTauntCam")
+				net.Send(ply)
+				frag:SetPos(ply:EyePos() + ( ply:GetAimVector() * 16 ) )
+				frag:SetAngles( ply:EyeAngles() )
+				frag:SetOwner(ply)
+
+				timer.Simple(0.6, function()
+					frag:Spawn()
+					
+					local phys = frag:GetPhysicsObject()
+						if ( !IsValid( phys ) ) then frag:Remove() return end
+						
+						
+						
+						local velocity = ply:GetAimVector()
+						velocity = velocity * 1000
+						velocity = velocity + ( VectorRand() * 10 ) -- a random element
+						phys:ApplyForceCenter( velocity )
+						frag:Fire("SetTimer",5,0)
+						frag:SetOwner(ply)
+						--timer.Simple(3.5,function() frag:Ignite() end)
+				end)
+				timer.Simple(1.2, function()
+					if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+					ply:SetNWBool("Taunting", false)
+					ply:SetNWBool("NoWeapon", false)
+					print("Thegay.")
+					net.Start("DeActivateTauntCam")
+					net.Send(ply)
+				end)
+					
+			end
 			if ply:GetPlayerClass() == "engineer" then
 				if ply:GetWeapons()[1]:GetClass() == "tf_weapon_sentry_revenge" then
 					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
@@ -1271,6 +1323,43 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 				ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
 			end
 		elseif table.KeyFromValue(allowedtaunts,args[1]) == 2 then
+	
+			if ply:GetPlayerClass() == "combinesoldier" then
+				ply:DoAnimationEvent(ACT_SPECIAL_ATTACK1, true)
+				ply:SetNWBool("Taunting", true)
+				ply:SetNWBool("NoWeapon", true) 
+				local frag = ents.Create("npc_grenade_frag")
+				net.Start("ActivateTauntCam")
+				net.Send(ply)
+				frag:SetPos(ply:EyePos() + ( ply:GetAimVector() * 16 ) )
+				frag:SetAngles( ply:EyeAngles() )
+				frag:SetOwner(ply)
+				timer.Simple(0.6, function()
+					frag:Spawn()
+					
+					local phys = frag:GetPhysicsObject()
+						if ( !IsValid( phys ) ) then frag:Remove() return end
+						
+						
+						
+						local velocity = ply:GetAimVector()
+						velocity = velocity * 1000
+						velocity = velocity + ( VectorRand() * 10 ) -- a random element
+						phys:ApplyForceCenter( velocity )
+						frag:Fire("SetTimer",5,0)
+						frag:SetOwner(ply)
+						--timer.Simple(3.5,function() frag:Ignite() end)
+				end)
+				timer.Simple(1.2, function()
+					if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+					ply:SetNWBool("Taunting", false)
+					ply:SetNWBool("NoWeapon", false)
+					print("Thegay.")
+					net.Start("DeActivateTauntCam")
+					net.Send(ply)
+				end)
+					
+			end
 			if ply:GetPlayerClass() == "pyro" then
 				timer.Simple(2, function()
 					ply:EmitSound("misc/flame_engulf.wav", 65, 100)
@@ -1466,15 +1555,18 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 	if IsValid(ply:GetActiveWeapon()) and table.HasValue(wep, ply:GetActiveWeapon():GetClass()) then ply:SetNWBool("NoWeapon", true) end
 	net.Start("ActivateTauntCam")
 	net.Send(ply)
-	print(ply:GetNWBool("SpeechTime"))
-	timer.Simple(ply:GetNWBool("SpeechTime"), function()
-		if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
-		ply:SetNWBool("Taunting", false)
-		ply:SetNWBool("NoWeapon", false)
-		print("Thegay.")
-		net.Start("DeActivateTauntCam")
-		net.Send(ply)
-	end)
+	
+	if ply:GetPlayerClass() != "combinesoldier" then
+		print(ply:GetNWBool("SpeechTime"))
+		timer.Simple(ply:GetNWBool("SpeechTime"), function()
+			if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+			ply:SetNWBool("Taunting", false)
+			ply:SetNWBool("NoWeapon", false)
+			print("Thegay.")
+			net.Start("DeActivateTauntCam")
+			net.Send(ply)
+		end)
+	end
 end)
 concommand.Add("tf_taunt_scary", function(ply)
 	if ply:GetNWBool("Taunting") == true then return end

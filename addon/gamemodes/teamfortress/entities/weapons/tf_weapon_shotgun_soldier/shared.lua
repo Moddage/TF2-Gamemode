@@ -6,7 +6,7 @@ sound.Add( {
 	channel = CHAN_WEAPON,
 	volume = 1.0,
 	level = 95,
-	sound = { "weapons/shotgun_worldreload.wav" }
+	sound = { "weapons/shotgun/shotgun_reload1.wav", "weapons/shotgun/shotgun_reload2.wav", "weapons/shotgun/shotgun_reload3.wav"	}
 } )
 
 if CLIENT then

@@ -129,7 +129,7 @@ SWEP.HoldTypeHL2 = "crossbow"
 
 SWEP.ReloadSound = Sound("Weapon_Minigun.Reload")
 SWEP.EmptySound = Sound("Weapon_Minigun.ClipEmpty")
-SWEP.ShootSound2 = Sound("weapons/chaingun_fire.wav")
+SWEP.ShootSound2 = Sound("Weapon_Minigun.Fire")
 SWEP.SpecialSound1 = Sound("Weapon_Minigun.WindUp")
 SWEP.SpecialSound2 = Sound("Weapon_Minigun.WindDown")
 SWEP.SpecialSound3 = Sound("Weapon_Minigun.Spin")

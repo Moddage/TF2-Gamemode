@@ -229,6 +229,9 @@ function SWEP:DoAirblast()
 				for i=0,v:GetPhysicsObjectCount()-1 do
 					v:GetPhysicsObjectNum(i):ApplyForceCenter(18000*dir)
 				end
+			elseif v:IsTFPlayer() and self.Owner:IsFriendly(v) then
+				GAMEMODE:ExtinguishEntity(v)
+				v:EmitSound("player/flame_out.wav", 90)
 			end
 		end
 	end

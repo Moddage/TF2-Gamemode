@@ -66,6 +66,8 @@ function CLASS:Initialize()
 	self:SetModel("models/bots/demo_boss/bot_demo_boss.mdl")
 	self:SetModelScale(1.75)
 	self:SetViewOffset(Vector(0, 0, 126))
+	self:EmitSound("ui/survival_playerrec.wav", 0, 100)
+	PrintMessage(HUD_PRINTCENTER, "Team "..self:Team().." has recieved an Giant Demoman!")
 end
 
 end

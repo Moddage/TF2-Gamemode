@@ -252,7 +252,7 @@ end
 function ENT:OnTakeDamage(dmginfo)
 	if dmginfo:GetInflictor():IsWorld() then return end
 	if dmginfo:GetDamageType() == DMG_POISON then return end
-	
+	self:SetBloodColor(BLOOD_COLOR_MECH)
 	self:SetHealth(self:Health() - dmginfo:GetDamage())
 	if not self.BuildSubstractHealth then
 		self.BuildSubstractHealth = 0

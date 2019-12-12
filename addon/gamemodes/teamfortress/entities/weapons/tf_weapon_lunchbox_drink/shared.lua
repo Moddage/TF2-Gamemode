@@ -47,7 +47,7 @@ SWEP.MaxDamageFalloff = 0
 
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "none"
-SWEP.Primary.Delay          = 40
+SWEP.Primary.Delay          = 0.8
 SWEP.RangedMinHealing = 45
 SWEP.RangedMaxHealing = 85
 
@@ -59,8 +59,13 @@ function SWEP:Deploy()
 end
 
 function SWEP:PrimaryAttack()
-	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
-	self.Owner:DoAnimationEvent(ACT_DOD_SPRINT_AIM_SPADE, true)
+	if SERVER then
+		self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+		self.Owner:EmitSound("common/stuck2.wav")
+		self.Owner:PrintMessage(HUD_PRINTTALK, " !! Bonk Atomic Punch is disabled due to a game breaking bug involving primary attacks + secondary attacks. !!")
+	end
+-- NO BUG ALLOWED
+--[[	self.Owner:DoAnimationEvent(ACT_DOD_SPRINT_AIM_SPADE, true)
 	self.Owner:SetNWBool("Taunting", true)
 	self.Owner:SetNWBool("Bonked", true)
 	self.Owner:ConCommand("tf_thirdperson")
@@ -102,4 +107,5 @@ function SWEP:PrimaryAttack()
 		self:EmitSound( "Scout.Invincible0"..math.random(1,4))
 		end
 	end)
+]]
 end

@@ -1,5 +1,5 @@
 // Choreo version 1
-actor "!target1"
+actor "demo"
 {
   channel "body"
   {
@@ -16,8 +16,8 @@ actor "!target1"
       param2 "evilHappy"
       event_ramp
       {
-        0.1605 1.0000
-        2.6692 1.0000
+        0.1605 1.0000 "curve_easein_to_curve_easein"
+        2.6692 1.0000 "curve_easein_to_curve_easein"
       }
     }
     event expression "mad"
@@ -27,8 +27,8 @@ actor "!target1"
       param2 "mad"
       event_ramp
       {
-        0.0209 1.0000
-        0.6907 1.0000
+        0.0209 1.0000 "curve_easein_to_curve_easein"
+        0.6907 1.0000 "curve_easein_to_curve_easein"
       }
     }
   }
@@ -36,14 +36,15 @@ actor "!target1"
   {
   }
 }
-mapname "maps\lol.bsp"
+
 scalesettings
 {
-  "CChoreoView" "100"
-  "SceneRampTool" "100"
-  "ExpressionTool" "100"
+  "CChoreoView" "116"
+  "RampTool" "86"
+  "ExpressionTool" "74"
   "GestureTool" "100"
-  "RampTool" "100"
+  "SceneRampTool" "100"
 }
 fps 60
 snap off
+ignorePhonemes off

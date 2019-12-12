@@ -27,30 +27,27 @@ function GM:HandlePlayerJumping(pl)
 			pl:AnimRestartMainSequence()
 			
 			if pl:OnGround() then
-				pl:AnimRestartGesture(GESTURE_SLOT_JUMP, ACT_MP_JUMP_LAND, true)
+				if pl:GetPlayerClass() == "combinesoldier" or pl:GetPlayerClass() == "rebel" or pl:GetPlayerClass() == "metrocop" then
+					pl:AnimRestartGesture(GESTURE_SLOT_JUMP, ACT_LAND, true)
+				else
+					pl:AnimRestartGesture(GESTURE_SLOT_JUMP, ACT_MP_JUMP_LAND, true)
+				end
 			end
 		end
 		
 		
 		if pl.anim_Jumping then
-			if pl:GetPlayerClass() == "tank" or pl:GetPlayerClass() == "boomer" or pl:GetPlayerClass() == "boomette" or pl:GetPlayerClass() == "charger" or pl:GetPlayerClass() == "hunter" or pl:GetPlayerClass() == "l4d_zombie" or pl:GetPlayerClass() == 'smoker'or pl:GetPlayerClass() == 'jockey' then					
-				if pl:GetMoveType() == MOVETYPE_LADDER then
-					if pl:GetPlayerClass() == "tank" or pl:GetPlayerClass() == "boomer" or pl:GetPlayerClass() == "charger" or pl:GetPlayerClass() == "hunter"  or pl:GetPlayerClass() == "l4d_zombie" or pl:GetPlayerClass() == 'smoker' or pl:GetPlayerClass() == 'jockey'then
-						pl.anim_CalcIdeal = ACT_CLIMB_UP
-						pl:SetPoseParameter("move_x", 1)
+			if pl:GetPlayerClass() == "combinesoldier" or pl:GetPlayerClass() == "rebel" or pl:GetPlayerClass() == "metrocop" then
+				if pl.anim_JumpStartTime == 0 then
+					if pl.anim_Airwalk then
+						pl.anim_CalcIdeal = ACT_GLIDE
+					else
+						return false
 					end
+				elseif not firstjumpframe and CurTime() - pl.anim_JumpStartTime > pl:SequenceDuration() then
+					pl.anim_CalcIdeal = ACT_GLIDE
 				else
-									
-					if pl:WaterLevel() >= 2 or --[[(CurTime() - pl.anim_JumpStartTime > 0.2 and]] pl:OnGround() --[[)]] then 
-						pl.anim_Jumping = false
-						pl.anim_GroundTime = nil
-						pl:AnimRestartMainSequence()
-						
-						if pl:OnGround() then
-							pl:AnimRestartGesture(GESTURE_SLOT_JUMP, ACT_TERROR_JUMP_LANDING, true)
-						end
-						pl.anim_CalcIdeal = ACT_JUMP
-					end
+					pl.anim_CalcIdeal = ACT_JUMP
 				end
 			else
 				if pl.anim_JumpStartTime == 0 then
@@ -65,7 +62,6 @@ function GM:HandlePlayerJumping(pl)
 					pl.anim_CalcIdeal = ACT_MP_JUMP_START
 				end
 			end
-				
 			return true
 		end
 	end
@@ -173,6 +169,25 @@ function GM:UpdateAnimation(pl, velocity, maxseqgroundspeed)
 		
 		pl:SetPoseParameter("move_x", vel.x / maxspeed)
 		pl:SetPoseParameter("move_y", vel.y / maxspeed)
+	
+	elseif pl:IsPlayer() and pl:GetPlayerClass() == "metrocop" then
+		maxspeed = maxspeed * 3
+		
+		local vel = 1 * velocity
+		vel:Rotate(Angle(0,-pl:EyeAngles().y,0))
+		vel:Rotate(Angle(-vel:Angle().p,0,0))
+		
+		pl:SetPoseParameter("move_x", vel.x / maxspeed)
+		pl:SetPoseParameter("move_yaw", -vel.y / maxspeed)
+	elseif pl:IsPlayer() and pl:GetPlayerClass() == "combinesoldier" then
+		maxspeed = maxspeed * 3
+		
+		local vel = 1 * velocity
+		vel:Rotate(Angle(0,-pl:EyeAngles().y,0))
+		vel:Rotate(Angle(-vel:Angle().p,0,0))
+		
+		pl:SetPoseParameter("move_x", vel.x / maxspeed)
+		pl:SetPoseParameter("move_yaw", -vel.y / maxspeed)
 	else
 		maxspeed = maxspeed * 3
 		
@@ -212,6 +227,11 @@ function GM:UpdateAnimation(pl, velocity, maxseqgroundspeed)
 	end
 	
 	pl:SetPoseParameter("body_yaw", diff)
+	
+	local vel = 1 * velocity
+	vel:Rotate(Angle(0,-pl:EyeAngles().y,0))
+	vel:Rotate(Angle(-vel:Angle().p,0,0))
+	pl:SetPoseParameter("move_yaw", -vel.y / maxspeed)
 	
 	if CLIENT then
 		pl:SetRenderAngles(Angle(0, pl.PlayerBodyYaw, 0))

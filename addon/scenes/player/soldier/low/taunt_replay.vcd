@@ -4,9 +4,9 @@ event stoppoint "end"
   time 2.799088 -1.000000
   param "noaction"
 }
-actor "!target1"
+actor "Heavy"
 {
-  channel "animation"
+  channel "Animation"
   {
     event sequence "Soldier_replay_taunt"
     {
@@ -24,8 +24,8 @@ actor "!target1"
       param2 "mad"
       event_ramp
       {
-        0.1933 0.5725
-        0.5233 0.5608
+        0.1933 0.5734 "curve_easein_to_curve_easein"
+        0.5233 0.5618 "curve_easeout_to_curve_easeout"
       }
     }
     event expression "happyBig"
@@ -35,8 +35,8 @@ actor "!target1"
       param2 "happyBig"
       event_ramp
       {
-        0.1367 0.9843
-        1.8167 1.0000
+        0.1367 0.9860 "curve_easein_to_curve_easein"
+        1.8167 1.0000 "curve_easeout_to_curve_easeout"
       }
     }
     event expression "eh"
@@ -46,20 +46,22 @@ actor "!target1"
       param2 "eh"
       event_ramp
       {
-        0.0867 0.6902
-        0.1777 0.6824
+        0.0867 0.6923 "curve_easein_to_curve_easein"
+        0.1777 0.6853 "curve_easeout_to_curve_easeout"
       }
     }
   }
+  faceposermodel "D:\dev\staging\game\tf\models\player\soldier.mdl"
 }
-mapname "maps\lol.bsp"
+
 scalesettings
 {
-  "CChoreoView" "100"
+  "CChoreoView" "292"
+  "RampTool" "60"
   "SceneRampTool" "100"
   "ExpressionTool" "100"
   "GestureTool" "100"
-  "RampTool" "100"
 }
 fps 60
 snap off
+ignorePhonemes off

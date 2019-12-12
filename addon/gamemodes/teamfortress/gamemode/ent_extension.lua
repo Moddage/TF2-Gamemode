@@ -18,7 +18,7 @@ end
 
 -- NPCs are considered as players in this gamemode
 function meta:IsTFPlayer()
-	return self:IsPlayer() or self:IsNPC()
+	return self:IsPlayer() or self:IsNPC() or self:GetClass() == "reviver"
 end
 
 -- Entity name is the name attributed to an entity by the gamemode

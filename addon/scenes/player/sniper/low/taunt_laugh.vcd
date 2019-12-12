@@ -1,5 +1,5 @@
 // Choreo version 1
-actor "!target1"
+actor "sniper"
 {
   channel "body"
   {
@@ -27,25 +27,26 @@ actor "!target1"
       param2 "happyBig"
       event_ramp
       {
-        0.1976 0.0000
-        0.5119 0.8314
-        2.3952 0.8275
-        2.8000 0.4824
-        2.9452 0.7882
-        3.0881 0.3882
-        3.2381 0.7059
+        0.1976 0.0000 "curve_easein_to_curve_easeout"
+        0.5119 0.8352 "curve_easein_to_curve_easeout"
+        2.3952 0.8307 "curve_easein_to_curve_easeout"
+        2.8000 0.4851
+        2.9452 0.7918
+        3.0881 0.3913
+        3.2381 0.7071 "curve_easein_to_curve_easeout"
       }
     }
   }
 }
-mapname "maps\lol.bsp"
+
 scalesettings
 {
-  "CChoreoView" "100"
-  "SceneRampTool" "100"
-  "ExpressionTool" "100"
+  "CChoreoView" "108"
+  "RampTool" "84"
+  "ExpressionTool" "74"
   "GestureTool" "100"
-  "RampTool" "100"
+  "SceneRampTool" "100"
 }
 fps 60
 snap off
+ignorePhonemes off

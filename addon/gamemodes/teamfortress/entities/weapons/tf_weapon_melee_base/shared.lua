@@ -281,7 +281,7 @@ function SWEP:MeleeAttack(dummy)
 		damagedself = true
 		tr.Entity = self.Owner
 	end
-	
+
 	if tr.Entity and tr.Entity:IsValid() then
 		--local ang = (endpos - pos):GetNormal():Angle()
 		local ang = self.Owner:EyeAngles()
@@ -301,6 +301,7 @@ function SWEP:MeleeAttack(dummy)
 					dmgtype = self.DamageType
 					pitch, mul = self.ForceAddPitch, self.ForceMultiplier
 				end
+
 				
 				if tr.Entity:ShouldReceiveDefaultMeleeType() then
 					dmgtype = DMG_CLUB
@@ -334,21 +335,20 @@ function SWEP:MeleeAttack(dummy)
 				if phys and phys:IsValid() then
 					tr.Entity:SetPhysicsAttacker(self.Owner)
 				end
-			elseif CLIENT then
 				-- Fire a bullet clientside, just for decals and blood effects
-				if util.TraceLine({start=hitpos,endpos=hitpos+4*dir}).Entity == tr.Entity then
-					self:FireBullets{
-						Src=hitpos,
-						Dir=dir,
-						Spread=Vector(0,0,0),
-						Num=1,
-						Damage=1,
-						Tracer=0,
-					}
-				end
 			end
 		end
 		
+		if util.TraceLine({start=hitpos,endpos=hitpos+4*dir}).Entity == tr.Entity then
+			self:FireBullets{
+				Src=hitpos,
+				Dir=dir,
+				Spread=Vector(0,0,0),
+				Num=1,
+				Damage=1,
+				Tracer=0,
+			}
+		end
 		self:MeleeHitSound(tr)
 		self:OnMeleeHit(tr)
 	elseif tr.HitWorld then
@@ -375,18 +375,15 @@ function SWEP:MeleeAttack(dummy)
 				tr.HitPos = tr1.HitPos
 			end
 		end
-		
-		if CLIENT then
-			if dir then
-				self:FireBullets{
-					Src=pos,
-					Dir=dir,
-					Spread=Vector(0,0,0),
-					Num=1,
-					Damage=1,
-					Tracer=0,
-				}
-			end
+		if dir then
+			self:FireBullets{
+				Src=pos,
+				Dir=dir,
+				Spread=Vector(0,0,0),
+				Num=1,
+				Damage=1,
+				Tracer=0,
+			}
 		end
 		
 		self:MeleeHitSound(tr)

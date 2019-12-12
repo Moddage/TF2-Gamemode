@@ -209,7 +209,7 @@ function SWEP:SetWeaponHoldType(t)
 	self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_MP_CROUCHWALK_"..t]
 	self.ActivityTranslate[ACT_MP_SWIM] 							= _G["ACT_MP_SWIM_"..t]
 	self.ActivityTranslate[ACT_MP_AIRWALK] 							= _G["ACT_MP_AIRWALK_"..t]
-	if v:GetPlayerClass() == "combinesoldier" then
+	if v:GetPlayerClass() == "combinesoldier" and v:GetActiveWeapon():GetClass() != "tf_weapon_trenchknife" then
 		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE_ANGRY"]
 		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN_AIM_RIFLE"]
 		self.ActivityTranslate[ACT_MP_WALK] 								= _G["ACT_WALK_AIM_RIFLE"]
@@ -221,6 +221,91 @@ function SWEP:SetWeaponHoldType(t)
 		self.ActivityTranslate[ACT_MP_RELOAD_STAND]		 				= _G["ACT_RELOAD"]
 		self.ActivityTranslate[ACT_MP_JUMP] 						= _G["ACT_JUMP"]
 	end
+	if v:GetPlayerClass() == "combinesoldier" and v:GetActiveWeapon():GetClass() == "tf_weapon_trenchknife" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE_ANGRY_SMG1"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN_AIM_RIFLE"]
+		self.ActivityTranslate[ACT_MP_WALK] 								= _G["ACT_WALK_AIM_RIFLE"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_WALK_CROUCH_RIFLE"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1_LOW"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_RELOAD_STAND]		 				= _G["ACT_RELOAD"]
+		self.ActivityTranslate[ACT_MP_JUMP] 						= _G["ACT_JUMP"]
+	end
+	if v:GetPlayerClass() == "combinesoldier" and v:GetActiveWeapon():GetClass() == "tf_weapon_tranqulizer" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE_ANGRY_SHOTGUN"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN_AIM_SHOTGUN"]
+		self.ActivityTranslate[ACT_MP_WALK] 								= _G["ACT_WALK_AIM_SHOTGUN"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE_SHOTGUN"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_WALK_CROUCH_SHOTGUN"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SHOTGUN"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SHOTGUN"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_RELOAD_STAND]		 				= _G["ACT_RELOAD"]
+		self.ActivityTranslate[ACT_MP_JUMP] 						= _G["ACT_JUMP"]
+	end
+	if v:GetPlayerClass() == "rebel" and v:GetActiveWeapon():GetClass() != "tf_weapon_trenchknife" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE_ANGRY_SMG1"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN_AIM_RIFLE"]
+		self.ActivityTranslate[ACT_MP_WALK] 								= _G["ACT_WALK_ANGRY_RIFLE"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE_RIFLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_WALK_CROUCH_RIFLE"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1_LOW"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_RELOAD_STAND]		 				= _G["ACT_RELOAD"]
+		self.ActivityTranslate[ACT_MP_JUMP] 						= _G["ACT_JUMP"]
+	end	
+	if v:GetPlayerClass() == "metrocop" and v:GetActiveWeapon():GetClass() == "tf_weapon_trenchknife" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE_ANGRY_SMG1"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN_AIM_RIFLE"]
+		self.ActivityTranslate[ACT_MP_WALK] 								= _G["ACT_WALK_RIFLE"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE_RIFLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_WALK_CROUCH_RIFLE"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1_LOW"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_RELOAD_STAND]		 				= _G["ACT_RELOAD"]
+		self.ActivityTranslate[ACT_MP_JUMP] 						= _G["ACT_JUMP"]
+	end
+	if v:GetPlayerClass() == "metrocop" and v:GetActiveWeapon():GetClass() == "tf_weapon_pistol_m9" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE_ANGRY_PISTOL"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN_AIM_PISTOL"]
+		self.ActivityTranslate[ACT_MP_WALK] 								= _G["ACT_WALK_PISTOL"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE_RIFLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_WALK_CROUCH_RIFLE"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1_LOW"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_RELOAD_STAND]		 				= _G["ACT_RELOAD"]
+		self.ActivityTranslate[ACT_MP_JUMP] 						= _G["ACT_JUMP"]
+	end
+	if v:GetPlayerClass() == "metrocop" and v:GetActiveWeapon():GetClass() == "tf_weapon_wrench_vagineer" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN"]
+		self.ActivityTranslate[ACT_MP_WALK] 								= _G["ACT_WALK"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_WALK_CROUCH"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_MELEE_ATTACK1"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_RELOAD_STAND]		 				= _G["ACT_RELOAD"]
+		self.ActivityTranslate[ACT_MP_JUMP] 						= _G["ACT_JUMP"]
+	end
+	if v:GetPlayerClass() == "rebel" and v:GetActiveWeapon():GetClass() == "tf_weapon_trenchknife" then
+		self.ActivityTranslate[ACT_MP_STAND_IDLE] 						= _G["ACT_IDLE_ANGRY_SMG1"]
+		self.ActivityTranslate[ACT_MP_RUN] 								= _G["ACT_RUN_RIFLE"]
+		self.ActivityTranslate[ACT_MP_WALK] 								= _G["ACT_WALK_RIFLE"]
+		self.ActivityTranslate[ACT_MP_CROUCH_IDLE] 						= _G["ACT_CROUCHIDLE_RIFLE"]
+		self.ActivityTranslate[ACT_MP_CROUCHWALK] 						= _G["ACT_WALK_CROUCH_RIFLE"]
+		self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1"]
+		self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]			= _G["ACT_RANGE_ATTACK_SMG1_LOW"]
+		self.ActivityTranslate[ ACT_MP_JUMP ]						= _G["ACT_JUMP"]
+		self.ActivityTranslate[ACT_MP_RELOAD_STAND]		 				= _G["ACT_RELOAD"]
+		self.ActivityTranslate[ACT_MP_JUMP] 						= _G["ACT_JUMP"]
+	end
+	
 	
 	if t == "PRIMARY" then
 		self.ActivityTranslate[ACT_MP_DEPLOYED_IDLE] 				= ACT_MP_DEPLOYED_IDLE

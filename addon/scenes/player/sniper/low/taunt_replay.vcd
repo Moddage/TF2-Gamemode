@@ -1,5 +1,5 @@
 // Choreo version 1
-actor "!target1"
+actor "sniper"
 {
   channel "body"
   {
@@ -33,14 +33,15 @@ actor "!target1"
     }
   }
 }
-mapname "maps\lol.bsp"
+
 scalesettings
 {
-  "CChoreoView" "100"
-  "SceneRampTool" "100"
-  "ExpressionTool" "100"
+  "CChoreoView" "108"
+  "RampTool" "82"
+  "ExpressionTool" "74"
   "GestureTool" "100"
-  "RampTool" "100"
+  "SceneRampTool" "100"
 }
 fps 60
 snap off
+ignorePhonemes off

@@ -13,7 +13,7 @@ end
 
 SWEP.Base				= "tf_weapon_gun_base"
 
-SWEP.ViewModel			= "models/weapons/v_irifle.mdl"
+SWEP.ViewModel			= "models/weapons/c_irifle.mdl"
 SWEP.WorldModel			= "models/weapons/w_irifle.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
@@ -41,6 +41,7 @@ SWEP.HoldTypeHL2 = "AR2"
 
 SWEP.Force = 1100
 SWEP.AddPitch = -4
+SWEP.UseHands = true
 
 SWEP.Properties = {}
 
@@ -52,7 +53,6 @@ function SWEP:SecondaryAttack()
 	timer.Simple(0.5, function()
 		self:EmitSound("Weapon_IRifle.Single")
 		self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
-		self.Owner:GetViewModel():SetPlaybackRate(0.4)
 		self.Owner:DoAnimationEvent(ACT_COMBINE_AR2_ALTFIRE)
 		local vecAiming = self.Owner:GetAimVector()//GetAutoaimVector( AUTOAIM_2DEGREES );
 

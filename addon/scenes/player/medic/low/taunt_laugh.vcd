@@ -4,9 +4,9 @@ event stoppoint "end"
   time 4.831051 -1.000000
   param "noaction"
 }
-actor "!target1"
+actor "Medic"
 {
-  channel "animation"
+  channel "Animation"
   {
     event sequence "pyro_taunt_replay"
     {
@@ -32,8 +32,8 @@ actor "!target1"
       param2 "happyFull"
       event_ramp
       {
-        0.4700 0.9961
-        4.6900 1.0000
+        0.4700 0.9980 "curve_easein_to_curve_easeout"
+        4.6900 1.0000 "curve_easein_to_curve_easeout"
       }
     }
     event expression "ax2"
@@ -43,32 +43,32 @@ actor "!target1"
       param2 "ax2"
       event_ramp
       {
-        0.1000 0.6039
-        0.2367 0.0235
-        0.2933 0.5412
-        0.4733 0.5216
-        0.5567 0.7608
-        0.6367 0.3686
-        0.7267 0.7647
-        0.8533 0.3686
-        0.9700 0.5922
-        1.0400 0.3020
-        1.1700 0.6863
-        1.2000 0.5373
-        1.2967 0.6471
-        1.3833 0.1098
-        1.4700 0.5922
-        1.5333 0.4471
-        1.6467 0.5373
-        1.7533 0.0941
-        1.9267 0.4471
-        1.9500 0.3765
-        2.1767 0.2863
-        2.2267 0.0000
-        2.5200 0.3843
-        2.5600 0.0392
-        2.7200 0.3216
-        2.9800 0.0745
+        0.1000 0.6076
+        0.2367 0.0239
+        0.2933 0.5418
+        0.4733 0.5219
+        0.5567 0.7629
+        0.6367 0.3705
+        0.7267 0.7649
+        0.8533 0.3705
+        0.9700 0.5956
+        1.0400 0.3048
+        1.1700 0.6892
+        1.2000 0.5398
+        1.2967 0.6494
+        1.3833 0.1116
+        1.4700 0.5956
+        1.5333 0.4482
+        1.6467 0.5398
+        1.7533 0.0956 "curve_easein_to_curve_easeout"
+        1.9267 0.4482 "curve_kochanek_late_to_curve_kochanek_late"
+        1.9500 0.3765 "curve_easein_to_curve_easeout"
+        2.1767 0.2869 "curve_easeout_to_curve_easeout"
+        2.2267 0.0000 "curve_bspline_to_curve_bspline"
+        2.5200 0.3845 "curve_easein_to_curve_easeout"
+        2.5600 0.0418 "curve_easein_to_curve_easein"
+        2.7200 0.3247 "curve_easein_to_curve_easeout"
+        2.9800 0.0757
       }
     }
     event expression "evilHappy"
@@ -78,20 +78,22 @@ actor "!target1"
       param2 "evilHappy"
       event_ramp
       {
-        0.0967 0.1647
-        1.0300 0.1098
+        0.0967 0.1673 "curve_easein_to_curve_easein"
+        1.0300 0.1116 "curve_easeout_to_curve_easeout"
       }
     }
   }
+  faceposermodel "D:\dev\staging\game\tf\models\player\medic.mdl"
 }
-mapname "maps\lol.bsp"
+
 scalesettings
 {
-  "CChoreoView" "100"
+  "CChoreoView" "292"
+  "RampTool" "60"
   "SceneRampTool" "100"
   "ExpressionTool" "100"
   "GestureTool" "100"
-  "RampTool" "100"
 }
 fps 60
 snap off
+ignorePhonemes off

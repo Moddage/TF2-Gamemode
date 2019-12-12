@@ -94,6 +94,15 @@ local AirblastFunc = {
 		ent.MiniCrit = minicrit_true
 		ent:EmitSound(self.AirblastDeflectSound)
 		return true
+	end,	
+	["tf_projectile_rocket_fireball"] = function(self, ent, dir)
+		ent:SetLocalVelocity(dir * 2000)
+		ent:SetOwner(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.NameOverride = "tf_weapon_flamethrower"
+		ent.MiniCrit = minicrit_true
+		ent:EmitSound(self.AirblastDeflectSound)
+		return true
 	end,
 	["soldier_rocket_launched"] = function(self, ent, dir)
 		ent:SetLocalVelocity(dir * 2000)
@@ -220,6 +229,9 @@ function SWEP:DoAirblast()
 				for i=0,v:GetPhysicsObjectCount()-1 do
 					v:GetPhysicsObjectNum(i):ApplyForceCenter(18000*dir)
 				end
+			elseif v:IsTFPlayer() and self.Owner:IsFriendly(v) then
+				GAMEMODE:ExtinguishEntity(v)
+				v:EmitSound("player/flame_out.wav", 90)
 			end
 		end
 	end

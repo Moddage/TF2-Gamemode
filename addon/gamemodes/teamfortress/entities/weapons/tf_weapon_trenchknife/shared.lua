@@ -13,7 +13,7 @@ end
 
 SWEP.Base				= "tf_weapon_gun_base"
 
-SWEP.ViewModel			= "models/weapons/v_smg1.mdl"
+SWEP.ViewModel			= "models/weapons/c_smg1.mdl"
 SWEP.WorldModel			= "models/weapons/w_smg1.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
@@ -41,7 +41,7 @@ SWEP.HoldTypeHL2 = "AR2"
 
 SWEP.Force = 1100
 SWEP.AddPitch = -4
-
+SWEP.UseHands = true
 SWEP.Properties = {}
 
 

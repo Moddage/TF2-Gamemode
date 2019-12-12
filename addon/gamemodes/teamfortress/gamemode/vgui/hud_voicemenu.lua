@@ -53,7 +53,9 @@ concommand.Add("voicemenu", function(pl, cmd, args)
 	
 	v = v[b+1]
 	if not v then return end
-	
+	if pl:GetPlayerClass() == "combinesoldier" then
+		RunConsoleCommand("voicemenu_combine", a, b)
+	end
 	if pl:GetPlayerClass() == "tank" then
 		pl:EmitSound("Tank.Yell")
 	elseif pl:GetPlayerClass() == "charger" then

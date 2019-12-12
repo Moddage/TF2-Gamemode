@@ -1,24 +1,25 @@
 // Choreo version 1
-actor "!target1"
+actor "scout"
 {
   channel "body"
   {
     event sequence "taunt_brutallegend"
     {
-      time 0.000000 4.366660
+      time 0.000000 4.36666
       param "taunt_brutallegend"
       fixedlength
     }
   }
 }
-mapname "maps\lol.bsp"
+
 scalesettings
 {
-  "CChoreoView" "100"
-  "SceneRampTool" "100"
+  "CChoreoView" "172"
   "ExpressionTool" "100"
+  "RampTool" "42"
   "GestureTool" "100"
-  "RampTool" "100"
+  "SceneRampTool" "100"
 }
 fps 60
 snap off
+ignorePhonemes off

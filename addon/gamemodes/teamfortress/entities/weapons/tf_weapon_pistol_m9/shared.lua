@@ -3,23 +3,23 @@ if SERVER then
 end
 
 if CLIENT then
-	SWEP.PrintName			= "Scout's M9"
-	SWEP.Slot				= 1
+	SWEP.PrintName			= "USP Pistol"
+	SWEP.Slot				= 2
 	SWEP.RenderGroup		= RENDERGROUP_BOTH
 end
 
 SWEP.Base				= "tf_weapon_gun_base"
 
-SWEP.ViewModel			= "models/weapons/v_models/v_m9_scout.mdl"
-SWEP.WorldModel			= "models/weapons/w_models/w_m9.mdl"
+SWEP.ViewModel			= "models/weapons/c_pistol.mdl"
+SWEP.WorldModel			= "models/weapons/w_pistol.mdl"
 SWEP.Crosshair = "tf_crosshair1"
 
 SWEP.MuzzleEffect = "muzzle_pistol"
 SWEP.MuzzleOffset = Vector(20, 4, -2)
 
-SWEP.ShootSound = Sound("weapons/m9_fire.wav")
-SWEP.ShootCritSound = Sound("weapons/m9_fire_crit.wav")
-SWEP.ReloadSound = Sound("weapons/m9_worldreload.wav")
+SWEP.ShootSound = Sound("Weapon_Pistol.Single")
+SWEP.ShootCritSound = Sound("Weapon_Pistol.Single")
+SWEP.ReloadSound = Sound("Weapon_Pistol.Reload")
 
 SWEP.TracerEffect = "bullet_pistol_tracer01"
 PrecacheParticleSystem("bullet_pistol_tracer01_red")
@@ -36,10 +36,10 @@ SWEP.MaxDamageFalloff = 0.5
 SWEP.BulletsPerShot = 1
 SWEP.BulletSpread = 0.04
 
-SWEP.Primary.ClipSize		= 15
+SWEP.Primary.ClipSize		= 18
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_SECONDARY
-SWEP.Primary.Delay          = 0.15
+SWEP.Primary.Delay          = 0.25
 
 SWEP.HoldType = "SECONDARY"
 
@@ -47,6 +47,7 @@ SWEP.HoldTypeHL2 = "pistol"
 
 SWEP.IsRapidFire = true
 SWEP.ReloadTime		= 1.6
+SWEP.UseHands = true
 function SWEP:InspectAnimCheck()
 
 end
@@ -86,7 +87,7 @@ function SWEP:Reload()
 				self.NextReloadStart = CurTime() + (self.ReloadStartTime or self:SequenceDuration())
 			else
 				self:SendWeaponAnimEx(self.VM_RELOAD)
-				self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_SECONDARY)
+				self.Owner:SetAnimation(PLAYER_RELOAD)
 				self.NextIdle = CurTime() + (self.ReloadTime or self:SequenceDuration())
 				self.NextReload = self.NextIdle
 				

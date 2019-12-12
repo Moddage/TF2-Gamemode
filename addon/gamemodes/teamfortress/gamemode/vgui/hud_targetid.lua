@@ -5,7 +5,7 @@ local H = ScrH()
 local WScale = W/640
 local Scale = H/480
 
-local hud_targetid_numerichealth = CreateConVar("hud_targetid_numerichealth", "0")
+local hud_targetid_numerichealth = CreateConVar("hud_targetid_numerichealth", "1")
 
 local color_panel = {
 	[0]=surface.GetTextureID("hud/color_panel_brown"),
@@ -81,9 +81,13 @@ function PANEL:Paint()
 	end
 	
 	--tbl.text = GAMEMODE:EntityName(self.Target)
-	tbl.text = GAMEMODE:EntityTargetIDName(self.Target)
-	draw.Text(tbl)
-	
+	if self.Target:GetClass() == "reviver" then
+		tbl.text = GAMEMODE:EntityTargetIDName(self.Target:GetOwner())
+		draw.Text(tbl)
+	else
+		tbl.text = GAMEMODE:EntityTargetIDName(self.Target)
+		draw.Text(tbl)	
+	end
 	if hud_targetid_numerichealth:GetBool() then
 		local health
 		local maxhealth = 100

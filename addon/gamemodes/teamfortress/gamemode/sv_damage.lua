@@ -391,6 +391,30 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 		dmginfo:SetAttacker(attacker)
 	end
 	
+	if attacker:IsPlayer() and ent:Health() >= 1  and ent:IsPlayer() or ent:IsNPC() and ent.IsReviveMarker != true then
+		if inflictor:Critical() then
+			attacker:EmitSound("player/crit_hit"..math.random(2,5)..".wav", 50)
+			ent:EmitSound("player/crit_received"..math.random(1,3)..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_electro" then
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..math.random(1,3)..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_menu_note" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..math.random(1,9)..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_percussion" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..math.random(1,5)..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_retro" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..math.random(1,5)..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_vortex" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..math.random(1,5)..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_squasher" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_space" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_beepo" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..".wav", 50)
+		end
+	end
 	
 	--Msg(tostring(ent).." - "..tostring(dmginfo).." > Received damage : "..dmginfo:GetDamage().."  Attacker : "..tostring(attacker).."\n")
 	-- No damage from fire, as we are using a custom fire system

@@ -480,7 +480,7 @@ function StartFreezeCam(startpos, target, defaultpos)
 	end
 	
 	LocalPlayer().FreezeCamSpeed = math.Clamp(FreezecamSpeedMultiplier * startpos:Distance(targetpos) / freezecam_timetoarrive:GetFloat(),
-		FreezecamMinSpeed, FreezecamMaxSpeed)
+		50, 50)
 	LocalPlayer():EmitSound("misc/freeze_cam.wav")
 end
 

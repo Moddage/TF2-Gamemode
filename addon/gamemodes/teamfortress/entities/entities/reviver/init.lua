@@ -5,8 +5,11 @@ ENT.Model = "models/props_mvm/mvm_revive_tombstone.mdl"
 
 function ENT:Think()
 	self:NextThink(CurTime())
-	if self:GetOwner():IsValid() then
-		self:SetPos(self:GetOwner():GetPos())
+	local ply = self:GetOwner()  
+	self:SetMaxHealth(95)
+	self:SetNWInt("Team", ply:Team())
+	if ply:Alive() then
+		self:Remove()
 	end
 	return true
 end
@@ -14,15 +17,19 @@ end
  
 function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_NONE)
-	self:SetNotSolid(true)	
 	self:SetHullType(HULL_HUMAN)
 	self:SetHullSizeNormal()
+	self:SetHealth(95)
 	self:SetSolid(SOLID_BBOX)
-	self:SetMaxHealth(70)
-	self:SetHealth(1)
+	self:EmitSound("ui/medic_alert.wav", 95, 100)
 	self:SetModel(self.Model)
-	local ply = self:GetVictim()
-	if ply:IsPlayer() and ply:GetPlayerClass() == "soldier" then
+	
+	self:SetSequence( "idle" )
+	self:SetPlaybackRate( 1 )
+	local ply = self:GetOwner()
+	
+	self:SetPos(self:GetOwner():GetPos())
+	if ply:GetPlayerClass() == "soldier" then
 		self:SetBodygroup(1, 2)
 	elseif ply:GetPlayerClass() == "pyro" then
 		self:SetBodygroup(1, 6)
@@ -41,10 +48,6 @@ function ENT:Initialize()
 	end
 			
 			
-	self:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
-	self:PhysicsInit( SOLID_OBB )
-	self:SetMoveType( MOVETYPE_NONE )
-	self:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-	self:SetSequence( "idle" )
-	self:SetPlaybackRate( 1 )
+	self:SetNoDraw(false)
+	self:SetCollisionGroup( COLLISION_GROUP_PLAYER )
 end 

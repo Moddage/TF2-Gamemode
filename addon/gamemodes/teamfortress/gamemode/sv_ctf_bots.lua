@@ -207,6 +207,7 @@ hook.Add("OnPlayerReady", "leadbot_ready", function()
 	RunConsoleCommand("lk.ready_bots")
 end)
 
+
 hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 	if bot.LKBot then
 		cmd:ClearMovement()
@@ -273,6 +274,40 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				ignoreback = true
 			elseif intel.Carrier then -- or else if we have it already carried
 				targetpos2 = intel.Carrier:GetPos() -- follow that man
+			end
+		end
+		if string.find(game.GetMap(), "mvm_") then
+			if IsValid(bot) then
+				GetConVar("tf_bot_mvm_has_bots"):SetInt(1)
+			else
+				if GetConVar("tf_bot_mvm_has_bots"):GetBool() then
+					
+					RunConsoleCommand("tf_mvm_wave_end")
+					timer.Simple(0.05, function()
+						GetConVar("tf_bot_mvm_has_bots"):SetInt(0)
+					end)
+				end
+			end
+			if bot:GetPlayerClass() == "giantheavy" or bot:GetPlayerClass() == "giantheavyheater" or bot:GetPlayerClass() == "giantheavyshotgun" or bot:GetPlayerClass() == "giantpyro" or bot:GetPlayerClass() == "giantscout" or bot:GetPlayerClass() == "giantsoldier" or bot:GetPlayerClass() == "giantsoldiercharged" or bot:GetPlayerClass() == "giantsoldierrapidfire" then
+				
+				if bot:Deaths() >= 3 then
+					bot:Kick("Removed from match by system")
+
+				end
+				
+			elseif bot:GetPlayerClass() == "sentrybuster" then
+				
+				if bot:Deaths() >= 1	 then
+					bot:Kick("Removed from match by system")
+
+				end
+			
+			else
+			
+				if bot:Deaths() >= 20 then
+					bot:Kick("Removed from match by system")
+
+				end
 			end
 		end
 		if string.find(game.GetMap(), "mvm_") and bot:Team() == TEAM_BLU and bot:GetPlayerClass() != "engineer" and bot:GetPlayerClass() != "sentrybuster" then
@@ -593,7 +628,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				--print("SHOOT!!!")
 				--bot:GetActiveWeapon():PrimaryAttack()
 				--cmd:SetButtons(IN_CANCEL)
-			if bot:GetPlayerClass() ~= "pyro" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" then
+			if bot:GetPlayerClass() ~= "pyro" and bot:GetActiveWeapon():IsValid() and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" then
 				if math.random(2) == 1 or bot:GetPlayerClass() == "heavy" or bot:GetPlayerClass() == "pyro" or bot:GetPlayerClass() == "giantpyro" or bot:GetPlayerClass() == "giantheavy" or bot:GetPlayerClass() == "medic" and bot:GetActiveWeapon():GetClass() == "tf_weapon_medigun" or  bot:GetActiveWeapon():GetClass() == "tf_weapon_medigun_qf" and bot:GetActiveWeapon():GetClass() == "tf_weapon_medigun_vaccinator" and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then --[[or bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base")]]
 					if bot:GetNWBool("Taunting") == false then
 						cmd:SetButtons(IN_ATTACK)
@@ -731,10 +766,10 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 		--print(bot.CurSegment)
 	end
-end)
+end) 
 
 hook.Add("PostPlayerDeath", "leadbot_respawn", function(bot)
-	timer.Simple(2, function() if bot.LKBot and !bot:Alive() then bot:Spawn() end end)
+	timer.Simple(7, function() if bot.LKBot and !bot:Alive() then bot:Spawn() end end)
 end)
 
 function table.EqualValues(t1,t2,ignore_mt)

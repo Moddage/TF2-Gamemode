@@ -5,7 +5,7 @@ actor "eng"
   {
     event sequence "taunt_hifiveFailFull"
     {
-      time -0.007246 3.959421
+      time 0.000000 3.966667
       param "taunt_hifiveFailFull"
       fixedlength
     }
@@ -33,7 +33,7 @@ actor "eng"
     }
     event expression "scared"
     {
-      time 1.753624 2.507247
+      time 1.760870 2.514493
       param "player\engineer\emotion\emotion"
       param2 "scared"
       event_ramp
@@ -44,7 +44,7 @@ actor "eng"
     }
     event expression "mad"
     {
-      time 2.348527 3.906498
+      time 2.413043 3.971014
       param "player\engineer\emotion\emotion"
       param2 "mad"
       event_ramp
@@ -53,28 +53,12 @@ actor "eng"
         1.5489 0.9979 "curve_easeout_to_curve_easeout"
       }
     }
-    event speak "Engineer.NegativeVocaliz"
-    {
-      time -0.355072 -1.000000
-      param "Engineer.NegativeVocaliz"
-      fixedlength
-      cctype "cc_master"
-      cctoken ""
-    }
-    event speak "Engineer.NegativeVocalization07"
-    {
-      time 2.373539 -1.000000
-      param "Engineer.NegativeVocalization07"
-      fixedlength
-      cctype "cc_master"
-      cctoken ""
-    }
   }
 }
 
 scalesettings
 {
-  "CChoreoView" "124"
+  "CChoreoView" "92"
   "ExpressionTool" "100"
   "RampTool" "66"
   "GestureTool" "100"

@@ -54,9 +54,9 @@ SWEP.ViewModel			= "models/weapons/c_models/c_scout_arms.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_shovel.mdl" 
 SWEP.Crosshair = "tf_crosshair3"
 
-SWEP.Swing = Sound("Weapon_Shovel.Miss")
-SWEP.SwingCrit = Sound("Weapon_Shovel.MissCrit")
-SWEP.HitFlesh = Sound("Weapon_Shovel.HitFlesh")
+SWEP.Swing = Sound("Weapon_Bat.Miss")
+SWEP.SwingCrit = Sound("Weapon_Bat.MissCrit")
+SWEP.HitFlesh = Sound("Weapon_Wrench.HitFlesh")
 SWEP.HitWorld = Sound("Weapon_Shovel.HitWorld")
 
 local SpeedTable = {
@@ -142,6 +142,9 @@ end
 
 function SWEP:Think()
 	self:CallBaseFunction("Think")
+	if self:GetItemData().model_player == "models/weapons/c_models/c_frying_pan/c_frying_pan.mdl" then
+		self.HitRobot = Sound("MVM_FryingPan.HitFlesh")
+	end
 	if self:GetItemData().model_player == "models/weapons/c_models/c_slapping_glove/c_slapping_glove.mdl" then
 		self.Owner:SetPoseParameter("r_hand_grip", 15)
 	end

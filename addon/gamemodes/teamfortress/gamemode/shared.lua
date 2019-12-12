@@ -71,7 +71,7 @@ sound.Add( {
 	level = 150,
 	pitch = { 92, 103 },
 	channel = CHAN_WEAPON,
-	sound = { "weapons/shotgun/shotgun_fire6.wav" } 
+	sound = { "weapons/shotgun/shotgun_fire7.wav" } 
 } )
 sound.Add( {
 	name = "Weapon_Shotgun.Double",
@@ -79,7 +79,7 @@ sound.Add( {
 	level = 150,
 	pitch = { 92, 103 },
 	channel = CHAN_WEAPON,
-	sound = { "weapons/shotgun/shotgun_dbl_fire.wav" } 
+	sound = { "weapons/shotgun/shotgun_dbl_fire7.wav" } 
 } )
 sound.Add( {
 	name = "Weapon_Pistol.Single",
@@ -87,7 +87,7 @@ sound.Add( {
 	level = 150,
 	pitch = { 100 },
 	channel = CHAN_WEAPON,
-	sound = { "^weapons/pistol/pistol_fire3.wav" } 
+	sound = { "^weapons/pistol/pistol_fire2.wav" } 
 } )
 sound.Add( {
 	name = "Weapon_SuperShotGun.TubeOpen",
@@ -1417,6 +1417,9 @@ tf_soundscript.Load("teamfortress/scripts/game_sounds_weapons_tf.txt")
 
 
 CreateConVar('tf_talkicon_computablecolor', 1, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Compute color from location brightness.')
+CreateConVar('tf_bot_mvm_max_deaths', 20, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Maximum Deaths. Not Functional.')
+CreateConVar('tf_bot_mvm_has_bots', 0, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Automatically set by Lua')
+CreateConVar('tf_bot_mvm_giant_max_deaths', 3, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Maximum Deaths. Not Functional.')
 CreateConVar('tf_talkicon_showtextchat', 1, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Show icon on using text chat.')
 CreateConVar('tf_talkicon_ignoreteamchat', 1, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Disable over-head icon on using team chat.')
 

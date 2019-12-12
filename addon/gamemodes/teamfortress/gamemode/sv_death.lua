@@ -879,8 +879,45 @@ end
 
 function GM:PlayerDeath(ent, inflictor, attacker)
 	-- Don't spawn for at least 2 seconds
-	ent.NextSpawnTime = CurTime() + 2
+	ent.NextSpawnTime = CurTime() + 7
 	ent.DeathTime = CurTime()
+	
+	
+	if GetConVar("tf_enable_revive_markers"):GetBool() then
+		animent = ents.Create( 'reviver' ) -- The entity used for the death animation
+		animent:SetPos(ent:GetPos())
+		animent:SetAngles(ent:GetAngles())
+		animent:Spawn()
+		animent:Activate()
+		animent:SetOwner(ent)
+		
+		if ent:GetPlayerClass() == "soldier" then
+			animent:SetBodygroup(1, 2)
+		elseif ent:GetPlayerClass() == "pyro" then
+			animent:SetBodygroup(1, 6)
+		elseif ent:GetPlayerClass() == "demoman" then
+			animent:SetBodygroup(1, 3)
+		elseif ent:GetPlayerClass() == "heavy" then
+			animent:SetBodygroup(1, 5)
+		elseif ent:GetPlayerClass() == "engineer" then
+			animent:SetBodygroup(1, 8)
+		elseif ent:GetPlayerClass() == "medic" then
+			animent:SetBodygroup(1, 4)
+		elseif ent:GetPlayerClass() == "sniper" then
+			animent:SetBodygroup(1, 1)
+		elseif ent:GetPlayerClass() == "spy" then
+			animent:SetBodygroup(1, 7)
+		end
+			
+	end
+	
+	timer.Simple(7, function()
+		animent:Fire("Kill", "", 0.1)
+		if !ent:Alive() then
+			ent:Spawn()
+		end
+	end)
+	
 	
 	gamemode.Call("PostTFPlayerDeath", ent, attacker, inflictor)
 end

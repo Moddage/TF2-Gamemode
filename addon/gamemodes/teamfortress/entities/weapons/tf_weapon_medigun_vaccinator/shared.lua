@@ -336,6 +336,15 @@ function SWEP:PrimaryAttack()
 			end)
 			self.NextIdle = nil
 			self.NextIdle2 = CurTime() + self:SequenceDuration()
+			timer.Simple(3, function()
+				if tr.Entity:GetClass() == "reviver" then
+					tr.Entity:GetOwner():Spawn()
+					tr.Entity:GetOwner():SetPlayerClass(tr.Entity:GetOwner():GetPlayerClass())
+					tr.Entity:GetOwner():SetPos(tr.Entity:GetPos())
+					tr.Entity:GetOwner():EmitSound("mvm/mvm_revive.wav", 90)
+					tr.Entity:Remove()
+				end
+			end)
 		elseif not self.NextDeniedSound or CurTime()>self.NextDeniedSound then
 			self:EmitSound(self.ShootSound2)
 			self.NextDeniedSound = CurTime() + 0.5
