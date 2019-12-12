@@ -1,5 +1,5 @@
-## Team Fortress 2 Gamemode
-The Gamemode that allows you to play TF2 in Gmod!
+## Civilian 2
+The Gamemode that allows you to play TF2 in Gmod with more features!
 
 ## Installation
 Drop the addon folder into the addons folder.
