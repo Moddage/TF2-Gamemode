@@ -603,7 +603,7 @@
 			"item_type_name"	"#TF_Weapon_Pistol"
 			"item_name"	"#TF_Weapon_Nailgun"
 			"item_description"	""
-			"item_slot"	"primary"
+			"item_slot"	"primary" 
 			"item_logname"	"nailgun"
 			"item_iconname"	"nailgun"
 			"image_inventory"	"sprites/bucket_nailgun"

@@ -8,7 +8,7 @@ local bots = {}
 local names = {"TFBot"}
 local classtb = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","demoknight","ubermedic"}
 --local classtb = {"demoknight"}
-local classtbmvm = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","superscout","giantheavyshotgun","giantheavyheater","giantsoldierrapidfire","giantsoldiercharged","soldierbuffed","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierbuffed","soldierbuffed","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","soldierbuffed","soldierbuffed","soldierbuffed","heavyshotgun","heavyshotgun","heavyshotgun","heavyshotgun","heavyweightchamp","heavyweightchamp","heavyweightchamp","heavyweightchamp","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic"}
+local classtbmvm = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","giantmedic","superscout","giantheavyshotgun","giantheavyheater","giantsoldierrapidfire","giantsoldiercharged","soldierbuffed","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierbuffed","soldierbuffed","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","soldierbuffed","soldierbuffed","soldierbuffed","heavyshotgun","heavyshotgun","heavyshotgun","heavyshotgun","heavyweightchamp","heavyweightchamp","heavyweightchamp","heavyweightchamp","melee_scout","melee_scout_sandman","melee_scout_sandman","melee_scout_sandman","melee_scout_sandman","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic"}
 --local classtbmvm = {"combinesoldier","combinesoldier"}
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
@@ -607,11 +607,27 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 					end
 
 				end
+				if bot:GetPlayerClass() == "melee_scout_sandman" then
+					if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 190 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
+						cmd:SetButtons(IN_ATTACK)
+					else
+						cmd:SetButtons(IN_ATTACK2)
+					end
+
+				end
+				if bot:GetPlayerClass() == "heavyweightchamp" then 
+					if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 190 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
+						cmd:SetButtons(IN_ATTACK)
+					else
+						cmd:SetButtons(IN_ATTACK)
+					end
+
+				end
 
 			end
 
 			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
-				if !bot.TargetEnt:IsFriendly(bot) and bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat_fish" and bot:GetActiveWeapon():GetClass() != "tf_weapon_sword" then
+				if !bot.TargetEnt:IsFriendly(bot) and bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat_wood" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat_fish" and bot:GetActiveWeapon():GetClass() != "tf_weapon_sword" then
 					cmd:SetForwardMove(-250)
 				end
 				if bot:GetPlayerClass() == "pyro" then

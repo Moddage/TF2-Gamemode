@@ -1101,7 +1101,7 @@ function L4DClassSelection()
 	L4DZombie:SetText("Male Zombie") --Set the name of the button
 	L4DZombie.DoClick = function() RunConsoleCommand("changeclass", "l4d_zombie") ClassFrame:Close() LocalPlayer():EmitSound("music/safe/themonsterswithout_l4d1.wav") LocalPlayer():StopSound("ClassSelection.ThemeL4D") LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 	
-	L4DZombie.OnCursorEntered = function() icon:SetModel( "models/cpthazama/l4d1/common/male_01.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE)icon2:GetEntity():SetModel("models/empty.mdl") surface.PlaySound( "/music/class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "Run_01" ) icon:GetEntity():SetSequence( dance ) end
+	L4DZombie.OnCursorEntered = function() icon:SetModel( "models/cpthazama/l4d1/common/male_01.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE)icon2:GetEntity():SetModel("models/empty.mdl") surface.PlaySound( "/music/mvm_class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "Run_01" ) icon:GetEntity():SetSequence( dance ) end
 
 end]]
 function DoorClose()
@@ -1235,75 +1235,75 @@ local ScoutButton = vgui.Create("DButton", ClassFrame)
 ScoutButton:SetSize(100, 30)
 ScoutButton:SetPos(10, 35)
 ScoutButton:SetText("Scout")
-ScoutButton.OnCursorEntered = function() icon:SetModel( "models/player/scout.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "scout" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_scattergun.mdl") end surface.PlaySound( "/music/class_menu_01.wav" ) if LocalPlayer():GetWeapons()[1]:GetItemData().model_player == "models/weapons/c_models/c_double_barrel.mdl" then local dance = icon:GetEntity():LookupSequence( "stand_ITEM2" ) elseif LocalPlayer():GetWeapons()[1]:GetItemData().model_player == "models/weapons/c_models/c_shortstop/c_shortstop.mdl" then local dance = icon:GetEntity():LookupSequence( "stand_secondary" ) else local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) end icon:GetEntity():SetSequence( dance ) end
-ScoutButton.DoClick = function() RunConsoleCommand("changeclass", "scout") surface.PlaySound( "/music/class_menu_01.wav" ) ClassFrame:Close()  end
+ScoutButton.OnCursorEntered = function() icon:SetModel( "models/player/scout.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "scout" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_scattergun.mdl") end surface.PlaySound( "/music/mvm_class_menu_01.wav" ) if LocalPlayer():GetWeapons()[1]:GetItemData().model_player == "models/weapons/c_models/c_double_barrel.mdl" then local dance = icon:GetEntity():LookupSequence( "stand_ITEM2" ) elseif LocalPlayer():GetWeapons()[1]:GetItemData().model_player == "models/weapons/c_models/c_shortstop/c_shortstop.mdl" then local dance = icon:GetEntity():LookupSequence( "stand_secondary" ) else local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) end icon:GetEntity():SetSequence( dance ) end
+ScoutButton.DoClick = function() RunConsoleCommand("changeclass", "scout") surface.PlaySound( "/music/mvm_class_menu_01.wav" ) ClassFrame:Close()  end
 local SoldierButton = vgui.Create("DButton", ClassFrame)
 SoldierButton:SetSize(100, 30)
 SoldierButton:SetPos(100, 35)
 SoldierButton:SetText("Soldier") --Set the name of the button
-SoldierButton.OnCursorEntered = function() icon:SetModel( "models/player/soldier.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "soldier" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_rocketlauncher.mdl") end surface.PlaySound( "/music/class_menu_02.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim0l" ) icon:GetEntity():SetSequence( dance ) end
-SoldierButton.DoClick = function() RunConsoleCommand("changeclass", "soldier") surface.PlaySound( "/music/class_menu_02.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM")	end
+SoldierButton.OnCursorEntered = function() icon:SetModel( "models/player/soldier.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "soldier" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_rocketlauncher.mdl") end surface.PlaySound( "/music/mvm_class_menu_02.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim0l" ) icon:GetEntity():SetSequence( dance ) end
+SoldierButton.DoClick = function() RunConsoleCommand("changeclass", "soldier") surface.PlaySound( "/music/mvm_class_menu_02.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM")	end
 
 local PyroButton = vgui.Create("DButton", ClassFrame)
 PyroButton:SetSize(100, 30)
 PyroButton:SetPos(190, 35)
 PyroButton:SetText("Pyro") --Set the name of the button
-PyroButton.DoClick = function() RunConsoleCommand("changeclass", "pyro") surface.PlaySound( "/music/class_menu_03.wav" ) ClassFrame:Close()  if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+PyroButton.DoClick = function() RunConsoleCommand("changeclass", "pyro") surface.PlaySound( "/music/mvm_class_menu_03.wav" ) ClassFrame:Close()  if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-PyroButton.OnCursorEntered = function() icon:SetModel( "models/player/pyro.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "pyro" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/c_models/c_flamethrower/c_flamethrower.mdl") end surface.PlaySound( "/music/class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+PyroButton.OnCursorEntered = function() icon:SetModel( "models/player/pyro.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "pyro" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/c_models/c_flamethrower/c_flamethrower.mdl") end surface.PlaySound( "/music/mvm_class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 
 local DemomanButton = vgui.Create("DButton", ClassFrame)
 DemomanButton:SetSize(100, 30)
 DemomanButton:SetPos(280, 35)
 DemomanButton:SetText("Demoman") --Set the name of the button
-DemomanButton.DoClick = function() RunConsoleCommand("changeclass", "demoman") surface.PlaySound( "/music/class_menu_04.wav" ) ClassFrame:Close()  if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+DemomanButton.DoClick = function() RunConsoleCommand("changeclass", "demoman") surface.PlaySound( "/music/mvm_class_menu_04.wav" ) ClassFrame:Close()  if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-DemomanButton.OnCursorEntered = function() icon:SetModel( "models/player/demo.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "demoman" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_grenadelauncher.mdl") end surface.PlaySound( "/music/class_menu_04.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+DemomanButton.OnCursorEntered = function() icon:SetModel( "models/player/demo.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "demoman" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_grenadelauncher.mdl") end surface.PlaySound( "/music/mvm_class_menu_04.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 
 local HeavyButton = vgui.Create("DButton", ClassFrame)
 HeavyButton:SetSize(100, 30)
 HeavyButton:SetPos(370, 35)
 HeavyButton:SetText("Heavy") --Set the name of the button
-HeavyButton.DoClick = function() RunConsoleCommand("changeclass", "heavy") surface.PlaySound( "/music/class_menu_05.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+HeavyButton.DoClick = function() RunConsoleCommand("changeclass", "heavy") surface.PlaySound( "/music/mvm_class_menu_05.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-HeavyButton.OnCursorEntered = function() icon:SetModel( "models/player/heavy.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_minigun.mdl") surface.PlaySound( "/music/class_menu_05.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+HeavyButton.OnCursorEntered = function() icon:SetModel( "models/player/heavy.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_minigun.mdl") surface.PlaySound( "/music/mvm_class_menu_05.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 local EngineerButton = vgui.Create("DButton", ClassFrame)
 EngineerButton:SetSize(100, 30)
 EngineerButton:SetPos(460, 35)
 EngineerButton:SetText("Engineer") --Set the name of the button
-EngineerButton.DoClick = function() RunConsoleCommand("changeclass", "engineer") surface.PlaySound( "/music/class_menu_06.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+EngineerButton.DoClick = function() RunConsoleCommand("changeclass", "engineer") surface.PlaySound( "/music/mvm_class_menu_06.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-EngineerButton.OnCursorEntered = function() icon:SetModel( "models/player/engineer.mdl" )  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_wrench.mdl") surface.PlaySound( "/music/class_menu_06.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+EngineerButton.OnCursorEntered = function() icon:SetModel( "models/player/engineer.mdl" )  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_wrench.mdl") surface.PlaySound( "/music/mvm_class_menu_06.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 local MedicButton = vgui.Create("DButton", ClassFrame)
 MedicButton:SetSize(100, 30)
 MedicButton:SetPos(550, 35)
 MedicButton:SetText("Medic") --Set the name of the button
-MedicButton.DoClick = function() RunConsoleCommand("changeclass", "medic") surface.PlaySound( "/music/class_menu_07.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+MedicButton.DoClick = function() RunConsoleCommand("changeclass", "medic") surface.PlaySound( "/music/mvm_class_menu_07.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-MedicButton.OnCursorEntered = function() icon:SetModel( "models/player/medic.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_medigun.mdl") surface.PlaySound( "/music/class_menu_07.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+MedicButton.OnCursorEntered = function() icon:SetModel( "models/player/medic.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_medigun.mdl") surface.PlaySound( "/music/mvm_class_menu_07.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 
 local SniperButton = vgui.Create("DButton", ClassFrame)
 SniperButton:SetSize(100, 30)
 SniperButton:SetPos(640, 35)
 SniperButton:SetText("Sniper") --Set the name of the button
-SniperButton.DoClick = function() RunConsoleCommand("changeclass", "sniper") surface.PlaySound( "/music/class_menu_08.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+SniperButton.DoClick = function() RunConsoleCommand("changeclass", "sniper") surface.PlaySound( "/music/mvm_class_menu_08.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-SniperButton.OnCursorEntered = function() icon:SetModel( "models/player/sniper.mdl" )  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_sniperrifle.mdl") surface.PlaySound( "/music/class_menu_08.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+SniperButton.OnCursorEntered = function() icon:SetModel( "models/player/sniper.mdl" )  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_sniperrifle.mdl") surface.PlaySound( "/music/mvm_class_menu_08.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 if GetConVar("ofd_enable"):GetBool() then
 local MercButton = vgui.Create("DButton", ClassFrame)
 MercButton:SetSize(100, 30)
 MercButton:SetPos(830, 35)
 MercButton:SetText("Mercenary") --Set the name of the button
-MercButton.DoClick = function() RunConsoleCommand("changeclass", "merc_dm") surface.PlaySound( "/music/class_menu_05.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
-MercButton.OnCursorEntered = function() icon:SetModel( "models/player/mercenary.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/c_models/c_pickaxe/c_crowbar.mdl")  surface.PlaySound( "/music/class_menu_05.wav" ) local dance = icon:GetEntity():LookupSequence( "stand_melee" ) icon:GetEntity():SetSequence( dance ) end
+MercButton.DoClick = function() RunConsoleCommand("changeclass", "merc_dm") surface.PlaySound( "/music/mvm_class_menu_05.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+MercButton.OnCursorEntered = function() icon:SetModel( "models/player/mercenary.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/c_models/c_pickaxe/c_crowbar.mdl")  surface.PlaySound( "/music/mvm_class_menu_05.wav" ) local dance = icon:GetEntity():LookupSequence( "stand_melee" ) icon:GetEntity():SetSequence( dance ) end
 end
 
 local SpyButton = vgui.Create("DButton", ClassFrame)
 SpyButton:SetSize(100, 30)
 SpyButton:SetPos(730, 35)
 SpyButton:SetText("Spy") --Set the name of the button
-SpyButton.DoClick = function() RunConsoleCommand("changeclass", "spy") surface.PlaySound( "/music/class_menu_09.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
-SpyButton.OnCursorEntered = function() icon:SetModel( "models/player/spy.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_knife.mdl")  surface.PlaySound( "/music/class_menu_09.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+SpyButton.DoClick = function() RunConsoleCommand("changeclass", "spy") surface.PlaySound( "/music/mvm_class_menu_09.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+SpyButton.OnCursorEntered = function() icon:SetModel( "models/player/spy.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_knife.mdl")  surface.PlaySound( "/music/mvm_class_menu_09.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 
 local Hint = vgui.Create( "DLabel", ClassFrame )
 Hint:SetPos( 10, 70 )
@@ -1346,7 +1346,7 @@ GmodButton:SetPos(366, 70)
 GmodButton:SetText("GMod Player") --Set the name of the button
 GmodButton.DoClick = function() RunConsoleCommand("changeclass", "gmodplayer") ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM")  end
 GmodButton.OnCursorEntered = function() 
-	icon2:GetEntity():SetModel("models/weapons/w_crowbar.mdl") if LocalPlayer():IsHL2() then icon:SetModel( LocalPlayer():GetModel() ) else icon:SetModel("models/player/kleiner.mdl") end  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) surface.PlaySound( "/music/class_menu_07db.wav" ) local dance = icon:GetEntity():LookupSequence( "run_melee" ) icon:GetEntity():SetSequence( dance ) icon:GetEntity():SetPoseParameter("move_x",1)  end 
+	icon2:GetEntity():SetModel("models/weapons/w_crowbar.mdl") if LocalPlayer():IsHL2() then icon:SetModel( LocalPlayer():GetModel() ) else icon:SetModel("models/player/kleiner.mdl") end  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) surface.PlaySound( "/music/mvm_class_menu_07db.wav" ) local dance = icon:GetEntity():LookupSequence( "run_melee" ) icon:GetEntity():SetSequence( dance ) icon:GetEntity():SetPoseParameter("move_x",1)  end 
 function Option2:OnChange(new)
 	if new == false then
 		RunConsoleCommand("tf_autoreload", 0)
@@ -2439,7 +2439,7 @@ function L4DClassSelection()
 	L4DZombie:SetText("Male Zombie") --Set the name of the button
 	L4DZombie.DoClick = function() RunConsoleCommand("changeclass", "l4d_zombie") ClassFrame:Close() LocalPlayer():EmitSound("music/safe/themonsterswithout_l4d1.wav") LocalPlayer():StopSound("ClassSelection.ThemeL4D") LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 	
-	L4DZombie.OnCursorEntered = function() icon:SetModel( "models/cpthazama/l4d1/common/male_01.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE)icon2:GetEntity():SetModel("models/empty.mdl") surface.PlaySound( "/music/class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "Run_01" ) icon:GetEntity():SetSequence( dance ) end
+	L4DZombie.OnCursorEntered = function() icon:SetModel( "models/cpthazama/l4d1/common/male_01.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE)icon2:GetEntity():SetModel("models/empty.mdl") surface.PlaySound( "/music/mvm_class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "Run_01" ) icon:GetEntity():SetSequence( dance ) end
 
 end]]
 function DoorClose()
@@ -2573,75 +2573,75 @@ local ScoutButton = vgui.Create("DButton", ClassFrame)
 ScoutButton:SetSize(100, 30)
 ScoutButton:SetPos(10, 35)
 ScoutButton:SetText("Scout")
-ScoutButton.OnCursorEntered = function() icon:SetModel( "models/player/scout.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "scout" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_scattergun.mdl") end surface.PlaySound( "/music/class_menu_01.wav" ) if LocalPlayer():GetWeapons()[1]:GetItemData().model_player == "models/weapons/c_models/c_double_barrel.mdl" then local dance = icon:GetEntity():LookupSequence( "stand_ITEM2" ) elseif LocalPlayer():GetWeapons()[1]:GetItemData().model_player == "models/weapons/c_models/c_shortstop/c_shortstop.mdl" then local dance = icon:GetEntity():LookupSequence( "stand_secondary" ) else local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) end icon:GetEntity():SetSequence( dance ) end
-ScoutButton.DoClick = function() RunConsoleCommand("changeclass", "scout") surface.PlaySound( "/music/class_menu_01.wav" ) ClassFrame:Close()  end
+ScoutButton.OnCursorEntered = function() icon:SetModel( "models/player/scout.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "scout" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_scattergun.mdl") end surface.PlaySound( "/music/mvm_class_menu_01.wav" ) if LocalPlayer():GetWeapons()[1]:GetItemData().model_player == "models/weapons/c_models/c_double_barrel.mdl" then local dance = icon:GetEntity():LookupSequence( "stand_ITEM2" ) elseif LocalPlayer():GetWeapons()[1]:GetItemData().model_player == "models/weapons/c_models/c_shortstop/c_shortstop.mdl" then local dance = icon:GetEntity():LookupSequence( "stand_secondary" ) else local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) end icon:GetEntity():SetSequence( dance ) end
+ScoutButton.DoClick = function() RunConsoleCommand("changeclass", "scout") surface.PlaySound( "/music/mvm_class_menu_01.wav" ) ClassFrame:Close()  end
 local SoldierButton = vgui.Create("DButton", ClassFrame)
 SoldierButton:SetSize(100, 30)
 SoldierButton:SetPos(100, 35)
 SoldierButton:SetText("Soldier") --Set the name of the button
-SoldierButton.OnCursorEntered = function() icon:SetModel( "models/player/soldier.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "soldier" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_rocketlauncher.mdl") end surface.PlaySound( "/music/class_menu_02.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim0l" ) icon:GetEntity():SetSequence( dance ) end
-SoldierButton.DoClick = function() RunConsoleCommand("changeclass", "soldier") surface.PlaySound( "/music/class_menu_02.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM")	end
+SoldierButton.OnCursorEntered = function() icon:SetModel( "models/player/soldier.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "soldier" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_rocketlauncher.mdl") end surface.PlaySound( "/music/mvm_class_menu_02.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim0l" ) icon:GetEntity():SetSequence( dance ) end
+SoldierButton.DoClick = function() RunConsoleCommand("changeclass", "soldier") surface.PlaySound( "/music/mvm_class_menu_02.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM")	end
 
 local PyroButton = vgui.Create("DButton", ClassFrame)
 PyroButton:SetSize(100, 30)
 PyroButton:SetPos(190, 35)
 PyroButton:SetText("Pyro") --Set the name of the button
-PyroButton.DoClick = function() RunConsoleCommand("changeclass", "pyro") surface.PlaySound( "/music/class_menu_03.wav" ) ClassFrame:Close()  if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+PyroButton.DoClick = function() RunConsoleCommand("changeclass", "pyro") surface.PlaySound( "/music/mvm_class_menu_03.wav" ) ClassFrame:Close()  if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-PyroButton.OnCursorEntered = function() icon:SetModel( "models/player/pyro.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "pyro" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/c_models/c_flamethrower/c_flamethrower.mdl") end surface.PlaySound( "/music/class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+PyroButton.OnCursorEntered = function() icon:SetModel( "models/player/pyro.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "pyro" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/c_models/c_flamethrower/c_flamethrower.mdl") end surface.PlaySound( "/music/mvm_class_menu_03.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 
 local DemomanButton = vgui.Create("DButton", ClassFrame)
 DemomanButton:SetSize(100, 30)
 DemomanButton:SetPos(280, 35)
 DemomanButton:SetText("Demoman") --Set the name of the button
-DemomanButton.DoClick = function() RunConsoleCommand("changeclass", "demoman") surface.PlaySound( "/music/class_menu_04.wav" ) ClassFrame:Close()  if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+DemomanButton.DoClick = function() RunConsoleCommand("changeclass", "demoman") surface.PlaySound( "/music/mvm_class_menu_04.wav" ) ClassFrame:Close()  if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-DemomanButton.OnCursorEntered = function() icon:SetModel( "models/player/demo.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "demoman" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_grenadelauncher.mdl") end surface.PlaySound( "/music/class_menu_04.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+DemomanButton.OnCursorEntered = function() icon:SetModel( "models/player/demo.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) if LocalPlayer():GetPlayerClass() == "demoman" then icon2:GetEntity():SetModel(LocalPlayer():GetWeapons()[1]:GetItemData().model_player) else icon2:GetEntity():SetModel("models/weapons/w_models/w_grenadelauncher.mdl") end surface.PlaySound( "/music/mvm_class_menu_04.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 
 local HeavyButton = vgui.Create("DButton", ClassFrame)
 HeavyButton:SetSize(100, 30)
 HeavyButton:SetPos(370, 35)
 HeavyButton:SetText("Heavy") --Set the name of the button
-HeavyButton.DoClick = function() RunConsoleCommand("changeclass", "heavy") surface.PlaySound( "/music/class_menu_05.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+HeavyButton.DoClick = function() RunConsoleCommand("changeclass", "heavy") surface.PlaySound( "/music/mvm_class_menu_05.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-HeavyButton.OnCursorEntered = function() icon:SetModel( "models/player/heavy.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_minigun.mdl") surface.PlaySound( "/music/class_menu_05.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+HeavyButton.OnCursorEntered = function() icon:SetModel( "models/player/heavy.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_minigun.mdl") surface.PlaySound( "/music/mvm_class_menu_05.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 local EngineerButton = vgui.Create("DButton", ClassFrame)
 EngineerButton:SetSize(100, 30)
 EngineerButton:SetPos(460, 35)
 EngineerButton:SetText("Engineer") --Set the name of the button
-EngineerButton.DoClick = function() RunConsoleCommand("changeclass", "engineer") surface.PlaySound( "/music/class_menu_06.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+EngineerButton.DoClick = function() RunConsoleCommand("changeclass", "engineer") surface.PlaySound( "/music/mvm_class_menu_06.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-EngineerButton.OnCursorEntered = function() icon:SetModel( "models/player/engineer.mdl" )  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_wrench.mdl") surface.PlaySound( "/music/class_menu_06.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+EngineerButton.OnCursorEntered = function() icon:SetModel( "models/player/engineer.mdl" )  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_wrench.mdl") surface.PlaySound( "/music/mvm_class_menu_06.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 local MedicButton = vgui.Create("DButton", ClassFrame)
 MedicButton:SetSize(100, 30)
 MedicButton:SetPos(550, 35)
 MedicButton:SetText("Medic") --Set the name of the button
-MedicButton.DoClick = function() RunConsoleCommand("changeclass", "medic") surface.PlaySound( "/music/class_menu_07.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+MedicButton.DoClick = function() RunConsoleCommand("changeclass", "medic") surface.PlaySound( "/music/mvm_class_menu_07.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-MedicButton.OnCursorEntered = function() icon:SetModel( "models/player/medic.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_medigun.mdl") surface.PlaySound( "/music/class_menu_07.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+MedicButton.OnCursorEntered = function() icon:SetModel( "models/player/medic.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_medigun.mdl") surface.PlaySound( "/music/mvm_class_menu_07.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 
 local SniperButton = vgui.Create("DButton", ClassFrame)
 SniperButton:SetSize(100, 30)
 SniperButton:SetPos(640, 35)
 SniperButton:SetText("Sniper") --Set the name of the button
-SniperButton.DoClick = function() RunConsoleCommand("changeclass", "sniper") surface.PlaySound( "/music/class_menu_08.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+SniperButton.DoClick = function() RunConsoleCommand("changeclass", "sniper") surface.PlaySound( "/music/mvm_class_menu_08.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
-SniperButton.OnCursorEntered = function() icon:SetModel( "models/player/sniper.mdl" )  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_sniperrifle.mdl") surface.PlaySound( "/music/class_menu_08.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+SniperButton.OnCursorEntered = function() icon:SetModel( "models/player/sniper.mdl" )  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_sniperrifle.mdl") surface.PlaySound( "/music/mvm_class_menu_08.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 if GetConVar("ofd_enable"):GetBool() then
 local MercButton = vgui.Create("DButton", ClassFrame)
 MercButton:SetSize(100, 30)
 MercButton:SetPos(830, 35)
 MercButton:SetText("Mercenary") --Set the name of the button
-MercButton.DoClick = function() RunConsoleCommand("changeclass", "merc_dm") surface.PlaySound( "/music/class_menu_05.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
-MercButton.OnCursorEntered = function() icon:SetModel( "models/player/mercenary.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/c_models/c_pickaxe/c_crowbar.mdl")  surface.PlaySound( "/music/class_menu_05.wav" ) local dance = icon:GetEntity():LookupSequence( "stand_melee" ) icon:GetEntity():SetSequence( dance ) end
+MercButton.DoClick = function() RunConsoleCommand("changeclass", "merc_dm") surface.PlaySound( "/music/mvm_class_menu_05.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+MercButton.OnCursorEntered = function() icon:SetModel( "models/player/mercenary.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/c_models/c_pickaxe/c_crowbar.mdl")  surface.PlaySound( "/music/mvm_class_menu_05.wav" ) local dance = icon:GetEntity():LookupSequence( "stand_melee" ) icon:GetEntity():SetSequence( dance ) end
 end
 
 local SpyButton = vgui.Create("DButton", ClassFrame)
 SpyButton:SetSize(100, 30)
 SpyButton:SetPos(730, 35)
 SpyButton:SetText("Spy") --Set the name of the button
-SpyButton.DoClick = function() RunConsoleCommand("changeclass", "spy") surface.PlaySound( "/music/class_menu_09.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
-SpyButton.OnCursorEntered = function() icon:SetModel( "models/player/spy.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_knife.mdl")  surface.PlaySound( "/music/class_menu_09.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
+SpyButton.DoClick = function() RunConsoleCommand("changeclass", "spy") surface.PlaySound( "/music/mvm_class_menu_09.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
+SpyButton.OnCursorEntered = function() icon:SetModel( "models/player/spy.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_knife.mdl")  surface.PlaySound( "/music/mvm_class_menu_09.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
 
 local Hint = vgui.Create( "DLabel", ClassFrame )
 Hint:SetPos( 10, 70 )
@@ -2684,7 +2684,7 @@ GmodButton:SetPos(366, 70)
 GmodButton:SetText("GMod Player") --Set the name of the button
 GmodButton.DoClick = function() RunConsoleCommand("changeclass", "gmodplayer") ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM")  end
 GmodButton.OnCursorEntered = function() 
-	icon2:GetEntity():SetModel("models/weapons/w_crowbar.mdl") if LocalPlayer():IsHL2() then icon:SetModel( LocalPlayer():GetModel() ) else icon:SetModel("models/player/kleiner.mdl") end  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) surface.PlaySound( "/music/class_menu_07db.wav" ) local dance = icon:GetEntity():LookupSequence( "run_melee" ) icon:GetEntity():SetSequence( dance ) icon:GetEntity():SetPoseParameter("move_x",1)  end 
+	icon2:GetEntity():SetModel("models/weapons/w_crowbar.mdl") if LocalPlayer():IsHL2() then icon:SetModel( LocalPlayer():GetModel() ) else icon:SetModel("models/player/kleiner.mdl") end  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) surface.PlaySound( "/music/mvm_class_menu_07db.wav" ) local dance = icon:GetEntity():LookupSequence( "run_melee" ) icon:GetEntity():SetSequence( dance ) icon:GetEntity():SetPoseParameter("move_x",1)  end 
 function Option2:OnChange(new)
 	if new == false then
 		RunConsoleCommand("tf_autoreload", 0)

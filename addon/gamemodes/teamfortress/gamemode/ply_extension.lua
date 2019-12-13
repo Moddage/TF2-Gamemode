@@ -50,6 +50,8 @@ function Player:Nick()
 			return "Giant Rapid-Fire Soldier"
 		elseif self:GetPlayerClass() == "ubermedic" then 
 			return "Quick-Fix Medic"
+		elseif self:GetPlayerClass() == "giantmedic" then 
+			return "Giant Medic"
 		elseif self:GetPlayerClass() == "demoknight" then 
 			return "Demoknight"
 		elseif self:GetPlayerClass() == "giantheavyheater" then 
@@ -59,7 +61,9 @@ function Player:Nick()
 		elseif self:GetPlayerClass() == "soldierblackbox" then 
 			return "Black Box Soldier"
 		elseif self:GetPlayerClass() == "melee_scout" then
-			return "Melee Scout"
+			return "Melee Scout" 
+		elseif self:GetPlayerClass() == "melee_scout_sandman" then
+			return "Sandman Scout"
 		elseif self:GetPlayerClass() == "superscout" then
 			return "Super Scout"
 		elseif self:GetPlayerClass() == "soldierbuffed" then
@@ -253,7 +257,7 @@ function meta:EnablePhonemes( ent, on )
 		self:SetupPhonemeMappings( "" )
 	else
 		-- Enable mouth movement
-		self:SetupPhonemeMappings( "heavy/phonemes" )
+		self:SetupPhonemeMappings( ""..self:GetPlayerClass().."/phonemes" )
 	end
 
 end

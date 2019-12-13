@@ -12,7 +12,7 @@ ENT.Levels = {
 }
 ENT.IdleSequence = "running"
 ENT.DisableDuringUpgrade = false
-ENT.NoUpgradedModel = true
+ENT.NoUpgradedModel = false
 
 ENT.Sound_Ready = Sound("Building_Teleporter.Ready")
 ENT.Sound_Send = Sound("Building_Teleporter.Send")
@@ -141,7 +141,6 @@ function ENT:Teleport(pl)
 	self:SetAcceleration(-0.002)
 	self.NextRecharge = CurTime() + self.RechargeTime
 	self.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime
-	
 	exit.SpinSpeed = 0.9
 	exit:SetAcceleration(-0.002)
 	exit.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime
@@ -157,6 +156,7 @@ function ENT:Teleport(pl)
 		pl:SetPos(exit:GetExitPosition())
 		ParticleEffect("teleportedin_red", exit:GetPos(), exit:GetAngles(), pl)
 		exit:EmitSound(self.Sound_Receive)
+		
 		local y = self:GetAngles().y
 		if pl:IsPlayer() then
 			local ang = pl:EyeAngles()
@@ -164,6 +164,8 @@ function ENT:Teleport(pl)
 			pl:SetEyeAngles(ang)
 			umsg.Start("TFTeleportEffect", pl)
 			umsg.End()
+			local args = {"TLK_TELEPORTED"}
+			pl:Speak(args[1])
 		else
 			local ang = pl:GetAngles()
 			ang.y = y
@@ -178,7 +180,7 @@ function ENT:OnThinkActive()
 		self:SetBodygroup(2, 1)
 		self:SetPoseParameter("direction", self:GetAngles().y-(self:GetPos()-self:GetLinkedTeleporter():GetPos()):Angle().y)
 		self.Model:SetBodygroup(2, 1)
-		self.Model:SetPoseParameter("direction", self:GetAngles().y-(self:GetPos()-self:GetLinkedTeleporter():GetPos()):Angle().y)
+		self.Model:SetPoseParameter("direction", self.Model:GetAngles().y-(self:GetPos()-self:GetLinkedTeleporter().Model:GetPos()):Angle().y)
 	else
 		self:SetBodygroup(2, 0)
 		self.Model:SetBodygroup(2, 0)
