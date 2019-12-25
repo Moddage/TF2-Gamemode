@@ -1,11 +1,15 @@
-if game.SinglePlayer() or CLIENT or engine.ActiveGamemode() ~= "teamfortress" then return end
+if game.SinglePlayer() or CLIENT then return end
+
+--[[LEADBOT STANDALONE V1.0_DEV by Lead]]--
+--[["For epic developers who don't have friends to play with. 😎"]]--
+--[[ONLY MEAN TO BE USED WITHIN Team Fortress 2 Gamemode Dev!!!]]--
 
 local profiles = {}
 local bots = {}
 
 --local names = {"LeadKiller", "A Random Person", "Foxie117", "G.A.M.E.R v24", "Agent Agrimar"}
 local names = {"A Professional With Standards", "AimBot", "AmNot", "Aperture Science Prototype XR7", "Archimedes!", "BeepBeepBoop", "Big Mean Muther Hubbard", "Black Mesa", "BoomerBile", "Cannon Fodder", "CEDA", "Chell", "Chucklenuts", "Companion Cube", "Crazed Gunman", "CreditToTeam", "CRITRAWKETS", "Crowbar", "CryBaby", "CrySomeMore", "C++", "DeadHead", "Delicious Cake", "Divide by Zero", "Dog", "Force of Nature", "Freakin' Unbelievable", "Gentlemanne of Leisure", "GENTLE MANNE of LEISURE ", "GLaDOS", "Glorified Toaster with Legs", "Grim Bloody Fable", "GutsAndGlory!", "Hat-Wearing MAN", "Headful of Eyeballs", "Herr Doktor", "HI THERE", "Hostage", "Humans Are Weak", "H@XX0RZ", "I LIVE!", "It's Filthy in There!", "IvanTheSpaceBiker", "Kaboom!", "Kill Me", "LOS LOS LOS", "Maggot", "Mann Co.", "Me", "Mega Baboon", "Mentlegen", "Mindless Electrons", "MoreGun", "Nobody", "Nom Nom Nom", "NotMe", "Numnutz", "One-Man Cheeseburger Apocalypse", "Poopy Joe", "Pow!", "RageQuit", "Ribs Grow Back", "Saxton Hale", "Screamin' Eagles", "SMELLY UNFORTUNATE", "SomeDude", "Someone Else", "Soulless", "Still Alive", "TAAAAANK!", "Target Practice", "ThatGuy", "The Administrator", "The Combine", "The Freeman", "The G-Man", "THEM", "Tiny Baby Man", "Totally Not A Bot", "trigger_hurt", "WITCH", "ZAWMBEEZ", "Ze Ubermensch", "Zepheniah Mann", "0xDEADBEEF", "10001011101"}
-local classtb = {"scout", "soldier", "pyro", "heavy"} -- "scout", "soldier", "pyro", "engineer", "heavy", "demoman", "sniper", "medic", "spy"
+local classtb = {"scout", "soldier", "pyro", "heavy", "demoman", "sniper"} -- "scout", "soldier", "pyro", "engineer", "heavy", "demoman", "sniper", "medic", "spy"
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
 local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
@@ -77,12 +81,246 @@ function LBFindClosest(bot)
 	bot.FollowPly = player
 end
 
-hook.Add("PostCleanupMap", "leadbot_cleanupmap", function()
+local function LeadBot_S_Add(team)
+	if !navmesh.IsLoaded() then
+		ErrorNoHalt("There is no navmesh! Generate one using \"nav_generate\"!\n")
+		return
+	end
+
+	local name = table.Random(names) or "Bot"
+	local bot = player.CreateNextBot(name)
+	local teamv = TEAM_RED
+	if team == 1 then
+		teamv = TEAM_BLU
+	end
+
+	if !IsValid(bot) then ErrorNoHalt("[LeadBot] Player limit reached!\n") return end
+
+	bot.LastSegmented = CurTime()
+
+	bot.ControllerBot = ents.Create("ctf_bot_navigator")
+	bot.ControllerBot:Spawn()
+	bot.ControllerBot:SetOwner(bot)
+
+	bot.LastPath = nil
+	bot.CurSegment = 2
+	bot.LeadBot = true
+	bot.BotStrategy = math.random(0, 1)
+
+	bot:SetTeam(teamv)
+	bot:SetPlayerClass(table.Random(classtb))
+
+	timer.Simple(1, function()
+		if IsValid(bot) then
+			bot:Kill()
+		end
+	end)
+
+	MsgN("[LeadBot] Bot " .. name .. " with strategy " .. bot.BotStrategy .. " added!")
+end
+
+hook.Add("PostCleanupMap", "LeadBot_S_PostCleanup", function()
 	for k, v in pairs(player.GetBots()) do
-		if IsValid(v) and v.LKBot then
+		if v.LeadBot then
 			v.ControllerBot = ents.Create("ctf_bot_navigator")
 			v.ControllerBot:Spawn()
 		end
+	end
+end)
+
+hook.Add("PostPlayerDeath", "LeadBot_S_Death", function(bot)
+	if bot.LeadBot then
+		timer.Simple(2, function()
+			if IsValid(bot) and !bot:Alive() then
+				bot:Spawn()
+			end
+		end)
+	end
+end)
+
+hook.Add("StartCommand", "LeadBot_S_Command", function(bot, cmd)
+	if bot.LeadBot then
+	local buttons = IN_RELOAD
+	local botWeapon = bot:GetActiveWeapon()
+
+	--[[if IsValid(botWeapon) and (botWeapon:Clip1() == 0 or !IsValid(bot.TargetEnt) and botWeapon:Clip1() <= botWeapon:GetMaxClip1() / 2) then
+		buttons = buttons + IN_RELOAD
+	end]]
+
+	if IsValid(bot.TargetEnt) and (math.random(2) == 1 or bot:GetPlayerClass() == "heavy") then
+		buttons = buttons + IN_ATTACK
+	end
+
+	cmd:ClearButtons()
+	cmd:ClearMovement()
+	cmd:SetButtons(buttons)
+	end
+end)
+
+hook.Add("PlayerSpawn", "LeadBot_S_PlayerSpawn", function(bot)
+	if bot.LeadBot then
+			local class = table.Random(classtb)
+
+			timer.Simple(1, function()
+				if !bot_class:GetBool() then
+					bot:SetPlayerClass(table.Random(classtb))
+				end
+
+				timer.Simple(0.1, function()
+					bot:SetPlayerClass(bot:GetPlayerClass())
+					--[[if bot:GetPlayerClass() ~= "medic" then
+						RandomWeapon2(bot, "primary")
+						RandomWeapon2(bot, "secondary")
+						RandomWeapon2(bot, "melee")
+					end]]
+				end)
+
+				bot:SetFOV(100, 0)
+			end)
+	end
+end)
+
+hook.Add("SetupMove", "LeadBot_Control", function(bot, mv, cmd)
+	if bot.LeadBot then
+	if bot.ControllerBot:GetPos() ~= bot:GetPos() then
+		bot.ControllerBot:SetPos(bot:GetPos())
+	end
+
+	bot.TargetEnt = nil
+
+	--cmd:SetForwardMove(250)
+
+	------------------------------
+	-----[[ENTITY DETECTION]]-----
+	------------------------------
+
+	for k, v in pairs(ents.GetAll()) do
+		if v:IsPlayer() and v ~= bot and v:GetPos():Distance(bot:GetPos()) < 1500 then
+			if (v:Team() ~= bot:Team() and bot:Team() ~= TEAM_UNASSIGNED) or bot:Team() == TEAM_UNASSIGNED then -- TODO: find a better way to do this
+				local targetpos = v:EyePos() - Vector(0, 0, 10) -- bot eye check, don't start shooting targets just because we barely see their head
+				local trace = util.TraceLine({start = bot:GetShootPos(), endpos = targetpos, filter = function( ent ) return ent == v end})
+
+				if trace.Entity == v then -- TODO: FOV Check
+					bot.TargetEnt = v
+				end
+			end
+		elseif v:GetClass() == "prop_door_rotating" and v:GetPos():Distance(bot:GetPos()) < 70 then
+			-- open a door if we see one blocking our path
+			local targetpos = v:GetPos() + Vector(0, 0, 45)
+
+			if util.TraceLine({start = bot:GetShootPos(), endpos = targetpos, filter = function( ent ) return ent == v end}).Entity == v then
+				v:Fire("Open","",0)
+			end
+		end
+	end
+
+	------------------------------
+	--------[[BOT LOGIC]]---------
+	------------------------------
+
+	mv:SetForwardSpeed(1200)
+
+	if bot:GetPlayerClass() == "scout" or !IsValid(bot.TargetEnt) and (!bot.botPos or bot:GetPos():Distance(bot.botPos) < 60 or math.abs(bot.LastSegmented - CurTime()) > 10) then
+		-- find a random spot on the map, and in 10 seconds do it again!
+		-- bot.botPos = bot.ControllerBot:FindSpot("random", {radius = 12500})
+		bot.LastSegmented = CurTime()
+
+		local intel
+		local fintel
+		local intelcap
+		local fintelcap
+		local targetpos2 = Vector(0, 0, 0)
+
+		if string.find(game.GetMap(), "ctf_") then -- CTF AI
+			for k, v in pairs(ents.FindByClass("item_teamflag")) do
+				if v.TeamNum ~= bot:Team() then
+					intel = v
+				else
+					fintel = v
+				end
+			end
+
+			for k, v in pairs(ents.FindByClass("func_capturezone")) do
+				if v.TeamNum ~= bot:Team() then
+					intelcap = v
+				else
+					fintelcap = v
+				end
+			end
+
+			if !intel.Carrier and !fintel.Carrier then -- neither intel has a capture
+				targetpos2 = intel:GetPos() -- goto enemy intel
+				ignoreback = true
+			elseif intel.Carrier == bot then -- or if friendly intelligence has capture
+				targetpos2 = fintelcap.Pos -- goto friendly cap spot
+				ignoreback = true
+			elseif intel.Carrier then -- or else if we have it already carried
+				targetpos2 = intel.Carrier:GetPos() -- follow that man
+			end
+		end
+
+		bot.botPos = targetpos2
+	elseif IsValid(bot.TargetEnt) then
+		-- move to our target
+		local distance = bot.TargetEnt:GetPos():Distance(bot:GetPos())
+		bot.botPos = bot.TargetEnt:GetPos()
+
+		-- back up if the target is really close
+		-- TODO: find a random spot rather than trying to back up into what could just be a wall
+		if distance <= 300 then
+			mv:SetForwardSpeed(-1200)
+		end
+
+		if bot:GetPlayerClass() == "sniper" then
+			mv:SetForwardSpeed(0)
+		end
+	end
+
+	bot.ControllerBot.PosGen = bot.botPos
+
+	if bot.ControllerBot.P then
+		bot.LastPath = bot.ControllerBot.P:GetAllSegments()
+	end
+
+	if !bot.ControllerBot.P then
+		return
+	end
+
+	if bot.CurSegment ~= 2 and !table.EqualValues( bot.LastPath, bot.ControllerBot.P:GetAllSegments() ) then
+		bot.CurSegment = 2
+	end
+
+	if !bot.LastPath then return end
+	local curgoal = bot.LastPath[bot.CurSegment]
+	if !curgoal then return end
+
+	-- think one step ahead!
+	if bot:GetPos():Distance(curgoal.pos) < 50 and bot.LastPath[bot.CurSegment + 1] then
+		curgoal = bot.LastPath[bot.CurSegment + 1]
+	end
+
+	------------------------------
+	--------[[BOT EYES]]---------
+	------------------------------
+
+	local lerp = 0.4
+
+	mv:SetMoveAngles(LerpAngle(lerp, mv:GetMoveAngles(), ((curgoal.pos + Vector(0, 0, 65)) - bot:GetShootPos()):Angle()))
+
+	if IsValid(bot.TargetEnt) and bot:GetEyeTrace().Entity ~= bot.TargetEnt then
+		local shouldvegoneforthehead = bot.TargetEnt:EyePos()
+		local group = math.random(0, bot.TargetEnt:GetHitBoxGroupCount() - 1)
+		local bone = bot.TargetEnt:GetHitBoxBone(math.random(0, bot.TargetEnt:GetHitBoxCount(group) - 1), group) or 0
+		shouldvegoneforthehead = bot.TargetEnt:GetBonePosition(bone)
+
+		bot:SetEyeAngles(LerpAngle(lerp, bot:EyeAngles(), (shouldvegoneforthehead - bot:GetShootPos()):Angle()) --[[+ bot:GetViewPunchAngles()]])
+		return
+	elseif bot:GetPos():Distance(curgoal.pos) > 20 then
+		local ang2 = ((curgoal.pos + Vector(0, 0, 65)) - bot:GetShootPos()):Angle()
+		local ang = LerpAngle(lerp, mv:GetMoveAngles(), ang2)
+		bot:SetEyeAngles(LerpAngle(0.03, bot:EyeAngles(), ang2))
+		mv:SetMoveAngles(ang)
+	end
 	end
 end)
 
@@ -620,10 +858,10 @@ concommand.Add("tf_bot_say", function(ply, _, args) for k, v in pairs(player.Get
 
 --concommand.Add("lk.noclip", function(ply) if ply:GetMoveType() == MOVETYPE_NOCLIP then ply:SetMoveType(MOVETYPE_WALK) else ply:SetMoveType(MOVETYPE_NOCLIP) end end)
 --concommand.Add("lk.downme", function(ply) ply:DownPlayer() end)
-concommand.Add("tf_bot_add", function(_, _, args) LBAddBot(args[1]) end)
+concommand.Add("tf_bot_add", function(_, _, args) LeadBot_S_Add(args[1]) end)
 
-concommand.Add("tf_bot_name_add", function(_, _, args) table.insert(names, args[1]) print(args[1].." added to names list!") end)
-concommand.Add("tf_bot_quota", function(_, _, args) for i=0, args[1]-1 do LBAddBot() end end)
+concommand.Add("tf_bot_name_add", function(_, _, args) table.insert(names, args[1]) MsgN(args[1].." added to names list!") end)
+concommand.Add("tf_bot_quota", function(_, _, args) for i=0, args[1]-1 do LeadBot_S_Add() end end)
 
 --concommand.Add("lk.playerclass", function(_, _, args) for k, v in pairs(player.GetBots()) do v:SetPlayerClass(args[1]) end end)
 
@@ -653,6 +891,3 @@ concommand.Add("tf_bot_takecontrol", function(ply) local bot = ply:GetObserverTa
 		v:ChatPrint("Difficulty has been set to "..args[1].." ("..diffn..")") 
 	end 
 end)]]
-
-include("profiles/default.lua")
-PrintTable(profiles)
