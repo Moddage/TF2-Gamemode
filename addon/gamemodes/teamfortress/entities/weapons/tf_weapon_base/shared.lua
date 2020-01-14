@@ -303,6 +303,11 @@ function SWEP:InitializeWModel2()
 				if wmodel == "models/weapons/w_models/w_shotgun.mdl" then
 					self.WModel2:SetMaterial("models/weapons/w_shotgun_tf/w_shotgun_tf")
 				end
+				if self.Owner:GetNWBool("NoWeapon") == true then 
+					self.WModel2:SetNoDraw(true)
+				else
+					self.WModel2:SetNoDraw(false)
+				end				
 			end
 			
 			if IsValid(self.WModel2) then
@@ -312,6 +317,7 @@ function SWEP:InitializeWModel2()
 				if self.MaterialOverride then
 					self.WModel2:SetMaterial(self.MaterialOverride)
 				end
+				
 			end
 		end
 	end
@@ -861,7 +867,7 @@ end
 function SWEP:Think()
 	self:TFViewModelFOV()
 	self:TFFlipViewmodel()
-	if self:GetClass() != "tf_weapon_robo_arm" and self:GetClass() != "tf_weapon_trenchknife" and self:GetClass() != "tf_weapon_capsulelauncher" and self:GetClass() != "tf_weapon_tranqulizer" and self:GetClass() != "tf_weapon_pistol_m9"  and self:GetClass() != "tf_weapon_wrench_vagineer" then
+	if self:GetClass() != "tf_weapon_robo_arm" and self:GetClass() != "tf_weapon_trenchknife" and self:GetClass() != "tf_weapon_capsulelauncher" and self:GetClass() != "tf_weapon_tranqulizer" and self:GetClass() != "tf_weapon_pistol_m9"  and self:GetClass() != "tf_weapon_wrench_vagineer" and self:GetClass() != "tf_weapon_rocketlauncher_rapidfire"  then
 		if self.Owner:GetNWBool("NoWeapon") == true then 
 			if SERVER then
 				self.WModel2:SetNoDraw(true)

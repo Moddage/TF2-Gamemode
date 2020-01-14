@@ -148,7 +148,7 @@ function ENT:Teleport(pl)
 		pl:SetFOV(50, 0.7)
 		ParticleEffect("teleportedin_red", self:GetPos(), self:GetAngles(), pl)
 		pl:ScreenFade( SCREENFADE.OUT, Color( 255, 255, 255, 150 ), 0.5, 0.65 )
-		timer.Simple(0.7, function()
+		timer.Simple(0.7, function()	
 			pl:SetFOV(0, 1.5)
 		end)
 	end

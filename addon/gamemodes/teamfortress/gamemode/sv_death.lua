@@ -17,24 +17,21 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 	
 	local shouldgib = false
 	
-	
-	if dmginfo:IsDamageType(DMG_DISSOLVE) then
-		if not inflictor.IsSilentKiller then
-			ent:EmitSound("player/dissolve.wav", 85)
-		end
-	end
+
 	ent:StopSound("Weapon_Minifun.Fire")
 	ent:StopSound("Weapon_Minigun.Fire")
 	ent:StopSound("Weapon_Tomislav.ShootLoop")
 	ent:StopSound("Weapon_Minifun.FireCrit")
 	ent:StopSound("Weapon_Minigun.FireCrit")
 	ent:StopSound("Weapon_Tomislav.FireCrit")
-	if ent:IsNPC() and dmginfo:IsDamageType(DMG_BLAST) then
+	if ent:IsNPC() and dmginfo and dmginfo:IsDamageType(DMG_BLAST) then
 		umsg.Start("GibNPC")
 			umsg.Entity(ent)
 			umsg.Short(ent.DeathFlags)
 		umsg.End()
-		ent:Fire("Kill", "", 0.1)
+		for _,v in pairs(ents.FindByClass("class C_ClientRagdoll")) do
+			v:Fire("Kill", "", 0.1)
+		end
 	end
 
 	if ent:IsPlayer() and ent:HasDeathFlag(DF_DECAP) then
@@ -426,6 +423,30 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		end
 	end
 
+	if attacker:IsPlayer() and ply:IsPlayer() then
+		if dmginfo:GetInflictor().Critical and dmginfo:GetInflictor():Critical() then
+			attacker:EmitSound("player/crit_hit"..math.random(2,5)..".wav", 50, math.random(88, 100))
+			ply:EmitSound("player/crit_received"..math.random(1,3)..".wav", 50, math.random(88, 100))
+		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_electro" then
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_menu_note" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_percussion" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_retro" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_vortex" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_squasher" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_space" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_beepo" then 
+			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		end
+	end	
 
 	if ply:GetPlayerClass() == "merc_dm" then
 		if dmginfo:GetInflictor().Critical and dmginfo:GetInflictor():Critical() then
@@ -841,10 +862,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	end
 
 
-	if killer:IsPlayer() and not killer:IsHL2() then
-		killer:EmitSound("ui/killsound.wav", 50, 100)
-	end
-
 	if not shouldgib then
 		ply:CreateRagdoll()
 	end
@@ -912,7 +929,9 @@ function GM:PlayerDeath(ent, inflictor, attacker)
 	end
 	
 	timer.Simple(7, function()
-		animent:Fire("Kill", "", 0.1)
+		if IsValid(animent) then
+			animent:Fire("Kill", "", 0.1)
+		end
 		if !ent:Alive() then
 			ent:Spawn()
 		end

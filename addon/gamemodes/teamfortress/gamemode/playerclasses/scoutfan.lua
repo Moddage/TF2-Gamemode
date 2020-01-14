@@ -10,13 +10,13 @@ if CLIENT then
 		surface.GetTextureID("hud/class_scoutblue")
 	}
 	CLASS.ScoreboardImage = {
-		surface.GetTextureID("hud/leaderboard_class_scout"),
-		surface.GetTextureID("hud/leaderboard_class_scout_d")
+		surface.GetTextureID("hud/leaderboard_class_scout_fan"),
+		surface.GetTextureID("hud/leaderboard_class_scout_fan")
 	}
 end
 
 CLASS.Loadout = {"tf_weapon_scattergun", "tf_weapon_pistol_scout", "tf_weapon_bat"}
-CLASS.DefaultLoadout = {"Force-A-Nature"}
+CLASS.DefaultLoadout = {"The Force-a-Nature"}
 CLASS.ModelName = "scout"
 
 CLASS.Gibs = {

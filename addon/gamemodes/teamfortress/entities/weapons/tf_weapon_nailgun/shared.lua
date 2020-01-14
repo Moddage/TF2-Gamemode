@@ -119,5 +119,11 @@ function SWEP:ShootProjectile()
 		syringe:Spawn()
 	end
 	
+	if self.Owner:GetInfoNum("tf_robot", 0) == 1 then
+		self:SetHoldType("SECONDARY")
+	end 
+	if self.Owner:GetInfoNum("tf_giant_robot", 0) == 1 then
+		self:SetHoldType("SECONDARY")
+	end 
 	self:ShootEffects()
 end

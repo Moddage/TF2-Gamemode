@@ -4,7 +4,7 @@ end
 
 if CLIENT then
 
-SWEP.PrintName			= "Shotgun"
+SWEP.PrintName			= "Shotgun Versus Mode"
 SWEP.Slot				= 2
 SWEP.RenderGroup		= RENDERGROUP_BOTH
 
@@ -40,7 +40,7 @@ SWEP.BulletSpread = 0.1
 SWEP.Primary.ClipSize		= 6
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize
 SWEP.Primary.Ammo			= TF_PRIMARY
-SWEP.Primary.Delay          = 0.8
+SWEP.Primary.Delay          = 0.9
 SWEP.ReloadTime = 0.4
 
 SWEP.HoldType = "SECONDARY"
@@ -61,8 +61,8 @@ SWEP.CrosshairMaxScale = 3
 SWEP.ReloadSingle = true
 SWEP.UseHands = true
 function SWEP:PrimaryAttack()
-	self:SetNextPrimaryFire(CurTime() + 0.8)
-	timer.Simple(0.4, function()
+	self:SetNextPrimaryFire(CurTime() + 0.9)
+	timer.Simple(0.25, function()
 		self:SendWeaponAnim( ACT_SHOTGUN_PUMP )
 		self:EmitSound("Weapon_Shotgun.Special1")
 	end)

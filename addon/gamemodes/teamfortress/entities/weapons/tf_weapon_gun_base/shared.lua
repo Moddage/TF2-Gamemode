@@ -87,7 +87,9 @@ function SWEP:PrimaryAttack()
 				end
 				for _,v in pairs(ents.GetAll()) do
 					if v:IsNPC() and not v:IsFriendly(self.Owner) then
-						v:AddEntityRelationship(self.Owner, D_HT, 99)
+						if SERVER then
+							v:AddEntityRelationship(self.Owner, D_HT, 99)
+						end
 					end
 				end
 				if self.Owner:Team() == TEAM_BLU then 

@@ -68,29 +68,9 @@ function ENT:GetRealPos()
 end
 
 function ENT:Initialize()
-	if self:GetOwner().TempAttributes.ProjectileModelModifier == 1 then
-		self.ExplosiveHat = true
-		self.BouncesLeft = 1
-		self:SetModel("models/player/items/soldier/soldier_shako.mdl")
-		self:PhysicsInit(SOLID_VPHYSICS)
-		self.BounceSound = "Flesh.ImpactSoft"
-		self:SetPos(self:GetPos() - 81 * self:GetUp())
-	elseif self.GrenadeMode==-1 then
-		self:SetModel(self.Model)
-		self:SetNoDraw(true)
-		self:DrawShadow(false)
-		self:SetNotSolid(true)
-		self:DoExplosion()
-		return
-	elseif self.GrenadeMode==1 then
-		self.BouncesLeft = 2
-		self:SetModel(self.Model2)
-		self:PhysicsInitSphere(8, "metal_bouncy")
-	else
 		self.BouncesLeft = 1
 		self:SetModel(self.Model)
 		self:PhysicsInit(SOLID_VPHYSICS)
-	end
 	
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_CUSTOM)
@@ -293,6 +273,28 @@ function ENT:PhysicsCollide(data, physobj)
 			data.HitEntity:Freeze(false)
 			data.HitEntity:SetNWBool("Taunting", false)
 		end)
+	end 
+	if data.HitEntity and data.HitEntity:IsValid() and data.HitEntity:GetClass() == "npc_antlionguard" and !data.HitEntity:IsFriendly(self:GetOwner()) and !self.critical and data.HitEntity:Health()>0 then
+		self:EmitSound(self.ExplosionSound, 100, 100)
+		ParticleEffectAttach("bonk_text", PATTACH_POINT_FOLLOW, data.HitEntity, data.HitEntity:LookupAttachment("head"))
+		data.HitEntity:EmitSound("NPC_AntlionGuard.FrustratedRoar")
+		data.HitEntity:Fire("EnableBark") 
+		data.HitEntity:SetModelScale(data.HitEntity:GetModelScale() + 0.04)
+		data.HitEntity:SetMaxHealth(data.HitEntity:GetMaxHealth() + 50)
+		data.HitEntity:SetHealth(data.HitEntity:GetHealth() + 45)
+		data.HitEntity:Fire("DisableBark", "", 8)
+	end 
+	if data.HitEntity and data.HitEntity:IsValid() and data.HitEntity:GetClass() == "npc_antlionguard" and !data.HitEntity:IsFriendly(self:GetOwner()) and self.critical and data.HitEntity:Health()>0 then
+		self:EmitSound(self.ExplosionSound2, 100, 100)
+		ParticleEffectAttach("bonk_text", PATTACH_POINT_FOLLOW, data.HitEntity, data.HitEntity:LookupAttachment("head"))
+		data.HitEntity:EmitSound("NPC_AntlionGuard.FrustratedRoar")
+		data.HitEntity:EmitSound("NPC_AntlionGuard.FrustratedRoar")
+		data.HitEntity:EmitSound("NPC_AntlionGuard.FrustratedRoar")
+		data.HitEntity:Fire("EnableBark") 
+		data.HitEntity:SetModelScale(data.HitEntity:GetModelScale() + 0.15)
+		data.HitEntity:SetMaxHealth(data.HitEntity:GetMaxHealth() + 140)
+		data.HitEntity:SetHealth(data.HitEntity:GetHealth() + 125)
+		data.HitEntity:Fire("DisableBark", "", 15)
 	end 
 	if data.HitEntity and data.HitEntity:IsValid() and (data.HitEntity:IsNPC() or data.HitEntity:IsPlayer()) and data.HitEntity:Health()>0 then
 		if self.BouncesLeft>0 then

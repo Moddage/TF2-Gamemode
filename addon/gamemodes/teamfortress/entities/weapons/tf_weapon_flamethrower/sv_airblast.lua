@@ -67,6 +67,21 @@ local AirblastFunc = {
 		end
 		return true
 	end,
+	["tf_projectile_ball"] = function(self, ent, dir)
+		local phys = ent:GetPhysicsObject()
+		if not phys:IsValid() then return false end
+		
+		local vel = phys:GetVelocity()
+		phys:AddVelocity(dir * math.Clamp(vel:Length(),1000,100000) - vel)
+		
+		ent:SetOwner(self.Owner)
+		ent:SetPhysicsAttacker(self.Owner)
+		ent.AttackerOverride = self.Owner
+		ent.MiniCrit = minicrit_true
+		ent.NameOverride = "prop_combine_ball_deflect"
+		ent:EmitSound(self.AirblastDeflectSound) 
+		return true
+	end,
 	["rpg_missile"] = function(self, ent, dir)
 		ent:SetLocalVelocity(dir * 2000)
 		local dmginfo = DamageInfo()
@@ -159,15 +174,6 @@ local AirblastFunc = {
 		ent:EmitSound(self.AirblastDeflectSound)
 		return true
 	end,
-	["tf_projectile_ball"] = function(self, ent, dir)
-		ent:SetLocalVelocity(dir * 2000)
-		ent:SetOwner(self.Owner)
-		ent.AttackerOverride = self.Owner
-		ent.NameOverride = "tf_projectile_pipe_deflect"
-		ent.MiniCrit = minicrit_true
-		ent:EmitSound(self.AirblastDeflectSound)
-		return true
-	end,
 	["tf_projectile_pipe_remote"] = function(self, ent, dir)
 		ent:SetLocalVelocity(dir * 2000)
 		ent:Detach()
@@ -186,7 +192,7 @@ local AirblastFunc = {
 		ent.MiniCrit = minicrit_true
 		ent:EmitSound(self.AirblastDeflectSound)
 		return true
-	end,
+	end
 }
 
 function SWEP:DoAirblast()

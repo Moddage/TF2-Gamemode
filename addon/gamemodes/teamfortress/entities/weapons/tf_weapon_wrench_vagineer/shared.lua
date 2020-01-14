@@ -11,7 +11,7 @@ end
 
 SWEP.Base				= "tf_weapon_melee_base"
 
-SWEP.ViewModel			= "models/weapons/c_stunstick.mdl"
+SWEP.ViewModel			= "models/weapons/v_stunbaton.mdl"
 SWEP.WorldModel			= "models/weapons/w_stunbaton.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 

@@ -58,9 +58,9 @@ ENT.ExplosionSoundNuke = Sound("Cart.Explode")
 ENT.BounceSound = Sound("Weapon_Grenade_Pipebomb.Bounce")
 
 ENT.BaseDamage = 95
-ENT.DamageRandomize = 0.1
-ENT.MaxDamageRampUp = 0.35
-ENT.MaxDamageFalloff = 0.53
+ENT.DamageRandomize = 0.8
+ENT.MaxDamageRampUp = 1.2
+ENT.MaxDamageFalloff = 0.8
 ENT.DamageModifier = 1
 
 ENT.BaseSpeed = 1100

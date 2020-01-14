@@ -690,6 +690,12 @@ function ENT:Think()
 	end
 	self.LastThink = CurTime()
 	
+	if !IsValid(self:GetBuilder()) then
+		self:Explode()
+	end
+	if self:GetBuilder():GetPlayerClass() != "engineer" then
+		self:Explode()
+	end
 	self:OnThink()
 	if state==0 then
 		if CurTime()-self.StartTime>=self.TimeLeft then

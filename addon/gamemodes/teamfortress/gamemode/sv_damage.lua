@@ -392,9 +392,9 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 	end
 	
 	if attacker:IsPlayer() and ent:Health() >= 1  and ent:IsPlayer() or ent:IsNPC() and ent.IsReviveMarker != true then
-		if inflictor:Critical() then
-			attacker:EmitSound("player/crit_hit"..math.random(2,5)..".wav", 50)
-			ent:EmitSound("player/crit_received"..math.random(1,3)..".wav", 50)
+		if inflictor.Critical and inflictor:Critical() then
+			attacker:EmitSound("player/crit_hit"..math.random(2,5)..".wav", 50, math.random(88, 100))
+			ent:EmitSound("player/crit_received"..math.random(1,3)..".wav", 50, math.random(88, 100))
 		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_electro" then
 			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..math.random(1,3)..".wav", 50)
 		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound" then 

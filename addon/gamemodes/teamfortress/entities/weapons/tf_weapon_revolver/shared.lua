@@ -62,19 +62,129 @@ SWEP.MinSpread = 0
 SWEP.MaxSpread = 0.06
 SWEP.CrosshairMaxScale = 3
 
+
 function SWEP:Deploy()
-	self:CallBaseFunction("Deploy")
+	--MsgFN("Deploy %s", tostring(self))
 	
-	if self.Owner:GetPlayerClass() == "merc_dm" then
-		self:SetHoldType("MELEE_ALLCLASS")
-		self.Primary.Ammo		= TF_SECONDARY
+		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+			self:SetHoldType("PRIMARY")			
+			self.HoldType = "PRIMARY"
+		end
+	if self.Owner:GetPlayerClass() == "spy" then
+		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+			animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+			if self.Owner:GetModel() == "models/player/engineer.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_pistol/c_pistol.mdl")
+			elseif self.Owner:GetModel() == "models/player/scout.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_pistol/c_pistol.mdl")
+			elseif self.Owner:GetModel() == "models/player/soldier.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
+			elseif self.Owner:GetModel() == "models/player/pyro.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
+			elseif self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_revolver/c_revolver.mdl")
+			elseif self.Owner:GetModel() == "models/player/sniper.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_smg/c_smg.mdl")
+			elseif self.Owner:GetModel() == "models/player/medic.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_medigun/c_medigun.mdl")
+			elseif self.Owner:GetModel() == "models/player/heavy.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
+			elseif self.Owner:GetModel() == "models/player/demo.mdl" then
+				animent2:SetModel("models/weapons/w_models/w_stickybomb_launcher.mdl")
+			end
+			animent2:SetAngles(self.Owner:GetAngles())
+			animent2:SetPos(self.Owner:GetPos())
+			animent2:Spawn() 
+			animent2:Activate()
+			animent2:SetParent(self.Owner)
+			animent2:AddEffects(EF_BONEMERGE)
+			animent2:SetName("SpyWeaponModel"..self.Owner:EntIndex())
+			animent2:SetSkin(self.Owner:GetSkin())
+			if SERVER then
+				timer.Create("SpyCloakDetector"..self.Owner:EntIndex(), 0.01, 0, function()
+					if self.Owner:GetPlayerClass() == "spy" then
+						if self.Owner:GetNoDraw() == true then
+							if IsValid(animent2) then
+								animent2:SetNoDraw(true)
+							end
+						else
+							if IsValid(animent2) then
+								animent2:SetNoDraw(false)
+							end
+						end
+					else
+						timer.Stop("SpyCloakDetector"..self.Owner:EntIndex())
+						return
+					end
+				end)
+			end
+		end
 	end
+	return self:CallBaseFunction("Deploy")
 end
-function SWEP:Reload()
-	self:CallBaseFunction("Reload")
-	if self.Owner:GetPlayerClass() == "merc_dm" then
-		self.Owner:SetAnimation(PLAYER_RELOAD1)
+
+function SWEP:Holster()
+	
+	if self.Owner:GetPlayerClass() == "spy" then
+		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+			self:SetHoldType("PRIMARY")			
+			self.HoldType = "PRIMARY"
+		end
 	end
+	self:StopTimers()
+	if IsValid(self.Owner) then
+		timer.Simple(0.1, function()
+			if IsValid(self.CModel3) then
+				self.CModel3:Remove()
+			end
+		end)
+		if self:GetItemData().hide_bodygroups_deployed_only then
+			local visuals = self:GetVisuals()
+			local owner = self.Owner
+			
+			if visuals.hide_player_bodygroup_names then
+				for _,group in ipairs(visuals.hide_player_bodygroup_names) do
+					local b = PlayerNamedBodygroups[owner:GetPlayerClass()]
+					if b and b[group] then
+						owner:SetBodygroup(b[group], 0)
+					end
+					
+					b = PlayerNamedViewmodelBodygroups[owner:GetPlayerClass()]
+					if b and b[group] then
+						if IsValid(owner:GetViewModel()) then
+							owner:GetViewModel():SetBodygroup(b[group], 0)
+						end
+					end
+				end
+			end
+		end
+	
+		for k,v in pairs(self:GetVisuals()) do
+			if k=="hide_player_bodygroup" then
+				self.Owner:SetBodygroup(v,0)
+			end
+		end
+	end
+	if IsValid(animent2) then
+		animent2:Fire("Kill", "", 0.1)
+	end
+	self.NextIdle = nil
+	self.NextReloadStart = nil
+	self.NextReload = nil
+	self.Reloading = nil
+	self.RequestedReload = nil
+	self.NextDeployed = nil
+	self.IsDeployed = nil
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:Remove()
+		end
+	end
+	if IsValid(self.Owner) then
+		self.Owner.LastWeapon = self:GetClass()
+	end
+	
+	return true
 end
 
 if CLIENT then
@@ -104,6 +214,8 @@ end
 
 function SWEP:PrimaryAttack()
 	if not self:CallBaseFunction("PrimaryAttack") then return false end
+	
+
 	if self.WeaponMode == 1 then
 		self.CritsOnHeadshot = false
 		self.NameOverride = nil
@@ -124,8 +236,10 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:Think()
-	self:CallBaseFunction("Think")
-	
+		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+			self:SetHoldType("PRIMARY")			
+			self.HoldType = "PRIMARY"
+		end
 	if self.WeaponMode == 1 then
 		if self.NextStartRecovery and CurTime()>self.NextStartRecovery then
 			self.NextStartRecovery = nil
@@ -144,4 +258,5 @@ function SWEP:Think()
 			end
 		end
 	end
-end
+	return self:CallBaseFunction("Think")
+end  

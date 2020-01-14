@@ -40,7 +40,8 @@ CreateClientConVar( "tf_haltinspect", "1", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_A
 CreateClientConVar( "tf_maxhealth_hud", "1", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Enable maxhealth above health when hurt." )
 CreateClientConVar( "tf_robot", "0", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Become a robot after respawning." )
 CreateClientConVar( "tf_giant_robot", "0", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Become a mighty robot after respawning." )
-CreateClientConVar( "tf_dingalingaling_sound", "hitsound", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Become a mighty robot after respawning." )
+CreateClientConVar( "tf_dingalingaling_sound", "hitsound", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Ding Dong!" )
+CreateClientConVar( "tf_dingalingaling_killsound", "killsound", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Diiinnng...." )
 
 
 
@@ -382,7 +383,9 @@ function GM:OpenMainMenu()
 		{"Call Vote", function() self:VoteMenu() end},	
 		{"Disconnect", function() RunConsoleCommand("disconnect") end},
 		
-		{"Options", function() self:CloseMenus() RunConsoleCommand("gamemenucommand", "openoptionsdialog") end},
+		{"Mute a Player", function() self:CloseMenus() RunConsoleCommand("gamemenucommand", "openplayerlistdialog") gui.ActivateGameUI() end},
+		
+		{"Options", function() self:CloseMenus() RunConsoleCommand("gamemenucommand", "openoptionsdialog") gui.ActivateGameUI() end},
 		
 		{"Legacy Menu", function() self:CloseMenus() gui.ActivateGameUI() end},
 
@@ -790,7 +793,15 @@ list.Set(
 			DImageButton:SetSize( 128, 128 )
 			DImageButton:SetImage( "backpack/player/items/all_class/taunt_flip" )
 			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_flipping" )
+				RunConsoleCommand( "tf_taunt_flipping_intro" )
+			end
+			local DImageButton = pnl:Add( "DImageButton" )
+			DImageButton:SetPos( 405, 105 )
+			DImageButton:SetTooltip( "Taunt: Flippin' Awesome ( Undo )" )
+			DImageButton:SetSize( 128, 128 )
+			DImageButton:SetImage( "backpack/player/items/all_class/taunt_flip" )
+			DImageButton.DoClick = function()
+				RunConsoleCommand( "tf_taunt_squaredance_intro_stop" )
 			end
 			local DImageButton = pnl:Add( "DImageButton" )
 			DImageButton:SetPos( 505, 25 )
@@ -856,6 +867,23 @@ list.Set(
 			DImageButton:SetImage( "backpack/player/items/all_class/all_laugh_taunt" )
 			DImageButton.DoClick = function()
 				RunConsoleCommand( "tf_taunt_laugh" ) 
+			end
+			 
+			local DImageButton = pnl:Add( "DImageButton" )
+			DImageButton:SetPos( 205, 205 )
+			DImageButton:SetTooltip( "Taunt: Meet the Medic" )
+			DImageButton:SetSize( 128, 128 )
+			DImageButton:SetImage( "backpack/player/items/medic/medic_heroic_taunt_large" )
+			DImageButton.DoClick = function()
+				RunConsoleCommand( "tf_taunt_heroric" )
+			end
+			local DImageButton = pnl:Add( "DImageButton" )
+			DImageButton:SetPos( 305, 205 )
+			DImageButton:SetTooltip( "Taunt: Introduction" )
+			DImageButton:SetSize( 128, 328 )
+			DImageButton:SetImage( "vgui/class_sel_sm_random_red" )
+			DImageButton.DoClick = function()
+				RunConsoleCommand( "tf_taunt_introduction" )
 			end
 		end
 	}
@@ -1289,14 +1317,6 @@ SniperButton:SetText("Sniper") --Set the name of the button
 SniperButton.DoClick = function() RunConsoleCommand("changeclass", "sniper") surface.PlaySound( "/music/mvm_class_menu_08.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
 
 SniperButton.OnCursorEntered = function() icon:SetModel( "models/player/sniper.mdl" )  icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/w_models/w_sniperrifle.mdl") surface.PlaySound( "/music/mvm_class_menu_08.wav" ) local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" ) icon:GetEntity():SetSequence( dance ) end
-if GetConVar("ofd_enable"):GetBool() then
-local MercButton = vgui.Create("DButton", ClassFrame)
-MercButton:SetSize(100, 30)
-MercButton:SetPos(830, 35)
-MercButton:SetText("Mercenary") --Set the name of the button
-MercButton.DoClick = function() RunConsoleCommand("changeclass", "merc_dm") surface.PlaySound( "/music/mvm_class_menu_05.wav" ) ClassFrame:Close() if string.find(game.GetMap(), "mvm_") then LocalPlayer():EmitSound("music/mvm_class_select.wav") end LocalPlayer():StopSound("ClassSelection.ThemeNonMVM") LocalPlayer():StopSound("ClassSelection.ThemeMVM") end
-MercButton.OnCursorEntered = function() icon:SetModel( "models/player/mercenary.mdl" ) icon2:GetEntity():SetParent(icon:GetEntity()) icon2:GetEntity():AddEffects(EF_BONEMERGE) icon2:GetEntity():SetModel("models/weapons/c_models/c_pickaxe/c_crowbar.mdl")  surface.PlaySound( "/music/mvm_class_menu_05.wav" ) local dance = icon:GetEntity():LookupSequence( "stand_melee" ) icon:GetEntity():SetSequence( dance ) end
-end
 
 local SpyButton = vgui.Create("DButton", ClassFrame)
 SpyButton:SetSize(100, 30)
@@ -2115,151 +2135,6 @@ end)
 usermessage.Hook("PlayChargeReadySound", function(um)
 	LocalPlayer():EmitSound("TFPlayer.ReCharged")
 end)
-
-
-list.Set(
-	"DesktopWindows",
-	"TauntMenu",
-	{
-		title = "TF2 Taunt Menu (BETA!)",
-		icon = "backpack/player/items/all_class/taunt_russian_large",
-		width = 960,
-		height = 700,
-		onewindow = true,
-		init = function(icn, pnl)
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 0, 25 )
-			DImageButton:SetTooltip( "Taunt: Conga (Start)" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_conga" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_conga_start" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 0, 105 )
-			DImageButton:SetTooltip( "Taunt: Conga (Stop)" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_conga" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_conga_stop" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 105, 25 )
-			DImageButton:SetTooltip( "Taunt: Square Dance" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_dosido" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_squaredance_intro" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 105, 105 )
-			DImageButton:SetTooltip( "Taunt: Square Dance ( Undo )" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_dosido" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_squaredance_intro_stop" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 205, 25 )
-			DImageButton:SetTooltip( "Taunt: Skullcracker" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_skullcracker" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_skullcracker" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 305, 25 )
-			DImageButton:SetTooltip( "Taunt: Rock, Paper, Scissors!" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_rps" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_rockpaperscissors_intro" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 305, 105 )
-			DImageButton:SetTooltip( "Taunt: Rock, Paper, Scissors! ( Undo )" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_rps" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_rockpaperscissors_intro_stop" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 405, 25 )
-			DImageButton:SetTooltip( "Taunt: Flippin' Awesome" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_flip" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_flipping" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 505, 25 )
-			DImageButton:SetTooltip( "Taunt: Kazotsky Kick (Start)" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_russian" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_russian_start" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 505, 105 )
-			DImageButton:SetTooltip( "Taunt: Kazotsky Kick (Stop)" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_russian" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_russian_stop" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 605, 25 )
-			DImageButton:SetTooltip( "Taunt: Thriller (Scream Fortress)" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/sniper/sniper_zombie" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_thriller" )
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 705, 25 )
-			DImageButton:SetTooltip( "Taunt: High Five!" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_highfive" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_highfive_success" ) 
-			end 
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 805, 25 )
-			DImageButton:SetTooltip( "Taunt: Bumpkins Banjo (Start)" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/workshop/player/items/engineer/taunt_bumpkins_banjo/taunt_bumpkins_banjo_large" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_banjo_start" ) 
-			end
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 805, 105 )
-			DImageButton:SetTooltip( "Taunt: Bumpkins Banjo (Stop)" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/workshop/player/items/engineer/taunt_bumpkins_banjo/taunt_bumpkins_banjo_large" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_banjo_stop" ) 
-			end
-			
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 0, 205 )
-			DImageButton:SetTooltip( "Taunt: Party Trick" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/taunt_party_trick_large" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_pyro_partytrick" ) 
-			end			
-			local DImageButton = pnl:Add( "DImageButton" )
-			DImageButton:SetPos( 105, 205 )
-			DImageButton:SetTooltip( "Taunt: Schadenfreude" )
-			DImageButton:SetSize( 128, 128 )
-			DImageButton:SetImage( "backpack/player/items/all_class/all_laugh_taunt" )
-			DImageButton.DoClick = function()
-				RunConsoleCommand( "tf_taunt_laugh" ) 
-			end
-		end
-	}
-)
-
 include("cl_hud.lua")
 
 file.Append(LOGFILE, Format("Done loading, time = %f\n", SysTime() - load_time))

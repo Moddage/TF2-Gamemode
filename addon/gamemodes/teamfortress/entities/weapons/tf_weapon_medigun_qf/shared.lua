@@ -359,8 +359,6 @@ self.ChargedALoop:Play()
 	timer.Create("NowGo!", 0.4, 1, function()
 		self:EmitSound( "vo/medic_specialcompleted0"..math.random(4,7)..".mp3", 80, 100, 1, CHAN_VOICE)
 	end)
-	ParticleEffectAttach("soldierbuff_red_buffed", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 0)
-	ParticleEffectAttach("soldierbuff_red_buffed", PATTACH_ABSORIGIN_FOLLOW, self.Target, 0)
 timer.Create("IamBulletproof!", 4.5, 1, function()
 	if self.Target:GetPlayerClass() == "heavy" then
 		self.Target:EmitSound( table.Random( tf2heavyuberchargesound ), 80, 100, 1, CHAN_VOICE)

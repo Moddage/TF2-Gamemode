@@ -31,9 +31,9 @@ PrecacheParticleSystem("bullet_shotgun_tracer01_blue")
 PrecacheParticleSystem("bullet_shotgun_tracer01_blue_crit")
 PrecacheParticleSystem("muzzle_shotgun")
 
-SWEP.BaseDamage = 15
-SWEP.DamageRandomize = 0.5 * 2
-SWEP.MaxDamageRampUp = 0.5
+SWEP.BaseDamage = 5
+SWEP.DamageRandomize = 0.3
+SWEP.MaxDamageRampUp = 0.2
 
 SWEP.BulletsPerShot = 10
 SWEP.BulletSpread = 0.0675

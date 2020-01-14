@@ -45,7 +45,7 @@ function EFFECT:Init(data)
 	end
 	
 	self:SetPos(pos)
-	ParticleEffect(effect, pos, ang, 0)
+	ParticleEffect(effect, pos, ang)
 	
 	if bit.band(flags, 8) > 0 then
 		self.NextExplosionSound = CurTime() + 0.05

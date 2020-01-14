@@ -61,7 +61,7 @@ end
 function SWEP:PrimaryAttack()
 	if SERVER then
 		self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
-		self.Owner:EmitSound("common/stuck2.wav")
+		self.Owner:EmitSound("DoSpark")
 		self.Owner:PrintMessage(HUD_PRINTTALK, " !! Bonk Atomic Punch is disabled due to a game breaking bug involving primary attacks + secondary attacks. !!")
 	end
 -- NO BUG ALLOWED

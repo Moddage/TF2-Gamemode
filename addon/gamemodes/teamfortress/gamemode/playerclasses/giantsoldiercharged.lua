@@ -8,8 +8,8 @@ if CLIENT then
 		surface.GetTextureID("hud/class_soldierblue")
 	}
 	CLASS.ScoreboardImage = {
-		surface.GetTextureID("hud/leaderboard_class_soldier"),
-		surface.GetTextureID("hud/leaderboard_class_soldier_d")
+		surface.GetTextureID("hud/leaderboard_class_soldier_crit"),
+		surface.GetTextureID("hud/leaderboard_class_soldier_crit")
 	}
 end
 

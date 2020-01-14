@@ -153,6 +153,8 @@ function ENT:StartCloaking()
 	end)
 	timer.Create("Cloak2"..self.Owner:EntIndex(), 1, 1, function()
 		self.Owner:SetNoDraw(true)
+		
+		self.Owner:SetNWBool("NoWeapon", true)
 	end)
 	ProxyentCloakEffect:Spawn()
 	ProxyentCloakEffect:Activate()
@@ -177,7 +179,7 @@ function ENT:StartCloaking()
 end
  
 function ENT:StopCloaking()
-	self.ChargeDuration = nil
+	self.ChargeDuration = self.ChargeDuration
 	self.dt.Ready = false
 	self.dt.Cloaking = false
 	self.dt.NextEndCharge = CurTime() + self.ChargeCooldownDuration * self.dt.ChargeCooldownMultiplier
@@ -186,6 +188,9 @@ function ENT:StopCloaking()
 
 	ProxyentCloakEffect:SetCloakAnimTimeIn(3)		
 	ProxyentCloakEffect:SetCloakAnimTimeOut(2)
+	
+	self.Owner:SetNWBool("NoWeapon", false)
+	
 	self.Owner:PrintMessage(HUD_PRINTCENTER, "You are now decloaked."	)
 	self:EmitSound("player/spy_uncloak.wav")
 	self.Owner:SetNoDraw(false)
@@ -194,6 +199,7 @@ function ENT:StopCloaking()
 			v:AddEntityRelationship(self.Owner, D_HT, 99)
 		end
 	end
+
 	timer.Create("DeCloak"..self.Owner:EntIndex(), 0.05, 20, function()
 		ProxyentCloakEffect:SetCloakFactor(ProxyentCloakEffect:GetCloakFactor() - 0.05/1)
 	end)

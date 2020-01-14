@@ -19,7 +19,7 @@ SWEP.Crosshair = "tf_crosshair3"
 
 SWEP.MuzzleEffect = ""
 
-SWEP.ShootSound = Sound("Weapon_AR2.Single")
+SWEP.ShootSound = Sound("Weapon_AR2.NPC_Single")
 SWEP.ShootCritSound = Sound("Weapon_AR2.NPC_Double")
 SWEP.ReloadSound = Sound("Weapon_AR2.NPC_Reload")
 

@@ -103,115 +103,53 @@ function SWEP:OnEquipAttribute(a, owner)
 end
 
 
-function SWEP:Think()
-	self:TFViewModelFOV()
-	self:TFFlipViewmodel()
-	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat() - GetConVar("tf_weapon_deploy_speed"):GetInt(), 2)
-	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat(),2)
-	if SERVER and self.NextReplayDeployAnim then
-		if CurTime() > self.NextReplayDeployAnim then
-			--MsgFN("Replaying deploy animation %d", self.VM_DRAW)
-			timer.Simple(0.1, function() self:SendWeaponAnim(self.VM_DRAW) end)
-			self.NextReplayDeployAnim = nil
-		end
-	end
-	
-	if not game.SinglePlayer() or SERVER then
-		if self.NextIdle and CurTime()>=self.NextIdle then
-			self:SendWeaponAnim(self.VM_IDLE)
-			self.NextIdle = nil
-		end
-		
-		if self.RequestedReload then
-			self:Reload()
-		end
-	end
-	
-	if not self.IsDeployed and self.NextDeployed and CurTime()>=self.NextDeployed then
-		self.IsDeployed = true
-		self.CanInspect = true
-		self:CheckAutoReload()
-	end
-	
-	if self.IsDeployed then
-		self.CanInspect = true
-	end
-			
-	//print(deployspeed)
-	
-	if self.NextReload and CurTime()>=self.NextReload then
-		self:SetClip1(self:Clip1() + self.AmmoAdded)
-		
-		if not self.ReloadSingle and self.ReloadDiscardClip then
-			self.Owner:RemoveAmmo(self.Primary.ClipSize, self.Primary.Ammo, false)
-		else
-			self.Owner:RemoveAmmo(self.AmmoAdded, self.Primary.Ammo, false)
-		end
-		
-		self.Delay = -1
-		self.QuickDelay = -1
-		
-		if self:Clip1()>=self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo)==0 then
-			-- Stop reloading
-			self.Reloading = false
-			self.CanInspect = true
-			if self.ReloadSingle then
-				--self:SendWeaponAnim(ACT_RELOAD_FINISH)
-				self.Owner:DoAnimationEvent(ACT_SMG2_RELOAD2, true)	
-				self:SendWeaponAnim(self.VM_RELOAD_FINISH)
-				self.CanInspect = true
-				--self.Owner:SetAnimation(10001) -- reload finish
-				self.NextIdle = CurTime() + self:SequenceDuration()
-			else
-				self:SendWeaponAnim(self.VM_IDLE)
-				self.NextIdle = nil
-			end
-			self.NextReload = nil
-		else
-			self:SendWeaponAnim(self.VM_RELOAD)
-			--self.Owner:SetAnimation(10000)		
-			if SERVER then
-			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
-			end
-			if self.ReloadTime == 0.2 then
-				self.Owner:GetViewModel():SetPlaybackRate(2)
-			end
-			self.NextReload = CurTime() + (self.ReloadTime)
-				
-			if self.ReloadSound and SERVER then
-				umsg.Start("PlayTFWeaponWorldReload")
-					umsg.Entity(self)
-				umsg.End()
-			end
-			
-		end
-	end
-	
-	if self.NextReloadStart and CurTime()>=self.NextReloadStart then
-		self:SendWeaponAnim(self.VM_RELOAD)
-		--self.Owner:SetAnimation(10000) -- reload loop
-		if SERVER then
-		self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
-		end
-		if self.ReloadTime == 0.2 then
-			self.Owner:GetViewModel():SetPlaybackRate(2)
-		end
-		self.NextReload = CurTime() + (self.ReloadTime)
-		
-		self.AmmoAdded = 1
-		
-		if self.ReloadSound and SERVER then
-			umsg.Start("PlayTFWeaponWorldReload")
-				umsg.Entity(self)
-			umsg.End()
-		end
-		
-		self.NextReloadStart = nil
-	end
-	
-	self:Inspect()
-end
+function SWEP:ShootProjectile()
+	if SERVER then
+		grenade = ents.Create("tf_projectile_pipe")
+		grenade:SetPos(self:ProjectileShootPos())
+		grenade:SetAngles(self.Owner:EyeAngles())
 
+		if self:Critical() then
+			grenade.critical = true
+		end
+		
+		for k,v in pairs(self.Properties) do
+			grenade[k] = v
+		end
+		
+		grenade:SetOwner(self.Owner)
+		
+		self:InitProjectileAttributes(grenade)
+		grenade.NameOverride = self:GetItemData().item_iconname		
+		grenade:Spawn()
+		
+		if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_quadball/c_quadball.mdl" then
+			grenade:SetModel("models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl")
+			grenade.ExplosionSound = Sound("Weapon_Airstrike.Explosion")
+		end
+		if self.VM_RELOAD == ACT_PRIMARY_VM_RELOAD_2 then
+			grenade.DetonateMode = 2
+			else
+			grenade.DetonateMode = 0
+		end
+		
+		local vel = self.Owner:GetAimVector():Angle()
+		vel.p = vel.p + self.AddPitch
+		vel = vel:Forward() * self.Force * (grenade.Mass or 10)
+		
+		if self.Owner.TempAttributes.ProjectileModelModifier == 1 then
+			grenade:GetPhysicsObject():AddAngleVelocity(Vector(math.random(-800,800),math.random(-800,800),math.random(-800,800)))
+		else
+			grenade:GetPhysicsObject():AddAngleVelocity(Vector(math.random(-2000,2000),math.random(-2000,2000),math.random(-2000,2000)))
+		end
+		grenade:GetPhysicsObject():ApplyForceCenter(vel)
+	end
+
+		
+	
+	self:StopTimers()
+	self:ShootEffects()
+end
 
 function SWEP:Reload()
 	self:StopTimers()
@@ -228,6 +166,8 @@ function SWEP:Reload()
 		self.RequestedReload = true
 		return false
 	end
+	
+	
 	
 	self.CanInspect = false
 	
@@ -253,6 +193,8 @@ function SWEP:Reload()
 				
 				self.AmmoAdded = math.min(self.Primary.ClipSize - ammo, available)
 				self.Reloading = true
+				
+				
 				
 				if self.ReloadSound and SERVER then
 					umsg.Start("PlayTFWeaponWorldReload")
@@ -328,50 +270,161 @@ function SWEP:StopTimers()
 	timer.Remove("PlaySpin")
 end
 
-function SWEP:ShootProjectile()
-	if SERVER then
-		local grenade = ents.Create("tf_projectile_pipe")
-		grenade:SetPos(self:ProjectileShootPos())
-		grenade:SetAngles(self.Owner:EyeAngles())
 
-		if self:Critical() then
-			grenade.critical = true
+
+
+function SWEP:Think()
+	self:TFViewModelFOV()
+	self:TFFlipViewmodel()
+	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat() - GetConVar("tf_weapon_deploy_speed"):GetInt(), 2)
+	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat(),2)
+	if SERVER and self.NextReplayDeployAnim then
+		if CurTime() > self.NextReplayDeployAnim then
+			--MsgFN("Replaying deploy animation %d", self.VM_DRAW)
+			timer.Simple(0.1, function() self:SendWeaponAnim(self.VM_DRAW) end)
+			self.NextReplayDeployAnim = nil
 		end
-		
-		for k,v in pairs(self.Properties) do
-			grenade[k] = v
-		end
-		
-		grenade:SetOwner(self.Owner)
-		
-		self:InitProjectileAttributes(grenade)
-		grenade.NameOverride = self:GetItemData().item_iconname		
-		grenade:Spawn()
-		
-		if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_quadball/c_quadball.mdl" then
-			grenade:SetModel("models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl")
-			grenade.ExplosionSound = Sound("Weapon_Airstrike.Explosion")
-		end
-		if self.VM_RELOAD == ACT_PRIMARY_VM_RELOAD_2 then
-			grenade.DetonateMode = 2
-			else
-			grenade.DetonateMode = 0
-		end
-		
-		local vel = self.Owner:GetAimVector():Angle()
-		vel.p = vel.p + self.AddPitch
-		vel = vel:Forward() * self.Force * (grenade.Mass or 10)
-		
-		if self.Owner.TempAttributes.ProjectileModelModifier == 1 then
-			grenade:GetPhysicsObject():AddAngleVelocity(Vector(math.random(-800,800),math.random(-800,800),math.random(-800,800)))
-		else
-			grenade:GetPhysicsObject():AddAngleVelocity(Vector(math.random(-2000,2000),math.random(-2000,2000),math.random(-2000,2000)))
-		end
-		grenade:GetPhysicsObject():ApplyForceCenter(vel)
 	end
-
-		
 	
-	self:StopTimers()
-	self:ShootEffects()
+	if not game.SinglePlayer() or SERVER then
+		if self.NextIdle and CurTime()>=self.NextIdle then
+			self:SendWeaponAnim(self.VM_IDLE)
+			self.NextIdle = nil
+		end
+		
+		if self.RequestedReload then
+			self:Reload()
+		end
+	end
+	
+	if not self.IsDeployed and self.NextDeployed and CurTime()>=self.NextDeployed then
+		self.IsDeployed = true
+		self.CanInspect = true
+		self:CheckAutoReload()
+	end
+	
+	if self.IsDeployed then
+		self.CanInspect = true
+	end
+			
+	//print(deployspeed)
+	
+	if self.NextReload and CurTime()>=self.NextReload then
+		self:SetClip1(self:Clip1() + self.AmmoAdded)
+		
+		if not self.ReloadSingle and self.ReloadDiscardClip then
+			self.Owner:RemoveAmmo(self.Primary.ClipSize, self.Primary.Ammo, false)
+		else
+			self.Owner:RemoveAmmo(self.AmmoAdded, self.Primary.Ammo, false)
+		end
+		
+		self.Delay = -1
+		self.QuickDelay = -1
+		
+		if self:Clip1()>=self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo)==0 then
+			-- Stop reloading
+			self.Reloading = false
+			self.CanInspect = true
+			if self.ReloadSingle then
+				--self:SendWeaponAnim(ACT_RELOAD_FINISH)
+				self.Owner:DoAnimationEvent(ACT_SMG2_RELOAD2, true)	
+				self:SendWeaponAnim(self.VM_RELOAD_FINISH)
+				if IsValid(animent2) then
+					animent2:Fire("Kill", "", 0.1)
+				end
+				self.CanInspect = true
+				--self.Owner:SetAnimation(10001) -- reload finish
+				self.NextIdle = CurTime() + self:SequenceDuration()
+			else
+				self:SendWeaponAnim(self.VM_IDLE)
+				self.NextIdle = nil
+			end
+			self.NextReload = nil
+		else
+			self:SendWeaponAnim(self.VM_RELOAD)
+			--self.Owner:SetAnimation(10000)		
+			if SERVER then
+			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+			end
+			
+			if SERVER then
+				animent2 = ents.Create( 'base_gmodentity' )
+				animent2:SetModel("models/weapons/w_models/w_grenade_pipebomb.mdl")
+				animent2:SetAngles(self.Owner:GetAngles())
+				animent2:SetPos(self.Owner:GetPos())
+				animent2:Spawn() 
+				animent2:Activate()
+				animent2:SetParent(self.Owner)
+				animent2:AddEffects(EF_BONEMERGE)
+				animent2:SetName("Reload"..self.Owner:EntIndex())
+				animent2:SetSkin(self.Owner:GetSkin())
+				
+				timer.Simple(0.15, function()
+					if SERVER then
+						animent2:Fire("Kill", "", 0.1)
+					end
+				end)
+			end
+			if self.ReloadTime == 0.2 then
+				self.Owner:GetViewModel():SetPlaybackRate(2)
+			end
+			self.NextReload = CurTime() + (self.ReloadTime)
+				
+			if self.ReloadSound and SERVER then
+				umsg.Start("PlayTFWeaponWorldReload")
+					umsg.Entity(self)
+				umsg.End()
+			end
+			
+		end
+	end
+	
+	if self.NextReloadStart and CurTime()>=self.NextReloadStart then
+		self:SendWeaponAnim(self.VM_RELOAD)
+		--self.Owner:SetAnimation(10000) -- reload loop
+		if SERVER then
+		self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
+		end
+		if self.ReloadTime == 0.2 then
+			self.Owner:GetViewModel():SetPlaybackRate(2)
+		end
+		self.NextReload = CurTime() + (self.ReloadTime)
+		
+		self.AmmoAdded = 1
+		
+		if SERVER then
+			animent2 = ents.Create( 'base_gmodentity' )
+			animent2:SetModel("models/weapons/w_models/w_grenade_pipebomb.mdl")
+			animent2:SetAngles(self.Owner:GetAngles())
+			animent2:SetPos(self.Owner:GetPos())
+			animent2:Spawn() 
+			animent2:Activate()
+			animent2:SetParent(self.Owner)
+			animent2:AddEffects(EF_BONEMERGE)
+			animent2:SetName("Reload"..self.Owner:EntIndex())
+			animent2:SetSkin(self.Owner:GetSkin())
+			if self.ReloadTime == 0.2 then	
+				timer.Simple(0.03, function()
+					if SERVER then
+						animent2:Fire("Kill", "", 0.1)
+					end
+				end)
+			else
+				timer.Simple(0.15, function()
+					if SERVER then
+						animent2:Fire("Kill", "", 0.1)
+					end
+				end)
+			end
+		end
+		if self.ReloadSound and SERVER then
+			umsg.Start("PlayTFWeaponWorldReload")
+				umsg.Entity(self)
+			umsg.End()
+		end
+		
+		self.NextReloadStart = nil
+	end
+	
+	self:Inspect()
 end

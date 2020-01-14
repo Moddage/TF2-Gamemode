@@ -33,7 +33,9 @@ function SWEP:PrimaryAttack()
 	timer.Simple(3, function()
 		for _,v in pairs(ents.GetAll()) do
 			if v:IsNPC() and not v:IsFriendly(self.Owner) then
-				v:AddEntityRelationship(self.Owner, D_LI, 99)
+				if SERVER then
+					v:AddEntityRelationship(self.Owner, D_LI, 99)
+				end
 			end
 		end
 	end)

@@ -116,8 +116,20 @@ function SWEP:PredictCriticalHit()
 	end
 end
 
+
 function SWEP:Think()
 	self:CallBaseFunction("Think")
+	if self.Owner:GetPlayerClass() == "spy" then
+		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+			
+			self.Owner:SetNWBool("NoWeapon", true)
+		else
+			if IsValid(animent2) then
+				animent2:Fire("Kill", "", 0.1)
+			end
+			self.Owner:SetNWBool("NoWeapon", false)
+		end
+	end
 	if self.Owner:KeyDown(IN_ATTACK) or self.Owner:KeyDown(IN_ATTACK2) then
 		if self.ShouldOccurFists == true then
 			if SERVER then
@@ -164,23 +176,23 @@ function SWEP:Deploy()
 			
 			animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
 			if self.Owner:GetModel() == "models/player/engineer.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
+				animent2:SetModel("models/weapons/c_models/c_wrench/c_wrench.mdl")
 			elseif self.Owner:GetModel() == "models/player/scout.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_scattergun.mdl")
-			elseif self.Owner:GetModel() == "models/player/heavy.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_minigun/c_minigun.mdl")
+				animent2:SetModel("models/weapons/c_models/c_bat.mdl")
 			elseif self.Owner:GetModel() == "models/player/soldier.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl")
+				animent2:SetModel("models/weapons/c_models/c_shovel/c_shovel.mdl")
 			elseif self.Owner:GetModel() == "models/player/pyro.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_flamethrower/c_flamethrower.mdl")
-			elseif self.Owner:GetModel() == "models/player/spy.mdl" then
-				animent2:SetModel("models/weapons/w_models/w_knife.mdl")
+				animent2:SetModel("models/weapons/w_models/w_fireaxe.mdl")
+			elseif self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_knife/c_knife.mdl")
 			elseif self.Owner:GetModel() == "models/player/sniper.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_smg/c_smg.mdl")
+				animent2:SetModel("models/weapons/c_models/c_machete/c_machete.mdl")
 			elseif self.Owner:GetModel() == "models/player/medic.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_medigun/c_medigun.mdl")
+				animent2:SetModel("models/weapons/c_models/c_bonesaw/c_bonesaw.mdl")
+			elseif self.Owner:GetModel() == "models/player/heavy.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_boxing_gloves/c_boxing_gloves.mdl")
 			elseif self.Owner:GetModel() == "models/player/demo.mdl" then
-				animent2:SetModel("models/weapons/w_models/w_stickybomb_launcher.mdl")
+				animent2:SetModel("models/weapons/w_models/w_bottle.mdl")
 			end
 			animent2:SetAngles(self.Owner:GetAngles())
 			animent2:SetPos(self.Owner:GetPos())
@@ -190,7 +202,6 @@ function SWEP:Deploy()
 			animent2:AddEffects(EF_BONEMERGE)
 			animent2:SetName("SpyWeaponModel"..self.Owner:EntIndex())
 			animent2:SetSkin(self.Owner:GetSkin())
-			self:SetHoldType("PRIMARY")
 			if SERVER then
 				timer.Create("SpyCloakDetector"..self.Owner:EntIndex(), 0.01, 0, function()
 					if self.Owner:GetPlayerClass() == "spy" then
@@ -275,6 +286,7 @@ function SWEP:Holster()
 	
 	return true
 end
+
 
 function SWEP:PrimaryAttack()
 	if not self:CallBaseFunction("PrimaryAttack") then return false end

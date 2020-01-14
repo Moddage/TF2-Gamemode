@@ -54,6 +54,14 @@ SWEP.MeleePredictTolerancy = 0.1
 SWEP.MeleeAttackDelay = 0
 SWEP.BackstabAngle = 180
 
+function SWEP:InspectAnimCheck()
+	self:CallBaseFunction("InspectAnimCheck")
+	self.VM_IDLE = ACT_ITEM2_VM_IDLE
+	self.VM_DRAW = ACT_ITEM2_VM_DRAW
+	self.VM_HITCENTER = ACT_ITEM2_VM_HITCENTER
+	self.VM_SWINGHARD = ACT_ITEM2_VM_SWINGHARD
+end
+
 -- ACT_MELEE_VM_STUN
 
 function SWEP:ShouldBackstab(ent)
@@ -117,10 +125,31 @@ end
 
 function SWEP:Think()
 	self:CallBaseFunction("Think")
-	if SERVER and self.IsDeployed then
-		if self.Owner:HasPlayerState(PLAYERSTATE_ONFIRE) then
-			self.Owner:EmitSound("Icicle.Melt")
-			self:Fire("Kill", "", 0.1)
+	if self.Owner:GetPlayerClass() == "spy" then
+		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+			
+			self.Owner:SetNWBool("NoWeapon", true)
+		else
+			if IsValid(animent2) then
+				animent2:Fire("Kill", "", 0.1)
+			end
+			self.Owner:SetNWBool("NoWeapon", false)
+		end
+	end
+	if self.Owner:KeyDown(IN_ATTACK) or self.Owner:KeyDown(IN_ATTACK2) then
+		if self.ShouldOccurFists == true then
+			if SERVER then
+				if self.Owner:GetPlayerClass() == "spy" and self.Owner:GetInfoNum("hahahahahahahahaowneronly_ragespy", 0) == 1 then
+					self.Owner:EmitSound("vo/spy_paincrticialdeath0"..math.random(1,3)..".mp3", 80, math.random(80,130))
+					self.ShouldOccurFists = false 
+					self.Primary.Delay = 0.1					
+					self.HitFlesh = Sound("NPC_AttackHelicopter.Crash")
+					self.BaseDamage = 1000000000000000000000000000000000000000000000000
+					timer.Simple(0.1, function()
+						self.ShouldOccurFists = true
+					end)
+				end
+			end
 		end
 	end
 	if CLIENT and self.IsDeployed then
@@ -144,6 +173,65 @@ function SWEP:Think()
 			self.NextAllowBackstabAnim = nil
 		end
 	end
+end
+
+function SWEP:Deploy()
+	--MsgFN("Deploy %s", tostring(self))
+	if self.Owner:GetPlayerClass() == "spy" then
+		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+			
+			animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+			if self.Owner:GetModel() == "models/player/engineer.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_wrench/c_wrench.mdl")
+			elseif self.Owner:GetModel() == "models/player/scout.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_bat.mdl")
+			elseif self.Owner:GetModel() == "models/player/soldier.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_shovel/c_shovel.mdl")
+			elseif self.Owner:GetModel() == "models/player/pyro.mdl" then
+				animent2:SetModel("models/weapons/w_models/w_fireaxe.mdl")
+			elseif self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_knife/c_knife.mdl")
+			elseif self.Owner:GetModel() == "models/player/sniper.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_machete/c_machete.mdl")
+			elseif self.Owner:GetModel() == "models/player/medic.mdl" then
+				animent2:SetModel("models/weapons/c_models/c_bonesaw/c_bonesaw.mdl")
+			elseif self.Owner:GetModel() == "models/player/demo.mdl" then
+				animent2:SetModel("models/weapons/w_models/w_bottle.mdl")
+			end
+			animent2:SetAngles(self.Owner:GetAngles())
+			animent2:SetPos(self.Owner:GetPos())
+			animent2:Spawn() 
+			animent2:Activate()
+			animent2:SetParent(self.Owner)
+			animent2:AddEffects(EF_BONEMERGE)
+			animent2:SetName("SpyWeaponModel"..self.Owner:EntIndex())
+			animent2:SetSkin(self.Owner:GetSkin())
+			if SERVER then
+				timer.Create("SpyCloakDetector"..self.Owner:EntIndex(), 0.01, 0, function()
+					if self.Owner:GetPlayerClass() == "spy" then
+						if self.Owner:GetNoDraw() == true then
+							if IsValid(animent2) then
+								animent2:SetNoDraw(true)
+							end
+						else
+							if IsValid(animent2) then
+								animent2:SetNoDraw(false)
+							end
+						end
+					else
+						timer.Stop("SpyCloakDetector"..self.Owner:EntIndex())
+						return
+					end
+				end)
+			end
+		else
+			if IsValid(animent2) then
+				animent2:Remove()
+			end
+			self:SetHoldType("MELEE")
+		end
+	end
+	return self:CallBaseFunction("Deploy")
 end
 
 function SWEP:Holster()
@@ -181,7 +269,9 @@ function SWEP:Holster()
 			end
 		end
 	end
-	
+	if IsValid(animent2) then
+		animent2:Fire("Kill", "", 0.1)
+	end
 	self.NextIdle = nil
 	self.NextReloadStart = nil
 	self.NextReload = nil
@@ -189,19 +279,16 @@ function SWEP:Holster()
 	self.RequestedReload = nil
 	self.NextDeployed = nil
 	self.IsDeployed = nil
-	
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:Remove()
+		end
+	end
 	if IsValid(self.Owner) then
 		self.Owner.LastWeapon = self:GetClass()
 	end
 	
 	return true
-end
-
-function SWEP:Deploy()
-	self:CallBaseFunction("Deploy")
-	if SERVER then
-		self.Owner:EmitSound("Icicle.Deploy")
-	end
 end
 
 function SWEP:PrimaryAttack()

@@ -93,7 +93,7 @@ npc_citizen = {
 	vplayer=VPLAYER_REBEL
 },
 npc_vortigaunt = {
-	team=TEAM_NEUTRAL,
+	team=TEAM_RED,
 	health=125,
 	vplayer=VPLAYER_VORTIGAUNT
 },

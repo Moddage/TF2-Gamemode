@@ -25,8 +25,14 @@ function PANEL:PerformLayout()
 		self:SetSize(252*WScale,50*Scale)
 	else
 		local slot = self.Slot
-		while HudTargetIDs[slot-1] and not HudTargetIDs[slot-1]:IsVisible() do
-			slot = slot - 1
+		if self.Target:IsPlayer() and self.Target:GetPlayerClass() == "spy" then
+			if self.Target:GetModel() == "models/player/scout.mdl" or  self.Target:GetModel() == "models/player/soldier.mdl" or  self.Target:GetModel() == "models/player/pyro.mdl" or  self.Target:GetModel() == "models/player/demo.mdl" or  self.Target:GetModel() == "models/player/heavy.mdl" or  self.Target:GetModel() == "models/player/engineer.mdl" or  self.Target:GetModel() == "models/player/medic.mdl" or  self.Target:GetModel() == "models/player/sniper.mdl" or  self.Target:GetModel() == "models/player/hwm/spy.mdl" then
+				slot = slot - 1
+			end
+		else
+			while HudTargetIDs[slot-1] and not HudTargetIDs[slot-1]:IsVisible() do
+				slot = slot - 1
+			end
 		end
 		surface.SetFont("HudFontMediumSmallSecondary")
 		local w = surface.GetTextSize(GAMEMODE:EntityTargetIDName(self.Target)) + 44*Scale
@@ -46,6 +52,7 @@ function PANEL:SetTargetEntity(e)
 		self.HealthCounter = vgui.Create("SpectatorGUIHealth")
 		self.HealthCounter:SetParent(self)
 		self.HealthCounter:SetPos(3*Scale,2*Scale)
+
 	end
 	
 	for _,v in ipairs(HudTargetIDs) do v:InvalidateLayout() end
@@ -63,7 +70,15 @@ function PANEL:Paint()
 	local maxhealth = self.Target:GetNWFloat("MaxHealth") or 1
 	
 	surface.SetDrawColor(255,255,255,255)
-	tf_draw.BorderPanel(color_panel[self.Target:EntityTeam()] or color_panel[0],0,0,self:GetWide(),35*Scale,23,23,5*Scale,5*Scale)
+	if self.Target:IsPlayer() and self.Target:GetPlayerClass() == "spy" then
+		if self.Target:GetModel() == "models/player/scout.mdl" or  self.Target:GetModel() == "models/player/soldier.mdl" or  self.Target:GetModel() == "models/player/pyro.mdl" or  self.Target:GetModel() == "models/player/demo.mdl" or  self.Target:GetModel() == "models/player/heavy.mdl" or  self.Target:GetModel() == "models/player/engineer.mdl" or  self.Target:GetModel() == "models/player/medic.mdl" or  self.Target:GetModel() == "models/player/sniper.mdl" or  self.Target:GetModel() == "models/player/hwm/spy.mdl" then
+			
+			tf_draw.BorderPanel(color_panel[LocalPlayer():EntityTeam()] or color_panel[0],0,0,self:GetWide(),35*Scale,23,23,5*Scale,5*Scale)
+		
+		end
+	else
+		tf_draw.BorderPanel(color_panel[self.Target:EntityTeam()] or color_panel[0],0,0,self:GetWide(),35*Scale,23,23,5*Scale,5*Scale)
+	end
 	
 	local tbl = {
 		font="HudFontMediumSmallSecondary",
@@ -84,6 +99,9 @@ function PANEL:Paint()
 	if self.Target:GetClass() == "reviver" then
 		tbl.text = GAMEMODE:EntityTargetIDName(self.Target:GetOwner())
 		draw.Text(tbl)
+	elseif self.Target:IsNextBot() then
+		tbl.text = GAMEMODE:EntityTargetIDName(self.Target)
+		draw.Text(tbl)	
 	else
 		tbl.text = GAMEMODE:EntityTargetIDName(self.Target)
 		draw.Text(tbl)	
@@ -130,6 +148,18 @@ function PANEL:Paint()
 			x_align=TEXT_ALIGN_LEFT,
 			y_align=TEXT_ALIGN_CENTER,
 		}
+	elseif self.Target:IsPlayer() and self.Target:GetPlayerClass() == "spy" then
+		if self.Target:GetModel() == "models/player/scout.mdl" or  self.Target:GetModel() == "models/player/soldier.mdl" or  self.Target:GetModel() == "models/player/pyro.mdl" or  self.Target:GetModel() == "models/player/demo.mdl" or  self.Target:GetModel() == "models/player/heavy.mdl" or  self.Target:GetModel() == "models/player/engineer.mdl" or  self.Target:GetModel() == "models/player/medic.mdl" or  self.Target:GetModel() == "models/player/sniper.mdl" or  self.Target:GetModel() == "models/player/hwm/spy.mdl" then
+			
+			draw.Text{
+				text="Disguised: ",
+				font="TFFontMedium",
+				pos={34*Scale, (17+3.5)*Scale},
+				color=Colors.TanLight,
+				x_align=TEXT_ALIGN_LEFT,
+				y_align=TEXT_ALIGN_CENTER,
+			}
+		end
 	end
 end
 

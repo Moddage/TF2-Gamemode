@@ -8,6 +8,11 @@ function ENT:Initialize()
 	self.Team = 0
 	self.Players = {}
 	self.Opened = false
+	local pos = self:GetPos()
+	local mins, maxs = self:WorldSpaceAABB() -- https://forum.facepunch.com/gmoddev/lmcw/Brush-entitys-ent-GetPos/1/#postdwfmq
+	pos = (mins + maxs) * 0.5
+
+	self.Pos = pos
 end
 
 function ENT:KeyValue(key,value)
@@ -38,21 +43,23 @@ function ENT:StartTouch(ent)
 				end
 			end
 			timer.Create("CloseGate0Door", 14, 1, function()
-			for k,v in pairs(ents.FindByName("gate0_entrance_door")) do
-				v:Fire("SetSpeed", "15")
-				v:Fire("Close")
-			end
 			ent:EmitSound("mvm/mvm_robo_stun.wav", 0, 100)
 
 			timer.Simple(21.519, function()
 				ent:EmitSound("misc/cp_harbor_red_whistle.wav", 0, 100)
+				
+				for k,v in pairs(ents.FindByName("gate0_entrance_door")) do
+					v:Fire("SetSpeed", "15")
+					v:Fire("Close")
+				end
 			end)
 			for k,v in pairs(team.GetPlayers(2)) do
-				if v:GetNWBool("Taunting") == true then return end
-				timer.Create("StunRobot100", 0.001, 1, function()
+				timer.Create("StunRobot100"..v:EntIndex(), 0.001, 1, function()
+					
+					if v:GetNWBool("Taunting") == true then return end
 					v:DoAnimationEvent(ACT_MP_STUN_BEGIN)
-					timer.Create("StunRobotloop103", 0.6, 0, function()
-						timer.Create("StunRobotloop104", 0.22, 0, function()
+					timer.Create("StunRobotloop103"..v:EntIndex(), 0.6, 0, function()
+						timer.Create("StunRobotloop104"..v:EntIndex(), 0.22, 0, function()
 							v:DoAnimationEvent(ACT_MP_STUN_MIDDLE)
 						end)
 					end)
@@ -60,12 +67,13 @@ function ENT:StartTouch(ent)
 				v:SetNWBool("Taunting", true)
 				v:SetNWBool("NoWeapon", true)
 				v:Freeze(true)
-				net.Start("ActivateTauntCam")
+				net.Start("ActivateTauntCam") 
 				net.Send(v)
+				v:StopParticles()
 				timer.Simple(21.519, function()
 					if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then v:Freeze(false) return end
-					timer.Stop("StunRobotloop103")
-					timer.Stop("StunRobotloop104")
+					timer.Stop("StunRobotloop103"..v:EntIndex())
+					timer.Stop("StunRobotloop104"..v:EntIndex())
 					v:DoAnimationEvent(ACT_MP_STUN_END)
 					net.Start("DeActivateTauntCam")
 					net.Send(v)
@@ -137,23 +145,24 @@ function ENT:StartTouch(ent)
 				end)
 				for k,v in pairs(team.GetPlayers(2)) do
 					if v:GetNWBool("Taunting") == true then return end
-					timer.Create("StunRobot100", 0.001, 1, function()
+					timer.Create("StunRobot100"..v:EntIndex(), 0.001, 1, function()
 						v:DoAnimationEvent(ACT_MP_STUN_BEGIN)
-						timer.Create("StunRobotloop103", 0.6, 0, function()
-							timer.Create("StunRobotloop104", 0.22, 0, function()
+						timer.Create("StunRobotloop103"..v:EntIndex(), 0.6, 0, function()
+							timer.Create("StunRobotloop104"..v:EntIndex(), 0.22, 0, function()
 								v:DoAnimationEvent(ACT_MP_STUN_MIDDLE)
 							end)
 						end)
 					end)
 					v:SetNWBool("Taunting", true)
 					v:SetNWBool("NoWeapon", true)
+					v:StopParticles()
 					v:Freeze(true)
 					net.Start("ActivateTauntCam")
 					net.Send(v)
 					timer.Simple(21.519, function()
 						if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then v:Freeze(false) return end
-						timer.Stop("StunRobotloop103")
-						timer.Stop("StunRobotloop104")
+						timer.Stop("StunRobotloop103"..v:EntIndex())
+						timer.Stop("StunRobotloop104"..v:EntIndex())
 						v:DoAnimationEvent(ACT_MP_STUN_END)
 						net.Start("DeActivateTauntCam")
 						net.Send(v)

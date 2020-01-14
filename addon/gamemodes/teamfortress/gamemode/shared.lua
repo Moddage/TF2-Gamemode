@@ -123,6 +123,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_battlecry01.wav" } 
 } )
 sound.Add( {
@@ -130,6 +131,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_Go01.wav" } 
 } )
 sound.Add( {
@@ -137,6 +139,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_Go02.wav" } 
 } )
 sound.Add( {
@@ -144,6 +147,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_Go03.wav" } 
 } )
 
@@ -152,6 +156,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_battlecry02.wav" } 
 } )
 sound.Add( {
@@ -159,6 +164,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_battlecry03.wav" } 
 } )
 sound.Add( {
@@ -166,6 +172,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_battlecry04.wav" } 
 } )
 sound.Add( {
@@ -173,6 +180,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_battlecry05.wav" } 
 } )
 sound.Add( {
@@ -180,6 +188,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_battlecry06.wav" } 
 } )
 sound.Add( {
@@ -187,6 +196,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainSharp05.wav" } 
 } )
 sound.Add( {
@@ -194,6 +204,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainSharp04.wav" } 
 } )
 
@@ -202,6 +213,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainSharp03.wav" } 
 } )
 
@@ -210,6 +222,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainSharp02.wav" } 
 } )
 
@@ -219,6 +232,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainSharp01.wav" } 
 } )
 
@@ -227,6 +241,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainSevere01.wav" } 
 } )
 
@@ -235,6 +250,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainSevere02.wav" } 
 } )
 
@@ -243,6 +259,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainSevere03.wav" } 
 } )
 
@@ -252,6 +269,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSharp05.wav" } 
 } )
 
@@ -260,6 +278,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSharp06.wav" } 
 } )
 
@@ -268,6 +287,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSharp07.wav" } 
 } )
 
@@ -277,6 +297,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSharp08.wav" } 
 } )
 sound.Add( {
@@ -284,6 +305,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSharp04.wav" } 
 } )
 
@@ -292,6 +314,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSharp03.wav" } 
 } )
 
@@ -300,6 +323,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_PainSharp02.wav" } 
 } )
 
@@ -308,6 +332,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_Cheers01.wav" } 
 } )
 sound.Add( {
@@ -315,6 +340,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_Cheers02.wav" } 
 } )
 sound.Add( {
@@ -322,6 +348,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_Cheers03.wav" } 
 } )
 sound.Add( {
@@ -329,6 +356,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_Cheers04.wav" } 
 } )
 
@@ -337,6 +365,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_Cheers05.wav" } 
 } )
 
@@ -345,6 +374,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_Cheers06.wav" } 
 } )
 
@@ -354,6 +384,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_Cheers07.wav" } 
 } )
 
@@ -363,6 +394,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_Cheers08.wav" } 
 } )
 
@@ -371,6 +403,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Heavy_Generic01.wav" } 
 } )
 
@@ -386,6 +419,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSharp01.wav" } 
 } )
 
@@ -394,6 +428,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSevere01.wav" } 
 } )
 
@@ -402,6 +437,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSevere02.wav" } 
 } )
 
@@ -410,6 +446,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSevere03.wav" } 
 } )
 sound.Add( {
@@ -417,6 +454,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSevere04.wav" } 
 } )
 sound.Add( {
@@ -424,6 +462,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSevere05.wav" } 
 } )
 sound.Add( {
@@ -431,6 +470,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_PainSevere06.wav" } 
 } )
 sound.Add( {
@@ -438,6 +478,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_BattleCry01.wav" } 
 } )
 sound.Add( {
@@ -445,12 +486,14 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_BattleCry02.wav" } 
 } )
 sound.Add( {
 	name = "Scout.BattleCry03",
 	volume = 1.0,
 	level = 75,
+	channel = CHAN_VOICE,
 	pitch = { 100 },
 	sound = { "vo/Scout_BattleCry03.wav" } 
 } )
@@ -459,6 +502,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_BattleCry04.wav" } 
 } )
 sound.Add( {
@@ -466,6 +510,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/Scout_BattleCry05.wav" } 
 } )
 
@@ -476,6 +521,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_helpme01.wav" } 
 } )
 sound.Add( {
@@ -483,6 +529,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_helpme02.wav" } 
 } )
 sound.Add( {
@@ -490,6 +537,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_helpme03.wav" } 
 } )
 sound.Add( {
@@ -497,6 +545,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_meleeing01.wav" } 
 } )
 sound.Add( {
@@ -504,6 +553,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_meleeing02.wav" } 
 } )
 sound.Add( {
@@ -511,6 +561,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_meleeing03.wav" } 
 } )
 sound.Add( {
@@ -518,6 +569,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_meleeing04.wav" } 
 } )
 sound.Add( {
@@ -525,6 +577,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_meleeing05.wav" } 
 } )
 sound.Add( {
@@ -532,6 +585,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_meleeing06.wav" } 
 } )
 sound.Add( {
@@ -539,6 +593,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_meleeing07.wav" } 
 } )
 sound.Add( {
@@ -546,6 +601,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_meleeing08.wav" } 
 } )
 sound.Add( {
@@ -553,6 +609,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_meleeing09.wav" } 
 } )
 sound.Add( {
@@ -560,6 +617,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt01.wav" } 
 } )
 sound.Add( {
@@ -567,6 +625,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt02.wav" } 
 } )
 sound.Add( {
@@ -574,6 +633,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt03.wav" } 
 } )
 sound.Add( {
@@ -581,6 +641,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt04.wav" } 
 } )
 sound.Add( {
@@ -588,6 +649,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt05.wav" } 
 } )
 sound.Add( {
@@ -602,6 +664,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt06.wav" } 
 } )
 sound.Add( {
@@ -609,6 +672,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt07.wav" } 
 } )
 sound.Add( {
@@ -623,6 +687,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt09.wav" } 
 } )
 sound.Add( {
@@ -630,6 +695,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt10.wav" } 
 } )
 sound.Add( {
@@ -637,6 +703,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt11.wav" } 
 } )
 sound.Add( {
@@ -644,6 +711,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt12.wav" } 
 } )
 sound.Add( {
@@ -651,6 +719,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt13.wav" } 
 } )
 sound.Add( {
@@ -658,6 +727,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt14.wav" } 
 } )
 sound.Add( {
@@ -665,6 +735,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt15.wav" } 
 } )
 sound.Add( {
@@ -672,6 +743,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt16.wav" } 
 } )
 sound.Add( {
@@ -679,6 +751,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_SandwichTaunt17.wav" } 
 } )
 sound.Add( {
@@ -686,6 +759,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainCrticialDeath01.wav" } 
 } )
 sound.Add( {
@@ -693,6 +767,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainCrticialDeath02.wav" } 
 } )
 sound.Add( {
@@ -700,6 +775,7 @@ sound.Add( {
 	volume = 1.0,
 	level = 75,
 	pitch = { 100 },
+	channel = CHAN_VOICE,
 	sound = { "vo/heavy_PainCrticialDeath03.wav" } 
 } )
 sound.Add( {
@@ -875,7 +951,7 @@ sound.Add( {
 	name = "NPC_CombineDropship.NearRotorLoop",
 	pitch = 100,
 	level = 150,
-	sound = { "^npc/combine_gunship/dropship_engine_loop1.wav" } 
+	sound = { "npc/combine_gunship/dropship_engine_near_loop1.wav" } 
 } )
 sound.Add( {
 	name = "NPC_Vortigaunt.RangedAttack",
@@ -970,6 +1046,41 @@ sound.Add( {
 	level = 75,
 	pitch = { 100 },
 	sound = {"player/taunt_equipment_jingle2.wav"} 
+} )
+sound.Add( {
+	name = "Taunt.Scout01HandSmack",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_hand_clap.wav"} 
+} )
+sound.Add( {
+	name = "Taunt.Scout02HandSmack",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_hand_clap.wav"} 
+} )
+sound.Add( {
+	name = "DoSpark",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"ambient/energy/newspark01.wav","ambient/energy/newspark02.wav","ambient/energy/newspark03.wav","ambient/energy/newspark04.wav","ambient/energy/newspark05.wav","ambient/energy/newspark06.wav","ambient/energy/newspark07.wav","ambient/energy/newspark08.wav","ambient/energy/newspark09.wav","ambient/energy/newspark10.wav","ambient/energy/newspark11.wav"} 
+} )
+sound.Add( {
+	name = "LoudSpark",
+	volume = 1.0,
+	level = 95,
+	pitch = { 100 },
+	sound = {"ambient/energy/newspark01.wav","ambient/energy/newspark02.wav","ambient/energy/newspark03.wav","ambient/energy/newspark04.wav","ambient/energy/newspark05.wav","ambient/energy/newspark06.wav","ambient/energy/newspark07.wav","ambient/energy/newspark08.wav","ambient/energy/newspark09.wav","ambient/energy/newspark10.wav","ambient/energy/newspark11.wav"} 
+} )
+sound.Add( {
+	name = "ReallyLoudSpark",
+	volume = 1.0,
+	level = 135,
+	pitch = { 100 },
+	sound = {"ambient/energy/newspark01.wav","ambient/energy/newspark02.wav","ambient/energy/newspark03.wav","ambient/energy/newspark04.wav","ambient/energy/newspark05.wav","ambient/energy/newspark06.wav","ambient/energy/newspark07.wav","ambient/energy/newspark08.wav","ambient/energy/newspark09.wav","ambient/energy/newspark10.wav","ambient/energy/newspark11.wav"} 
 } )
 
 

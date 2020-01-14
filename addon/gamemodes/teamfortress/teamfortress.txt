@@ -63,5 +63,23 @@
 			"default"	"0"
 			"singleplayer" "1"
 		}
+		7
+		{
+			"name"		"tf_bots_are_robots"
+			"text"		"Bots are robots"
+			"help"		"If enabled, all TFBots are robots. Required for Mann. V.s. Machine"
+			"type"		"CheckBox"
+			"default"	"1"
+			"singleplayer" "1"
+		}
+		8
+		{
+			"name"		"tf_enable_revive_markers"
+			"text"		"Enable Revive Markers"
+			"help"		"If enabled, on all players including bots death, a revive marker will spawn to make an medic revive the player."
+			"type"		"CheckBox"
+			"default"	"0"
+			"singleplayer" "0"
+		}
 	}
 }

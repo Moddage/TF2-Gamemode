@@ -873,6 +873,15 @@ end
 function SWEP:Deploy()
 	--MsgFN("Deploy %s", tostring(self))
 	if self.Owner:GetPlayerClass() == "spy" then
+	
+		self:InitializeWModel2()
+		self:InitializeAttachedModels()
+		if SERVER then
+			if IsValid(self.WModel2) then
+				self.WModel2:SetSkin(self.WeaponSkin or self.Owner:GetSkin())
+				self.WModel2:SetMaterial(self.WeaponMaterial or 0)
+			end
+		end
 		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
 			
 			animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
@@ -1191,6 +1200,13 @@ function SWEP:Holster()
 		self.Owner:EmitSound("PSap.Holster")
 		
 
+	end
+
+
+	if SERVER then
+		if IsValid(self.WModel2) then
+			self.WModel2:Remove()
+		end
 	end
 
 	if IsValid(animent2) then

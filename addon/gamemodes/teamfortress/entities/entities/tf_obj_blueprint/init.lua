@@ -40,7 +40,7 @@ function ENT:Initialize()
 	if obj.class_name == "obj_dispenser" and self.Player.TempAttributes.BuildsMiniSentries then
 		self:SetModel("models/buildables/mdispenser_blueprint.mdl")
 	end
-	if obj.class_name == "obj_dispenser" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
+	if obj.class_name == "obj_dispenser" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then 
 		self:SetModel("models/buildables/repair_level1.mdl")
 	elseif obj.class_name == "obj_sentrygun" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then
 		self:SetModel("models/combine_turrets/floor_turret.mdl")

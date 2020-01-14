@@ -216,7 +216,7 @@ function meta:Build(number1,number2)
 	builder.Moving = false
 	
 	timer.Simple(25, function()
-		if ( builder.Moving != false and self:KeyPressed( IN_FORWARD ) ) then 
+		if ( builder:IsValid() and builder.Moving != false and self:KeyPressed( IN_FORWARD ) ) then 
 			self:EmitSound("vo/engineer_sentrymoving0"..math.random(1,2)..".mp3", 80, 100)
 		else
 			return

@@ -1,4 +1,5 @@
 -- Deathposes
+-- Deathposes
 
 local debug_deathposes = CreateConVar("debug_deathposes",0)
 
@@ -152,7 +153,8 @@ if CLIENT then
 
 local Tolerancy = 150
 -- Keeping track of player and npc ragdolls
-hook.Add("OnEntityCreated", "TFPlayerRagdollCreated", function(ent)
+hook.Add("OnEntityCreated", "TFPlayerRagdollCreated", function(ent, dmginfo)
+	dmginfo = DamageInfo()
 	if IsValid(ent) then
 		if ent:GetClass()=="class C_HL2MPRagdoll" then
 			for _,v in pairs(player.GetAll()) do

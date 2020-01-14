@@ -1,6 +1,6 @@
-CLASS.Name = "Giant Medic"
-CLASS.Speed = 58
-CLASS.Health = 3600
+CLASS.Name = "Medic"
+CLASS.Speed = 107
+CLASS.Health = 150
 
 if CLIENT then
 	CLASS.CharacterImage = {
@@ -8,13 +8,13 @@ if CLIENT then
 		surface.GetTextureID("hud/class_medicblue")
 	}
 	CLASS.ScoreboardImage = {
-		surface.GetTextureID("hud/leaderboard_class_medic"),
-		surface.GetTextureID("hud/leaderboard_class_medic_d")
+		surface.GetTextureID("hud/leaderboard_class_medic_uber"),
+		surface.GetTextureID("hud/leaderboard_class_medic_uber")
 	}
 end
 
 CLASS.Loadout = {"tf_weapon_syringegun_medic", "tf_weapon_medigun", "tf_weapon_bonesaw"}
-CLASS.DefaultLoadout = {"TF_WEAPON_MEDIGUN"}
+CLASS.DefaultLoadout = {"Syringe Gun","Kritzkrieg"}
 CLASS.ModelName = "medic"
 
 CLASS.Gibs = {
@@ -71,16 +71,3 @@ function CLASS:Initialize()
 end
 
 end
-
-if SERVER then
-
-	function CLASS:Initialize()
-		self:SetModel("models/bots/medic/bot_medic.mdl")
-		self:SetViewOffset(Vector(0, 0, 126))
-		self:SetModelScale(1.75)
-		self:EmitSound("ui/survival_playerrec.wav", 0, 100)
-		PrintMessage(HUD_PRINTCENTER, "Team "..self:Team().."has recieved an Giant Demoman!")
-	end
-	
-end
-	

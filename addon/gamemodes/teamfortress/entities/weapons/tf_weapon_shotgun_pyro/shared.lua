@@ -27,9 +27,9 @@ PrecacheParticleSystem("bullet_shotgun_tracer01_blue")
 PrecacheParticleSystem("bullet_shotgun_tracer01_blue_crit")
 PrecacheParticleSystem("muzzle_shotgun")
 
-SWEP.BaseDamage = 15
-SWEP.DamageRandomize = 0.5 * 2
-SWEP.MaxDamageRampUp = 0.5
+SWEP.BaseDamage = 5
+SWEP.DamageRandomize = 0.3
+SWEP.MaxDamageRampUp = 0.2
 
 SWEP.BulletsPerShot = 10
 SWEP.BulletSpread = 0.0675
@@ -52,5 +52,8 @@ function SWEP:CanPrimaryAttack()
 	end
 	self:EmitSound("weapons/shotgun_empty.wav", 80, 100)
 	self:SetNextPrimaryFire(CurTime() + 0.5)
+	if self:GetInfoNum("tf_robot", 0) == 1 then
+		self:SetHoldType("ITEM1")
+	end
 	return false
 end
