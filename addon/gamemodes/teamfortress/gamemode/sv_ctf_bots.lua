@@ -370,6 +370,7 @@ hook.Add("PlayerSpawn", "leadbot_spawn", function(ply)
 				if bot_class:GetFloat() == 0 then
 					if string.find(game.GetMap(), "mvm_") then
 						ply:SetPlayerClass(classmvm)
+						ply:SetTeam(TEAM_BLU)
 					else
 						ply:SetPlayerClass(class)
 					end
