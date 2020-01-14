@@ -74,21 +74,21 @@ function SWEP:Deploy()
 		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
 			animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
 			if self.Owner:GetModel() == "models/player/engineer.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_pistol/c_pistol.mdl")
+				animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
 			elseif self.Owner:GetModel() == "models/player/scout.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_pistol/c_pistol.mdl")
+				animent2:SetModel("models/weapons/c_models/c_scattergun.mdl")
 			elseif self.Owner:GetModel() == "models/player/soldier.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
+				animent2:SetModel("models/weapons/w_models/w_rocketlauncher.mdl")
 			elseif self.Owner:GetModel() == "models/player/pyro.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
+				animent2:SetModel("models/weapons/c_models/c_flamethrower/c_flamethrower.mdl")
 			elseif self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
 				animent2:SetModel("models/weapons/c_models/c_revolver/c_revolver.mdl")
 			elseif self.Owner:GetModel() == "models/player/sniper.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_smg/c_smg.mdl")
+				animent2:SetModel("models/weapons/c_models/c_sniperrifle/c_sniperrifle.mdl")
 			elseif self.Owner:GetModel() == "models/player/medic.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_medigun/c_medigun.mdl")
+				animent2:SetModel("models/weapons/c_models/c_syringegun/c_syringegun.mdl")
 			elseif self.Owner:GetModel() == "models/player/heavy.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
+				animent2:SetModel("models/weapons/c_models/c_minigun/c_minigun.mdl")
 			elseif self.Owner:GetModel() == "models/player/demo.mdl" then
 				animent2:SetModel("models/weapons/w_models/w_stickybomb_launcher.mdl")
 			end
@@ -129,6 +129,9 @@ function SWEP:Holster()
 		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
 			self:SetHoldType("PRIMARY")			
 			self.HoldType = "PRIMARY"
+		else
+			self:SetHoldType("SECONDARY")			
+			self.HoldType = "SECONDARY"
 		end
 	end
 	self:StopTimers()
