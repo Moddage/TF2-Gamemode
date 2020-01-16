@@ -259,7 +259,6 @@ hook.Add("SetupMove", "LeadBot_Control", function(bot, mv, cmd)
 				targetpos2 = intel.Carrier:GetPos() -- follow that man
 			end
 		end
-
 		if string.find(game.GetMap(), "mvm_") and bot:Team() == TEAM_BLU and bot:GetPlayerClass() != "engineer" and bot:GetPlayerClass() != "sentrybuster" then -- CTF AI in MVM Maps
 			for k, v in pairs(ents.FindByClass("item_teamflag_mvm")) do
 				if v.TeamNum ~= bot:Team() then
@@ -292,7 +291,6 @@ hook.Add("SetupMove", "LeadBot_Control", function(bot, mv, cmd)
 				targetpos2 = intel.Carrier:GetPos() -- follow that man
 			end
 		end
-
 		bot.botPos = targetpos2
 	elseif IsValid(bot.TargetEnt) then
 		-- move to our target
@@ -944,7 +942,6 @@ concommand.Add("tf_bot_say", function(ply, _, args) for k, v in pairs(player.Get
 --concommand.Add("lk.noclip", function(ply) if ply:GetMoveType() == MOVETYPE_NOCLIP then ply:SetMoveType(MOVETYPE_WALK) else ply:SetMoveType(MOVETYPE_NOCLIP) end end)
 --concommand.Add("lk.downme", function(ply) ply:DownPlayer() end)
 concommand.Add("tf_bot_add", function(ply, _, _, args) if ply:IsAdmin() then LeadBot_S_Add(args[1]) end end)
-
 concommand.Add("tf_bot_name_add", function(_, _, args) table.insert(names, args[1]) MsgN(args[1].." added to names list!") end)
 concommand.Add("tf_bot_quota", function(_, _, args) for i=0, args[1]-1 do LeadBot_S_Add() end end)
 
