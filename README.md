@@ -1,5 +1,5 @@
-## Civilian 2
-The Gamemode that allows you to play TF2 in Gmod with more features!
+## Team Fortress 2 Gamemode
+The Gamemode that allows you to play TF2 in Gmod!
 
 ## Installation
 Drop the addon folder into the addons folder.
@@ -16,3 +16,6 @@ The Bot AI is based on [LeadBot](https://github.com/LeadKiller/leadbot), dependi
  - [Seamusmario](https://steamcommunity.com/id/SeamusMario55/)
 ### Additional Info
 If you're wondering why _Kilburn ended the development was because he had a hard drive failure and lost all his data. I was in talks with some other dude in regards to bringing back the gamemode, but I have not talked to the guy in months, so I'm guessing his branch is dead. - [N?] SmileyFace (A.K.A wango911)
+## Civilian 2
+A new fork for Team Fortress 2 Gamemode has been made with MvM support and much more.  
+https://steamcommunity.com/sharedfiles/filedetails/?id=1932936017

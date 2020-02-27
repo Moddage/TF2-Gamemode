@@ -323,7 +323,6 @@ hook.Add("SetupMove", "LeadBot_Control", function(bot, mv, cmd)
 				targetpos2 = intel.Carrier:GetPos() -- follow that man
 			end
 		end
-
 		bot.botPos = targetpos2
 	elseif IsValid(bot.TargetEnt) then
 		-- move to our target
