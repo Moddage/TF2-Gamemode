@@ -13,7 +13,7 @@ local HL2Weapon = {
 	weapon_shotgun = 1,
 	weapon_smg1 = 1,
 	weapon_stunstick = 1,
-	weapon_annabelle = 1,
+	weapon_annabelle = 1, 
 	
 	ai_weapon_pistol = 1,
 	ai_weapon_357 = 1,

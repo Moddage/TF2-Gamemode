@@ -2,9 +2,9 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+SWEP.Slot				= 1
 if CLIENT then
 	SWEP.PrintName			= "Shotgun"
-SWEP.Slot				= 1
 end
 
 SWEP.Base				= "tf_weapon_gun_base"
@@ -45,15 +45,186 @@ SWEP.PunchView = Angle( -2, 0, 0 )
 SWEP.ReloadSingle = true
 
 SWEP.HoldType = "SECONDARY"
-
-function SWEP:CanPrimaryAttack()
-	if (self.Primary.ClipSize == -1 and self:Ammo1() > 0) or self:Clip1() > 0 then
-		return true
+function SWEP:PrimaryAttack()
+	
+	if self.Owner:GetInfoNum("tf_robot", 0) == 1 then
+	self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_SECONDARY)
 	end
-	self:EmitSound("weapons/shotgun_empty.wav", 80, 100)
-	self:SetNextPrimaryFire(CurTime() + 0.5)
-	if self:GetInfoNum("tf_robot", 0) == 1 then
+	return self:CallBaseFunction("PrimaryAttack")
+end
+function SWEP:Reload()
+	self:StopTimers()
+	if CLIENT and _G.NOCLIENTRELOAD then return end
+	
+	if self.NextReloadStart or self.NextReload or self.Reloading then return end
+	
+	if self.RequestedReload then
+		if self.Delay and CurTime() < self.Delay then
+			return false
+		end
+	else
+		--MsgN("Requested reload!")
+		self.RequestedReload = true
+		return false
+	end
+	
+	self.CanInspect = false
+	
+	--MsgN("Reload!")
+	self.RequestedReload = false
+	
+	if self.Primary and self.Primary.Ammo and self.Primary.ClipSize ~= -1 then
+		local available = self.Owner:GetAmmoCount(self.Primary.Ammo)
+		local ammo = self:Clip1()
+		
+		if ammo < self.Primary.ClipSize and available > 0 then
+			self.NextIdle = nil
+			if self.ReloadSingle then
+				--self:SendWeaponAnim(ACT_RELOAD_START)
+				self:SendWeaponAnimEx(self.VM_RELOAD_START)
+				self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_PRIMARY) -- reload start
+				self.NextReloadStart = CurTime() + (self.ReloadStartTime or self:SequenceDuration())
+			else
+				self:SendWeaponAnimEx(self.VM_RELOAD)
+				self.Owner:SetAnimation(PLAYER_RELOAD)
+				if self.ReloadTime == 1.15 then
+					self.Owner:GetViewModel():SetPlaybackRate(1.4)
+				end
+				self.NextIdle = CurTime() + (self.ReloadTime or self:SequenceDuration())
+				self.NextReload = self.NextIdle
+				
+				self.AmmoAdded = math.min(self.Primary.ClipSize - ammo, available)
+				self.Reloading = true
+				
+				if self.ReloadSound and SERVER then
+					umsg.Start("PlayTFWeaponWorldReload")
+						umsg.Entity(self)
+					umsg.End()
+				end
+				
+				--self.reload_cur_start = CurTime()
+			end
+			--self:SetNextPrimaryFire( CurTime() + ( self.Primary.Delay || 0.25 ) + 1.4 )
+			--self:SetNextSecondaryFire( CurTime() + ( self.Primary.Delay || 0.25 ) + 1.4 )
+			return true
+		end
+	end
+end
+
+function SWEP:Think()
+	if self.Owner:GetInfoNum("tf_robot", 0) == 1 then
 		self:SetHoldType("ITEM1")
 	end
-	return false
+	self:TFViewModelFOV()
+	self:TFFlipViewmodel()
+	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat() - GetConVar("tf_weapon_deploy_speed"):GetInt(), 2)
+	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat(),2)
+	
+	if SERVER and self.NextReplayDeployAnim then
+		if CurTime() > self.NextReplayDeployAnim then
+			--MsgFN("Replaying deploy animation %d", self.VM_DRAW)
+			timer.Simple(0.1, function() self:SendWeaponAnim(self.VM_DRAW) end)
+			self.NextReplayDeployAnim = nil
+		end
+	end
+	
+	if not game.SinglePlayer() or SERVER then
+		if self.NextIdle and CurTime()>=self.NextIdle then
+			self:SendWeaponAnim(self.VM_IDLE)
+			self.NextIdle = nil
+		end
+		
+		if self.RequestedReload then
+			self:Reload()
+		end
+	end
+	
+
+
+	if not self.IsDeployed and self.NextDeployed and CurTime()>=self.NextDeployed then
+		self.IsDeployed = true
+		self.CanInspect = true  
+		self:CheckAutoReload()
+	end
+	
+	if self.IsDeployed then
+		self.CanInspect = true
+	end
+			
+	//print(deployspeed)
+	
+	if self.NextReload and CurTime()>=self.NextReload then
+		self:SetClip1(self:Clip1() + self.AmmoAdded)
+		
+		if not self.ReloadSingle and self.ReloadDiscardClip then
+			self.Owner:RemoveAmmo(self.Primary.ClipSize, self.Primary.Ammo, false)
+		else
+			self.Owner:RemoveAmmo(self.AmmoAdded, self.Primary.Ammo, false)
+		end
+		
+		self.Delay = -1
+		self.QuickDelay = -1
+		
+		if self:Clip1()>=self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo)==0 then
+			-- Stop reloading
+			self.Reloading = false
+			self.CanInspect = true
+			if self.ReloadSingle then
+				--self:SendWeaponAnim(ACT_RELOAD_FINISH)
+				self:SendWeaponAnim(self.VM_RELOAD_FINISH)
+				self.CanInspect = true
+				--self.Owner:SetAnimation(10001) -- reload finish
+				self.Owner:DoAnimationEvent(ACT_SMG2_FIRE2, true)
+				self.NextIdle = CurTime() + self:SequenceDuration()
+			else
+				self:SendWeaponAnim(self.VM_IDLE)
+				self.NextIdle = nil
+			end
+			self.NextReload = nil
+		else
+			self:SendWeaponAnim(self.VM_RELOAD)
+			--self.Owner:SetAnimation(10000)	
+			if SERVER then	
+			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_SECONDARY_LOOP, true)
+			end
+	
+			if self.ReloadTime == 0.2 then
+				self.Owner:GetViewModel():SetPlaybackRate(2)
+			end
+			self.NextReload = CurTime() + (self.ReloadTime)
+				
+			if self.ReloadSound and SERVER then
+				umsg.Start("PlayTFWeaponWorldReload")
+					umsg.Entity(self)
+				umsg.End()
+			end
+			
+		end
+	end
+	
+	if self.NextReloadStart and CurTime()>=self.NextReloadStart then
+		self:SendWeaponAnim(self.VM_RELOAD)
+		--self.Owner:SetAnimation(10000) -- reload loop
+		if SERVER then	
+			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_SECONDARY_LOOP, true)
+		end	
+		if self.ReloadTime == 0.2 then
+			self.Owner:GetViewModel():SetPlaybackRate(2)
+		end
+		self.NextReload = CurTime() + (self.ReloadTime)
+		
+		self.AmmoAdded = 1
+		
+		if self.ReloadSound and SERVER then
+			umsg.Start("PlayTFWeaponWorldReload")
+				umsg.Entity(self)
+			umsg.End()
+		end
+		
+		self.NextReloadStart = nil
+	end
+	
+	self:Inspect()
 end
+
+

@@ -3129,7 +3129,7 @@
 			"mouse_pressed_sound"	"ui/item_hat_pickup.wav"
 			"drop_sound"		"ui/item_hat_pickup.wav"
 		}
-		"140"
+		"415"
 		{
 			"name"	"The Reserve Shooter"
 			"first_sale_date"	"2011/03/23"
@@ -3162,7 +3162,7 @@
 			"min_ilevel"	"10"
 			"max_ilevel"	"10"
 			"attach_to_hands"	"1"
-			"image_inventory"	"backpack/weapons/c_models/c_reserve_shooter/c_reserve_shooter"
+			"image_inventory"	"backpack/workshop/weapons/c_models/c_reserve_shooter/c_reserve_shooter_large"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_reserve_shooter/c_reserve_shooter.mdl"
@@ -3173,8 +3173,8 @@
 			}
 			"visuals"
 			{
-				"sound_single_shot"	"weapons/reserve_shooter_02.wav"
-				"sound_burst"		"weapons/reserve_shooter_02_crit.wav"
+				"sound_single_shot"	"Weapon_Reserve_Shooter.Single"
+				"sound_burst"		"Weapon_Reserve_Shooter.SingleCrit"
 				"muzzle_flash"	"muzzle_shotgun"
 				"tracer_effect"	"bullet_shotgun_tracer01"
 			}

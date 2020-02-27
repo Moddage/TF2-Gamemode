@@ -8,7 +8,8 @@ Criterion "EngineerNotKillSpeech" "EngineerKillSpeech" "!=1" "required" weight 0
 Criterion "EngineerNotKillSpeechMelee" "EngineerKillSpeechMelee" "!=1" "required" weight 0
 Criterion "EngineerNotSaidHealThanks" "EngineerSaidHealThanks" "!=1" "required"
 Criterion "IsHelpCapEngineer" "EngineerHelpCap" "1" "required" weight 0
-
+Criterion "IsEngyFistSwung" "EngyFistSwung" "1" "required" weight 0
+Criterion "IsNotEngyFistSwung" "EngyFistSwung" "!=1" "required" weight 0
 
 Response PlayerCloakedSpyDemomanEngineer
 {
@@ -39,7 +40,34 @@ Rule PlayerCloakedSpyHeavyEngineer
 	criteria ConceptPlayerCloakedSpy IsEngineer IsOnHeavy
 	Response PlayerCloakedSpyHeavyEngineer
 }
+Response EngySwingFistStart
+{
+	scene "scenes/player/Engineer/low/3589.vcd"
+	scene "scenes/player/Engineer/low/3590.vcd"
+	scene "scenes/player/Engineer/low/3591.vcd"
+}
+Rule EngySwingFistStart
+{
+	criteria ConceptFireWeapon 20PercentChance WeaponIsRobotArm IsEngineer EngineerNotKillSpeech IsNotDominating
+	Response EngySwingFistStart
+}
 
+Response EngySwingFist
+{
+	scene "scenes/player/Engineer/low/3592.vcd"
+	scene "scenes/player/Engineer/low/3594.vcd"
+	scene "scenes/player/Engineer/low/3703.vcd"
+}
+Rule EngySwingFist
+{
+	criteria ConceptKilledPlayer WeaponIsRobotArm IsEngineer
+	Response EngySwingFist
+}
+Rule MeleeDareCombatEngineerSlinger
+{
+	criteria ConceptPlayerBattleCry WeaponIsRobotArm IsEngineer IsCrosshairEnemy
+	Response MeleeDareCombatEngineer
+}	
 Response PlayerCloakedSpyMedicEngineer
 {
 	scene "scenes/Player/Engineer/low/60.vcd" 
@@ -90,6 +118,18 @@ Rule PlayerCloakedSpySoldierEngineer
 	Response PlayerCloakedSpySoldierEngineer
 }
 
+Response KillSpyEngineer
+{
+	scene "scenes/player/Engineer/low/3592.vcd"
+	scene "scenes/player/Engineer/low/3594.vcd"
+	scene "scenes/player/Engineer/low/3703.vcd"
+}
+Rule KillSpyEngineer
+{
+	criteria ConceptKilledPlayer IsWeaponMelee IsEngineer IsVictimSpy
+	ApplyContext "EngineerKillSpeech:1:5"
+	Response KillSpyEngineer
+}
 Response PlayerCloakedSpySpyEngineer
 {
 	scene "scenes/Player/Engineer/low/58.vcd" 
@@ -129,6 +169,42 @@ Rule PlayerTeleporterDownEngineer
 {
 	criteria ConceptLostObject IsTeleporter IsEngineer
 	Response PlayerTeleporterDownEngineer
+}
+
+Response MeleeDareCombatEngineer
+{
+	scene "scenes/Player/Engineer/low/163.vcd"
+	scene "scenes/Player/Engineer/low/166.vcd"
+	scene "scenes/Player/Engineer/low/172.vcd"
+	scene "scenes/Player/Engineer/low/169.vcd"
+	scene "scenes/Player/Engineer/low/174.vcd"
+	scene "scenes/Player/Engineer/low/178.vcd"
+	scene "scenes/Player/Engineer/low/3619.vcd" 
+	scene "scenes/Player/Engineer/low/3620.vcd" 
+	scene "scenes/Player/Engineer/low/3695.vcd" 
+}
+Response PlayerJarateHitEngineer
+{
+	scene "scenes/Player/Engineer/low/163.vcd"
+	scene "scenes/Player/Engineer/low/166.vcd"
+	scene "scenes/Player/Engineer/low/172.vcd"
+	scene "scenes/Player/Engineer/low/169.vcd"
+	scene "scenes/Player/Engineer/low/174.vcd"
+	scene "scenes/Player/Engineer/low/178.vcd"
+	scene "scenes/Player/Engineer/low/3619.vcd" 
+	scene "scenes/Player/Engineer/low/3620.vcd" 
+	scene "scenes/Player/Engineer/low/3695.vcd" 
+}
+Rule MeleeDareCombatEngineer
+{
+	criteria ConceptPlayerBattleCry IsWeaponMelee IsEngineer IsCrosshairEnemy
+	Response MeleeDareCombatEngineer
+}
+
+Rule PlayerJarateHitEngineer
+{
+	criteria ConceptJarateHit IsEngineer
+	Response PlayerJarateHitEngineer
 }
 
 
@@ -721,7 +797,13 @@ Rule PlayerPainEngineer
 
 Response PlayerStillOnFireEngineer
 {
-	scene "scenes/Player/Engineer/low/1931.vcd" 
+	scene "scenes/Player/Engineer/low/133.vcd" 
+	scene "scenes/Player/Engineer/low/134.vcd" 
+	scene "scenes/Player/Engineer/low/135.vcd" 
+	scene "scenes/Player/Engineer/low/1254.vcd" 
+	scene "scenes/Player/Engineer/low/1255.vcd" 
+	scene "scenes/Player/Engineer/low/1256.vcd" 
+	scene "scenes/Player/Engineer/low/1257.vcd" 
 }
 Rule PlayerStillOnFireEngineer
 {

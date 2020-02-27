@@ -41,7 +41,7 @@ end
 
 if CLIENT then
 
-ENT.GlobalCustomHUD = {HudDemomanCharge = true}
+ENT.GlobalCustomHUD = {HudSpyCloak = true}  
 
 function ENT:Think()
 	self.BaseClass.Think(self)

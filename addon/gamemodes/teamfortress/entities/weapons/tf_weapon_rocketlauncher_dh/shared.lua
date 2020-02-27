@@ -22,6 +22,7 @@ SWEP.MuzzleEffect = "muzzle_pipelauncher"
 
 SWEP.ShootSound = Sound("Weapon_RPG_DirectHit.Single")
 SWEP.ShootCritSound = Sound("Weapon_RPG_DirectHit.SingleCrit")
+SWEP.ReloadSound = Sound("weapons/rocket_reload.wav")
 SWEP.CustomExplosionSound = Sound("Weapon_RPG_DirectHit.Explode")
 
 SWEP.Primary.ClipSize		= 4

@@ -745,7 +745,7 @@ if SERVER then
 function CC_GiveItem(pl,_,args)
 	local resupply = nil
 
-	if GetConVar("tf_competitive"):GetBool() then
+	if GetConVar("tf_competitive"):GetBool() and game.GetMap() != "gm_bigcity" then --Disable give item on other maps
 		for k, v in pairs(ents.FindByClass("prop_dynamic")) do
 			if v:GetModel() == "models/props_gameplay/resupply_locker.mdl" and v:GetPos():Distance(pl:GetPos()) <= 100 then
 				resupply = v

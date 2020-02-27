@@ -119,8 +119,8 @@ function SWEP:OnDrop()
 		phys:SetMass(10)
 		phys:Wake()
 		if self.DropVelocity then
-			phys:SetVelocity(self.DropVelocity)
-		end
+			phys:SetVelocity(self.DropVelocity)  
+		end 
 	end
 	
 	timer.Stop("AutoReload")

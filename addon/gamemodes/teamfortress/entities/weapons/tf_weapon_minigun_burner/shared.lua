@@ -107,11 +107,10 @@ PrecacheParticleSystem("bullet_tracer01_red_crit")
 PrecacheParticleSystem("bullet_tracer01_blue")
 PrecacheParticleSystem("bullet_tracer01_blue_crit")
 
-SWEP.BaseDamage = 5
+SWEP.BaseDamage = 3
 SWEP.DamageRandomize = 0
-SWEP.MaxDamageRampUp = 0.5
-SWEP.MaxDamageFalloff = 0.5
-
+SWEP.MaxDamageRampUp = 1
+SWEP.MaxDamageFalloff = 0.2
 SWEP.BulletsPerShot = 6
 SWEP.BulletSpread = 0.08
 
@@ -275,6 +274,7 @@ function SWEP:PrimaryAttack(vampire)
 			self.SpinSound:Stop()
 			self.ShootSoundLoop:Stop()
 			self.ShootCritSoundLoop:Play()
+
 			if self.Primary.Delay == 0.06 then
 				self.ShootCritSoundLoop:ChangePitch(120)
 			end
@@ -287,6 +287,7 @@ function SWEP:PrimaryAttack(vampire)
 			self.SpinSound:Stop()
 			self.ShootCritSoundLoop:Stop()
 			self.ShootSoundLoop:Play( "Weapon_Tomislav.ShootLoop", self.Owner:GetPos(), 95, 95, "VOL_NORM")
+
 			if self.Primary.Delay == 0.06 then
 				self.ShootSoundLoop:ChangePitch(120)
 			end
@@ -297,7 +298,6 @@ function SWEP:PrimaryAttack(vampire)
 	
 	self:SendWeaponAnim(self.VM_PRIMARYATTACK)
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
-	
 	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
 	self:TakePrimaryAmmo(1)
 	self:RustyBulletHole()

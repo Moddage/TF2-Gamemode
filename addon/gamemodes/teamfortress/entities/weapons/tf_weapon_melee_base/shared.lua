@@ -21,14 +21,14 @@ SWEP.HitFlesh = Sound("")
 SWEP.HitRobot = Sound("MVM_Weapon_Default.HitFlesh")
 SWEP.HitWorld = Sound("")
 
-SWEP.MeleeAttackDelay = 0.25
+SWEP.MeleeAttackDelay = 0.2
 --SWEP.MeleeAttackDelayCritical = 0.25
-SWEP.MeleeRange = 50
+SWEP.MeleeRange = 77
 
 SWEP.MaxDamageRampUp = 0
 SWEP.MaxDamageFalloff = 0
 
-SWEP.CriticalChance = 15
+SWEP.CriticalChance = 27
 SWEP.HasThirdpersonCritAnimation = false
 SWEP.NoHitSound = false
 
@@ -154,6 +154,17 @@ function SWEP:MeleeHitSound(tr)
 				
 					sound.Play(self.HitFlesh, self:GetPos())
 					
+				elseif tr.Entity.Base == "npc_tf2base" or tr.Entity.Base == "npc_demo_red" or tr.Entity.Base == "npc_hwg_red" or tr.Entity.Base == "npc_soldier_red" or tr.Entity.Base == "npc_sniper_red" or tr.Entity.Base == "npc_spy_red" or tr.Entity.Base == "npc_scout_red" or tr.Entity.Base == "npc_pyro_red" or tr.Entity.Base == "npc_medic_red" or tr.Entity.Base == "npc_engineer_red" then
+				
+					sound.Play(self.HitFlesh, self:GetPos())
+					
+				elseif tr.Entity:GetClass() == "tf_zombie" then 				
+					sound.Play(self.HitFlesh, self:GetPos())
+					
+				elseif tr.Entity.Base == "npc_tf2base_mvm" or tr.Entity.Base == "npc_heavy_mvm" then
+				
+					sound.Play(self.HitRobot, self:GetPos())
+					
 				end
 					
 			end
@@ -263,7 +274,12 @@ function SWEP:MeleeAttack(dummy)
 					self.Owner:SetSkin(1) 
 				else 
 					self.Owner:SetSkin(0) 
-				end 
+				end
+				umsg.Start("PlayerClassChanged")
+					umsg.Long(self.Owner:EntIndex())
+					umsg.String("spy")
+					umsg.String("spy")
+				umsg.End()				
 				self.Owner:EmitSound("player/spy_disguise.wav", 65, 100) 
 			end
 		end
@@ -530,7 +546,7 @@ function SWEP:Think()
 	self:CallBaseFunction("Think")
 	
 	--if self.NextMeleeAttack and CurTime()>=self.NextMeleeAttack then
-	
+
 	while self.NextMeleeAttack and self.NextMeleeAttack[1] and CurTime() > self.NextMeleeAttack[1] do
 		self:MeleeAttack()
 		table.remove(self.NextMeleeAttack, 1)

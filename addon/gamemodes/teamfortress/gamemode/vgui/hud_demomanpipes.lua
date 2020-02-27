@@ -74,6 +74,7 @@ function PANEL:Paint()
 	
 	local vis_pipes = IsCustomHUDVisible("HudDemomanPipes")
 	local vis_charge = IsCustomHUDVisible("HudDemomanCharge")
+	local vis_cloak = IsCustomHUDVisible("HudSpyCloak")
 	
 	if not vis_pipes and not vis_charge then return end
 	
@@ -101,6 +102,17 @@ function PANEL:Paint()
 		tf_draw.ShadedText(NumPipes)
 	elseif vis_charge then
 		ChargeLabel.text = tf_lang.GetRaw("#TF_Charge")
+		draw.Text(ChargeLabel)
+		
+		surface.SetDrawColor(Colors.TransparentYellow)
+		surface.DrawRect(25*Scale, 23*Scale, 40*Scale, 6*Scale)
+		
+		if self.Progress > 0 then
+			surface.SetDrawColor(self.MeterColor)
+			surface.DrawRect(25*Scale, 23*Scale, 40*Scale*self.Progress, 6*Scale)
+		end
+	elseif vis_cloak then
+		ChargeLabel.text = "CLOAK"
 		draw.Text(ChargeLabel)
 		
 		surface.SetDrawColor(Colors.TransparentYellow)

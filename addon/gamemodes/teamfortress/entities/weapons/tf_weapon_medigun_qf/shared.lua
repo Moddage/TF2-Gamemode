@@ -82,7 +82,6 @@ end
 if CLIENT then
 
 SWEP.PrintName			= "Medigun"
-SWEP.Slot				= 1
 SWEP.CustomHUD = {HudMedicCharge = true}
 
 --[[
@@ -177,7 +176,7 @@ PrecacheParticleSystem("medicgun_invulnstatus_fullcharge_red")
 PrecacheParticleSystem("medicgun_invulnstatus_fullcharge_blue")
 
 SWEP.Base				= "tf_weapon_gun_base"
-
+SWEP.Slot				= 1
 SWEP.ViewModel			= "models/weapons/v_models/v_medigun_medic.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_medigun.mdl"
 SWEP.Crosshair = "tf_crosshair5"

@@ -2,9 +2,9 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+SWEP.Slot				= 0 
 if CLIENT then
 	SWEP.PrintName			= "Shotgun"
-SWEP.Slot				= 0
 end
 
 SWEP.Base				= "tf_weapon_gun_base"
@@ -31,9 +31,9 @@ PrecacheParticleSystem("bullet_shotgun_tracer01_blue")
 PrecacheParticleSystem("bullet_shotgun_tracer01_blue_crit")
 PrecacheParticleSystem("muzzle_shotgun")
 
-SWEP.BaseDamage = 5
+SWEP.BaseDamage = 6
 SWEP.DamageRandomize = 0.3
-SWEP.MaxDamageRampUp = 0.2
+SWEP.MaxDamageRampUp = 0.1
 
 SWEP.BulletsPerShot = 10
 SWEP.BulletSpread = 0.0675
@@ -61,13 +61,15 @@ SWEP.HoldType = "PRIMARY"
 
 SWEP.HoldTypeHL2 = "shotgun"
 
+function SWEP:Think()
+	if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_trenchgun/c_trenchgun.mdl" then
+		if self:Health() <= self.Owner:GetMaxHealth() then
+			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay - self.Owner:Health() / 4 )
+		end
+	end
+	self:CallBaseFunction("Think")
+end
+
 function SWEP:PrimaryAttack()
 	self:CallBaseFunction("PrimaryAttack")
-	if self.Primary.Delay >= CurTime() then
-	timer.Simple(0.2, function()
-		local fx = EffectData()
-		fx:SetOrigin(self.Owner:GetPos() + Vector(0, 28, 50))
-		util.Effect("ShotgunShellEject", fx)
-	end)
-	end
 end

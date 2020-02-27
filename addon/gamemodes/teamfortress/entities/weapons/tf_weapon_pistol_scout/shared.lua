@@ -2,9 +2,9 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+SWEP.Slot				= 1
 if CLIENT then
 	SWEP.PrintName			= "Pistol"
-SWEP.Slot				= 1
 end
 
 SWEP.Base				= "tf_weapon_gun_base"

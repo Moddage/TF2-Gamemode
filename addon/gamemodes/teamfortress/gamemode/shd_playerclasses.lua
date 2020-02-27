@@ -358,7 +358,7 @@ end
 -- Shared
 
 function meta:GetPlayerClass()
-	return self:GetNWString("PlayerClass") or ""
+	return self:GetNWString("PlayerClass")
 end
 
 function meta:GetPlayerClassTable()

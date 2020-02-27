@@ -31,18 +31,55 @@ randompyroubertaunt =
 	"vo/mvm/norm/Pyro_mvm_specialcompleted01.mp3",
 	"vo/mvm/norm/Pyro_mvm_laughlong01.mp3",
 }
-
 function ENT:Initialize()
-	self.Team	 = 0
-	self.Players = {}
-	self:SetTrigger(true)
-end
+	local pos = self:GetPos()
+	local mins, maxs = self:WorldSpaceAABB() -- https://forum.facepunch.com/gmoddev/lmcw/Brush-entitys-ent-GetPos/1/#postdwfmq
+	pos = (mins + maxs) * 0.5
+
+	self.Team = self.Team or 0		
+	self.TeamNum = self.TeamNum or 0
+	self.Pos = pos 
+end 
 
 function ENT:KeyValue(key,value)
+	key = string.lower(key)
+	
+	if key=="teamnum" then
+		local t = tonumber(value)
+		
+		if t==0 then
+			self.TeamNum = 0
+		elseif t==2 then
+			self.TeamNum = TEAM_RED
+		elseif t==3 then
+			self.TeamNum = TEAM_BLU
+		end
 
-	if ( key == "teamnum" ) then
 		self.Team = tonumber(value)
-		return false
+	end
+	print(key, value, tonumber(value), self.Team)
+end
+
+function ENT:StartTouch(ent) 
+end
+
+function ENT:Think()
+	if game.GetMap() != "achievement_engineer_idle_a1" then
+		for _,ent in ipairs(ents.FindInSphere(self.Pos, 100)) do
+			if self.TeamNum == TEAM_RED then
+				if ent:IsPlayer() and ent:Team() == TEAM_BLU then
+					print(self.Team)
+					ent:SetLocalVelocity( -ent:GetVelocity() * 4  )
+					ent:EmitSound("player/suit_denydevice.wav", 50)
+				end
+			end
+			if self.TeamNum == TEAM_BLU then 
+				if ent:IsPlayer() and ent:Team() == TEAM_RED then
+					ent:SetLocalVelocity( -ent:GetVelocity() * 4 )
+					ent:EmitSound("player/suit_denydevice.wav", 50)
+				end
+			end
+		end
 	end
 end
 
@@ -63,7 +100,7 @@ function ENT:StartTouch(ent)
 				end
 			end)
 		end 
-		if ent:Team() == TEAM_BLU and ent:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then 
+		if ent:Team() == TEAM_BLU and ent:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then 
 			timer.Create("LoopGod", 0.001, 0, function()
 				if self:GetName() == "red_respawnroom1" or self:GetName() == "red_respawnroom2" then
 					ent:TakeDamage(50000)

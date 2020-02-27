@@ -28,6 +28,11 @@ function TeamSelection()
 		TeamNeu:SetPos( 0, 85 )
 		TeamNeu:SetSize( 130, 20 )
 		TeamNeu:SetText( "Neutral Team" )
+		local TeamFriend = vgui.Create( "DButton", teamframe )
+		function TeamFriend.DoClick() RunConsoleCommand( "changeteam", 5 ) teamframe:Close() end
+		TeamFriend:SetPos( 0, 45 )
+		TeamFriend:SetSize( 130, 20 )
+		TeamFriend:SetText( "Friendly Team" )
 	end
 	
 end

@@ -4,11 +4,24 @@ end
 
 if CLIENT then
 	SWEP.PrintName			= "Fire Axe"
-SWEP.Slot				= 2
 end
-
+sound.Add( {
+	name = "Taunt.Pyro03RockStar",
+	channel = CHAN_WEAPON,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_rockstar.wav"	}
+} )
+sound.Add( {
+	name = "Taunt.Pyro03RockStarEnd",
+	channel = CHAN_WEAPON,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_rockstar_end.wav"	}
+} )
 SWEP.Base				= "tf_weapon_melee_base"
 
+SWEP.Slot				= 2
 SWEP.ViewModel			= "models/weapons/v_models/v_fireaxe_pyro.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_fireaxe.mdl"
 SWEP.Crosshair = "tf_crosshair2"

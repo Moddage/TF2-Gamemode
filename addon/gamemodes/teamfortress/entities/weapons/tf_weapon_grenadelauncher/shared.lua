@@ -3,10 +3,10 @@ if SERVER then
 	
 end
 
+SWEP.Slot				= 0
 if CLIENT then
 
 SWEP.PrintName			= "Grenade Launcher"
-SWEP.Slot				= 0
 
 function SWEP:InitializeCModel()
 	self:CallBaseFunction("InitializeCModel")
@@ -215,7 +215,13 @@ function SWEP:InspectAnimCheck()
 self.VM_INSPECT_START = ACT_PRIMARY_VM_INSPECT_START
 self.VM_INSPECT_IDLE = ACT_PRIMARY_VM_INSPECT_IDLE
 self.VM_INSPECT_END = ACT_PRIMARY_VM_INSPECT_END
-	
+
+		if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_lochnload/c_lochnload.mdl" then
+			self.VM_RELOAD = ACT_PRIMARY_VM_RELOAD_2
+			self.ShootSound = Sound("weapons/loch_n_load_shoot.wav")
+			self.ShootSoundCrit = Sound("weapons/loch_n_load_shoot_crit.wav")
+			self.Primary.ClipSize		= 3
+		end
 	if self:GetItemData().model_player == "models/weapons/c_models/c_lochnload/c_lochnload.mdl" then
 		self.ShootSound = Sound("weapons/loch_n_load_shoot.wav")
 		self.ShootCritSound = Sound("weapons/loch_n_load_shoot_crit.wav")

@@ -11,8 +11,8 @@ PLAYERSTATE_JARATED		= 32
 PLAYERSTATE_EYELANDER	= 64
 PLAYERSTATE_BLEEDING	= 128
 PLAYERSTATE_MILK		= 256
+PLAYERSTATE_STUNNED		= 512
 --[[
-= 512
 = 1024
 = 2048
 = 4096
@@ -233,6 +233,10 @@ PlayerStates = {
 	},
 	[PLAYERSTATE_OVERHEALED] = {
 		particle = "overhealedplayer_%s_pluses",
+	},
+	[PLAYERSTATE_STUNNED] = {
+		particle = "peejar_drips",
+		color = {0,0,-255,0},
 	},
 	[PLAYERSTATE_EYELANDER] = {
 		particle = "eye_powerup_%s_lvl_%d",

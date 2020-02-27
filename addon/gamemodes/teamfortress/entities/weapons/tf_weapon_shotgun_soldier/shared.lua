@@ -8,10 +8,143 @@ sound.Add( {
 	level = 95,
 	sound = { "weapons/shotgun/shotgun_reload1.wav", "weapons/shotgun/shotgun_reload2.wav", "weapons/shotgun/shotgun_reload3.wav"	}
 } )
-
+sound.Add( {
+	name = "Taunt.SoldierShotgunFire",
+	channel = CHAN_WEAPON,
+	volume = 1.0,
+	level = 95,
+	sound = { "weapons/shotgun_shoot.wav"	}
+} )
+sound.Add( {
+	name = "Taunt.SoldierShotgunCockBack",
+	channel = CHAN_WEAPON,
+	volume = 1.0,
+	level = 95,
+	sound = { "weapons/shotgun_cock_back.wav"	}
+} )
+sound.Add( {
+	name = "Taunt.SoldierShotgunCockForward",
+	channel = CHAN_WEAPON,
+	volume = 1.0,
+	level = 95,
+	sound = { "weapons/shotgun_cock_forward.wav"	}
+} )
+sound.Add( {
+	name = "Taunt.SoldierTaps",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "misc/taps_02.wav"	}
+} )
+sound.Add( {
+	name = "Taunt.TauntChestThumpYell",
+	channel = CHAN_VOICE,
+	volume = 1.0,
+	level = 95,
+	sound = { "vo/soldier_DirectHitTaunt02.wav"	}
+} )
+sound.Add( {
+	name = "Taunt.SoldierChestThump",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_chest_thump.wav"	}
+} )
+sound.Add( {
+	name = "Taunt.SoldierChestThumpLow",
+	channel = CHAN_PLAYER,
+	volume = 0.5,
+	level = 95,
+	sound = { "player/taunt_chest_thump.wav"	}
+} )
+sound.Add( {
+	name = "Taunt.SoldierChestThumpAlt",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_chest_thump_alt.wav"	}
+} )
+sound.Add( {
+	name = "Selection.SoldierLauncherGrab",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_grenade_catch.wav"	}
+} )
+sound.Add( {
+	name = "Selection.SoldierLauncherGrab",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_grenade_catch.wav"	}
+} )
+sound.Add( {
+	name = "Selection.SoldierClothesRustle",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_clothes_rustle.wav"	}
+} )
+sound.Add( {
+	name = "Selection.SoldierEquipment",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_equipment_jingle3.wav"	}
+} )
+sound.Add( {
+	name = "Selection.SoldierLauncherSetStart",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_equipment_gun2.wav"	}
+} )
+sound.Add( {
+	name = "Selection.SoldierLauncherHitGround",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_launcher_hit.wav"	}
+} )
+sound.Add( {
+	name = "Selection.SoldierLauncherSetStop",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "player/taunt_equipment_gun1.wav"	}
+} )
+sound.Add( {
+	name = "Weapon_StickyBombLauncher.BoltBack",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "weapons/flaregun_boltback.wav"	}
+} )
+sound.Add( {
+	name = "Weapon_StickyBombLauncher.BoltForward",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "weapons/flaregun_boltforward.wav"	}
+} )
+sound.Add( {
+	name = "Weapon_StickyBombLauncher.WorldReload",
+	channel = CHAN_PLAYER,
+	volume = 1.0,
+	level = 95,
+	sound = { "weapons/flaregun_worldreload.wav"	}
+} )
+sound.Add( {
+	name = "Taunt.SoldierKnuckleCrack",
+	channel = CHAN_PLAYER,
+	volume = 0.25,
+	level = 95,
+	sound = { "player/taunt_knuckle_crack.wav"	}
+} )
+SWEP.Slot				= 1
 if CLIENT then
 	SWEP.PrintName			= "Shotgun"
-SWEP.Slot				= 1
+
 end
 
 SWEP.Base				= "tf_weapon_gun_base"
@@ -34,9 +167,9 @@ PrecacheParticleSystem("bullet_shotgun_tracer01_blue")
 PrecacheParticleSystem("bullet_shotgun_tracer01_blue_crit")
 PrecacheParticleSystem("muzzle_shotgun")
 
-SWEP.BaseDamage = 5
-SWEP.DamageRandomize = 0.3
-SWEP.MaxDamageRampUp = 0.2
+SWEP.BaseDamage = 6
+SWEP.DamageRandomize = 0.5
+SWEP.MaxDamageRampUp = 0.5
 
 SWEP.BulletsPerShot = 10
 SWEP.BulletSpread = 0.0675

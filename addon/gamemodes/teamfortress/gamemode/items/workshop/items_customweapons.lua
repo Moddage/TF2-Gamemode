@@ -531,15 +531,7 @@
 			"max_ilevel"	"5"
 			"used_by_classes"
 			{
-				"scout"		"1"
-				"soldier"	"1"
-				"pyro"		"1"
-				"demoman"	"1"
 				"heavy"		"1"
-				"engineer"	"1"
-				"medic"		"1"
-				"sniper"	"1"
-				"spy"		"1"
 			}
 			"attributes"
 			{
@@ -574,7 +566,7 @@
 			}
 			"visuals"
 			{
-				"sound_melee_hit"		"Weapon_Wrench.HitWorld"
+				"sound_melee_hit"		"Weapon_Wrench.HitFlesh"
 				"sound_melee_hit_world"	"Weapon_Wrench.HitWorld"
 				"sound_melee_hit_mvm_robot" "Weapon_Wrench.HitFlesh"
 			}			
@@ -647,6 +639,214 @@
 			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 			"item_set"	"polycount_pyro"
+		}
+
+		"10000018"
+		{
+			"name"	"Leadpipe"
+			"item_class"	"tf_weapon_allclass"
+			"capabilities"
+			{
+				"nameable"		"1"
+				"can_gift_wrap" 	"1"
+			}
+			"item_logname"	"kukri"
+			"item_iconname"	"kukri"
+			"show_in_armory"	"1"
+			"item_type_name"	"#TF_Weapon_Club"
+			"item_name"	"Heavy's Hammer"
+			"item_slot"	"melee"
+			"image_inventory"	"backpack/player/items/all_class/all_pan"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/weapons/w_models/w_leadpipe.mdl"
+			"attach_to_hands"	"0"
+			"item_quality"	"unique"
+			"propername"	"0"
+			"min_ilevel"	"5"
+			"max_ilevel"	"5"
+			"used_by_classes"
+			{
+				"heavy"		"1"
+			}
+			"attributes"
+			{
+				"always tradable"
+				{
+					"attribute_class"	"always_tradable"
+					"value"				"1"
+				}		
+				"minicrit vs wet player"
+				{
+					"attribute_class"	"or_minicrit_vs_playercond_burning"
+					"value" "1"
+                }
+				"damage bonus"
+				{
+					"attribute_class"	"mult_dmg"
+					"value"	"1.5"
+				}	
+			}
+			"allowed_attributes"
+			{
+				"all_items"	"1"
+				"dmg_reductions" "1"
+				"player_health" "1"
+				"attrib_healthregen" "1"
+				"player_movement" "1"
+				"attrib_dmgdone"	"1"
+				"attrib_critboosts"	"1"
+				"attrib_onhit_slow" "1"
+				"attrib_vs_burning" "1"
+				"attrib_firerate" "1"
+			}
+			"visuals"
+			{
+				"sound_melee_hit"		"Weapon_Wrench.HitFlesh"
+				"sound_melee_hit_world"	"Weapon_Shovel.HitWorld"
+				"sound_melee_hit_mvm_robot" "Weapon_Wrench.HitFlesh"
+			}			
+			"mouse_pressed_sound"	"ui/item_metal_weapon_pickup.wav"
+			"drop_sound"		"ui/item_metal_weapon_drop.wav"
+        }
+
+		"10000019"
+		{
+			"name"	"Heavy's Reserve Shooter"
+			"first_sale_date"	"2011/03/23"
+			"item_class"	"tf_weapon_shotgun_soldier"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+				"can_gift_wrap" 	"1"
+				"can_craft_count"	"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_be_equipped_by_soldier_or_demo"	"1"
+				"can_deal_critical_damage"	"1"
+				"can_deal_mvm_peusermessageration_damage"	"1"
+				"can_deal_long_distance_damage"	"1"
+				"can_deal_taunt_damage"		"1"
+			}
+			"item_type_name"	"#TF_Weapon_Shotgun"
+			"item_name"	"#TF_ReserveShooter"
+			"item_slot"	"secondary"
+			"item_logname"	"reserve_shooter"
+			"item_iconname"	"reserve_kill"
+			"show_in_armory"	"1"
+			"item_quality"	"unique"
+			"propername"	"0"
+			"min_ilevel"	"10"
+			"max_ilevel"	"10"
+			"attach_to_hands"	"1"
+			"image_inventory"	"backpack/weapons/c_models/c_reserve_shooter/c_reserve_shooter"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/weapons/c_models/c_reserve_shooter/c_reserve_shooter.mdl"
+			"used_by_classes"
+			{
+				"heavy"	"1"
+			}
+			"visuals"
+			{
+				"sound_single_shot"	"Weapon_Reserve_Shooter.Single"
+				"sound_burst"		"Weapon_Reserve_Shooter.SingleCrit"
+				"muzzle_flash"	"muzzle_shotgun"
+				"tracer_effect"	"bullet_shotgun_tracer01"
+			}
+			"attributes"
+			{
+				"clip size penalty"
+				{
+					"attribute_class"	"mult_clipsize"
+					"value" "0.5"
+				}
+				"mod mini-crit airborne deploy"
+				{
+					"attribute_class"	"mini_crit_airborne_deploy"
+					"value" "3"
+				}
+				"deploy time decreased"
+				{
+					"attribute_class"	"mult_deploy_time"
+					"value"	"0.85"
+				}
+			}
+			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
+			"drop_sound"		"ui/item_heavy_gun_drop.wav"
+		}
+		"10000020"
+		{
+			"name"	"Engineer's Reserve Shooter"
+			"first_sale_date"	"2011/03/23"
+			"item_class"	"tf_weapon_shotgun_primary"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+				"can_gift_wrap" 	"1"
+				"can_craft_count"	"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_be_equipped_by_soldier_or_demo"	"1"
+				"can_deal_critical_damage"	"1"
+				"can_deal_mvm_peusermessageration_damage"	"1"
+				"can_deal_long_distance_damage"	"1"
+				"can_deal_taunt_damage"		"1"
+			}
+			"item_type_name"	"#TF_Weapon_Shotgun"
+			"item_name"	"#TF_ReserveShooter"
+			"item_slot"	"secondary"
+			"item_logname"	"reserve_shooter"
+			"item_iconname"	"reserve_kill"
+			"show_in_armory"	"1"
+			"item_quality"	"unique"
+			"propername"	"0"
+			"min_ilevel"	"10"
+			"max_ilevel"	"10"
+			"attach_to_hands"	"1"
+			"image_inventory"	"backpack/weapons/c_models/c_reserve_shooter/c_reserve_shooter"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/weapons/c_models/c_reserve_shooter/c_reserve_shooter.mdl"
+			"used_by_classes"
+			{
+				"engineer"	"1"
+			}
+			"visuals"
+			{
+				"sound_single_shot"	"Weapon_Reserve_Shooter.Single"
+				"sound_burst"		"Weapon_Reserve_Shooter.SingleCrit"
+				"muzzle_flash"	"muzzle_shotgun"
+				"tracer_effect"	"bullet_shotgun_tracer01"
+			}
+			"attributes"
+			{
+				"clip size penalty"
+				{
+					"attribute_class"	"mult_clipsize"
+					"value" "0.5"
+				}
+				"mod mini-crit airborne deploy"
+				{
+					"attribute_class"	"mini_crit_airborne_deploy"
+					"value" "3"
+				}
+				"deploy time decreased"
+				{
+					"attribute_class"	"mult_deploy_time"
+					"value"	"0.85"
+				}
+			}
+			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
+			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 	}
 	"attributes"

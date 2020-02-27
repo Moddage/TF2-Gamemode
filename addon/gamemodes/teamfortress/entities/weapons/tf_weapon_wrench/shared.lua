@@ -2,9 +2,9 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+SWEP.Slot				= 2
 if CLIENT then
 	SWEP.PrintName			= "Wrench"
-SWEP.Slot				= 2
 SWEP.GlobalCustomHUD = {HudAccountPanel = true}
 end
 
@@ -41,10 +41,52 @@ function SWEP:OnMeleeHit(tr)
 			if ent.IsTFBuilding and ent:IsFriendly(self.Owner) then
 				if ent.Sapped == true then
 					self.Owner:EmitSound("Weapon_Sapper.Removed")
+					ent:StopSound("TappedRobot")
+					timer.Stop("SapEnd"..ent:EntIndex())
+					timer.Stop("SapSentry2"..ent:EntIndex())
+					timer.Stop("SapSentry3"..ent:EntIndex())
+					ent.Model:SetPlaybackRate(2)
+					timer.Simple(2, function()
+						ent.Model:ResetSequence("idle")
+						ent:ResetSequence("idle")
+					end)
+					umsg.Start("Notice_EntityKilledEntity")
+						umsg.String("Sapper ("..ent.SappedBy:Nick()..")")
+						umsg.Short(GAMEMODE:EntityTeam(ent.SappedBy))
+						umsg.Short(GAMEMODE:EntityID(ent.SappedBy))
+						
+						umsg.String("wrench")
+						
+						umsg.String(GAMEMODE:EntityDeathnoticeName(self.Owner))
+						umsg.Short(GAMEMODE:EntityTeam(self.Owner))
+						umsg.Short(GAMEMODE:EntityID(self.Owner))
+						
+						
+						umsg.Bool(self.Owner.LastDamageWasCrit)
+					umsg.End()
+					
+					ent:StopSound("SappedRobot") 
+					if SERVER then
+						brokensapper = ents.Create("prop_physics")
+						brokensapper:SetPos(ent:GetPos() + Vector(math.random(10,40), math.random(10,40), math.random(50,70)))
+						brokensapper:SetModel("models/buildables/gibs/sapper_gib002.mdl")
+						brokensapper:Spawn()
+						brokensapper:Activate()
+						
+						brokensapper:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+						brokensapper2 = ents.Create("prop_physics")
+						brokensapper2:SetPos(ent:GetPos() + Vector(math.random(10,40), math.random(10,40), math.random(50,70)))
+						brokensapper2:SetModel("models/buildables/gibs/sapper_gib001.mdl")
+						brokensapper2:Spawn()
+						brokensapper2:Activate()
+						
+						brokensapper2:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+					end
 					ent.Sapped = false
 				end
 				if SERVER then
 
+					if ent.Sapped == true then return end
 					local m = ent:AddMetal(self.Owner, self.Owner:GetAmmoCount(TF_METAL))
 					if m > 0 then
 						self.Owner:EmitSound(self.HitBuildingSuccess)
@@ -61,7 +103,7 @@ function SWEP:OnMeleeHit(tr)
 			else
 				self:EmitSound(self.HitWorld)
 			end
-		elseif tr.Entity:IsPlayer() or tr.Entity:IsNPC() then
+		elseif tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity.Base == "npc_tf2base" then
 			self:EmitSound(self.HitFlesh)
 		else
 			self:EmitSound(self.HitWorld)
@@ -87,7 +129,7 @@ function SWEP:SecondaryAttack()
 						builder.MovedBuildingLevel = 3
 					end
 					v:Fire("Kill", "", 0.1)
-					self.Owner:ConCommand("move 2 0")
+					self.Owner:Move(2, 0)
 				end
 			elseif v:GetClass() == "obj_dispenser" then
 				if SERVER then
@@ -100,7 +142,7 @@ function SWEP:SecondaryAttack()
 						builder.MovedBuildingLevel = 3
 					end
 					v:Fire("Kill", "", 0.1)
-					self.Owner:ConCommand("move 0 0")
+					self.Owner:Move(0, 0)
 				end
 			elseif v:GetClass() == "obj_teleporter" and v:IsExit() != true then
 				if SERVER then
@@ -113,7 +155,7 @@ function SWEP:SecondaryAttack()
 						builder.MovedBuildingLevel = 3
 					end
 					v:Fire("Kill", "", 0.1)
-					self.Owner:ConCommand("move 1 0")
+					self.Owner:Move(1, 0)
 				end
 			elseif v:GetClass() == "obj_teleporter" and v:IsExit() != false then
 				if SERVER then
@@ -126,7 +168,7 @@ function SWEP:SecondaryAttack()
 						builder.MovedBuildingLevel = 3
 					end
 					v:Fire("Kill", "", 0.1)
-					self.Owner:ConCommand("move 1 1")
+					self.Owner:Move(1, 1)
 				end
 			end
 		end

@@ -7,6 +7,7 @@ local health_color = surface.GetTextureID("hud/health_color")
 local health_over_bg = surface.GetTextureID("hud/health_over_bg")
 local health_dead = surface.GetTextureID("hud/health_dead")
 local bleed_drop = surface.GetTextureID("vgui/bleed_drop")
+local slowed = surface.GetTextureID("vgui/slowed")
 
 local PANEL = {}
 
@@ -131,6 +132,18 @@ function PANEL:Paint()
 	if LocalPlayer():HasPlayerState(PLAYERSTATE_MILK) then
 		surface.SetTexture(bleed_drop)
 		surface.SetDrawColor(255,255,255,255)
+		surface.DrawTexturedRect(droplet_x, 30*Scale, 32*Scale, 32*Scale)
+		droplet_x = droplet_x + 30 * Scale
+	end
+	if LocalPlayer():HasPlayerState(PLAYERSTATE_JARATED) then
+		surface.SetTexture(bleed_drop)
+		surface.SetDrawColor(255,255,0,255)
+		surface.DrawTexturedRect(droplet_x, 30*Scale, 32*Scale, 32*Scale)
+		droplet_x = droplet_x + 30 * Scale
+	end
+	if LocalPlayer():HasPlayerState(PLAYERSTATE_STUNNED) then
+		surface.SetTexture(slowed)
+		surface.SetDrawColor(255,255,0,255)
 		surface.DrawTexturedRect(droplet_x, 30*Scale, 32*Scale, 32*Scale)
 		droplet_x = droplet_x + 30 * Scale
 	end

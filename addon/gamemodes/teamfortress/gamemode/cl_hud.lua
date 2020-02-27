@@ -295,7 +295,7 @@ function GM:HUDDrawTargetID()
 end
 
 local function targetid_trace_condition(tr)
-	return IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:IsNPC()) and (GAMEMODE:EntityTeam(tr.Entity)==LocalPlayer():Team() or hud_targetid_anyteam:GetBool())
+	return IsValid(tr.Entity) and (tr.Entity:IsTFPlayer() ) and (GAMEMODE:EntityTeam(tr.Entity)==LocalPlayer():Team() or hud_targetid_anyteam:GetBool()) or LocalPlayer():Team() == TEAM_FRIENDLY and tr.Entity:IsTFPlayer() or GAMEMODE:EntityTeam(tr.Entity) ~= LocalPlayer():EntityTeam() and tr.Entity:IsPlayer() and tr.Entity:GetPlayerClass() == "spy"
 end
 
 function GM:TargetIDThink()

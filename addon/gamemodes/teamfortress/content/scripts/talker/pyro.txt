@@ -9,7 +9,20 @@ Criterion "PyroNotKillSpeechMelee" "PyroKillSpeechMelee" "!=1" "required" weight
 Criterion "PyroNotSaidHealThanks" "PyroSaidHealThanks" "!=1" "required"
 Criterion "IsHelpCapPyro" "PyroHelpCap" "1" "required" weight 0
 
-
+// Custom stuff - melee dare
+// Look at enemy, then do battle cry voice command while holding a melee weapon.
+Response MeleeDareCombatPyro
+{
+	scene "scenes/Player/Pyro/low/1409.vcd"
+	scene "scenes/Player/Pyro/low/1517.vcd"
+	scene "scenes/Player/Pyro/low/1482.vcd"
+}
+Rule MeleeDareCombatPyro
+{
+	criteria ConceptPlayerBattleCry IsWeaponMelee IsPyro IsCrosshairEnemy
+	Response MeleeDareCombatPyro
+}
+//End custom 
 Response PlayerCloakedSpyDemomanPyro
 {
 	scene "scenes/Player/Pyro/low/1440.vcd" 

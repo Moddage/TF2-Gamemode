@@ -33,6 +33,7 @@ SWEP.ReloadSingle = false
 SWEP.HasCustomMeleeBehaviour = true
 
 SWEP.HoldType = "ITEM1"
+SWEP.HoldTypeHL2 = "grenade"
 
 SWEP.ProjectileShootOffset = Vector(0, 0, 0)
 

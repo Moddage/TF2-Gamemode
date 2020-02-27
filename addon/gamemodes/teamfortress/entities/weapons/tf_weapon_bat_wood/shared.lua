@@ -4,10 +4,10 @@ end
 
 if CLIENT then
 	SWEP.PrintName			= "Sandman"
-SWEP.Slot				= 2
 end
 SWEP.Base				= "tf_weapon_melee_base"
 
+SWEP.Slot				= 2
 SWEP.ViewModel			= "models/weapons/v_models/v_bat_scout.mdl"
 SWEP.WorldModel			= "models/weapons/c_models/c_wooden_bat/c_wooden_bat.mdl"
 SWEP.Crosshair = "tf_crosshair3"

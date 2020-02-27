@@ -244,6 +244,48 @@ criterion "ConceptPlayerExpression" "Concept" "TLK_PLAYER_EXPRESSION" required
 criterion "ConceptPlayerLostPoint" "Concept" "TLK_LOST_CONTROL_POINT'" required
 
 
+// MvM criterion
+criterion "IsMvMDefender" "IsMvMDefender" "1" required
+criterion "ConceptMvMBombDropped" "Concept" "TLK_MVM_BOMB_DROPPED" required  
+criterion "ConceptMvMBombCarrierUpgrade1" "Concept" "TLK_MVM_BOMB_CARRIER_UPGRADE1" required  
+criterion "ConceptMvMBombCarrierUpgrade2" "Concept" "TLK_MVM_BOMB_CARRIER_UPGRADE2" required  
+criterion "ConceptMvMBombCarrierUpgrade3" "Concept" "TLK_MVM_BOMB_CARRIER_UPGRADE3" required  
+criterion "ConceptMvMDefenderDied" "Concept" "TLK_MVM_DEFENDER_DIED" required  
+criterion "ConceptMvMFirstBombPickup" "Concept" "TLK_MVM_FIRST_BOMB_PICKUP" required  
+criterion "ConceptMvMBombPickup" "Concept" "TLK_MVM_BOMB_PICKUP" required 
+criterion "ConceptMvMSentryBuster" "Concept" "TLK_MVM_SENTRY_BUSTER" required 
+criterion "ConceptMvMSentryBusterDown" "Concept" "TLK_MVM_SENTRY_BUSTER_DOWN" required 
+criterion "ConceptMvMSniperCallout" "Concept" "TLK_MVM_SNIPER_CALLOUT" required 
+criterion "ConceptMvMLastManStanding" "Concept" "TLK_MVM_LAST_MAN_STANDING" required 
+criterion "ConceptMvMEncourageMoney" "Concept" "TLK_MVM_ENCOURAGE_MONEY" required 
+criterion "ConceptMvMMoneyPickup" "Concept" "TLK_MVM_MONEY_PICKUP" required 
+criterion "ConceptMvMEncourageUpgrade" "Concept" "TLK_MVM_ENCOURAGE_UPGRADE" required 
+criterion "ConceptMvMUpgradeComplete" "Concept" "TLK_MVM_UPGRADE_COMPLETE" required 
+criterion "ConceptMvMGiantCallout" "Concept" "TLK_MVM_GIANT_CALLOUT" required 
+criterion "ConceptMvMGiantHasBomb" "Concept" "TLK_MVM_GIANT_HAS_BOMB" required 
+criterion "ConceptMvMGiantKilled" "Concept" "TLK_MVM_GIANT_KILLED" required 
+criterion "ConceptMvMGiantKilledTeammate" "Concept" "TLK_MVM_GIANT_KILLED_TEAMMATE" required 
+criterion "ConceptMvMSappedRobot" "Concept" "TLK_MVM_SAPPED_ROBOT" required 
+criterion "ConceptMvMCloseCall" "Concept" "TLK_MVM_CLOSE_CALL" required 
+criterion "ConceptMvMTankCallout" "Concept" "TLK_MVM_TANK_CALLOUT" required 
+criterion "ConceptMvMTankDead" "Concept" "TLK_MVM_TANK_DEAD" required 
+criterion "ConceptMvMTankDeploying" "Concept" "TLK_MVM_TANK_DEPLOYING" required 
+criterion "ConceptMvMAttackTheTank" "Concept" "TLK_MVM_ATTACK_THE_TANK" required 
+criterion "ConceptMvMTaunt" "Concept" "TLK_MVM_TAUNT" required 
+criterion "ConceptMvMWaveStart" "Concept" "TLK_MVM_WAVE_START" required 
+criterion "ConceptMvMWaveWin" "Concept" "TLK_MVM_WAVE_WIN" required 
+criterion "ConceptMvMWaveLose" "Concept" "TLK_MVM_WAVE_LOSE" required 
+criterion "ConceptMvMDeployRage" "Concept" "TLK_MVM_DEPLOY_RAGE" required 
+criterion "ConceptRocketDestroyed" "Concept" "TLK_ROCKET_DESTOYED" required 
+//A Tale of Two Cities Update
+criterion "ConceptMannhattanGateAttack" "Concept" "TLK_MANNHATTAN_GATE_ATK" required
+criterion "ConceptMannhattanGateTake" "Concept" "TLK_MANNHATTAN_GATE_TAKE" required
+criterion "ConceptMvMResurrected" "Concept" "TLK_RESURRECTED" required
+criterion "ConceptMvMMedicShield" "Concept" "TLK_MEDIC_HEAL_SHIELD" required
+criterion "ConceptMvMLootCommon" "Concept" "TLK_MVM_LOOT_COMMON" required
+criterion "ConceptMvMLootRare" "Concept" "TLK_MVM_LOOT_RARE" required
+criterion "ConceptMvMLootUltraRare" "Concept" "TLK_MVM_LOOT_ULTRARARE" required
+
 criterion "IsSentryGun" "objtype" "sentrygun" required
 criterion "IsTeleporter" "objtype" "teleporter" required
 criterion "IsDispenser" "objtype" "dispenser" required
@@ -257,6 +299,7 @@ criterion "IsWeaponPda" "weaponmode" "pda" required
 
 criterion "IsOnScout" "crosshair_on" "Scout" "required"
 criterion "IsOnSniper" "crosshair_on" "Sniper" "required"
+criterion "IsOnHL2" "crosshair_on" "Gmodplayer" "required"
 criterion "IsOnSoldier" "crosshair_on" "Soldier" "required"
 criterion "IsOnDemoman" "crosshair_on" "Demoman" "required"
 criterion "IsOnMedic" "crosshair_on" "Medic" "required"
@@ -274,6 +317,7 @@ criterion "ConceptKilledPlayer" "Concept" "TLK_KILLED_PLAYER" required
 criterion "KilledPlayerDelay" "worldDontKilledPlayer" "!=1" "required"
 
 criterion "IsScout" "playerclass" "Scout" "required" 
+criterion "IsHL2" "playerclass" "Gmodplayer" "required"
 criterion "IsSniper" "playerclass" "Sniper" "required"
 criterion "IsSoldier" "playerclass" "Soldier" "required"
 criterion "IsDemoman" "playerclass" "Demoman" "required"
@@ -282,8 +326,19 @@ criterion "IsHeavy" "playerclass" "Heavy" "required"
 criterion "IsPyro" "playerclass" "Pyro" "required"
 criterion "IsSpy" "playerclass" "Spy" "required"
 criterion "IsEngineer" "playerclass" "Engineer" "required"
+criterion "Isscout" "playerclass" "Scout" "required" 
+criterion "Ishl2" "playerclass" "Gmodplayer" "required"
+criterion "Issniper" "playerclass" "Sniper" "required"
+criterion "Issoldier" "playerclass" "Soldier" "required"
+criterion "Isdemoman" "playerclass" "Demoman" "required"
+criterion "Ismedic" "playerclass" "Medic" "required"
+criterion "Isheavy" "playerclass" "Heavy" "required"
+criterion "Ispyro" "playerclass" "Pyro" "required"
+criterion "Isspy" "playerclass" "Spy" "required"
+criterion "Isengineer" "playerclass" "Engineer" "required"
 
 criterion "IsNotScout" "playerclass" "!=Scout" "required" 
+criterion "IsNotHL2" "playerclass" "!=Gmodplayer" "required"
 criterion "IsNotSniper" "playerclass" "!=Sniper" "required"
 criterion "IsNotSoldier" "playerclass" "!=Soldier" "required"
 criterion "IsNotDemoman" "playerclass" "!=Demoman" "required"
@@ -296,6 +351,7 @@ criterion "IsNotEngineer" "playerclass" "!=Engineer" "required"
 
 criterion "IsVictimScout" "victimclass" "Scout" "required" weight 0
 criterion "IsVictimSniper" "victimclass" "Sniper" "required" weight 0
+criterion "IsVictimHL2" "victimclass" "Gmodplayer" "required" weight 0
 criterion "IsVictimSoldier" "victimclass" "Soldier" "required" weight 0
 criterion "IsVictimDemoman" "victimclass" "Demoman" "required" weight 0
 criterion "IsVictimMedic" "victimclass" "Medic" "required" weight 0
@@ -305,6 +361,7 @@ criterion "IsVictimSpy" "victimclass" "Spy" "required" weight 0
 criterion "IsVictimEngineer" "victimclass" "Engineer" "required"  weight 0
 
 criterion "IsNotVictimScout" "victimclass" "!=Scout" "required" weight 0
+criterion "IsNotVictimHL2" "victimclass" "!=Gmodplayer" "required" weight 0
 criterion "IsNotVictimSniper" "victimclass" "!=Sniper" "required" weight 0
 criterion "IsNotVictimSoldier" "victimclass" "!=Soldier" "required" weight 0
 criterion "IsNotVictimDemoman" "victimclass" "!=Demoman" "required" weight 0
@@ -369,15 +426,16 @@ criterion "WeaponIsLunchbox" "playerweapon" "tf_weapon_lunchbox" "required"
 criterion "WeaponIsLunchboxDrink" "playerweapon" "tf_weapon_lunchbox_drink" "required"
 criterion "WeaponIsGloves" "item_type_name" "#TF_Weapon_Gloves" "required" weight 10
 criterion "WeaponIsKritzkrieg" "item_name" "The Kritzkrieg" "required" weight 10
-criterion "WeaponIsBow" "item_name" "The Huntsman" "required" weight 10
-criterion "WeaponIsPickaxe" "item_name" "The Equalizer" "required" weight 10
-criterion "WeaponIsDirectHit" "item_name" "The Direct Hit" "required" weight 10
+criterion "WeaponIsBow" "playerweapon" "tf_weapon_compound_bow" "required" weight 10
+criterion "WeaponIsPickaxe" "playerweapon" "tf_weapon_pickaxe" "required" weight 10
+criterion "WeaponIsDirectHit" "playerweapon" "tf_weapon_rocketlauncher_dh" "required" weight 10
 criterion "WeaponIsBanner" "item_name" "The Buff Banner" "required" weight 10
-criterion "WeaponIsSword" "item_name" "The Eyelander" "required" weight 10
+criterion "WeaponIsSword" "playerweapon" "tf_weapon_sword" "required" weight 10
+criterion "WeaponIsKatana" "playerweapon" "tf_weapon_katana" "required" weight 10
 criterion "WeaponIsDefender" "item_name" "The Scottish Resistance" "required" weight 10
 criterion "WeaponIsUbersaw" "item_name" "The Ubersaw" "required" weight 10
 criterion "WeaponIsFrontierJustice" "item_name" "The Frontier Justice" "required" weight 10
-criterion "WeaponIsRobotArm" "item_name" "The Gunslinger" "required" weight 10
+criterion "WeaponIsRobotArm" "playerweapon" "tf_weapon_robot_arm" "required"
 criterion "ItemIsGoldenWrench" "item_name" "Golden Wrench" "required" weight 10
 criterion "WeaponIsShortstop" "item_name" "The Shortstop" "required" weight 10
 criterion "WeaponIsMadMilk" "item_name" "Mad Milk" "required" weight 10
@@ -436,11 +494,12 @@ criterion "DuelTargetIsEngineer" "dueltargetclass" "Engineer" required
        
 
 
-// Test rules
+// Test rules 
 #include "talker/tf.txt"
 #include "talker/Heavy.txt"
 #include "talker/Scout.txt"
 #include "talker/Engineer.txt"
+#include "talker/Gmodplayer.txt"
 #include "talker/Sniper.txt"
 #include "talker/Soldier.txt"
 #include "talker/Demoman.txt"

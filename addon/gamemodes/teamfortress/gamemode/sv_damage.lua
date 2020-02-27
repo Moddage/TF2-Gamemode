@@ -391,9 +391,9 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 		dmginfo:SetAttacker(attacker)
 	end
 	
-	if attacker:IsPlayer() and ent:Health() >= 1  and ent:IsPlayer() or ent:IsNPC() and ent.IsReviveMarker != true then
+	if attacker:IsPlayer() and ent:Health() >= 1  and ent:IsPlayer() or ent:IsNPC() and !ent:IsFriendly(attacker) and ent.IsReviveMarker != true then
 		if inflictor.Critical and inflictor:Critical() then
-			attacker:EmitSound("player/crit_hit"..math.random(2,5)..".wav", 50, math.random(88, 100))
+			attacker:EmitSound("player/crit_hit"..math.random(2,5)..".wav", 90, math.random(88, 100))
 			ent:EmitSound("player/crit_received"..math.random(1,3)..".wav", 50, math.random(88, 100))
 		elseif attacker:GetInfo("tf_dingalingaling_sound") == "hitsound_electro" then
 			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_sound")..math.random(1,3)..".wav", 50)
@@ -584,7 +584,7 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 	
 	-- Pain and death sounds
 	local hp = ent:Health() - dmginfo:GetDamage()
-	if ent:GetInfoNum("tf_robot",0) != 1 or ent:IsBot() and GetConVar("tf_botbecomerobots"):GetBool() then
+	if ent:GetInfoNum("tf_robot",0) != 1 or ent:IsBot() and GetConVar("tf_bots_are_robots"):GetBool() then
 	ent:Speak("TLK_PLAYER_EXPRESSION", true)
 	
 	if inflictor:GetClass()=="tf_entityflame" then
@@ -624,17 +624,7 @@ function GM:EntityTakeDamage(  ent, dmginfo )
 			umsg.Float(dmginfo:GetDamage())
 		umsg.End()
 	elseif dmginfo:IsFallDamage() then 
-		if ent:HasGodMode() == false then
-			ent:Speak("TLK_PLAYER_ATTACKER_PAIN")
-			if ent:GetPlayerClass() == "tank" or ent:GetPlayerClass() == "hunter" or ent:GetPlayerClass() == "charger" or ent:GetPlayerClass() == "jockey" then
-				ent:EmitSound("player/pz/fall/bodyfall_largecreature.wav", 85)
-			end
-		else
-			if ent:GetPlayerClass() == "scout" then
-				ent:EmitSound("Scout.BeingShotInvincible"..math.random(10,36))
-			end
-			ent:EmitSound("tf/weapons/fx/rics/ric"..math.random(1,4)..".wav", 80, math.random(92, 106))
-		end
+		ent:Speak("TLK_PLAYER_ATTACKER_PAIN")
 	end
 	end
 end
@@ -661,7 +651,7 @@ function GM:IgniteEntity(ent, inf, att, dur)
 		fl:Spawn()
 		fl:Activate()
 		
-		if not ent:IsPlayer() then -- No need to spawn unnecessary entityflames on players
+		if not ent:IsTFPlayer() then -- No need to spawn unnecessary entityflames on players
 			ent:Fire("ignite","",0.05) -- Ignite it using the classic method, gamemode hooks like the one below will take care of the rest
 		end
 	end

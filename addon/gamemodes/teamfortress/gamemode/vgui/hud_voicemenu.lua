@@ -15,6 +15,7 @@ local VoiceMenuList = {
 	{"TLK_PLAYER_RIGHT",	"#Voice_Menu_Right"},
 	{"TLK_PLAYER_YES",		"#Voice_Menu_Yes"},
 	{"TLK_PLAYER_NO",		"#Voice_Menu_No"},
+	{"TLK_DUEL_WAS_REJECTED",		"Negative"},
 },
 
 {
@@ -26,6 +27,7 @@ local VoiceMenuList = {
 	{"TLK_PLAYER_SENTRYHERE",		"#Voice_Menu_SentryHere"},
 	{"TLK_PLAYER_ACTIVATECHARGE",	"#Voice_Menu_ActivateCharge"},
 	{"TLK_PLAYER_CHARGEREADY",		"#Voice_Menu_ChargeReady"},
+	{"TLK_MVM_SNIPER_CALLOUT",		"Sniper!"},
 },
 
 {
@@ -37,6 +39,7 @@ local VoiceMenuList = {
 	{"TLK_PLAYER_NEGATIVE",		"#Voice_Menu_Negative"},
 	{"TLK_PLAYER_NICESHOT",		"#Voice_Menu_NiceShot"},
 	{"TLK_PLAYER_GOODJOB",		"#Voice_Menu_GoodJob"},
+	{"TLK_MVM_LOOT_ULTRARARE",		"Postitive"},
 }
 }
 
@@ -65,7 +68,20 @@ concommand.Add("voicemenu", function(pl, cmd, args)
 	elseif pl:GetPlayerClass() == "l4d_zombie" then
 		pl:EmitSound("vj_l4d_com/attack_b/male/rage_"..math.random(50,82)..".wav")
 	end
+	if a == 2 and b == 8 then
+		NextSpeak = CurTime() + 1.5
+		if NextSpeak and CurTime()<NextSpeak then
+			if pl:GetPlayerClass() == "heavy" or pl:GetPlayerClass() == "scout" then
+				pl:EmitSound("vo/"..pl:GetPlayerClass().."_mvm_loot_godlike0"..math.random(1,3)..".wav")
+			else
+				pl:EmitSound("vo/"..pl:GetPlayerClass().."_mvm_loot_godlike0"..math.random(1,3)..".mp3")
+			end
+		end
+	end
 	RunConsoleCommand("__svspeak", v[1])
+	RunConsoleCommand("voicemenu_gesture", a, b)
+			
+
 	HudVoiceMenu:Hide()
 end)
 
@@ -91,7 +107,7 @@ function PANEL:PerformLayout()
 end
 
 function PANEL:SelectMenu(n)
-	if not VoiceMenuList[n] or LocalPlayer():IsHL2() then return end
+	if not VoiceMenuList[n] then return end
 	if n == self.CurrentMenu then
 		self:Hide()
 		return

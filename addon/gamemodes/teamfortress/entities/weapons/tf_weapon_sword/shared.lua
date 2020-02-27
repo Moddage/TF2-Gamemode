@@ -5,7 +5,6 @@ end
 if CLIENT then
 
 SWEP.PrintName			= "The Eyelander"
-SWEP.Slot				= 2
 
 function SWEP:InitializeCModel()
 	--Msg("InitializeCModel\n")
@@ -158,6 +157,7 @@ end
 
 SWEP.Base				= "tf_weapon_melee_base"
 
+SWEP.Slot				= 2
 SWEP.ViewModel			= "models/weapons/c_models/c_demo_arms.mdl"
 SWEP.WorldModel			= "models/weapons/c_models/c_claymore/c_claymore.mdl"
 SWEP.Crosshair = "tf_crosshair3"
@@ -281,6 +281,7 @@ end
 
 function SWEP:Think()
 	self:CallBaseFunction("Think")
+	self.MeleeRange   = 120
 	if SERVER and self.dt.IsEyelander then
 		if self.Owner:Armor() <= 60 then
 			self.Owner:SetArmor(60)

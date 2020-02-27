@@ -82,7 +82,6 @@ end
 if CLIENT then
 
 SWEP.PrintName			= "Medigun"
-SWEP.Slot				= 1
 SWEP.CustomHUD = {HudMedicCharge = true}
 
 --[[
@@ -178,6 +177,7 @@ PrecacheParticleSystem("medicgun_invulnstatus_fullcharge_blue")
 
 SWEP.Base				= "tf_weapon_gun_base"
 
+SWEP.Slot				= 1
 SWEP.ViewModel			= "models/weapons/v_models/v_medigun_medic.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_medigun.mdl"
 SWEP.Crosshair = "tf_crosshair5"
@@ -293,7 +293,7 @@ local function medigun_trace_condition(tr, wep)
 		tr.Entity:IsTFPlayer() and
 		tr.Entity:EntityTeam()==wep.Owner:EntityTeam() and
 		tr.Entity:Health()>0 and
-		not tr.Entity:HasNPCFlag(NPC_CANNOTHEAL) 
+		not tr.Entity:HasNPCFlag(NPC_CANNOTHEAL) or wep.Owner:EntityTeam() == TEAM_FRIENDLY and tr.Entity:EntityTeam() != TEAM_FRIENDLY and tr.Entity != wep.Owner and tr.Entity:IsTFPlayer()
 end
 
 
@@ -391,12 +391,7 @@ self.ChargedASound = Sound("player/invulnerable_on.wav")
 self.ChargedOffSoundA = Sound("player/invulnerable_off.wav")
 	self.ChargedALoop = CreateSound(self, self.ChargedASound)
 	self.ChargedOffASound = CreateSound(self, self.ChargedOffSoundA)
-if !self:GetItemData() == "weapon_kritzkrieg" then 
-	self.Owner:AddFlags(FL_GODMODE) 
-else
-	GAMEMODE:StartCritBoost(self.Owner)
-	GAMEMODE:StartCritBoost(self.Target)
-end
+self.Owner:AddFlags(FL_GODMODE) 
 self.ChargedALoop:Play()
 	if self.Owner:Team() == TEAM_RED or self.Owner:Team() == TEAM_NEUTRAL then
 		self.Owner:SetSkin( 2 )
@@ -437,12 +432,7 @@ end)
 				self.LastTargetEntity = self.dt.TargetEntity
 				e = ""
 				if charge == 1 then
-				if !self:GetItemData() == "weapon_kritzkrieg" then
 					self.Owner:AddFlags(FL_GODMODE) 
-				else
-					GAMEMODE:StartCritBoost(self.Owner)
-					GAMEMODE:StartCritBoost(self.Target)
-				end
 	if SERVER then
 	if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
 		self.Target:SetSkin( 2 )
@@ -462,13 +452,8 @@ else
 	end
 end
 --[[if self.Target == nil then 
-				if !self:GetItemData() == "weapon_kritzkrieg" then
 					self.Owner:RemoveFlags(FL_GODMODE) 
 					self.Target:RemoveFlags(FL_GODMODE) 
-				else
-					GAMEMODE:StopCritBoost(self.Owner)
-					GAMEMODE:StopCritBoost(self.Target)
-				end
 
 	blegh:SetSkin( 0 ) 
 end
@@ -500,13 +485,8 @@ end
 				if self.Target ~= nil then
 				if charge == 1 then
 					e = self.Target
-				if !self:GetItemData() == "weapon_kritzkrieg" then
 					self.Owner:RemoveFlags(FL_GODMODE) 
 					self.Target:RemoveFlags(FL_GODMODE) 
-				else
-					GAMEMODE:StopCritBoost(self.Owner)
-					GAMEMODE:StopCritBoost(self.Target)
-				end
 	if self.Target:IsHL2() then
 		if self.Target:Team() == TEAM_RED or self.Target:Team() == TEAM_NEUTRAL then
 			self.Target:SetMaterial("models/effects/invulnfx_red")
@@ -569,13 +549,8 @@ end]]
 				else
 					self.Owner:SetSkin( 1 )
 				end
-				if !self:GetItemData() == "weapon_kritzkrieg" then
 					self.Owner:RemoveFlags(FL_GODMODE) 
 					self.Target:RemoveFlags(FL_GODMODE) 
-				else
-					GAMEMODE:StopCritBoost(self.Owner)
-					GAMEMODE:StopCritBoost(self.Target)
-				end
 				--self.Owner:EmitSound("weapons/weapon_crit_charged_off.wav") 
 				self.ChargedOffASound:Play()
 				self.ChargedALoop:Stop()

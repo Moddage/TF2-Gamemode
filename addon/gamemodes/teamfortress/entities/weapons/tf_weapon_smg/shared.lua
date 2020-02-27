@@ -2,9 +2,9 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+SWEP.Slot				= 1
 if CLIENT then
 	SWEP.PrintName			= "SMG"
-SWEP.Slot				= 1
 end
 
 SWEP.Base				= "tf_weapon_gun_base"
@@ -31,7 +31,7 @@ PrecacheParticleSystem("bullet_pistol_tracer01_red_crit")
 PrecacheParticleSystem("bullet_pistol_tracer01_blue")
 PrecacheParticleSystem("bullet_pistol_tracer01_blue_crit")
 
-SWEP.BaseDamage = 8
+SWEP.BaseDamage = 5
 SWEP.DamageRandomize = 0
 SWEP.MaxDamageRampUp = 0.5
 SWEP.MaxDamageFalloff = 0.5

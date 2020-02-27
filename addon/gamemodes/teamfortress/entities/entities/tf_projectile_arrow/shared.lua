@@ -162,7 +162,7 @@ local function ArrowBulletCallback(att, tr, dmginfo)
 			inf.critical = true
 			inf.NameOverride = "tf_projectile_arrow_headshot"
 		end
-		
+		inf:EmitSound("Weapon_Arrow.ImpactFlesh")
 		if att:IsPlayer() then
 			SendNet("ArrowHit", att)
 		end
@@ -292,7 +292,7 @@ function ENT:ShouldCollide(ent)
 end
 
 function ENT:Touch(ent)
-	if not ent:IsTrigger() then
+	if ent:IsSolid() then
 		self:Hit(ent)
 	end
 end

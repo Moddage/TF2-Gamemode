@@ -111,12 +111,16 @@ tf_weapon_bat = "d_bat",
 -- Heavy
 tf_weapon_minigun = "d_minigun",
 tf_weapon_shotgun_hwg = "d_shotgun_hwg",
+reserve_kill = "d_shotgun_hwg",
 tf_weapon_fists = "d_fists",
+weapon_hwg_boxinggloves = "d_gloves",
 tf_weapon_minigun_tomislav = "d_tomislav",
 
 -- Demoman
 tf_projectile_pipe = "d_tf_projectile_pipe",
+weapon_demo_scottishresistance = "d_sticky_resistance",
 tf_projectile_pipe_remote = "d_tf_projectile_pipe_remote",
+weapon_demo_quickielauncher = "d_tf_projectile_pipe_remote",
 tf_projectile_pipe_defender = "d_sticky_resistance",
 tf_projectile_pipe_round = "d_tf_projectile_pipe_remote",
 tf_weapon_bottle = "d_bottle",
@@ -125,6 +129,7 @@ tf_wearable_item_demoshield = "d_demoshield",
 
 -- Soldier
 tf_projectile_rocket = "d_tf_projectile_rocket",
+tf_weapon_rocketlauncher = "d_taunt_scout",
 tf_projectile_rocket_direct = "d_rocketlauncher_directhit",
 tf_weapon_shotgun_soldier = "d_shotgun_soldier",
 tf_weapon_shovel = "d_shovel",
@@ -164,6 +169,7 @@ tf_projectile_arrow_flyingburn = "d_huntsman_flyingburn",
 -- Spy
 tf_weapon_revolver = "d_revolver",
 tf_weapon_knife = "d_knife",
+tf_weapon_builder = "d_obj_attachment_sapper",
 tf_weapon_knife_backstab = "d_backstab",
 tf_weapon_ambassador_headshot = "d_ambassador_headshot",
 
@@ -575,8 +581,7 @@ d_huntsman_headshot={
 },
 d_ambassador_headshot={
 	x=192,
-	y=322,
-	w=64,
+	y=322, 
 	h=32,
 },
 d_taunt_sniper={
@@ -721,6 +726,12 @@ d_apocofists={
 	y=256,
 	w=82,
 	h=31,
+},
+d_ham_shank={
+	x=187,
+	y=91,
+	w=76,
+	h=39,
 },
 	
 d_shortcircuit_ball={

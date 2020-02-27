@@ -2,9 +2,9 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+	SWEP.Slot				= 2
 if CLIENT then
 	SWEP.PrintName			= "The Gunslinger"
-	SWEP.Slot				= 2
 	SWEP.GlobalCustomHUD = {HudAccountPanel = true}
 end
 
@@ -16,8 +16,8 @@ SWEP.Crosshair = "tf_crosshair3"
 
 SWEP.DropPrimaryWeaponInstead = true
 
-SWEP.Swing = Sound("Weapon_Gunslinger.Swing")
-SWEP.SwingCrit = Sound("Weapon_Gunslinger.Swing")
+SWEP.Swing = Sound("Weapon_Wrench.Miss")
+SWEP.SwingCrit = Sound("Weapon_Wrench.MissCrit")
 SWEP.HitFlesh = Sound("Weapon_Wrench.HitFlesh")
 SWEP.HitWorld = Sound("Weapon_Wrench.HitWorld")
 SWEP.HitBuildingSuccess = Sound("Weapon_Wrench.HitBuilding_Success")
@@ -52,6 +52,13 @@ function SWEP:Equip() -- weird workaround hack for viewmodel bug
 		timer.Simple(0.1, function() if IsValid(self) and IsValid(self.Owner) then self.Owner:SelectWeapon(lastwep) end end)
 	end
 end
+
+function SWEP:PrimaryAttack()
+	if SERVER then
+	--self.Owner:Speak("TLK_FIREWEAPON")
+	end
+	return self:CallBaseFunction("PrimaryAttack")
+end 
 
 function SWEP:OnMeleeAttack(tr)
 	if SERVER then
@@ -103,7 +110,7 @@ function SWEP:OnMeleeHit(tr)
 			else
 				self:EmitSound(self.HitWorld)
 			end
-		elseif tr.Entity:IsPlayer() or tr.Entity:IsNPC() then
+		elseif tr.Entity:IsTFPlayer() then
 			self:EmitSound(self.HitFlesh)
 		else
 			self:EmitSound(self.HitWorld)

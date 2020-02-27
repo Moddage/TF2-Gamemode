@@ -68,7 +68,7 @@ function ENT:Build()
 	local obj = self:GetOwner():GetBuilding()
 	if not obj then return end
 	
-	local ent = ents.Create(obj.class_name)
+	local ent = ents.Create(obj.class_name)   
 	if not IsValid(ent) then return end
 	
 	ent.Player = self.Player
@@ -79,85 +79,38 @@ function ENT:Build()
 	ent:SetAngles(ang)
 	if self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 2 and obj.class_name == "obj_sentrygun" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
 
-		timer.Create("SEtModel", 0.1, 40, function()
-		ent:SetModel("models/buildables/sentry2.mdl")
-		ent.Model:SetModel("models/buildables/sentry2.mdl")
-		ent.FireRate = 0.125
-		ent.Shoot_Sound = ent.Sound_Fire2
-		ent.Idle_Sound = CreateSound(ent, ent.Sound_Idle2)
-		ent.NameOverride = "obj_sentrygun2"
-		
-		local health_frac = ent:Health() / ent:GetMaxHealth()
-		ent:SetMaxHealth(ent:GetObjectHealth())
-		ent:SetHealth(ent:GetObjectHealth() * health_frac)
-		
-		ent.MaxAmmo1 = 120
-		ent.MaxAmmo2 = 0
-		ent:SetAmmo1(ent.MaxAmmo1)
-		ent:SetAmmo2(ent.MaxAmmo2)
-		ent:SetLevel(2)
+		timer.Create("SEtModel", 0.1, 15, function()
+			if ent:GetLevel() <= 2 then
+				ent:AddMetal2(ent, 200)
+			end
 		end)
 	elseif self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 2 and obj.class_name == "obj_sentrygun" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
 
-		timer.Create("SEtModel", 0.1, 40, function()
-		ent:SetModel("models/buildables/sentry2.mdl")
-		ent.Model:SetModel("models/buildables/sentry2.mdl")
-		ent.FireRate = 0.125
-		ent.Shoot_Sound = ent.Sound_Fire2
-		ent.Idle_Sound = CreateSound(ent, ent.Sound_Idle2)
-		ent.NameOverride = "obj_sentrygun2"
-		
-		local health_frac = ent:Health() / ent:GetMaxHealth()
-		ent:SetMaxHealth(ent:GetObjectHealth())
-		ent:SetHealth(ent:GetObjectHealth() * health_frac)
-		
-		ent.MaxAmmo1 = 120
-		ent.MaxAmmo2 = 0
-		ent:SetAmmo1(ent.MaxAmmo1)
-		ent:SetAmmo2(ent.MaxAmmo2)
-		ent:SetLevel(2)
+		timer.Create("SEtModel", 0.1, 15, function()
+			if ent:GetLevel() <= 2 then
+				ent:AddMetal2(ent, 200)
+			end
 		end)
 	elseif self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 2 and obj.class_name == "obj_dispenser" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
 
-		timer.Create("SEtModel", 0.1, 40, function()
-		ent:SetModel("models/buildables/dispenser_lvl2_light.mdl")
-		ent.Model:SetModel("models/buildables/dispenser_lvl2_light.mdl")
-
-		ent.MetalPerGeneration = 50
-		ent.HealRate = 0.066
-		ent.AmmoPerSupply = 50
-		ent:SetLevel(2)
+		timer.Create("SEtModel", 0.1, 20, function()
+			if ent:GetLevel() <= 2 then
+				ent:AddMetal2(ent, 200)
+			end
 		end)
 	elseif self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 3 and obj.class_name == "obj_dispenser" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
 
-		timer.Create("SEtModel", 0.1, 40, function()
-		ent:SetModel("models/buildables/dispenser_lvl3_light.mdl")
-		ent.Model:SetModel("models/buildables/dispenser_lvl3_light.mdl")
-
-		ent.MetalPerGeneration = 60
-		ent.HealRate = 0.05
-		ent.AmmoPerSupply = 60
-		ent:SetLevel(3)
+		timer.Create("SEtModel", 0.1, 20, function()
+			if ent:GetLevel() <= 3 then
+				ent:AddMetal2(ent, 200)
+			end
 		end)
 	elseif self.Player:GetWeapon("tf_weapon_builder").MovedBuildingLevel == 3 and obj.class_name == "obj_sentrygun" and self.Player:GetWeapon("tf_weapon_builder").Moving != false then 
 
-		timer.Create("SEtModel", 0.1, 40, function()
-		ent:SetModel("models/buildables/sentry3.mdl")
-		ent.Model:SetModel("models/buildables/sentry3.mdl")
-		ent.FireRate = 0.125
-		ent.Shoot_Sound = ent.Sound_Fire3
-		ent.Idle_Sound = CreateSound(ent, ent.Sound_Idle3)
-		ent.NameOverride = "obj_sentrygun3"
-		
-		local health_frac = ent:Health() / ent:GetMaxHealth()
-		ent:SetMaxHealth(ent:GetObjectHealth())
-		ent:SetHealth(ent:GetObjectHealth() * health_frac)
-		
-		ent.MaxAmmo1 = 144
-		ent.MaxAmmo2 = 20
-		ent:SetAmmo1(ent.MaxAmmo1)
-		ent:SetAmmo2(ent.MaxAmmo2)
-		ent:SetLevel(3)
+		timer.Create("SEtModel", 0.1, 20, function()
+			if ent:GetLevel() <= 3 then
+				ent:AddMetal2(ent, 200)
+			end
 		end)
 	elseif obj.class_name == "obj_sentrygun" and self.Player:GetWeapons()[3]:GetClass() == "tf_weapon_engi_fist" then 
 

@@ -6,7 +6,7 @@ function ENT:Initialize()
 	self.ID = self.Properties.point_index
 	self.OwnerTeam = self.Properties.point_default_owner
 	self.Locked = false
-	
+	self:SetNWInt("Team", self.OwnerTeam)
 	self:UpdateModel()
 end
 
@@ -61,6 +61,9 @@ function ENT:SetOwnerTeam(o)
 		umsg.Char(self.OwnerTeam)
 	umsg.End()
 	self:UpdateModel()
+end
+function ENT:GetOwnerTeam()
+	return self.OwnerTeam
 end
 
 function ENT:Open()

@@ -149,9 +149,9 @@ local AirblastFunc = {
 	end,
 	["tf_projectile_pipe"] = function(self, ent, dir)
 		ent:SetLocalVelocity(dir * 2000)
-		ent:SetOwner(self.Owner)
 		ent.AttackerOverride = self.Owner
 		ent.NameOverride = "tf_projectile_pipe_deflect"
+		ent:SetOwner(self.Owner)
 		ent.MiniCrit = minicrit_true
 		ent:EmitSound(self.AirblastDeflectSound)
 		return true
@@ -231,11 +231,7 @@ function SWEP:DoAirblast()
 				if AirblastFunc[c](self, v, dir, dir2) then
 					reflect = true
 				end
-			elseif v:GetMoveType()==MOVETYPE_VPHYSICS then
-				for i=0,v:GetPhysicsObjectCount()-1 do
-					v:GetPhysicsObjectNum(i):ApplyForceCenter(18000*dir)
-				end
-			elseif v:IsTFPlayer() and self.Owner:IsFriendly(v) then
+			elseif v:IsTFPlayer() and self.Owner:IsFriendly(v) == true then
 				GAMEMODE:ExtinguishEntity(v)
 				v:EmitSound("player/flame_out.wav", 90)
 			end

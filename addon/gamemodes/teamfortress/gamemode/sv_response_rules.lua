@@ -17,7 +17,7 @@ local function PrecacheGameSounds(path)
 	end
 end
 
-PrecacheGameSounds("tf_game_sounds_vo.txt")
+sound.AddSoundOverrides( "content/scripts/game_sounds_vo.txt" )
 
 module("response_rules", package.seeall)
 
@@ -98,7 +98,7 @@ function AddResponse(str)
 		local head,param,param2,param3 = string.match(line, "(%S+)%s*(%S*)%s*(%S*)%s*(%S*)")
 		if head=="scene" then
 			local sc = string.match(param, '([%a%d_/%.]+)')
-			PrecacheScene(sc)
+			PrecacheScene(sc)  
 			local t = {sc}
 			if param2=="predelay" then
 				t.predelay = {}
@@ -108,8 +108,8 @@ function AddResponse(str)
 			end
 			table.insert(tbl, t)
 		end
-	end
-	
+	end 
+	 
 	Responses[name] = tbl
 	return tbl
 end
@@ -333,7 +333,6 @@ local META = FindMetaTable("Player")
 
 function META:Speak(concept, nospeech, dbg)
 	if self:Team() == TEAM_BLU and string.find(game.GetMap(), "mvm_") then return true end
-	if self:IsHL2() then return false end
 	if self:GetInfoNum("tf_robot", 0) == 1 or self:Team() == TEAM_SPECTATOR then return true end
 	if not self:Alive() then
 		return false

@@ -13,13 +13,13 @@ SWEP.IsPDA = true
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "none"
 SWEP.Primary.Delay 			= 1
-
+SWEP.Slot				= 3
 SWEP.Secondary.Delay		= 5
 
 if CLIENT then
 
 SWEP.PrintName			= "Disguise PDA"
-SWEP.Slot				= 3
+
 SWEP.Crosshair = ""
 
 end
@@ -39,9 +39,11 @@ function SWEP:PrimaryAttack()
 			end
 		end
 	end)
-	if self.Owner:Team() == TEAM_RED or self.Owner:Team() == TEAM_NEUTRAL then
-		ParticleEffectAttach( "spy_start_disguise_red", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 1 )
-	else
-		ParticleEffectAttach( "spy_start_disguise_blue", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 1 )
+	if self.Owner:GetNoDraw() == false then
+		if self.Owner:Team() == TEAM_RED or self.Owner:Team() == TEAM_NEUTRAL then
+			ParticleEffectAttach( "spy_start_disguise_red", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 1 )
+		else
+			ParticleEffectAttach( "spy_start_disguise_blue", PATTACH_ABSORIGIN_FOLLOW, self.Owner, 1 )
+		end
 	end
 end

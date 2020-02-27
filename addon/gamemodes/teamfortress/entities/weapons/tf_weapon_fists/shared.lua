@@ -2,13 +2,13 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+
 if CLIENT then
 	SWEP.PrintName			= "Fists"
-	SWEP.Slot				= 2
 end
 
 SWEP.Base				= "tf_weapon_melee_base"
-
+	SWEP.Slot				= 2
 SWEP.ViewModel			= "models/weapons/v_models/v_fist_heavy.mdl"
 SWEP.WorldModel			= ""
 SWEP.Crosshair = "tf_crosshair3"
@@ -174,13 +174,9 @@ function SWEP:Think()
 		if self.ShouldOccurFists == true then
 			if SERVER then
 				if self.Owner:GetPlayerClass() == "heavy" and self.Owner:GetInfoNum("jakey_antlionfbii", 0) != 1 and self.Owner:GetInfoNum("dylan_rageheavy", 0) != 1 and self.Owner:GetInfoNum("tf_robot", 0) != 1 then
-					self.Owner:EmitSound("Heavy.Meleeing0"..math.random(1,6), 80, 100)
-					self.ShouldOccurFists = false 
-					timer.Simple(4, function()
-						self.ShouldOccurFists = true
-					end)
+					self.Owner:Speak("TLK_FIREWEAPON")
 				elseif self.Owner:GetPlayerClass() == "heavy" and self.Owner:GetInfoNum("tf_robot", 0) == 1 then
-					self.Owner:EmitSound("vo/mvm/norm/heavy_mvm_meleeing0"..math.random(1,6)..".mp3", 80, 100)
+					self.Owner:EmitSound("vo/mvm/norm/heavy_mvm_meleeing0"..math.random(1,8)..".mp3", CHAN_VOICE, 100)
 					self.ShouldOccurFists = false 
 					timer.Simple(4, function()
 						self.ShouldOccurFists = true

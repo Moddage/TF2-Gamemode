@@ -30,6 +30,7 @@ SWEP.HoldType = "PRIMARY"
 
 SWEP.AutoReloadTime = 0.01
 
+SWEP.CriticalChance = 13.2	
 idle_timer = 1
 end_timer = 1
 post_timer = 5.30
@@ -54,11 +55,20 @@ function SWEP:PrimaryAttack()
 	if self.Owner:GetMaterial() == "models/shadertest/predator" then return end
 	
 	auto_reload = self.Owner:GetInfoNum("tf_righthand", 1)
+	if ( IsFirstTimePredicted() ) then
+		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+		self.Owner:DoAttackEvent()
+	end
 	
-	self:SendWeaponAnim(self.VM_PRIMARYATTACK)
-	self.Owner:DoAttackEvent()
+		self:SendWeaponAnim(self.VM_PRIMARYATTACK)
+	if self:GetOwner().LagCompensation then -- for some reason not always true
+		self:GetOwner():LagCompensation(true)
+	end
+	if ( IsFirstTimePredicted() ) then
+	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
+	end
 	
-	self.NextIdle = CurTime() + self:SequenceDuration()
+
 	if self then
 		if self.Owner:GetInfoNum("tf_autoreload", 1) == 1 then
 			if auto_reload then
@@ -67,8 +77,6 @@ function SWEP:PrimaryAttack()
 		end
 	end
 	
-	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
-	self:TakePrimaryAmmo(1)
 	
 	if self:Clip1() <= 0 then
 		self:Reload()
@@ -102,6 +110,7 @@ function SWEP:PrimaryAttack()
 		end
 	end
 	
+	self:TakePrimaryAmmo(1)
 	self:RollCritical() -- Roll and check for criticals first
 	
 	self.Owner:ViewPunch( self.PunchView )

@@ -2,10 +2,12 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+
+
 if CLIENT then
 
 SWEP.PrintName			= "Revolver"
-SWEP.Slot				= 0
+
 
 end
 
@@ -14,7 +16,7 @@ SWEP.Base				= "tf_weapon_gun_base"
 SWEP.ViewModel			= "models/weapons/v_models/v_revolver_spy.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_revolver.mdl"
 SWEP.Crosshair = "tf_crosshair2"
-
+SWEP.Slot				= 0
 SWEP.MuzzleEffect = "muzzle_revolver"
 SWEP.MuzzleOffset = Vector(20, 4, -2)
 
@@ -72,35 +74,35 @@ function SWEP:Deploy()
 		end
 	if self.Owner:GetPlayerClass() == "spy" then
 		if self.Owner:GetModel() == "models/player/scout.mdl" or  self.Owner:GetModel() == "models/player/soldier.mdl" or  self.Owner:GetModel() == "models/player/pyro.mdl" or  self.Owner:GetModel() == "models/player/demo.mdl" or  self.Owner:GetModel() == "models/player/heavy.mdl" or  self.Owner:GetModel() == "models/player/engineer.mdl" or  self.Owner:GetModel() == "models/player/medic.mdl" or  self.Owner:GetModel() == "models/player/sniper.mdl" or  self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
-			animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
-			if self.Owner:GetModel() == "models/player/engineer.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
-			elseif self.Owner:GetModel() == "models/player/scout.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_scattergun.mdl")
-			elseif self.Owner:GetModel() == "models/player/soldier.mdl" then
-				animent2:SetModel("models/weapons/w_models/w_rocketlauncher.mdl")
-			elseif self.Owner:GetModel() == "models/player/pyro.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_flamethrower/c_flamethrower.mdl")
-			elseif self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_revolver/c_revolver.mdl")
-			elseif self.Owner:GetModel() == "models/player/sniper.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_sniperrifle/c_sniperrifle.mdl")
-			elseif self.Owner:GetModel() == "models/player/medic.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_syringegun/c_syringegun.mdl")
-			elseif self.Owner:GetModel() == "models/player/heavy.mdl" then
-				animent2:SetModel("models/weapons/c_models/c_minigun/c_minigun.mdl")
-			elseif self.Owner:GetModel() == "models/player/demo.mdl" then
-				animent2:SetModel("models/weapons/w_models/w_stickybomb_launcher.mdl")
-			end
-			animent2:SetAngles(self.Owner:GetAngles())
-			animent2:SetPos(self.Owner:GetPos())
-			animent2:Spawn() 
-			animent2:Activate()
-			animent2:SetParent(self.Owner)
-			animent2:AddEffects(EF_BONEMERGE)
-			animent2:SetName("SpyWeaponModel"..self.Owner:EntIndex())
-			animent2:SetSkin(self.Owner:GetSkin())
 			if SERVER then
+				animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+				if self.Owner:GetModel() == "models/player/engineer.mdl" then
+					animent2:SetModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl")
+				elseif self.Owner:GetModel() == "models/player/scout.mdl" then
+					animent2:SetModel("models/weapons/c_models/c_scattergun.mdl")
+				elseif self.Owner:GetModel() == "models/player/soldier.mdl" then
+					animent2:SetModel("models/weapons/w_models/w_rocketlauncher.mdl")
+				elseif self.Owner:GetModel() == "models/player/pyro.mdl" then
+					animent2:SetModel("models/weapons/c_models/c_flamethrower/c_flamethrower.mdl")
+				elseif self.Owner:GetModel() == "models/player/hwm/spy.mdl" then
+					animent2:SetModel("models/weapons/c_models/c_revolver/c_revolver.mdl")
+				elseif self.Owner:GetModel() == "models/player/sniper.mdl" then
+					animent2:SetModel("models/weapons/c_models/c_sniperrifle/c_sniperrifle.mdl")
+				elseif self.Owner:GetModel() == "models/player/medic.mdl" then
+					animent2:SetModel("models/weapons/c_models/c_syringegun/c_syringegun.mdl")
+				elseif self.Owner:GetModel() == "models/player/heavy.mdl" then
+					animent2:SetModel("models/weapons/c_models/c_minigun/c_minigun.mdl")
+				elseif self.Owner:GetModel() == "models/player/demo.mdl" then
+					animent2:SetModel("models/weapons/w_models/w_stickybomb_launcher.mdl")
+				end
+				animent2:SetAngles(self.Owner:GetAngles())
+				animent2:SetPos(self.Owner:GetPos())
+				animent2:Spawn() 
+				animent2:Activate()
+				animent2:SetParent(self.Owner)
+				animent2:AddEffects(EF_BONEMERGE)
+				animent2:SetName("SpyWeaponModel"..self.Owner:EntIndex())
+				animent2:SetSkin(self.Owner:GetSkin())
 				timer.Create("SpyCloakDetector"..self.Owner:EntIndex(), 0.01, 0, function()
 					if self.Owner:GetPlayerClass() == "spy" then
 						if self.Owner:GetNoDraw() == true then

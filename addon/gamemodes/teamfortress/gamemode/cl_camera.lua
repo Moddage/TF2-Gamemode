@@ -28,9 +28,9 @@ ThirdpersonEndDelay			= 0.3
 SensitivityMultiplier		= 0.0032
 LagMultiplier				= 2
 
-FreezecamSpeedMultiplier	= 0.1
+FreezecamSpeedMultiplier	= 0.001
 FreezecamMinSpeed			= 10
-FreezecamMaxSpeed			= 160
+FreezecamMaxSpeed			= 30
 
 --util.PrecacheSound("TFPlayer.FreezeCam")
 --util.PrecacheSound("Camera.SnapShot")
@@ -195,7 +195,7 @@ hook.Add("CalcView", "TFCalcView", function(pl, pos, ang, fov)
 		targetpos = tr.HitPos
 		
 		local d = pl.FreezeCamPos:Distance(targetpos)
-		pl.FreezeCamSpeed = math.Clamp(FreezecamSpeedMultiplier * pl.FreezeCamStartPos:Distance(targetpos) / freezecam_timetoarrive:GetFloat(),
+		pl.FreezeCamSpeed = math.Clamp(freezecam_timetoarrive:GetFloat(),
 			FreezecamMinSpeed, FreezecamMaxSpeed)
 		if d<pl.FreezeCamSpeed then
 			StartFreezeScreen()
@@ -310,7 +310,7 @@ hook.Add("CalcView", "TFCalcView", function(pl, pos, ang, fov)
 			pos = pl:GetBonePosition(pl:LookupBone("ValveBiped.Bip01_Head1"))+(ang:Up()*10)+(ang:Forward()*5)
 		else
 			pl:ManipulateBoneScale(pl:LookupBone("bip_head"), Vector(0,0,0))
-			pos = pl:GetBonePosition(pl:LookupBone("bip_head"))+(ang:Up()*10)+(ang:Forward()*5)
+			pos = pl:GetBonePosition(pl:LookupBone("bip_head"))+(ang:Up()*10)+(ang:Forward()*2)
 		end
 	end
 	
@@ -471,7 +471,7 @@ function StartFreezeCam(startpos, target, defaultpos)
 	LocalPlayer().FreezeCamDefaultTargetPos = defaultpos
 	
 	local var = freezecam_dist_variation:GetFloat()
-	LocalPlayer().FreezeCamDistance = freezecam_dist:GetFloat() * (1+math.Rand(-var, var))
+	LocalPlayer().FreezeCamDistance = freezecam_dist:GetFloat() * (2+math.Rand(-var, var))
 	
 	local targetpos
 	if IsValid(target) then targetpos = ViewTarget(target)
@@ -479,8 +479,8 @@ function StartFreezeCam(startpos, target, defaultpos)
 	else return StopFreezeCam()
 	end
 	
-	LocalPlayer().FreezeCamSpeed = math.Clamp(FreezecamSpeedMultiplier * startpos:Distance(targetpos) / freezecam_timetoarrive:GetFloat(),
-		50, 50)
+	LocalPlayer().FreezeCamSpeed = math.Clamp(freezecam_timetoarrive:GetFloat(),
+		10, 20)
 	LocalPlayer():EmitSound("misc/freeze_cam.wav")
 end
 

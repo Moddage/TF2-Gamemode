@@ -29,12 +29,15 @@ ENT.Sound_Explode = Sound("Building_Teleporter.Explode")
 ENT.TeleportDelay = 1
 
 ENT.RechargeTime = 10
+ENT.RechargeTime2 = 7
+ENT.RechargeTime3 = 5
 ENT.MinRechargingSpinSpeed = 0.2
 
 ENT.Acceleration = 0
 
 ENT.Spawnpoint = false
-
+ENT.Entrance = false
+ENT.Exit = false
 ENT.Sapped = false
 
 ENT.Gibs = {
@@ -53,6 +56,14 @@ function ENT:SetAcceleration(a)
 end
 
 function ENT:OnStartBuilding()
+	if self:GetBuilder():GetClass() == "npc_engineer_mvm" then
+		self.Spawnpoint = true
+	end
+	if self.Entrance == true then
+		self:SetBuildMode(0)
+	elseif self.Exit == true then
+		self:SetBuildMode(1)	
+	end
 end
 
 function ENT:PostEnable(laststate)
@@ -91,19 +102,15 @@ function ENT:OnLink(ent)
 	end
 	self.Spin_Sound = CreateSound(self, self.Sound_Spin1)
 	self.Spin_Sound:Play()
-	
 	self:SetAcceleration(0.005)
 	self:SetChargePercentage(1)
+
+	self.Model:ResetSequence("running")	
 
 end
 
 function ENT:OnUnlink(ent)
-	if self.Spin_Sound then
-		self.Spin_Sound:Stop()
-		self.Spin_Sound = nil
-	end
-	
-	self:SetAcceleration(-0.005)
+	self:SetAcceleration(-0.003)
 end
 
 function ENT:OnStartUpgrade()
@@ -117,9 +124,21 @@ function ENT:OnStartUpgrade()
 		if self:GetLevel()==2 then
 			self.Spin_Sound = CreateSound(self, self.Sound_Spin2)
 			self.Spin_Sound:Play()
+			self:SetAcceleration(-0.006)
+			self.NextRecharge = CurTime() + 2
+			self.NextRestartMotor = CurTime() + 2
+			self:GetLinkedTeleporter():SetAcceleration(-0.004)
+			self:GetLinkedTeleporter().NextRecharge = CurTime() + 2
+			self:GetLinkedTeleporter().NextRestartMotor = CurTime() + 2		
 		elseif self:GetLevel()==3 then
 			self.Spin_Sound = CreateSound(self, self.Sound_Spin3)
 			self.Spin_Sound:Play()
+			self:SetAcceleration(-0.006)
+			self.NextRecharge = CurTime() + 2
+			self.NextRestartMotor = CurTime() + 2
+			self:GetLinkedTeleporter():SetAcceleration(-0.006)
+			self:GetLinkedTeleporter().NextRecharge = CurTime() + 2
+			self:GetLinkedTeleporter().NextRestartMotor = CurTime() + 2
 		end
 	end
 end
@@ -137,36 +156,72 @@ function ENT:Teleport(pl)
 	self:EmitSound(self.Sound_Send)
 	
 	self:SetChargePercentage(0)
-	self.SpinSpeed = 0.9
-	self:SetAcceleration(-0.002)
-	self.NextRecharge = CurTime() + self.RechargeTime
-	self.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime
-	exit.SpinSpeed = 0.9
-	exit:SetAcceleration(-0.002)
-	exit.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime
-	if pl:IsPlayer() then
-		pl:SetFOV(50, 0.7)
-		ParticleEffect("teleportedin_red", self:GetPos(), self:GetAngles(), pl)
+	if self:GetLevel() == 2 then
+		self.SpinSpeed = 1.0
+		self:SetAcceleration(-0.002)
+		self.NextRecharge = CurTime() + self.RechargeTime2
+		self.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime2
+	elseif self:GetLevel() == 3 then
+		self.SpinSpeed = 0.9
+		self:SetAcceleration(-0.004)
+		self.NextRecharge = CurTime() + self.RechargeTime3
+		self.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime3
+	else
+		self.SpinSpeed = 0.9
+		self:SetAcceleration(-0.002)
+		self.NextRecharge = CurTime() + self.RechargeTime
+		self.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime
+	end
+	if exit:GetLevel() == 2 then
+		exit.SpinSpeed = 0.9
+		exit:SetAcceleration(-0.002)
+		exit.NextRecharge = CurTime() + self.RechargeTime2
+		exit.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime2
+	elseif exit:GetLevel() == 3 then
+		exit.SpinSpeed = 0.9
+		exit:SetAcceleration(-0.004)
+		exit.NextRecharge = CurTime() + self.RechargeTime3
+		exit.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime3
+	else
+		exit.SpinSpeed = 0.9
+		exit:SetAcceleration(-0.002)
+		exit.NextRecharge = CurTime() + self.RechargeTime
+		exit.NextRestartMotor = CurTime() + 0.5 * self.RechargeTime
+	end
+	if pl:IsTFPlayer() then
+		if pl:IsPlayer() then
+		pl:SetFOV(50, 0.5)
+		umsg.Start("TFTeleportEffect", pl)
+		umsg.End()
 		pl:ScreenFade( SCREENFADE.OUT, Color( 255, 255, 255, 150 ), 0.5, 0.65 )
-		timer.Simple(0.7, function()	
-			pl:SetFOV(0, 1.5)
+		end
+		ParticleEffect("teleportedin_red", self:GetPos(), self:GetAngles(), pl)
+		timer.Simple(0.3, function()	
+			
+			if pl:IsPlayer() then
+			pl:SetFOV(0, 0.7)
+			end
 		end)
 	end
-	timer.Simple(0.6, function()
+	timer.Simple(0.4, function()
 		pl:SetPos(exit:GetExitPosition())
 		ParticleEffect("teleportedin_red", exit:GetPos(), exit:GetAngles(), pl)
 		exit:EmitSound(self.Sound_Receive)
 		
 		local y = self:GetAngles().y
-		if pl:IsPlayer() then
+		if pl:IsTFPlayer() then
+			if pl:IsPlayer() then
 			local ang = pl:EyeAngles()
 			ang.y = y
 			pl:SetEyeAngles(ang)
 			umsg.Start("TFTeleportEffect", pl)
 			umsg.End()
-			local args = {"TLK_TELEPORTED"}
-			pl:Speak(args[1])
-		else
+			else
+			local ang = pl:GetAngles()
+			ang.y = y
+			pl:SetAngles(ang)			
+			end
+		else 
 			local ang = pl:GetAngles()
 			ang.y = y
 			pl:SetAngles(ang)
@@ -180,12 +235,19 @@ function ENT:OnThinkActive()
 		self:SetBodygroup(2, 1)
 		self:SetPoseParameter("direction", self:GetAngles().y-(self:GetPos()-self:GetLinkedTeleporter():GetPos()):Angle().y)
 		self.Model:SetBodygroup(2, 1)
-		self.Model:SetPoseParameter("direction", self.Model:GetAngles().y-(self:GetPos()-self:GetLinkedTeleporter().Model:GetPos()):Angle().y)
+		self.Model:SetPoseParameter("direction", self.Model:GetAngles().y-(self.Model:GetPos()-self:GetLinkedTeleporter():GetPos()):Angle().y)
+	elseif self:GetBuilder():GetClass() == "npc_engineer_red" and IsValid(self:GetLinkedTeleporter()) then
+		self:SetBodygroup(2, 1)
+		self:SetPoseParameter("direction", self:GetAngles().y-(self:GetPos()-self:GetLinkedTeleporter():GetPos()):Angle().y)
+		self.Model:SetBodygroup(2, 1)
+		self.Model:SetPoseParameter("direction", self.Model:GetAngles().y-(self.Model:GetPos()-self:GetLinkedTeleporter():GetPos()):Angle().y)
 	else
 		self:SetBodygroup(2, 0)
 		self.Model:SetBodygroup(2, 0)
 	end
-	
+	if !IsValid(self:GetLinkedTeleporter()) then
+		self:OnUnlink(self:GetLinkedTeleporter())
+	end
 	if self.NextRecharge then
 		local r = math.Clamp(1 - (self.NextRecharge - CurTime()) / self.RechargeTime, 0, 1)
 		self:SetChargePercentage(r)
@@ -195,13 +257,21 @@ function ENT:OnThinkActive()
 		end
 	end
 	
+	self.Model:ResetSequence("running")	
 	if self.NextRestartMotor and CurTime() >= self.NextRestartMotor then
-		self:SetAcceleration(0.003)
+		if self:GetLevel() == 1 then
+			self:SetAcceleration(0.003)
+		elseif self:GetLevel() == 2 then
+			self:SetAcceleration(0.0039)
+		elseif self:GetLevel() == 3 then
+			self:SetAcceleration(0.005)
+		end
 		self.NextRestartMotor = nil
 	end
 	
 	self.SpinSpeed = math.Clamp(self.SpinSpeed + self.Acceleration, 0, 1)
 	self:SetPlaybackRate(self.SpinSpeed)
+	self.Model:SetPlaybackRate(self.SpinSpeed)
 	if self.DoneInitialWarmup and self.Spin_Sound then
 		self.Spin_Sound:ChangePitch(math.Clamp(100*self.SpinSpeed, 1, 100), 0)
 	end
@@ -231,7 +301,18 @@ function ENT:OnThinkActive()
 		end
 		
 		for _,pl in pairs(ents.FindInBox(pos + Vector(-10, -10, 0), pos + Vector(10, 10, 30))) do
-			if pl:IsTFPlayer() and self:IsFriendly(pl) and not pl:IsBuilding() and (pl:GetMoveType()==MOVETYPE_WALK or pl:GetMoveType()==MOVETYPE_STEP) then
+			if pl:IsTFPlayer() and self:IsFriendly(pl) and not pl:IsBuilding() then
+				if not self.Clients[pl] then
+					self.Clients[pl] = {starttime = CurTime()}
+				else
+					self.Clients[pl].removeme = nil
+					if not teleported and CurTime() - self.Clients[pl].starttime > self.TeleportDelay then
+						teleported = true
+						self.Clients[pl] = nil
+						self:Teleport(pl)
+					end
+				end
+			elseif pl:IsPlayer() and pl:GetPlayerClass() == "spy" and not pl:IsBuilding() and (pl:GetMoveType()==MOVETYPE_WALK or pl:GetMoveType()==MOVETYPE_STEP) then
 				if not self.Clients[pl] then
 					self.Clients[pl] = {starttime = CurTime()}
 				else

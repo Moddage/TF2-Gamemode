@@ -14,9 +14,10 @@ end
 
 end
 
+
 if CLIENT then
 
-SWEP.PrintName			= "Minigun"
+SWEP.PrintName			= "Tomislav"
 SWEP.Slot				= 0
 SWEP.barrelRotation 		= 0
 SWEP.barrelSpeed 			= 1
@@ -102,17 +103,17 @@ PrecacheParticleSystem("bullet_tracer01_blue_crit")
 SWEP.barrelRotation 		= 0
 SWEP.barrelSpeed 			= 1
 SWEP.barrelValue1 			= 0
-SWEP.BaseDamage = 5
+SWEP.BaseDamage = 6
 SWEP.DamageRandomize = 0
 SWEP.MaxDamageRampUp = 1
 SWEP.MaxDamageFalloff = 0.2
 
 SWEP.BulletsPerShot = 4
-SWEP.BulletSpread = 0.08
+SWEP.BulletSpread = 0.06
 
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.Ammo			= TF_PRIMARY
-SWEP.Primary.Delay          = 0.1
+SWEP.Primary.Delay          = 0.14
 
 SWEP.Secondary.Delay          = 0.1
 

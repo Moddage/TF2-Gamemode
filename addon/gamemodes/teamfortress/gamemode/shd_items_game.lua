@@ -81,6 +81,9 @@ for k, v in pairs(items_game["items"]) do
         if v.name == "Huo-Long Heater" then
 			v.item_class = "tf_weapon_minigun_burner"
 		end
+        if v.name == "Brass Beast" then
+			v.item_class = "tf_weapon_minigun_bb"
+		end
         if v.name == "Red-Tape Recorder" then
 			v.item_class = "tf_weapon_rtr" 
 		end

@@ -177,7 +177,7 @@ PrecacheParticleSystem("medicgun_invulnstatus_fullcharge_red")
 PrecacheParticleSystem("medicgun_invulnstatus_fullcharge_blue")
 
 SWEP.Base				= "tf_weapon_gun_base"
-
+SWEP.Slot				= 1
 SWEP.ViewModel			= "models/weapons/v_models/v_medigun_medic.mdl"
 SWEP.WorldModel			= "models/weapons/c_models/c_medigun_defense/c_medigun_defense.mdl"
 SWEP.Crosshair = "tf_crosshair5"
@@ -299,8 +299,9 @@ local function medigun_trace_condition(tr, wep)
 		tr.Entity:IsTFPlayer() and
 		tr.Entity:EntityTeam()==wep.Owner:EntityTeam() and
 		tr.Entity:Health()>0 and
-		not tr.Entity:HasNPCFlag(NPC_CANNOTHEAL)
+		not tr.Entity:HasNPCFlag(NPC_CANNOTHEAL) or wep.Owner:EntityTeam() == TEAM_FRIENDLY and tr.Entity:EntityTeam() != TEAM_FRIENDLY and tr.Entity != wep.Owner and tr.Entity:IsTFPlayer()
 end
+
 
 function SWEP:PrimaryAttack()
 	if not self.Firing then

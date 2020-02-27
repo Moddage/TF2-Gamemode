@@ -7,7 +7,6 @@ end
 if CLIENT then
 
 SWEP.PrintName			= "Knife"
-SWEP.Slot				= 2
 
 function SWEP:ResetBackstabState()
 	self.NextBackstabIdle = nil
@@ -17,6 +16,7 @@ end
 
 end
 
+SWEP.Slot				= 2
 SWEP.Base				= "tf_weapon_melee_base"
 
 SWEP.ViewModel			= "models/weapons/v_models/v_shovel_soldier.mdl"

@@ -1,10 +1,10 @@
 if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
-
+	SWEP.Slot				= 2
 if CLIENT then
 	SWEP.PrintName			= "All Class"
-	SWEP.Slot				= 2
+
 
 	function SWEP:ResetBackstabState()
 		self.NextBackstabIdle = nil
@@ -103,7 +103,13 @@ else
 self.VM_DRAW = ACT_MELEE_ALLCLASS_VM_DRAW
 self.VM_IDLE = ACT_MELEE_ALLCLASS_VM_IDLE
 self.VM_HITCENTER = ACT_MELEE_ALLCLASS_VM_HITCENTER
-self.VM_SWINGHARD = ACT_MELEE_ALLCLASS_VM_HITCENTER
+if self.Owner:GetPlayerClass() == "spy" then
+	self.VM_SWINGHARD = ACT_MELEE_VM_SWINGHARD
+elseif self.Owner:GetPlayerClass() == "sniper" then
+	self.VM_SWINGHARD = ACT_MELEE_ALLCLASS_VM_HITCENTER
+else
+	self.VM_SWINGHARD = ACT_MELEE_ALLCLASS_VM_SWINGHARD
+end
 self.VM_INSPECT_START = ACT_MELEE_ALLCLASS_VM_INSPECT_START
 self.VM_INSPECT_IDLE = ACT_MELEE_ALLCLASS_VM_INSPECT_IDLE
 self.VM_INSPECT_END = ACT_MELEE_ALLCLASS_VM_INSPECT_END
@@ -262,6 +268,12 @@ function SWEP:OnMeleeHit(tr)
 			self:EmitSound(self.HitWorld)
 		end
 	end
+	
+	if self.Owner:GetPlayerClass() == "spy" then
+		if self:Critical() then
+			self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_MELEE_SECONDARY)
+		end
+	end
 end
 
 
@@ -339,5 +351,11 @@ function SWEP:PrimaryAttack()
 		self:CallOnClient("ResetBackstabState", "")
 	elseif CLIENT then
 		self:ResetBackstabState()
+	end
+	
+	if self.Owner:GetPlayerClass() == "spy" then
+		if self:Critical() then
+			self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_MELEE_SECONDARY)
+		end
 	end
 end

@@ -59,7 +59,7 @@ if SERVER then
 AddCSLuaFile( "shared.lua" )
 
 ENT.HitSound = Sound("Weapon_FlameThrower.FireHit")
-ENT.HitLoopSound = Sound("Weapon_FlameThrower.FireHitHard")
+ENT.HitLoopSound = Sound("Weapon_FlameThrower.FireHit")
 
 ENT.MaxDamage = 7
 ENT.MinDamage = 2

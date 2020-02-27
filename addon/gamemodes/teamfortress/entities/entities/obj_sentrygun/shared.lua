@@ -1,4 +1,8 @@
-
+ENT.PrintName		= "Sentry Gun"
+ENT.Author			= "Seamusmario"
+ENT.Category = "Team Fortress 2"
+ENT.Spawnable = true
+ENT.AdminSpawnable = false
 ENT.Base	= "obj_base"
 ENT.Type = "ai"  
 

@@ -35,20 +35,22 @@ function ENT:Think()
 	for pl,last in pairs(self.Players) do
 		if (last==-1 or CurTime()-last>1) and IsValid(pl) and pl:IsPlayer() then
 			resupplied = true
-			GAMEMODE:GiveHealthPercent(pl, 100)
-			GAMEMODE:GiveAmmoPercent(pl, 100)
-			pl:SetPlayerClass(pl:GetPlayerClass())
-			if self.Opened then
-				self:EmitSound("AmmoPack.Touch", 100, 100)
-			end
-			self.Players[pl] = CurTime()
-			self.NextClose = CurTime() + 1.5
 		end
 	end
 	
 	if resupplied and not self.Opened then
-		self:EmitSound("Regenerate.Touch", 100, 100)
-		
+		self:EmitSound("items/regenerate.wav", 100, 100)
+		for pl,last in pairs(self.Players) do
+			if (last==-1 or CurTime()-last>1) and IsValid(pl) and pl:IsPlayer() then
+			
+				GAMEMODE:GiveHealthPercent(pl, 100)
+				GAMEMODE:GiveAmmoPercent(pl, 100)
+				pl:SetPlayerClass(pl:GetPlayerClass())
+				self.Players[pl] = CurTime()
+				self.NextClose = CurTime() + 1.5
+				
+			end
+		end
 		if not self.ResupplyLocker and self.ResupplyLockerName then
 			self.ResupplyLocker = ents.FindByName(self.ResupplyLockerName)[1]
 			--print("associatedmodel : "..self.ResupplyLockerName.." : "..tostring(self.ResupplyLocker))

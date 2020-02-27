@@ -406,7 +406,7 @@ function SWEP:PrimaryAttack()
 				end)
 				end
 			end 
-			if v:IsPlayer() and v:GetModel() == "models/bots/scout/bot_scout.mdl" or v:GetModel() == "models/bots/soldier/bot_soldier.mdl" or v:GetModel() == "models/bots/pyro/bot_pyro.mdl" or v:GetModel() == "models/bots/demo/bot_demo.mdl" or v:GetModel() == "models/bots/heavy/bot_heavy.mdl" or v:GetModel() == "models/bots/engineer/bot_engineer.mdl" or v:GetModel() == "models/bots/sniper/bot_sniper.mdl" or v:GetModel() == "models/bots/spy/bot_spy.mdl" and v:Team() == TEAM_BLU and self.Owner:Team() != TEAM_BLU and v:GetInfoNum("tf_giant_robot",0) != 1 then
+			if string.find(game.GetMap(), "mvm_") and v:IsPlayer() and v:Team() == TEAM_BLU then
 				self:SetNextPrimaryFire(CurTime() + 10)
 				if SERVER then
 				if v:GetNWBool("Taunting") == true then return end
@@ -436,7 +436,7 @@ function SWEP:PrimaryAttack()
 				net.Start("ActivateTauntCam")
 				net.Send(v)
 				if self:GetItemData().model_player == "models/weapons/c_models/c_p2rec/c_p2rec.mdl" then
-				local animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+				animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
 				animent:SetModel("models/buildables/p2rec_placed.mdl")
 				animent:SetSkin(v:GetSkin())
 				animent:SetPos(v:GetBonePosition(v:LookupBone("bip_head")))
@@ -446,10 +446,11 @@ function SWEP:PrimaryAttack()
 				animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
 				animent:PhysicsInit( SOLID_OBB )
 				animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-				animent:SetParent(v, v:LookupAttachment("head"))
+				animent:SetParent(v, v:LookupAttachment("head")) 
 				self.Owner:EmitSound("Psap.Hacking")
+				animent:SetName("SappedRobot"..v:EntIndex())	
 				elseif self:GetItemData().model_player == "models/weapons/c_models/c_breadmonster_sapper/c_breadmonster_sapper.mdl" then
-				local animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+				animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
 				animent:SetModel("models/buildables/breadmonster_sapper_placed.mdl")
 				animent:SetSkin(v:GetSkin())
 				animent:SetPos(v:GetBonePosition(v:LookupBone("bip_head")))
@@ -460,8 +461,9 @@ function SWEP:PrimaryAttack()
 				animent:PhysicsInit( SOLID_OBB )
 				animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
 				animent:SetParent(v, v:LookupAttachment("head"))
+				animent:SetName("SappedRobot"..v:EntIndex())	
 				else
-				local animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+				animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
 				animent:SetModel("models/buildables/sapper_placed.mdl")
 				animent:SetSkin(v:GetSkin())
 				animent:SetPos(v:GetBonePosition(v:LookupBone("bip_head")))
@@ -472,6 +474,7 @@ function SWEP:PrimaryAttack()
 				animent:PhysicsInit( SOLID_OBB )
 				animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
 				animent:SetParent(v, v:LookupAttachment("head"))	
+				animent:SetName("SappedRobot"..v:EntIndex())	
 				end
 				timer.Create("EndStunRobot"..v:EntIndex(), 7, 1, function()
 					if not IsValid(v) or (v:Health() < 1 and v:GetNWBool("Taunting") != true) then v:Freeze(false) v:StopSound("SappedRobot") timer.Stop("EndStunRobot"..v:EntIndex()) timer.Stop("StunRobotloop3"..v:EntIndex()) timer.Stop("StunRobotloop4"..v:EntIndex()) return end
@@ -485,7 +488,9 @@ function SWEP:PrimaryAttack()
 					v:Freeze(false)
 					v:SetNWBool("NoWeapon", false)
 					v:SetNWBool("Taunting", false)
-					animent:Fire("Kill", "", 0.1)
+					for k,v in ipairs(ents.FindByName("SappedRobot"..v:EntIndex())) do
+						v:Remove()
+					end
 				end)
 				end
 			end
@@ -495,8 +500,9 @@ function SWEP:PrimaryAttack()
 						return
 					end 
 				self:SetNextPrimaryFire(CurTime() + 2)
-				self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_GRENADE)
+				self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_GRENADE_PRIMARY)
 				v:EmitSound("weapons/sapper_plant.wav") 
+				v:EmitSound("SappedRobot") 
 
 				
 					
@@ -685,6 +691,94 @@ function SWEP:PrimaryAttack()
 					end
 
 				end 
+				if v:GetClass() == "obj_dispenser" then
+
+					if self:GetItemData().model_player == "models/weapons/c_models/c_p2rec/c_p2rec.mdl" then
+					animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+					animent:SetModel("models/buildables/p2rec_placed.mdl")
+					animent:SetSkin(v:GetSkin())
+					animent:SetPos(v:GetBonePosition(v:LookupBone("weapon_bone")))
+					animent:SetAngles(v:GetAngles())
+					animent:Spawn()
+					animent:Activate()
+					animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
+					animent:PhysicsInit( SOLID_OBB )
+					animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+					animent:SetParent(v, v:LookupAttachment("sapper_attach"))
+					animent:SetName("sentrysapped"..v:EntIndex())
+					elseif self:GetItemData().model_player == "models/weapons/c_models/c_breadmonster_sapper/c_breadmonster_sapper.mdl" then
+					animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+					animent:SetModel("models/buildables/breadmonster_sapper_placed.mdl")
+					animent:SetSkin(v:GetSkin())
+					animent:SetPos(v:GetBonePosition(v:LookupBone("weapon_bone")))
+					animent:SetAngles(v:GetAngles())
+					animent:Spawn()
+					animent:Activate()
+					animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
+					animent:PhysicsInit( SOLID_OBB )
+					animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+					animent:SetParent(v, v:LookupAttachment("sapper_attach"))	
+					animent:SetName("sentrysapped"..v:EntIndex())
+					else
+					animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+					animent:SetModel("models/buildables/sapper_dispenser.mdl")
+					animent:SetSkin(v:GetSkin())
+					animent:SetPos(v:GetBonePosition(v:LookupBone("weapon_bone")))
+					animent:SetAngles(v:GetAngles())
+					animent:Spawn()
+					animent:Activate()			
+					animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
+					animent:PhysicsInit( SOLID_OBB )
+					animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+					animent:SetParent(v, v:LookupAttachment("sapper_attach"))	
+					animent:SetName("sentrysapped"..v:EntIndex())
+					end
+
+				end 
+				if v:GetClass() == "obj_teleporter" then
+
+					if self:GetItemData().model_player == "models/weapons/c_models/c_p2rec/c_p2rec.mdl" then
+					animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+					animent:SetModel("models/buildables/p2rec_placed.mdl")
+					animent:SetSkin(v:GetSkin())
+					animent:SetPos(v:GetBonePosition(v:LookupBone("weapon_bone")))
+					animent:SetAngles(v:GetAngles())
+					animent:Spawn()
+					animent:Activate()
+					animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
+					animent:PhysicsInit( SOLID_OBB )
+					animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+					animent:SetParent(v, v:LookupAttachment("sapper_attach"))
+					animent:SetName("sentrysapped"..v:EntIndex())
+					elseif self:GetItemData().model_player == "models/weapons/c_models/c_breadmonster_sapper/c_breadmonster_sapper.mdl" then
+					animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+					animent:SetModel("models/buildables/breadmonster_sapper_placed.mdl")
+					animent:SetSkin(v:GetSkin())
+					animent:SetPos(v:GetBonePosition(v:LookupBone("weapon_bone")))
+					animent:SetAngles(v:GetAngles())
+					animent:Spawn()
+					animent:Activate()
+					animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
+					animent:PhysicsInit( SOLID_OBB )
+					animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+					animent:SetParent(v, v:LookupAttachment("sapper_attach"))	
+					animent:SetName("sentrysapped"..v:EntIndex())
+					else
+					animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+					animent:SetModel("models/buildables/sapper_teleporter.mdl")
+					animent:SetSkin(v:GetSkin())
+					animent:SetPos(v:GetBonePosition(v:LookupBone("weapon_bone")))
+					animent:SetAngles(v:GetAngles())
+					animent:Spawn()
+					animent:Activate()			
+					animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
+					animent:PhysicsInit( SOLID_OBB )
+					animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+					animent:SetParent(v, v:LookupAttachment("sapper_attach"))	
+					animent:SetName("sentrysapped"..v:EntIndex())
+					end
+
+				end 
 				if v:GetClass() == "npc_turret_floor" then
 
 					if self:GetItemData().model_player == "models/weapons/c_models/c_p2rec/c_p2rec.mdl" then
@@ -722,6 +816,7 @@ function SWEP:PrimaryAttack()
 					animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
 					animent:PhysicsInit( SOLID_OBB )
 					animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+					animent:AddEffects( EF_BONEMERGE )
 					animent:SetParent(v)	
 					end
 					
@@ -736,7 +831,7 @@ function SWEP:PrimaryAttack()
 					v.Sapped = true
 				end
 				
-				timer.Create("SapSentry2", 0.001, 0, function()
+				timer.Create("SapSentry2", 0.2, 0, function()
 					if v:GetClass() != "obj_sentrygun" and v:GetClass() != "obj_dispenser" and v:GetClass() != "obj_teleporter" then
 						if not v:IsValid() then
 							if self:GetItemData().model_player == "models/weapons/c_models/c_p2rec/c_p2rec.mdl" then
@@ -748,7 +843,7 @@ function SWEP:PrimaryAttack()
 					if v.Sapped == true then 
 						v.Target = nil
 						if SERVER then
-							v:TakeDamage(0.5, self.Owner, self)
+							v:TakeDamage(6, self.Owner, self)
 						end	
 						v.TurretPitch = -15
 						v.TurretYaw = 0
@@ -756,6 +851,7 @@ function SWEP:PrimaryAttack()
 						v.TargetYaw = 0
 						v.DPitch = 0
 						v.DYaw = 0
+						v.SappedBy = self.Owner
 						v.IdlePitchSpeed = 0.3
 						v.IdleYawSpeed = 0.75
 						if not v:IsValid() then
@@ -1134,7 +1230,7 @@ concommand.Add("move", function(pl, cmd, args)
 	if not IsValid(builder) then return end
 	if not group then return end
 	
-	builder:SetHoldType("BUILDING_DEPLOYED")
+	builder:SetHoldType("BUILDING_DEPLOYED") 
 	
 	if not sub then
 		if not old_group_translate[group] then return end
@@ -1214,7 +1310,7 @@ function SWEP:Holster()
 	end
 
 	self:SetHoldType( "BUILDING" )	
-
+	self.HoldType = "BUILDING"
 	if SERVER then
 		if IsValid(self.Blueprint) then
 			self.Blueprint:Remove()

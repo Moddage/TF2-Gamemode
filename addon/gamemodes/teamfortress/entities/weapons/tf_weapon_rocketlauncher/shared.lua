@@ -3,10 +3,12 @@ if SERVER then
 	
 end
 
+SWEP.Slot				= 0
+
 if CLIENT then
 
 SWEP.PrintName			= "Rocket Launcher"
-SWEP.Slot				= 0
+
 
 function SWEP:ClientStartCharge()
 	self.ClientCharging = true
@@ -74,12 +76,17 @@ SWEP.MaxAddPitch = -6
 
 SWEP.MinGravity = 1
 SWEP.MaxGravity = 1
-
+function SWEP:CreateSounds(owner)
+	if not IsValid(owner) then return end
+	
+	self.RocketJumpLoop = CreateSound(owner, "RocketJumpLoop")
+	
+end
 function SWEP:Deploy()
 	if CLIENT then
 		HudBowCharge:SetProgress(0)
 	end
-	
+	self:CreateSounds(self.Owner)
 	return self:CallBaseFunction("Deploy")
 end
 
@@ -130,8 +137,11 @@ end
 function SWEP:Think()
 	self:CallBaseFunction("Think")
 	
+	if self:GetItemData().model_player == "models/weapons/c_models/c_rocketjumper/c_rocketjumper.mdl" then
+		self.ShootSound = "weapons/rocket_jumper_shoot.wav"
+		self.ShootCritSound = "weapons/rocket_jumper_shoot.wav"
+	end
 	if self.WeaponMode ~= 1 then return end
-	
 	if CLIENT then
 		if self.ClientCharging and self.ClientChargeStart then
 			HudBowCharge:SetProgress((CurTime()-self.ClientChargeStart) / self.ChargeTime)
@@ -139,6 +149,7 @@ function SWEP:Think()
 			HudBowCharge:SetProgress(0)
 		end
 	end
+
 	
 	if self.LockAttackKey and not self.Owner:KeyDown(IN_ATTACK) then
 		self.LockAttackKey = nil
@@ -191,11 +202,48 @@ end
 
 function SWEP:ShootProjectile()
 	if SERVER then
+
 		local rocket = ents.Create("tf_projectile_rocket")
 		rocket:SetPos(self:ProjectileShootPos())
 		local ang = self.Owner:EyeAngles()
 		if self:GetItemData().model_player == "models/weapons/c_models/c_rocketjumper/c_rocketjumper.mdl" then
 			rocket.ExplosionSound = "weapons/rocket_jumper_explode1.wav"
+			
+			timer.Create("CheckIfOnGround"..self.Owner:EntIndex(), 0.001, 0, function()
+				
+				if self.Owner:OnGround() then
+					if SERVER then
+						for k,v in pairs(ents.FindInSphere(self.Owner:GetPos(), 110)) do
+							if v:Health() >= 0 then
+								if v:IsTFPlayer() and !v:IsPlayer() and not v:IsFriendly(self.Owner) then
+									v:TakeDamage(45, self.Owner, self)
+									v:EmitSound("weapons/mantreads.wav", 85, 100)
+									v:EmitSound("player/fall_damage_dealt.wav", 85, 100)
+									timer.Create("Stomp", 0.001, 30, function()
+										self.Owner:DoAnimationEvent(ACT_SIGNAL1)
+									end)
+								end
+								if v:IsPlayer() and v:Nick() != self.Owner:Nick() and not v:IsFriendly(self.Owner) then
+									
+									v:TakeDamage(45, self.Owner, self)
+									v:EmitSound("weapons/mantreads.wav", 85, 100)
+									v:EmitSound("player/fall_damage_dealt.wav", 85, 100)
+									timer.Create("Stomp", 0.001, 30, function()
+										self.Owner:DoAnimationEvent(ACT_SIGNAL1)
+									end)
+									v:AddPlayerState(PLAYERSTATE_STUNNED)
+									timer.Simple(3, function()
+									
+									v:RemovePlayerState(PLAYERSTATE_STUNNED)
+									end)
+								end
+							end
+						end
+					end
+					
+					timer.Stop("CheckIfOnGround"..self.Owner:EntIndex())
+				end
+			end)
 		end
 		if self.WeaponMode == 1 then
 			local charge = (CurTime() - self.ChargeStartTime) / self.ChargeTime
@@ -238,10 +286,19 @@ function SWEP:ShootEffects()
 		self.ShootSound = self:GetVisuals()["sound_single_shot"]
 		self.ShootCritSound = self:GetVisuals()["sound_burst"]
 	end
-	if self:Critical() then
-		self:EmitSound(self.ShootCritSound)
+	if self:Critical() then		
+		if self:GetItemData().model_player == "models/weapons/c_models/c_rocketjumper/c_rocketjumper.mdl" then
+			self:EmitSound("weapons/rocket_jumper_shoot.wav", self.ShootSoundLevel, self.ShootSoundPitch)
+		else
+			self:EmitSound(self.ShootCritSound, self.ShootSoundLevel, self.ShootSoundPitch)
+		end
 	else
-		self:EmitSound(self.ShootSound, self.ShootSoundLevel, self.ShootSoundPitch)
+						
+		if self:GetItemData().model_player == "models/weapons/c_models/c_rocketjumper/c_rocketjumper.mdl" then
+			self:EmitSound("weapons/rocket_jumper_shoot.wav", self.ShootSoundLevel, self.ShootSoundPitch)
+		else
+			self:EmitSound(self.ShootSound, self.ShootSoundLevel, self.ShootSoundPitch)
+		end
 	end
 	 
 	if SERVER then

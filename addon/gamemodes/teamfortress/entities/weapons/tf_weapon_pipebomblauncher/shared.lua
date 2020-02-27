@@ -6,7 +6,6 @@ end
 if CLIENT then
 
 SWEP.PrintName			= "Stickybomb Launcher"
-SWEP.Slot				= 1
 
 SWEP.GlobalCustomHUD = {HudDemomanPipes = true}
 SWEP.CustomHUD = {HudBowCharge = true}
@@ -22,8 +21,108 @@ end
 
 end
 
+sound.Add( {
+	name = "Taunt.Demo01FootSpin",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_foot_spin.wav"} 
+} )
+sound.Add( {
+	name = "Taunt.Demo01HandClap",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_hand_clap.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers11",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers11.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers10",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers10.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers09",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers09.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers08",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers08.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers07",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers07.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers06",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers06.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers05",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers05.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers04",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers04.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers03",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers03.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers02",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers02.wav"} 
+} )
+sound.Add( {
+	name = "Demoman.Jeers01",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"vo/demoman_jeers01.wav"} 
+} )
+sound.Add( {
+	name = "Taunt.Demo01HandClap2",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_hand_clap.wav"} 
+} )
+
 SWEP.Base				= "tf_weapon_gun_base"
 
+SWEP.Slot				= 1
 SWEP.HasTeamColouredVModel = false
 SWEP.HasTeamColouredWModel = false
 
@@ -53,7 +152,7 @@ SWEP.IsRapidFire = false
 SWEP.ReloadSingle = true
 
 SWEP.HoldType = "PRIMARY"
-SWEP.HoldTypeHL2 = "ar2qs"
+SWEP.HoldTypeHL2 = "ar2"
 
 SWEP.MaxBombs = 8
 SWEP.Bombs = {}

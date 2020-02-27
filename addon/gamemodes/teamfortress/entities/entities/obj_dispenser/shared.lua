@@ -6,7 +6,7 @@ ENT.AutomaticFrameAdvance = true
 ENT.Sapped = false
 ENT.ObjectHealth = 150
 ENT.MaxMetal = 400
-
+ENT.IsEnabled = 0
 ENT.CollisionBox = {Vector(-24,-24,0), Vector(24,24,55)}
 ENT.BuildHull = {Vector(-24,-24,0), Vector(24,24,82)}
 

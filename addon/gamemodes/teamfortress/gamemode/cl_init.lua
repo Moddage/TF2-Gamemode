@@ -280,7 +280,7 @@ function GM:OpenMapVote()
 	VmapButton:SetMouseInputEnabled(true)
 	function VmapButton:DoClick()
 		if voteMap.SelectedMap then
-			RunConsoleCommand("callvote", "map", voteMap.SelectedMap)
+			RunConsoleCommand("ulx", "votemap2", voteMap.SelectedMap)
 			GAMEMODE:CloseMenus()
 		end 
 	end
@@ -343,7 +343,7 @@ function GM:OpenKickVote()
 	kickButton:SetMouseInputEnabled(true)
 	function kickButton:DoClick()
 		if plyList.SelectedPlayer and IsValid(plyList.SelectedPlayer) then
-			RunConsoleCommand("callvote", "kick", plyList.SelectedPlayer:Nick())
+			RunConsoleCommand("ulx", "votekick", plyList.SelectedPlayer:Nick())
 			GAMEMODE:CloseMenus()
 		end
 	end
@@ -884,6 +884,14 @@ list.Set(
 			DImageButton:SetImage( "vgui/class_sel_sm_random_red" )
 			DImageButton.DoClick = function()
 				RunConsoleCommand( "tf_taunt_introduction" )
+			end
+			local DImageButton = pnl:Add( "DImageButton" )
+			DImageButton:SetPos( 405, 205 )
+			DImageButton:SetTooltip( "Taunt: Brutal Legend" )
+			DImageButton:SetSize( 128, 128 )
+			DImageButton:SetImage( "backpack/workshop_partner/player/items/taunts/brutal_guitar/brutal_guitar_large" )
+			DImageButton.DoClick = function()
+				RunConsoleCommand( "tf_taunt_brutallegend" )
 			end
 		end
 	}
@@ -2435,8 +2443,8 @@ function icon2:LayoutEntity( ent )
 end
 if LocalPlayer():Team() == TEAM_BLU then
 	timer.Create("SetSkinForIcon", 0.01, 0, function()
-		icon:GetEntity():SetSkin(1)
-		icon2:GetEntity():SetSkin(1)
+		icon:SetSkin(1)
+		icon2:SetSkin(1)
 	end)
 end
 local dance = icon:GetEntity():LookupSequence( "selectionMenu_Anim01" )
@@ -2512,13 +2520,13 @@ SpyButton.OnCursorEntered = function() icon:SetModel( "models/player/spy.mdl" ) 
 
 local Hint = vgui.Create( "DLabel", ClassFrame )
 Hint:SetPos( 10, 70 )
-Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showteam" )) or "F2" ).." to open this menu" )
+Hint:SetText(  ("Press the key ".. string.upper(",").." to open this menu" ) ) 
 Hint:SizeToContents()
 
 local Hint = vgui.Create( "DLabel", ClassFrame )
 Hint:SetPos( 10, 82 )
 Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showspare1" )) or "F3" ).." to open the hat picker" )
-Hint:SizeToContents()
+Hint:SizeToContents() 
 
 local Hint = vgui.Create( "DLabel", ClassFrame )
 Hint:SetPos( 10, 94 )
@@ -2890,7 +2898,7 @@ concommand.Add("tf_changeclass", ClassSelection)
 concommand.Add("tf_door", DoorClose)
 concommand.Add("tf_hatpainter", HatPicker)
 concommand.Add("tf_menu", ClassSelection)
-concommand.Add("tf_itempicker", function(_, _, args) local type = args[1] if args[1] == "weapons" then type = "wep" elseif args[1] == "hats" then type = "hat" end itemselector(type) end)
+concommand.Add("tf_itempicker", function(_, _, args) local type = args[1] if args[1] == "weapons" then type = "wep" elseif args[1] == "hats" then type = "hat" elseif args[1] == "miscs" then type = "misc" end itemselector(type) end)
 --spawnmenu.AddCreationTab( "Team Fortress 2", function()
 
 	--local ctrl = vgui.Create( "SpawnmenuContentPanel" )

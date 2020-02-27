@@ -27,7 +27,29 @@ Rule PlayerCloakedSpyDemomanHeavy
 	criteria ConceptPlayerCloakedSpy IsHeavy IsOnDemoman
 	Response PlayerCloakedSpyDemomanHeavy
 }
-
+// Custom response battle cry against an Engineer.
+Response PlayerTauntCryHeavy
+{
+	scene "scenes/player/heavy/low/332.vcd"
+	scene "scenes/player/heavy/low/337.vcd"
+}
+Rule PlayerTauntCryHeavy
+{
+	criteria ConceptPlayerBattleCry 75PercentChance IsHeavy IsOnEngineer IsCrosshairEnemy
+	Response PlayerTauntCryHeavy
+}
+// Custom kill response against an Engineer.
+Response KilledPlayerTauntHeavy
+{
+	scene "scenes/player/heavy/low/332.vcd"
+	scene "scenes/player/heavy/low/337.vcd"
+}
+Rule KilledPlayerTauntHeavy
+{
+	criteria ConceptKilledPlayer KilledPlayerDelay 30PercentChance IsHeavy IsVictimEngineer IsCrosshairEnemy HeavyNotKillSpeech
+	ApplyContext "HeavyKillSpeech:1:10"
+	Response KilledPlayerTauntHeavy
+}
 Response PlayerCloakedSpyEngineerHeavy
 {
 	scene "scenes/Player/Heavy/low/228.vcd" 
@@ -120,7 +142,7 @@ Response HealThanksHeavy
 }
 Rule HealThanksHeavy
 {
-	criteria ConceptMedicChargeStopped IsHeavy SuperHighHealthContext HeavyNotSaidHealThanks 50PercentChance
+	criteria ConceptMedicChargeStopped IsHeavy SuperHighHealthContext HeavyNotSaidHealThanks  
 	ApplyContext "HeavySaidHealThanks:1:20"
 	Response HealThanksHeavy
 }
@@ -223,7 +245,7 @@ Response CartMovingBackwardsDefenseHeavy
 }
 Rule CartMovingBackwardsDefenseHeavy
 {
-	criteria ConceptCartMovingBackward IsOnDefense IsHeavy HeavyNotSaidCartMovingBackwardD
+	criteria ConceptCartMovingBackward IsHeavy HeavyNotSaidCartMovingBackwardD
 	ApplyContext "SaidCartMovingBackwardD:1:20"
 	Response CartMovingBackwardsDefenseHeavy
 }
@@ -240,12 +262,12 @@ Response CartMovingBackwardsOffenseHeavy
 }
 Rule CartMovingBackwardsOffenseHeavy
 {
-	criteria ConceptCartMovingBackward IsOnOffense IsHeavy HeavyNotSaidCartMovingBackwardO
+	criteria ConceptCartMovingBackward IsHeavy HeavyNotSaidCartMovingBackwardO
 	ApplyContext "SaidCartMovingBackwardO:1:20"
 	Response CartMovingBackwardsOffenseHeavy
 }
 
-Response CartMovingForwardDefenseHeavy
+Response CartMovingForwardDefenseHeavy z
 {
 	scene "scenes/Player/Heavy/low/1984.vcd" 
 	scene "scenes/Player/Heavy/low/1985.vcd" 
@@ -256,9 +278,453 @@ Response CartMovingForwardDefenseHeavy
 }
 Rule CartMovingForwardDefenseHeavy
 {
-	criteria ConceptCartMovingForward IsOnDefense IsHeavy HeavyNotSaidCartMovingForwardD
+	criteria ConceptCartMovingForward IsHeavy HeavyNotSaidCartMovingForwardD
 	ApplyContext "SaidCartMovingForwardD:1:20"
 	Response CartMovingForwardDefenseHeavy
+}
+
+Response PlayerJarateHitHeavy
+{
+	scene "scenes/Player/Heavy/low/258.vcd" 
+	scene "scenes/Player/Heavy/low/259.vcd" 
+	scene "scenes/Player/Heavy/low/260.vcd" 
+	scene "scenes/Player/Heavy/low/261.vcd" 
+	scene "scenes/Player/Heavy/low/262.vcd" 
+	scene "scenes/Player/Heavy/low/263.vcd" 
+	scene "scenes/Player/Heavy/low/264.vcd" 
+	scene "scenes/Player/Heavy/low/265.vcd" 
+	scene "scenes/Player/Heavy/low/266.vcd" 
+}
+
+Rule PlayerJarateHitHeavy
+{
+	criteria ConceptJarateHit IsHeavy
+	Response PlayerJarateHitHeavy
+}
+
+// Modified to be an extension of the 'positive' voice command.
+
+//--------------------------------------------------------------------------------------------------------------
+// MvM Speech
+//--------------------------------------------------------------------------------------------------------------
+Response MvMBombDroppedHeavy
+{
+	scene "scenes/Player/Heavy/low/4009.vcd" 
+}
+Rule MvMBombDroppedHeavy
+{
+	criteria ConceptMvMBombDropped 5PercentChance  IsHeavy 
+	Response MvMBombDroppedHeavy
+}
+
+Response MvMBombCarrierUpgrade1Heavy
+{
+	scene "scenes/Player/Heavy/low/4005.vcd" 
+}
+Rule MvMBombCarrierUpgrade1Heavy
+{
+	criteria ConceptMvMBombCarrierUpgrade1 5PercentChance  IsHeavy 
+	Response MvMBombCarrierUpgrade1Heavy
+}
+
+Response MvMBombCarrierUpgrade2Heavy
+{
+	scene "scenes/Player/Heavy/low/4006.vcd" 
+}
+Rule MvMBombCarrierUpgrade2Heavy
+{
+	criteria ConceptMvMBombCarrierUpgrade2 5PercentChance  IsHeavy 
+	Response MvMBombCarrierUpgrade2Heavy
+}
+
+Response MvMDefenderDiedEngineerHeavy
+{
+	scene "scenes/Player/Heavy/low/3962.vcd" 
+}
+Rule MvMDefenderDiedEngineerHeavy
+{
+	criteria ConceptMvMDefenderDied IsVictimEngineer IsHeavy 
+	Response MvMDefenderDiedEngineerHeavy
+}
+
+Response MvMDefenderDiedSpyHeavy
+{
+	scene "scenes/Player/Heavy/low/3963.vcd" 
+}
+Rule MvMDefenderDiedSpyHeavy
+{
+	criteria ConceptMvMDefenderDied IsVictimSpy IsHeavy 
+	Response MvMDefenderDiedSpyHeavy
+}
+
+Response MvMDefenderDiedScoutHeavy
+{
+	scene "scenes/Player/Heavy/low/3964.vcd" 
+}
+Rule MvMDefenderDiedScoutHeavy
+{
+	criteria ConceptMvMDefenderDied IsVictimScout IsHeavy 
+	Response MvMDefenderDiedScoutHeavy
+}
+
+Response MvMDefenderDiedHeavyHeavy
+{
+	scene "scenes/Player/Heavy/low/3965.vcd" 
+}
+Rule MvMDefenderDiedHeavyHeavy
+{
+	criteria ConceptMvMDefenderDied IsVictimHeavy IsHeavy 
+	Response MvMDefenderDiedHeavyHeavy
+}
+
+Response MvMDefenderDiedDemomanHeavy
+{
+	scene "scenes/Player/Heavy/low/3966.vcd" 
+}
+Rule MvMDefenderDiedDemomanHeavy
+{
+	criteria ConceptMvMDefenderDied IsVictimDemoman IsHeavy 
+	Response MvMDefenderDiedDemomanHeavy
+}
+
+Response MvMDefenderDiedSniperHeavy
+{
+	scene "scenes/Player/Heavy/low/3967.vcd" 
+}
+Rule MvMDefenderDiedSniperHeavy
+{
+	criteria ConceptMvMDefenderDied IsVictimSniper IsHeavy 
+	Response MvMDefenderDiedSniperHeavy
+}
+
+Response MvMDefenderDiedPyroHeavy
+{
+	scene "scenes/Player/Heavy/low/3968.vcd" 
+}
+Rule MvMDefenderDiedPyroHeavy
+{
+	criteria ConceptMvMDefenderDied IsVictimPyro IsHeavy 
+	Response MvMDefenderDiedPyroHeavy
+}
+
+Response MvMDefenderDiedMedicHeavy
+{
+	scene "scenes/Player/Heavy/low/3969.vcd" 
+}
+Rule MvMDefenderDiedMedicHeavy
+{
+	criteria ConceptMvMDefenderDied IsVictimMedic IsHeavy 
+	Response MvMDefenderDiedMedicHeavy
+}
+
+Response MvMFirstBombPickupHeavy
+{
+	scene "scenes/Player/Heavy/low/4004.vcd" 
+}
+Rule MvMFirstBombPickupHeavy
+{
+	criteria ConceptMvMFirstBombPickup 5PercentChance  IsHeavy
+	Response MvMFirstBombPickupHeavy
+}
+
+Response MvMBombPickupHeavy
+{
+	scene "scenes/Player/Heavy/low/4003.vcd"
+	scene "scenes/Player/Heavy/low/4004.vcd"  
+}
+Rule MvMBombPickupHeavy
+{
+	criteria ConceptMvMBombPickup 5PercentChance  IsHeavy
+	Response MvMBombPickupHeavy
+}
+
+Response MvMSniperCalloutHeavy
+{
+	scene "scenes/Player/Heavy/low/3972.vcd" 
+}
+Rule MvMSniperCalloutHeavy
+{
+	criteria ConceptMvMSniperCallout IsHeavy
+	Response MvMSniperCalloutHeavy
+}
+
+Response MvMSentryBusterHeavy
+{
+	scene "scenes/Player/Heavy/low/4018.vcd" 
+}
+Rule MvMSentryBusterHeavy
+{
+	criteria ConceptMvMSentryBuster IsHeavy
+	Response MvMSentryBusterHeavy
+}
+
+Response MvMSentryBusterDownHeavy
+{
+	scene "scenes/Player/Heavy/low/4019.vcd" 
+}
+Rule MvMSentryBusterDownHeavy
+{
+	criteria ConceptMvMSentryBusterDown 20PercentChance  IsHeavy
+	Response MvMSentryBusterDownHeavy
+}
+
+Response MvMLastManStandingHeavy
+{
+	scene "scenes/Player/Heavy/low/3970.vcd" 
+	scene "scenes/Player/Heavy/low/3971.vcd" 
+}
+Rule MvMLastManStandingHeavy
+{
+	criteria ConceptMvMLastManStanding 20PercentChance  IsHeavy
+	Response MvMLastManStandingHeavy
+}
+
+Response MvMEncourageMoneyHeavy
+{
+	scene "scenes/Player/Heavy/low/3988.vcd" 
+	scene "scenes/Player/Heavy/low/3989.vcd" 
+	scene "scenes/Player/Heavy/low/3990.vcd" 
+	scene "scenes/Player/Heavy/low/3991.vcd" 
+}
+Rule MvMEncourageMoneyHeavy
+{
+	criteria ConceptMvMEncourageMoney IsHeavy
+	Response MvMEncourageMoneyHeavy
+}
+
+Response MvMEncourageUpgradeHeavy
+{
+	scene "scenes/Player/Heavy/low/4000.vcd" 
+	scene "scenes/Player/Heavy/low/4001.vcd" 
+	scene "scenes/Player/Heavy/low/4002.vcd" 
+}
+Rule MvMEncourageUpgradeHeavy
+{
+	criteria ConceptMvMEncourageUpgrade IsHeavy
+	Response MvMEncourageUpgradeHeavy
+}
+
+Response MvMUpgradeCompleteHeavy
+{
+	scene "scenes/Player/Heavy/low/3992.vcd" 
+	scene "scenes/Player/Heavy/low/3993.vcd" 
+	scene "scenes/Player/Heavy/low/3994.vcd" 
+	scene "scenes/Player/Heavy/low/3995.vcd" 
+	scene "scenes/Player/Heavy/low/3996.vcd" 
+	scene "scenes/Player/Heavy/low/3997.vcd" 
+
+}
+Rule MvMUpgradeCompleteHeavy
+{
+	criteria ConceptMvMUpgradeComplete 5PercentChance  IsHeavy
+	Response MvMUpgradeCompleteHeavy
+}
+
+Response MvMGiantCalloutHeavy
+{
+	scene "scenes/Player/Heavy/low/4020.vcd" 
+}
+Rule MvMGiantCalloutHeavy
+{
+	criteria ConceptMvMGiantCallout 20PercentChance  IsHeavy
+	Response MvMGiantCalloutHeavy
+}
+
+Response MvMGiantHasBombHeavy
+{
+	scene "scenes/Player/Heavy/low/4024.vcd" 
+}
+Rule MvMGiantHasBombHeavy
+{
+	criteria ConceptMvMGiantHasBomb 20PercentChance  IsHeavy
+	Response MvMGiantHasBombHeavy
+}
+
+Response MvMSappedRobotHeavy
+{
+	scene "scenes/Player/Heavy/low/3975.vcd" 
+	scene "scenes/Player/Heavy/low/3976.vcd" 
+}
+Rule MvMSappedRobotHeavy
+{
+	criteria ConceptMvMSappedRobot IsHeavy
+	Response MvMSappedRobotHeavy
+}
+
+Response MvMCloseCallHeavy
+{
+	scene "scenes/Player/Heavy/low/4007.vcd" 
+	scene "scenes/Player/Heavy/low/4008.vcd" 
+}
+Rule MvMCloseCallHeavy
+{
+	criteria ConceptMvMCloseCall IsHeavy
+	Response MvMCloseCallHeavy
+}
+
+Response MvMTankCalloutHeavy
+{
+	scene "scenes/Player/Heavy/low/4011.vcd" 
+}
+Rule MvMTankCalloutHeavy
+{
+	criteria ConceptMvMTankCallout IsHeavy
+	Response MvMTankCalloutHeavy
+}
+
+Response MvMTankDeadHeavy
+{
+	scene "scenes/Player/Heavy/low/4017.vcd" 
+}
+Rule MvMTankDeadHeavy
+{
+	criteria ConceptMvMTankDead IsHeavy
+	Response MvMTankDeadHeavy
+}
+
+Response MvMTankDeployingHeavy
+{
+	scene "scenes/Player/Heavy/low/4016.vcd" 
+}
+Rule MvMTankDeployingHeavy
+{
+	criteria ConceptMvMTankDeploying IsHeavy 
+	Response MvMTankDeployingHeavy
+}
+
+Response MvMAttackTheTankHeavy
+{
+	scene "scenes/Player/Heavy/low/4012.vcd" 
+	scene "scenes/Player/Heavy/low/4013.vcd" 
+}
+Rule MvMAttackTheTankHeavy
+{
+	criteria ConceptMvMAttackTheTank IsHeavy
+	Response MvMAttackTheTankHeavy
+}
+
+Response MvMTauntHeavy
+{
+	scene "scenes/Player/Heavy/low/3977.vcd" 
+	scene "scenes/Player/Heavy/low/3978.vcd" 
+}
+Rule MvMTauntHeavy
+{
+	criteria ConceptMvMTaunt IsHeavy
+	Response MvMTauntHeavy
+}
+
+Response MvMWaveWinHeavy
+{
+	scene "scenes/Player/Heavy/low/3949.vcd" 
+	scene "scenes/Player/Heavy/low/3950.vcd" 
+	scene "scenes/Player/Heavy/low/3951.vcd" 
+	scene "scenes/Player/Heavy/low/3952.vcd" 
+	scene "scenes/Player/Heavy/low/3953.vcd" 
+}
+Rule MvMWaveWinHeavy
+{
+	criteria ConceptMvMWaveWin IsHeavy
+	Response MvMWaveWinHeavy
+}
+
+Response MvMGiantKilledHeavy
+{
+	scene "scenes/Player/Heavy/low/4023.vcd" 
+}
+Rule MvMGiantKilledHeavy
+{
+	criteria ConceptMvMGiantKilled IsHeavy
+	Response MvMGiantKilledHeavy
+}
+
+Response MvMGiantKilledTeammateHeavy
+{
+	scene "scenes/Player/Heavy/low/4022.vcd" 
+}
+Rule MvMGiantKilledTeammateHeavy
+{
+	criteria ConceptMvMGiantKilledTeammate IsHeavy
+	Response MvMGiantKilledTeammateHeavy
+}
+
+Response MvMDeployRageHeavy
+{
+	scene "scenes/Player/Heavy/low/3983.vcd" 
+	scene "scenes/Player/Heavy/low/3985.vcd" 
+	scene "scenes/Player/Heavy/low/3986.vcd" 
+	scene "scenes/Player/Heavy/low/3987.vcd" 
+}
+Rule MvMDeployRageHeavy
+{
+	criteria ConceptMvMDeployRage IsHeavy
+	Response MvMDeployRageHeavy
+}
+
+// Custom stuff - melee dare
+// Look at enemy, then do battle cry voice command while holding a melee weapon.
+Response MeleeDareCombatHeavy
+{
+	scene "scenes/Player/Heavy/low/1975.vcd"
+	scene "scenes/Player/Heavy/low/1976.vcd"
+	scene "scenes/Player/Heavy/low/1977.vcd"
+	scene "scenes/Player/Heavy/low/2087.vcd"
+	scene "scenes/Player/Heavy/low/2090.vcd"
+	scene "scenes/Player/Heavy/low/2091.vcd"
+	scene "scenes/Player/Heavy/low/2092.vcd"
+	scene "scenes/Player/Heavy/low/2093.vcd"
+	scene "scenes/Player/Heavy/low/2106.vcd"
+	scene "scenes/Player/Heavy/low/2107.vcd"
+	scene "scenes/Player/Heavy/low/2119.vcd"
+	scene "scenes/Player/Heavy/low/2205.vcd"
+	scene "scenes/Player/Heavy/low/2258.vcd"
+}
+Rule MeleeDareCombatHeavy
+{
+	criteria ConceptPlayerBattleCry IsWeaponMelee IsHeavy IsCrosshairEnemy
+	ApplyContext "IsDaring:1:5"
+	Response MeleeDareCombatHeavy
+}
+
+// Swinging fists start
+Response HeavySwingFistsStart
+{
+	scene "scenes/player/heavy/low/1980.vcd"
+}
+Rule HeavySwingFistsStart
+{
+	criteria ConceptFireWeapon IsWeaponMelee 50PercentChance IsHeavy IsNotDaring HeavyNotKillSpeechMelee IsNotDominating IsNotHeavyFistsSwung WeaponIsNotSaxxy
+	ApplyContext "HeavyFistsSwung:1:10"
+	Response HeavySwingFistsStart
+}
+
+Response HeavySwingFists
+{
+	scene "scenes/player/heavy/low/2272.vcd"
+	scene "scenes/player/heavy/low/2273.vcd"
+	scene "scenes/player/heavy/low/2274.vcd"
+	scene "scenes/player/heavy/low/1978.vcd"
+	scene "scenes/player/heavy/low/1979.vcd"
+}
+Rule HeavySwingFists
+{
+	criteria ConceptFireWeapon IsWeaponMelee 50PercentChance IsHeavyFistsSwung IsNotDaring HeavyNotKillSpeechMelee IsNotDominating IsHeavy IsNotHeavyFistsSwinging
+	ApplyContext "HeavyFistsSwinging:2:3"
+	Response HeavySwingFists
+}
+
+// Continue MVM
+
+Response RocketDestroyedHeavy
+{
+	scene "scenes/Player/Heavy/low/3979.vcd" 
+	scene "scenes/Player/Heavy/low/3980.vcd" 
+	scene "scenes/Player/Heavy/low/3982.vcd" 
+}
+Rule RocketDestroyedHeavy
+{
+	criteria ConceptRocketDestroyed   IsHeavy
+	Response RocketDestroyedHeavy
 }
 
 Response CartMovingForwardOffenseHeavy
@@ -292,7 +758,7 @@ Response CartMovingForwardOffenseHeavy
 }
 Rule CartMovingForwardOffenseHeavy
 {
-	criteria ConceptCartMovingForward IsOnOffense IsHeavy HeavyNotSaidCartMovingForwardO
+	criteria ConceptCartMovingForward IsHeavy HeavyNotSaidCartMovingForwardO
 	ApplyContext "SaidCartMovingForwardO:1:20"
 	Response CartMovingForwardOffenseHeavy
 }
@@ -306,7 +772,7 @@ Response CartMovingStoppedDefenseHeavy
 }
 Rule CartMovingStoppedDefenseHeavy
 {
-	criteria ConceptCartMovingStopped IsOnDefense IsHeavy HeavyNotSaidCartMovingStoppedD
+	criteria ConceptCartMovingStopped IsHeavy HeavyNotSaidCartMovingStoppedD
 	ApplyContext "SaidCartMovingStoppedD:1:20"
 	Response CartMovingStoppedDefenseHeavy
 }
@@ -320,7 +786,7 @@ Response CartMovingStoppedOffenseHeavy
 }
 Rule CartMovingStoppedOffenseHeavy
 {
-	criteria ConceptCartMovingStopped IsOnOffense IsHeavy HeavyNotSaidCartMovingStoppedO
+	criteria ConceptCartMovingStopped IsHeavy HeavyNotSaidCartMovingStoppedO
 	ApplyContext "SaidCartMovingStoppedO:1:20"
 	Response CartMovingStoppedOffenseHeavy
 }
@@ -396,7 +862,7 @@ Response KilledPlayerVeryManyHeavy
 }
 Rule KilledPlayerVeryManyHeavy
 {
-	criteria ConceptKilledPlayer IsVeryManyRecentKills 50PercentChance IsWeaponPrimary KilledPlayerDelay HeavyNotKillSpeech IsHeavy
+	criteria ConceptKilledPlayer IsVeryManyRecentKills   IsWeaponPrimary KilledPlayerDelay HeavyNotKillSpeech IsHeavy
 	ApplyContext "HeavyKillSpeech:1:10"
 	applycontexttoworld
 	Response KilledPlayerVeryManyHeavy

@@ -2,9 +2,9 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+SWEP.Slot				= 2
 if CLIENT then
 	SWEP.PrintName			= "Shovel"
-SWEP.Slot				= 2
 end
 
 SWEP.Base				= "tf_weapon_melee_base"
@@ -49,7 +49,14 @@ SWEP.HoldTypeHL2 = "MELEE"
 
 function SWEP:Think()
 	self:CallBaseFunction("Think")
-	
+	if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_riding_crop/c_riding_crop.mdl" then
+		self.Swing = Sound("DisciplineDevice.Swing")
+		
+		self.MeleeRange = 90
+		self.MeleeAttackDelay = 0.2
+		self.HitFlesh = Sound("DisciplineDevice.Impact")
+		self.HitWorld = Sound("DisciplineDevice.HitWorld")
+	end
 	if SERVER and self.WeaponMode == 1 and (not self.NextHealthCheck or CurTime()>=self.NextHealthCheck) then
 		if not self.InitialBaseDamage then
 			self.InitialBaseDamage = self.BaseDamage
@@ -87,6 +94,29 @@ function SWEP:Deploy()
 	end
 	
 	return self:CallBaseFunction("Deploy")
+end
+
+function SWEP:Critical() 
+	
+	if self:GetItemData().model_player == "models/workshop/weapons/c_models/c_market_gardener/c_market_gardener.mdl" then
+		if not self.Owner:IsOnGround() then
+			return true
+		else
+			timer.Simple(1, function()
+				return false
+			end)
+		end
+	end	
+	if self:GetItemData().model_player == "models/weapons/c_models/c_market_gardener/c_market_gardener.mdl" then
+		if not self.Owner:IsOnGround() then
+			return true
+		else
+			timer.Simple(1, function()
+				return false
+			end)
+		end
+	end
+	return self:CallBaseFunction("Critical")
 end
 
 function SWEP:Holster()

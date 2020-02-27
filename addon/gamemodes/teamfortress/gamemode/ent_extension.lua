@@ -17,8 +17,8 @@ function meta:SetTrigger(b)
 end
 
 -- NPCs are considered as players in this gamemode
-function meta:IsTFPlayer()
-	return self:IsPlayer() or self:IsNPC() or self:GetClass() == "reviver"
+function meta:IsTFPlayer() 
+	return self:IsPlayer() or self:IsNPC() or self:GetClass() == "reviver"  or self:GetClass() == "headless_hatman" or self:GetClass() == "tf_zombie" or self.Base == "npc_tf2base" or self.Base == "npc_tf2base_mvm" or self.Base == "npc_demo_red" or self.Base == "npc_demo_mvm" or self.Base == "npc_scout_mvm" or self.Base == "npc_hwg_red" or self.Base == "npc_heavy_mvm" or self.Base == "npc_heavy_mvm_shotgun" or self.Base == "npc_soldier_red" or self.Base == "npc_sniper_red" or self.Base == "npc_spy_red" or self.Base == "npc_scout_red" or self.Base == "npc_pyro_red" or self.Base == "npc_medic_red" or self.Base == "npc_engineer_red"
 end
 
 -- Entity name is the name attributed to an entity by the gamemode
@@ -207,13 +207,18 @@ end
 -- Team related functions
 function meta:IsFriendly(target)
 	local t1, t2 = self:EntityTeam(), target:EntityTeam()
-	
+	if self:EntityTeam() == TEAM_FRIENDLY and t2~=t1 then
+		return true
+	end
 	return (self:HasNPCFlag(NPC_ALWAYSFRIENDLY) or
 			target:HasNPCFlag(NPC_ALWAYSFRIENDLY) or
-			(t1==TEAM_RED or t1==TEAM_BLU) and t1==t2)
+			(t1==TEAM_RED or t1==TEAM_BLU) and t1==t2) or target:EntityTeam() == TEAM_FRIENDLY
 end
 
 function meta:CanDamage(target)
+	if self:EntityTeam() == TEAM_FRIENDLY then
+		return self==target
+	end
 	return self==target or ((!GetConVar("mp_friendlyfire"):GetBool() and not self:IsFriendly(target)) or GetConVar("mp_friendlyfire"):GetBool())
 end
 

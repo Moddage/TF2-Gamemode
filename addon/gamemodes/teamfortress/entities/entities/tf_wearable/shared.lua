@@ -102,8 +102,9 @@ function ENT:Initialize()
 		else
 			self.Model = item.model_player
 		end
-	elseif item.model_player_per_class and item.model_player_per_class[self:GetOwner():GetPlayerClass()] then
-		self.Model = item.model_player_per_class[self:GetOwner():GetPlayerClass()]
+	elseif item.model_player_per_class then
+		local modelperclass = tostring(item.model_player_per_class)
+		self.Model = string.Replace(modelperclass, "%s",  tostring(self:GetOwner():GetPlayerClass()))
 	end
 	
 	if SERVER then

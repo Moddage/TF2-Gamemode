@@ -229,7 +229,6 @@ concommand.Add("tf_mvm_wins", function(ply, cmd)
 	end
 end)
 concommand.Add("tf_spydisguise", function(ply, cmd)
-	if ply:GetPlayerClass() == "spy" then
 		ply:SelectWeapon("tf_weapon_knife")
 		ply:EmitSound("player/spy_disguise.wav", 65, 100)
 		timer.Simple(2, function()
@@ -252,7 +251,6 @@ concommand.Add("tf_spydisguise", function(ply, cmd)
 				end
 			end)
 		end)
-	end
 end)
 
 concommand.Add("tf_mvm_wave_end_bonus", function(ply, cmd)
@@ -410,6 +408,27 @@ concommand.Add("tf_taunt_laugh", function(ply)
 		end)
 	end
 end)
+concommand.Add("tf_taunt_disco", function(ply)
+	if ply:GetNWBool("Taunting") == true then return end
+	if ply:IsHL2() then ply:ConCommand("act laugh") return end
+	if not ply:IsOnGround() then return end
+	if ply:WaterLevel() ~= 0 then return end
+	if ply:GetInfoNum("tf_robot", 0) == 1 then ply:ChatPrint("You can't taunt as a robot!") return end
+	if ply:GetInfoNum("tf_giantrobot", 0) == 1 then ply:ChatPrint("You can't taunt as a mighty robot!") return end	
+	local time = ply:SequenceDuration(ACT_DOD_DEPLOYED)	
+	ply:DoAnimationEvent(ACT_DOD_DEPLOYED, true)
+	ply:SetNWBool("Taunting", true)
+	ply:SetNWBool("NoWeapon", true)
+	ply:EmitSound("player/taunt_disco.wav")
+	net.Start("ActivateTauntCam")
+	net.Send(ply)
+	timer.Create("LoopAnimConga"..ply:EntIndex(), ply:SequenceDuration(ply:LookupSequence("disco_fever")), 1, function()
+		ply:SetNWBool("Taunting", false)
+		ply:SetNWBool("NoWeapon", false)
+		net.Start("DeActivateTauntCam")
+		net.Send(ply)
+	end)
+end)
 concommand.Add("tf_taunt_conga_start", function(ply)
 	if ply:GetNWBool("Taunting2") == true then return end
 	
@@ -492,7 +511,7 @@ concommand.Add("tf_taunt_banjo_start", function(ply)
 	if ply:WaterLevel() ~= 0 then return end
 	if ply:GetInfoNum("tf_robot", 0) == 1 then ply:ChatPrint("You can't taunt as a robot!") return end
 	if ply:GetInfoNum("tf_giantrobot", 0) == 1 then ply:ChatPrint("You can't taunt as a mighty robot!") return end
-	ply:DoAnimationEvent(ACT_CLIMB_DOWN, false)
+	ply:DoAnimationEvent(ACT_SIGNAL3, false)
 	ply:EmitSound("BanjoSong")
 	local time = ply:SequenceDuration("taunt_bumpkins_banjo_fastloop")
 	timer.Create("LoopAnimBanjo2"..ply:EntIndex(), 0.001, 0, function()
@@ -513,7 +532,7 @@ concommand.Add("tf_taunt_banjo_start", function(ply)
 	animent2:AddEffects(EF_BONEMERGE)
 	animent2:SetName("BanjoModel"..ply:EntIndex())
 	timer.Create("LoopAnimBanjo"..ply:EntIndex(), 10, 0, function()
-		ply:DoAnimationEvent(ACT_CLIMB_DOWN, false)
+		ply:DoAnimationEvent(ACT_SIGNAL3, false)
 		ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_russian.vcd", 0)
 	end)
 end)
@@ -567,22 +586,34 @@ concommand.Add("tf_taunt_introduction", function(ply)
 	if ply:WaterLevel() ~= 0 then return end
 	if ply:GetInfoNum("tf_robot", 0) == 1 then ply:ChatPrint("You can't taunt as a robot!") return end
 	if ply:GetInfoNum("tf_giantrobot", 0) == 1 then ply:ChatPrint("You can't taunt as a mighty robot!") return end
-	ply:DoAnimationEvent(ACT_DOD_RELOAD_PRONE_DEPLOYED, false)
-	ply:SetNWBool("Taunting", true)
-	net.Start("ActivateTauntCam")
-	net.Send(ply)
-	timer.Create("LoopAnimBanjo"..ply:EntIndex(), ply:SequenceDuration(ply:LookupSequence("selectionMenu_Anim01")), 1, function()
-		ply:SetNWBool("Taunting", false)
-		net.Start("DeActivateTauntCam")
-		net.Send(ply)	
-	end)
+	if ply:GetPlayerClass() == "soldier" then
+		ply:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_BOLT, false)
+		ply:SetNWBool("Taunting", true)
+		net.Start("ActivateTauntCam")
+		net.Send(ply)
+		timer.Create("LoopAnimBanjo"..ply:EntIndex(), ply:SequenceDuration(ply:LookupSequence("selectionMenu_Anim0l")), 1, function()
+			ply:SetNWBool("Taunting", false)
+			net.Start("DeActivateTauntCam")
+			net.Send(ply)	
+		end)
+	else
+		ply:DoAnimationEvent(ACT_DOD_RELOAD_PRONE_DEPLOYED, false)
+		ply:SetNWBool("Taunting", true)
+		net.Start("ActivateTauntCam")
+		net.Send(ply)
+		timer.Create("LoopAnimBanjo"..ply:EntIndex(), ply:SequenceDuration(ply:LookupSequence("selectionMenu_Anim01")), 1, function()
+			ply:SetNWBool("Taunting", false)
+			net.Start("DeActivateTauntCam")
+			net.Send(ply)	
+		end)
+	end
 end)
 concommand.Add("tf_taunt_banjo_stop", function(ply)
 	if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("NoWeapon")) then return end
 	ply:StopSound("BanjoSong")
 	ply:EmitSound("BanjoSongStop")
 	ply:ResetClassSpeed()
-	ply:DoAnimationEvent(ACT_CLIMB_UP, false)
+	ply:DoAnimationEvent(ACT_SIGNAL_ADVANCE, false)
 	local time = ply:SequenceDuration(ply:LookupSequence("taunt_bumpkins_banjo_outro"))
 	timer.Create("OutroBanjo"..ply:EntIndex(), 2.5, 1, function()
 		for k,v in ipairs(ents.FindByName("BanjoModel"..ply:EntIndex())) do
@@ -889,29 +920,29 @@ concommand.Add("tf_taunt_robot_stun", function(ply)
 		end)
 	end
 end)
-concommand.Add("tf_stunme", function(ply)
+concommand.Add("tf_stun_me", function(ply)
 	if ply:GetNWBool("Taunting") == true then return end
 	if not ply:IsOnGround() then return end
 	if ply:WaterLevel() ~= 0 then return end
-	timer.Create("StunRobot25", 0.001, 1, function()
+	timer.Create("StunRobot25"..ply:EntIndex(), 0.001, 1, function()
 		ply:DoAnimationEvent(ACT_MP_STUN_BEGIN,2)
-		timer.Create("StunRobotloop3", 0.6, 0, function()
-			if not ply:Alive() then timer.Stop("StunRobotloop") return end
-			timer.Create("StunRobotloop4", 0.22, 0, function()
-				if not ply:Alive() then timer.Stop("StunRobotloop4") return end
+		timer.Create("StunRobotloop3"..ply:EntIndex(), 0.6, 0, function()
+			if not ply:Alive() then timer.Stop("StunRobotloop"..ply:EntIndex()) return end 
+			timer.Create("StunRobotloop4"..ply:EntIndex(), 0.8, 6, function()
+				if not ply:Alive() then timer.Stop("StunRobotloop4"..ply:EntIndex()) return end
 				ply:DoAnimationEvent(ACT_MP_STUN_MIDDLE,2)
 			end)
 		end)
-	end)
+	end) 
 	ply:DoAnimationEvent(ACT_DOD_SECONDARYATTACK_BOLT, true)
-	ply:SetNWBool("Taunting", true)
+	ply:SetNWBool("Taunting", true)  
 	ply:SetNWBool("NoWeapon", true)
 	net.Start("ActivateTauntCam")
 	net.Send(ply)
 	timer.Simple(5, function()
-		if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
-		timer.Stop("StunRobotloop3")
-		timer.Stop("StunRobotloop4")
+		if not IsValid(ply) then return end
+		timer.Stop("StunRobotloop3"..ply:EntIndex())
+		timer.Stop("StunRobotloop4"..ply:EntIndex())
 		ply:DoAnimationEvent(ACT_MP_STUN_END,2)
 		net.Start("DeActivateTauntCam")
 		net.Send(ply)
@@ -1190,6 +1221,24 @@ concommand.Add("tf_taunt_flipping_intro", function(ply)
 				timer.Stop("squaredancewaiting"..ply:EntIndex())
 				timer.Stop("squaredancestart"..ply:EntIndex())
 			end
+			if v.Base == "npc_tf2base" or v.Base == "npc_soldier_red" or v.Base == "npc_hwg_red" or v.Base == "npc_pyro_red" or v.Base == "npc_scout_red" then
+				local time2 = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/flip_success_initiator0.vcd", 0)
+				local time3 = v:PlayScene("scenes/player/"..v.TF2Class.."/low/flip_success_receiver0.vcd", 0)
+				ply:DoAnimationEvent(ACT_DOD_SECONDARYATTACK_BOLT, true)
+				v:ResetSequence("taunt_flip_success_receiver")
+				ply:SetNWBool("Taunting", true)
+				ply:SetNWBool("NoWeapon", true)
+				timer.Simple(time2, function()
+					if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+					ply:SetNWBool("Taunting", false)
+					ply:SetNWBool("NoWeapon", false)
+					net.Start("DeActivateTauntCam")
+					net.Send(ply)
+				end)
+				timer.Stop("squaredanceintro"..ply:EntIndex())
+				timer.Stop("squaredancewaiting"..ply:EntIndex())
+				timer.Stop("squaredancestart"..ply:EntIndex())
+			end
 		end
 	end)
 end)
@@ -1280,35 +1329,185 @@ concommand.Add("tf_taunt_rockpaperscissors_intro", function(ply)
 		end
 		for k,v in ipairs(ents.FindInSphere(ply:GetPos(), 80)) do
 			if v:IsPlayer() and v:Nick() != ply:Nick() then
-				local sceusermessageime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/"..table.Random(rockpaperscissors)..".vcd", 0)
-				ply:DoAnimationEvent(table.Random(rockpaperscissorsact), true)
-				ply:SetNWBool("Taunting", true)
-				ply:SetNWBool("NoWeapon", true)
-				net.Start("ActivateTauntCam")
-				net.Send(ply)
-				local sceusermessageime2 = v:PlayScene("scenes/player/"..v:GetPlayerClass().."/low/"..table.Random(rockpaperscissors2)..".vcd", 0)
-				v:DoAnimationEvent(table.Random(rockpaperscissorsact), true)
-				v:SetNWBool("Taunting", true)
-				v:SetNWBool("NoWeapon", true)
-				net.Start("ActivateTauntCam")
-				net.Send(v)
-				timer.Simple(sceusermessageime, function()
-					if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
-					ply:SetNWBool("Taunting", false)
-					ply:SetNWBool("NoWeapon", false)
-					net.Start("DeActivateTauntCam")
+				if math.random(1,4) == 1 then
+					local sceusermessageime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_rps_paper_lose.vcd", 0)
+					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED_FG42, true)
+					ply:SetNWBool("Taunting", true)
+					ply:SetNWBool("NoWeapon", true)
+					net.Start("ActivateTauntCam")
 					net.Send(ply)
-				end)
-				timer.Simple(sceusermessageime2, function()
-					if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
-					v:SetNWBool("Taunting", false)
-					v:SetNWBool("NoWeapon", false)
-					net.Start("DeActivateTauntCam")
+					local sceusermessageime2 = v:PlayScene("scenes/player/"..v:GetPlayerClass().."/low/taunt_rps_scissors_win.vcd", 0)
+					v:DoAnimationEvent(ACT_DOD_PRONEWALK_IDLE_BAR, true)
+					v:SetNWBool("Taunting", true)
+					v:SetNWBool("NoWeapon", true)
+					net.Start("ActivateTauntCam")
 					net.Send(v)
-				end)
-				timer.Stop("rpsintro"..ply:EntIndex())
-				timer.Stop("rpsstart"..ply:EntIndex())
-				timer.Stop("rpswaiting"..ply:EntIndex())
+					timer.Simple(sceusermessageime, function()
+						if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+						ply:SetNWBool("Taunting", false)
+						ply:SetNWBool("NoWeapon", false)
+						net.Start("DeActivateTauntCam")
+						net.Send(ply)
+					end)
+					timer.Simple(sceusermessageime2, function()
+						if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+						v:SetNWBool("Taunting", false)
+						v:SetNWBool("NoWeapon", false)
+						net.Start("DeActivateTauntCam")
+						net.Send(v)
+					end)
+					timer.Stop("rpsintro"..ply:EntIndex())
+					timer.Stop("rpsstart"..ply:EntIndex())
+					timer.Stop("rpswaiting"..ply:EntIndex())
+				end
+				if math.random(1,4) == 2 then
+					local sceusermessageime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_rps_scissors_win.vcd", 0)
+					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED_FG42, true)
+					ply:SetNWBool("Taunting", true)
+					ply:SetNWBool("NoWeapon", true)
+					net.Start("ActivateTauntCam")
+					net.Send(ply)
+					local sceusermessageime2 = v:PlayScene("scenes/player/"..v:GetPlayerClass().."/low/taunt_rps_paper_lose.vcd", 0)
+					v:DoAnimationEvent(ACT_DOD_PRONEWALK_IDLE_BAR, true)
+					v:SetNWBool("Taunting", true)
+					v:SetNWBool("NoWeapon", true)
+					net.Start("ActivateTauntCam")
+					net.Send(v)
+					timer.Simple(sceusermessageime, function()
+						if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+						ply:SetNWBool("Taunting", false)
+						ply:SetNWBool("NoWeapon", false)
+						net.Start("DeActivateTauntCam")
+						net.Send(ply)
+						if !v:IsFriendly(ply) then
+							v:Explode()
+						end
+					end)
+					timer.Simple(sceusermessageime2, function()
+						if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+						v:SetNWBool("Taunting", false)
+						v:SetNWBool("NoWeapon", false)
+						net.Start("DeActivateTauntCam")
+						net.Send(v)
+					end)
+					timer.Stop("rpsintro"..ply:EntIndex())
+					timer.Stop("rpsstart"..ply:EntIndex())
+					timer.Stop("rpswaiting"..ply:EntIndex())
+				end
+				if math.random(1,4) == 3 then
+					local sceusermessageime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_rps_rock_lose.vcd", 0)
+					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED_FG42, true)
+					ply:SetNWBool("Taunting", true)
+					ply:SetNWBool("NoWeapon", true)
+					net.Start("ActivateTauntCam")
+					net.Send(ply)
+					local sceusermessageime2 = v:PlayScene("scenes/player/"..v:GetPlayerClass().."/low/taunt_rps_paper_win.vcd", 0)
+					v:DoAnimationEvent(ACT_DOD_PRONEWALK_IDLE_BAR, true)
+					v:SetNWBool("Taunting", true)
+					v:SetNWBool("NoWeapon", true)
+					net.Start("ActivateTauntCam")
+					net.Send(v)
+					timer.Simple(sceusermessageime, function()
+						if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+						ply:SetNWBool("Taunting", false)
+						ply:SetNWBool("NoWeapon", false)
+						net.Start("DeActivateTauntCam")
+						net.Send(ply)
+						if !ply:IsFriendly(v) then
+							ply:Explode()
+						end
+					end)
+					timer.Simple(sceusermessageime2, function()
+						if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+						v:SetNWBool("Taunting", false)
+						v:SetNWBool("NoWeapon", false)
+						net.Start("DeActivateTauntCam")
+						net.Send(v)
+					end)
+					timer.Stop("rpsintro"..ply:EntIndex())
+					timer.Stop("rpsstart"..ply:EntIndex())
+					timer.Stop("rpswaiting"..ply:EntIndex())
+				end
+			end
+			if v.Base == "npc_tf2base" or v.Base == "npc_soldier_red" or v.Base == "npc_hwg_red" or v.Base == "npc_pyro_red" or v.Base == "npc_scout_red" then
+				if math.random(1,4) == 1 then
+					local sceusermessageime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_rps_paper_lose.vcd", 0)
+					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED_FG42, true)
+					ply:SetNWBool("Taunting", true)
+					ply:SetNWBool("NoWeapon", true)
+					net.Start("ActivateTauntCam")
+					net.Send(ply)
+					local sceusermessageime2 = v:PlayScene("scenes/player/"..v.TF2Class.."/low/taunt_rps_scissors_win.vcd", 0)
+					v:ResetSequence("taunt_rps_scissors_win")
+					v:SetCycle(0)
+					timer.Simple(sceusermessageime, function()
+						if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+						ply:SetNWBool("Taunting", false)
+						ply:SetNWBool("NoWeapon", false)
+						net.Start("DeActivateTauntCam")
+						net.Send(ply)
+					end)
+					timer.Simple(sceusermessageime2, function()
+						if !v:IsFriendly(ply) then
+							ply:Explode()
+						end
+					end)
+					timer.Stop("rpsintro"..ply:EntIndex()) 
+					timer.Stop("rpsstart"..ply:EntIndex())
+					timer.Stop("rpswaiting"..ply:EntIndex())
+				end
+				if math.random(1,4) == 2 then
+					local sceusermessageime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_rps_scissors_win.vcd", 0)
+					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED_FG42, true)
+					ply:SetNWBool("Taunting", true)
+					ply:SetNWBool("NoWeapon", true)
+					net.Start("ActivateTauntCam")
+					net.Send(ply)
+					local sceusermessageime2 = v:PlayScene("scenes/player/"..v.TF2Class.."/low/taunt_rps_paper_lose.vcd", 0)
+					v:ResetSequence("taunt_rps_scissors_win")
+					v:SetCycle(0)
+					timer.Simple(sceusermessageime, function()
+						if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+						ply:SetNWBool("Taunting", false)
+						ply:SetNWBool("NoWeapon", false)
+						net.Start("DeActivateTauntCam")
+						net.Send(ply)
+					end)
+					timer.Simple(sceusermessageime2, function()
+						if !ply:IsFriendly(v) then
+							v:Splatter()
+						end
+					end)
+					timer.Stop("rpsintro"..ply:EntIndex())
+					timer.Stop("rpsstart"..ply:EntIndex())
+					timer.Stop("rpswaiting"..ply:EntIndex())
+				end
+				if math.random(1,4) == 3 then
+					local sceusermessageime = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_rps_rock_lose.vcd", 0)
+					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED_FG42, true)
+					ply:SetNWBool("Taunting", true)
+					ply:SetNWBool("NoWeapon", true)
+					net.Start("ActivateTauntCam")
+					net.Send(ply)
+					local sceusermessageime2 = v:PlayScene("scenes/player/"..v.TF2Class.."/low/taunt_rps_paper_win.vcd", 0)
+					v:ResetSequence("taunt_rps_scissors_win")
+					v:SetCycle(0)
+					timer.Simple(sceusermessageime, function()
+						if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+						ply:SetNWBool("Taunting", false)
+						ply:SetNWBool("NoWeapon", false)
+						net.Start("DeActivateTauntCam")
+						net.Send(ply)
+					end)
+					timer.Simple(sceusermessageime2, function()
+						if !v:IsFriendly(ply) then
+							ply:Explode()
+						end
+					end)
+					timer.Stop("rpsintro"..ply:EntIndex())
+					timer.Stop("rpsstart"..ply:EntIndex())
+					timer.Stop("rpswaiting"..ply:EntIndex())
+				end
 			end
 		end
 	end)
@@ -1443,9 +1642,43 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 						net.Start("DeActivateTauntCam")
 						net.Send(ply)
 					end)
+				else
+				
+			ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+			ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)		
 				end
-			end
-			if ply:GetPlayerClass() == "heavy" then
+
+			elseif ply:GetPlayerClass() == "sniper" then
+				if ply:GetWeapons()[1]:GetClass() == "tf_weapon_compound_bow" then
+					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+					ply:DoAnimationEvent(ACT_DOD_CROUCH_IDLE_PISTOL, true)
+					ply:SetNWBool("Taunting", true)
+					ply:SetNWBool("NoWeapon", true)
+					ply:GetActiveWeapon().NameOverride = "taunt_sniper" 
+					timer.Simple(0.8, function()
+						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
+							if v:IsTFPlayer() and not v:IsPlayer() and not v:IsFriendly(ply) then
+								v:TakeDamage(50, ply, ply)
+							elseif v:IsPlayer() and not v:IsFriendly(ply) then
+								v:ConCommand("tf_stun_me")
+								v:TakeDamage(50, ply, ply)
+							end
+						end
+					end)
+					timer.Simple(2.3, function()
+						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
+							if v:IsTFPlayer() and not v:IsPlayer() and not v:IsFriendly(ply) then
+								v:TakeDamage(500, ply, ply)
+							elseif v:IsPlayer() and not v:IsFriendly(ply) then
+								v:TakeDamage(500, ply, ply)
+							end
+						end
+					end)
+				else					
+					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+					ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
+				end
+			elseif ply:GetPlayerClass() == "heavy" then
 				if ply:GetInfoNum("tf_robot", 0) == 1 and table.KeyFromValue(allowedtaunts,args[1]) == 1 then
 					timer.Simple(2, function()
 						ply:EmitSound("vo/mvm/norm/heavy_mvm_goodjob0"..math.random(1,3)..".mp3", 95, 100)
@@ -1458,9 +1691,11 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 						net.Start("DeActivateTauntCam")
 						net.Send(ply)
 					end)
+				else
+			ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+			ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)				
 				end
-			end
-			if ply:GetPlayerClass() == "medic" then
+			elseif ply:GetPlayerClass() == "medic" then
 				if ply:GetInfoNum("tf_robot", 0) == 1 and table.KeyFromValue(allowedtaunts,args[1]) == 1 then
 					timer.Simple(0.1, function()
 						ply:EmitSound("vo/mvm/norm/medic_mvm_specialcompleted01.mp3", 95, 100)
@@ -1479,9 +1714,11 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 						net.Start("DeActivateTauntCam")
 						net.Send(ply)
 					end)
-				end
+				else				
+					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+					ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)		
 			end
-			if ply:GetPlayerClass() == "soldier" then
+			elseif ply:GetPlayerClass() == "soldier" then
 				if ply:GetInfoNum("tf_robot", 0) == 1 and table.KeyFromValue(allowedtaunts,args[1]) == 1 then
 					timer.Simple(1.6, function()
 						ply:EmitSound("vo/mvm/norm/taunts/soldier_mvm_taunts01.mp3", 95, 100)
@@ -1518,9 +1755,25 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 						net.Start("DeActivateTauntCam")
 						net.Send(ply)
 					end)
+				else
+					if ply:GetWeapons()[1]:GetClass() == "tf_weapon_rocketlauncher_dh" then
+						ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+						ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED, true)	
+					else
+						ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+						ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)		
+					end
 				end
-			end
-			if ply:GetPlayerClass() == "engineer" then
+			
+			elseif ply:GetPlayerClass() == "demoman" then
+				if ply:GetWeapons()[1]:GetClass() == "tf_weapon_grenadelauncher" then
+					ply:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_MP40, true)
+					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+				else
+					ply:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_MP40, true)
+					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())				
+				end
+			elseif ply:GetPlayerClass() == "engineer" then
 				if ply:GetWeapons()[1]:GetClass() == "tf_weapon_sentry_revenge" then
 					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
 					ply:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED, true)
@@ -1559,10 +1812,14 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 							end
 						end
 					end)
+				else					
+					ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+					ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
 				end
 			else
-				ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
-				ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
+			
+			ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
+			ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
 			end
 		elseif table.KeyFromValue(allowedtaunts,args[1]) == 2 then
 	
@@ -1600,67 +1857,111 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 					net.Start("DeActivateTauntCam")
 					net.Send(ply)
 				end)
-					
-			end
-			if ply:GetPlayerClass() == "pyro" then
+					 
+
+			elseif ply:GetPlayerClass() == "demoman" then
+				ply:SelectWeapon(ply:GetWeapons()[2]:GetClass())
+				ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
+			elseif ply:GetPlayerClass() == "soldier" then
+				ply:SelectWeapon(ply:GetWeapons()[2]:GetClass())
+				ply:DoAnimationEvent(ACT_DOD_SPRINT_AIM_SPADE, true)
+			elseif ply:GetPlayerClass() == "pyro" then
+				
+					ply:GetActiveWeapon().NameOverride = "taunt_pyro"
 				timer.Simple(2, function()
 					ply:EmitSound("misc/flame_engulf.wav", 65, 100)
 					for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
-						if v:IsNPC() and not v:IsFriendly(ply) then
-							v:TakeDamage(500, ply, ply)
-						elseif v:IsPlayer() and not v:IsFriendly(ply) then
+						if v:IsTFPlayer() and not v:IsFriendly(ply) then
 							v:TakeDamage(500, ply, ply)
 						end
 					end
 				end)
-			end
+				
+				ply:SelectWeapon(ply:GetWeapons()[2]:GetClass())
+				ply:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_MP40, true)
+			else
 			ply:SelectWeapon(ply:GetWeapons()[2]:GetClass())
 			ply:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_MP40, true)
+			end
 		elseif table.KeyFromValue(allowedtaunts,args[1]) == 3 then	
 			if ply:GetPlayerClass() == "pyro" then
 				if ply:GetWeapons()[3]:GetClass() == "tf_weapon_neonsign" then
 					ply:EmitSound("player/sign_bass_solo.wav", 95, 100)
 				end
+				ply:SelectWeapon(ply:GetWeapons()[3]:GetClass())
+				ply:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
 			end
 			if ply:GetPlayerClass() == "soldier" then
 				if ply:GetWeapons()[3]:GetClass() == "tf_weapon_pickaxe" then
-					timer.Simple(2.5, function()
+					ply:GetWeapons()[3].NameOverride = "taunt_soldier"
+					timer.Simple(3.5, function()
+						if !ply:Alive() then return end
 						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
 							if v:IsNPC() and not v:IsFriendly(ply) then
 								local d = DamageInfo()
 								d:SetDamage( v:Health() )
 								d:SetAttacker( ply )
+								d:SetInflictor( ply:GetWeapons()[3] )
 								d:SetDamageType( DMG_BLAST )
 								v:TakeDamageInfo( d )
+								v:EmitSound("BaseExplosionEffect.Sound")
 							elseif v:IsPlayer() and not v:IsFriendly(ply) then
 								local d = DamageInfo()
 								d:SetDamage( v:Health() )
 								d:SetAttacker( ply )
+								d:SetInflictor( ply:GetWeapons()[3] )
 								d:SetDamageType( DMG_BLAST )
 								v:TakeDamageInfo( d )
+								v:EmitSound("BaseExplosionEffect.Sound")
 							end
 						end
+						timer.Simple(0.3, function()
+						
+							ply:EmitSound("BaseExplosionEffect.Sound")
+							local dmg = DamageInfo()
+							dmg:SetDamage( ply:Health() )
+							dmg:SetAttacker( ply )
+							dmg:SetInflictor( ply:GetWeapons()[3] )
+							dmg:SetDamageType( DMG_BLAST )
+							ply:TakeDamageInfo( dmg )
+						end)
 					end)
 					ply:SelectWeapon(ply:GetWeapons()[3]:GetClass())
-					ply:DoAnimationEvent(ACT_DOD_STAND_AIM_KNIFE, true)
+					ply:DoAnimationEvent(ACT_COVER_LOW, true)
 				else
 					ply:SelectWeapon(ply:GetWeapons()[3]:GetClass())
 					ply:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
 				end
-			end
-			if ply:GetPlayerClass() == "heavy" then
+			elseif ply:GetPlayerClass() == "heavy" then
 				ply:GetActiveWeapon().NameOverride = "taunt_heavy"
 				timer.Simple(1.7, function()
-					for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
-						if v:IsNPC() and not v:IsFriendly(ply) then
-							v:TakeDamage(500, ply, ply)
-						elseif v:IsPlayer() and not v:IsFriendly(ply) then
-							v:TakeDamage(500, ply, ply)
-						end
+					if ply:GetEyeTrace().Entity:IsNPC() and not ply:GetEyeTrace().Entity:IsFriendly(ply) then
+						ply:GetEyeTrace().Entity:TakeDamage(500, ply, ply)
+					elseif ply:GetEyeTrace().Entity:IsPlayer() and not ply:GetEyeTrace().Entity:IsFriendly(ply) then
+						ply:GetEyeTrace().Entity:TakeDamage(500, ply, ply)
 					end
 				end)
-			end
-			if ply:GetPlayerClass() == "medic" then
+				
+				ply:SelectWeapon(ply:GetWeapons()[3]:GetClass())
+				ply:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
+			elseif ply:GetPlayerClass() == "scout" then
+				if ply:GetWeapons()[3]:GetClass() == "tf_weapon_bat_wood" then
+					ply:GetActiveWeapon().NameOverride = "taunt_scout"
+					timer.Simple(4.2, function()
+						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
+							if v:IsTFPlayer() and not v:IsFriendly(ply) then
+								v:TakeDamage(500, ply, ply)
+								v:EmitSound("player/pl_impact_stun_range.wav", 95)
+							end
+						end
+					end)
+					ply:SelectWeapon(ply:GetWeapons()[3]:GetClass())
+					ply:DoAnimationEvent(ACT_COVER_LOW, true)
+				else
+					ply:SelectWeapon(ply:GetWeapons()[3]:GetClass())
+					ply:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)				
+				end
+			elseif ply:GetPlayerClass() == "medic" then
 				timer.Simple(0.3, function()
 				if ply:GetWeapons()[3]:GetItemData().model_player == "models/weapons/c_models/c_uberneedle/c_uberneedle.mdl" then
 					ply:EmitSound("player/ubertaunt_v0"..math.random(1,7)..".wav", 95, 100)
@@ -1671,9 +1972,9 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 
 				if ply:GetWeapons()[3]:GetItemData().model_player == "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl" then
 					timer.Simple(2, function()
-						ply:GetActiveWeapon().NameOverride = "saw_kill"
+						ply:GetActiveWeapon().NameOverride = "taunt_sniper"
 						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
-							if v:IsNPC() and not v:IsFriendly(ply) then
+							if v:IsTFPlayer() and not v:IsPlayer() and not v:IsFriendly(ply) then
 								local d = DamageInfo()
 								d:SetDamage( 50 )
 								d:SetAttacker( ply )
@@ -1687,14 +1988,14 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 								d:SetInflictor( ply:GetActiveWeapon() )
 								d:SetDamageType( DMG_CLUB )
 								v:TakeDamageInfo( d )
-								v:ConCommand("tf_stunme")
+								v:ConCommand("tf_stun_me")
 							end
 						end
 					end)
 
 					timer.Simple(2.89, function()
 						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
-							if v:IsNPC() and not v:IsFriendly(ply) then
+							if v:IsTFPlayer() and not v:IsPlayer() and not v:IsFriendly(ply) then
 								local d = DamageInfo()
 								d:SetDamage( 500 )
 								d:SetAttacker( ply )
@@ -1720,16 +2021,12 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 					ply:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
 
 				end
-			end
-			if ply:GetPlayerClass() == "demoman" then
-				if ply:GetWeapons()[3]:GetClass() == "tf_weapon_sword" then
+			elseif ply:GetPlayerClass() == "demoman" then
+				if ply:GetWeapons()[3]:GetClass() == "tf_weapon_sword" or ply:GetWeapons()[3]:GetClass() == "tf_weapon_katana" then
 					ply:GetActiveWeapon().NameOverride = "taunt_demoman"
 					timer.Simple(2.5, function()
 						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
-							if v:IsNPC() and not v:IsFriendly(ply) then
-								v:AddDeathFlag(DF_DECAP)
-								v:TakeDamage(500, ply, ply)
-							elseif v:IsPlayer() and not v:IsFriendly(ply) then
+							if v:IsTFPlayer() and not v:IsFriendly(ply) then
 								v:AddDeathFlag(DF_DECAP)
 								v:TakeDamage(500, ply, ply)
 							end
@@ -1741,32 +2038,30 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 					ply:SelectWeapon(ply:GetWeapons()[3]:GetClass())
 					ply:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
 				end
+			else
+				
+				ply:SelectWeapon(ply:GetWeapons()[3]:GetClass())
+				ply:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
+				
 			end
-		else
-		ply:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
 		end
+		
 	else
 		if table.KeyFromValue(allowedtaunts,args[1]) == 1 then
 			ply:SelectWeapon(ply:GetWeapons()[1]:GetClass())
 			ply:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
-		elseif table.KeyFromValue(allowedtaunts,args[1]) == 2 then
+		elseif table.KeyFromValue(allowedtaunts,args[1]) == 3 then
 			timer.Simple(2, function()
 				for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
-					if v:IsNPC() and not v:IsFriendly(ply) then
-						v:TakeDamage(10, ply, ply)
-						ply:GetActiveWeapon().NameOverride = "taunt_spy"
-					elseif v:IsPlayer() and not v:IsFriendly(ply) then
+					if v:IsTFPlayer() and not v:IsFriendly(ply) then
 						v:TakeDamage(10, ply, ply)
 						ply:GetActiveWeapon().NameOverride = "taunt_spy"
 					end
 				end
 			end)		
-			timer.Simple(2.3, function()
+			timer.Simple(2.5, function()
 				for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
-					if v:IsNPC() and not v:IsFriendly(ply) then
-						v:TakeDamage(10, ply, ply)
-						ply:GetActiveWeapon().NameOverride = "taunt_spy"
-					elseif v:IsPlayer() and not v:IsFriendly(ply) then
+					if v:IsTFPlayer() and not v:IsFriendly(ply) then
 						v:TakeDamage(10, ply, ply)
 						ply:GetActiveWeapon().NameOverride = "taunt_spy"
 					end
@@ -1774,10 +2069,7 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 			end)	
 			timer.Simple(4, function()
 				for k,v in pairs(ents.FindInSphere(ply:GetPos(), 90)) do 
-					if v:IsNPC() and not v:IsFriendly(ply) then
-						v:TakeDamage(500, ply, ply)
-						ply:GetActiveWeapon().NameOverride = "taunt_spy"
-					elseif v:IsPlayer() and not v:IsFriendly(ply) then
+					if v:IsTFPlayer() and not v:IsFriendly(ply) then
 						v:TakeDamage(500, ply, ply)
 						ply:GetActiveWeapon().NameOverride = "taunt_spy"
 					end
@@ -1785,10 +2077,8 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 			end)			
 			ply:SelectWeapon(ply:GetWeapons()[2]:GetClass())
 			ply:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
-		elseif table.KeyFromValue(allowedtaunts,args[1]) == 3 then
+		elseif table.KeyFromValue(allowedtaunts,args[1]) == 4 then
 			ply:SelectWeapon(ply:GetWeapons()[3]:GetClass())
-			ply:DoAnimationEvent(ACT_DOD_SPRINT_AIM_SPADE, true)
-		else
 			ply:DoAnimationEvent(ACT_DOD_SPRINT_AIM_SPADE, true)
 		end		
 	end
@@ -1831,6 +2121,91 @@ concommand.Add("tf_taunt_scary", function(ply)
 		net.Send(ply)
 	end)
 end)
+concommand.Add("tf_taunt_drg", function(ply)
+	if ply:GetNWBool("Taunting") == true then return end
+	if ply:IsHL2() then ply:ConCommand("act laugh") return end
+	if not ply:IsOnGround() then return end
+	if ply:WaterLevel() ~= 0 then return end
+	local time = CurTime() + 3.5
+	ply:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_BOLT, true)
+	ply:SetNWBool("Taunting", true)
+	ply:SelectWeapon(ply:GetWeapons()[3])
+	net.Start("ActivateTauntCam")
+	net.Send(ply)
+	ply:EmitSound("weapons/drg_wrench_teleport.wav", 100, 100)
+	timer.Simple(2, function()
+		ParticleEffect("teleportedin_red", ply:GetPos(), ply:GetAngles(), ply)
+		ply:SetFOV(50)		
+		ply:ScreenFade( SCREENFADE.IN, Color( 255, 255, 255, 150 ), 0.8, 0.65 )
+		ply:EmitSound("weapons/teleporter_send.wav", 100, 100)
+	end)
+	timer.Simple(2.02, function()
+		if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+		ply:SetNWBool("Taunting", false)
+		ply:SetNWBool("NoWeapon", false)
+		for k,v in ipairs(ents.FindByClass("obj_teleporter")) do
+			if string.find(game.GetMap(), "mvm_") then
+				if v:GetBuilder() == ply then
+					ply:SetPos(v:GetPos() + Vector(0, 30, 0))
+					ply:SetFOV(0, 0.3)
+				end
+			else
+				if v:IsExit() and v:GetBuilder() == ply then
+					ply:SetPos(v:GetPos() + Vector(0, 30, 0))
+					ply:SetFOV(0, 0.3)
+				end
+			end
+		end
+		net.Start("DeActivateTauntCam")
+		net.Send(ply)
+	end)
+end)
+concommand.Add("tf_taunt_drg_spawn", function(ply)
+	if ply:GetNWBool("Taunting") == true then return end
+	if ply:IsHL2() then ply:ConCommand("act laugh") return end
+	if not ply:IsOnGround() then return end
+	if ply:WaterLevel() ~= 0 then return end
+	local time = CurTime() + 3.5
+	ply:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_BOLT, true)
+	ply:SetNWBool("Taunting", true)
+	ply:SelectWeapon(ply:GetWeapons()[3])
+	net.Start("ActivateTauntCam")
+	net.Send(ply)
+	ply:EmitSound("weapons/drg_wrench_teleport.wav", 100, 100)
+	timer.Simple(2, function()
+		ParticleEffect("teleportedin_red", ply:GetPos(), ply:GetAngles(), ply)
+		ply:SetFOV(50)		
+		ply:ScreenFade( SCREENFADE.IN, Color( 255, 255, 255, 150 ), 0.8, 0.65 )
+		ply:EmitSound("weapons/teleporter_send.wav", 100, 100)
+	end)
+	timer.Simple(2.02, function()
+		if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+		ply:SetNWBool("Taunting", false)
+		ply:SetNWBool("NoWeapon", false)
+		ply:SetFOV(0, 0.3)
+		for k,v in ipairs(ents.FindByClass("info_player_teamspawn")) do
+			if ply:Team() == TEAM_BLU then
+				if v:GetKeyValues()["TeamNum"] == 3 then
+					ply:SetPos(v:GetPos())
+				end
+			elseif ply:Team() == TEAM_RED then
+				if v:GetKeyValues()["TeamNum"] == 2 then
+					ply:SetPos(v:GetPos())
+				end
+			elseif ply:Team() == TEAM_NEUTRAL then
+				if v:GetKeyValues()["TeamNum"] == 2 then
+					ply:SetPos(v:GetPos())
+				end
+			else
+				if v:GetKeyValues()["TeamNum"] == 3 then
+					ply:SetPos(v:GetPos())
+				end
+			end
+		end
+		net.Start("DeActivateTauntCam")
+		net.Send(ply)
+	end)
+end)
 concommand.Add("tf_taunt_scary_demo", function(ply)
 	if ply:GetNWBool("Taunting") == true then return end
 	if ply:IsHL2() then ply:ConCommand("act laugh") return end
@@ -1866,6 +2241,44 @@ concommand.Add("tf_taunt_replay", function(ply)
 	net.Start("ActivateTauntCam")
 	net.Send(ply)
 	timer.Simple(time, function()
+		if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
+		ply:SetNWBool("Taunting", false)
+		ply:SetNWBool("NoWeapon", false)
+		net.Start("DeActivateTauntCam")
+		net.Send(ply)
+	end)
+end)
+concommand.Add("tf_taunt_brutallegend", function(ply)
+	if ply:GetNWBool("Taunting") == true then return end
+	if ply:IsHL2() then ply:ConCommand("act laugh") return end
+	if not ply:IsOnGround() then return end
+	if ply:WaterLevel() ~= 0 then return end
+	if ply:GetInfoNum("tf_robot", 0) == 1 then ply:ChatPrint("You can't taunt as a robot!") return end
+	if ply:GetInfoNum("tf_giantrobot", 0) == 1 then ply:ChatPrint("You can't taunt as a mighty robot!") return end
+	local time = ply:PlayScene("scenes/player/"..ply:GetPlayerClass().."/low/taunt_brutallegend.vcd", 0)
+	ply:DoAnimationEvent(ACT_DOD_WALK_AIM_PSCHRECK, true)
+	ply:SetNWBool("Taunting", true)
+	ply:SetNWBool("NoWeapon", true)
+	ply:EmitSound("player/brutal_legend_taunt.wav")
+	net.Start("ActivateTauntCam")
+	net.Send(ply)
+	local animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+	if ply:GetPlayerClass() == "heavy" then
+	animent2:SetModel("models/player/items/heavy/brutal_guitar_xl.mdl") 
+	else
+	animent2:SetModel("models/workshop_partner/player/items/taunts/brutal_guitar/brutal_guitar.mdl") 	
+	end
+	animent2:SetAngles(ply:GetAngles())
+	animent2:SetPos(ply:GetPos())
+	animent2:Spawn()
+	animent2:Activate()
+	animent2:SetParent(ply)
+	animent2:AddEffects(EF_BONEMERGE)
+	animent2:SetName("BanjoModel"..ply:EntIndex())
+	timer.Simple(time, function()
+		for k,v in ipairs(ents.FindByName("BanjoModel"..ply:EntIndex())) do
+			v:Remove()
+		end
 		if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
 		ply:SetNWBool("Taunting", false)
 		ply:SetNWBool("NoWeapon", false)

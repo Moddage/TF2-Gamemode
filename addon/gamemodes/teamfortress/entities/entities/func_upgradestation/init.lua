@@ -41,6 +41,18 @@ function ENT:StartTouch(ent)
 					return
 				end
 			end)
+		elseif ent:GetPlayerClass() == "gmodplayer" then
+			ent:SetHealth(100 + 350)
+			ent:SetMaxHealth(100 + 350)
+			ent:SetArmor(2950)
+			timer.Create("Speed"..ent:EntIndex(), 0.01, 0, function()
+				if ent:Alive() then
+					ent:SetClassSpeed(290)
+				else
+					timer.Stop("Speed"..ent:EntIndex())
+					return
+				end
+			end)
 		elseif ent:GetPlayerClass() == "pyro" then
 			ent:SetHealth(175 + 150)
 			ent:SetMaxHealth(175 + 150)
@@ -251,6 +263,8 @@ function ENT:StartTouch(ent)
 			for k,v in pairs(ents.FindByClass("obj_sentrygun")) do
 				if v:GetBuilder() == ent then
 					v.FireRate = 0.065
+					v.MaxAmmo1 = 1200
+					v.MaxAmmo2 = 30
 					v:SetHealth(862)
 					v:SetMaxHealth(862)
 				end

@@ -4,11 +4,33 @@ end
 
 if CLIENT then
 	SWEP.PrintName			= "Bottle"
-SWEP.Slot				= 2
 end
+
+sound.Add( {
+	name = "Taunt.Demo03BottleCatch",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_hand_clap.wav"} 
+} )
+sound.Add( {
+	name = "Taunt.Demo03BottleSlosh",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_bottle_slosh.wav"} 
+} )
+sound.Add( {
+	name = "Taunt.Demo03BottleAh",
+	volume = 1.0,
+	level = 75,
+	pitch = { 100 },
+	sound = {"player/taunt_bottle_ah.wav"} 
+} )
 
 SWEP.Base				= "tf_weapon_melee_base"
 
+SWEP.Slot				= 2
 SWEP.ViewModel			= "models/weapons/v_models/v_bottle_demoman.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_bottle.mdl"
 SWEP.Crosshair = "tf_crosshair3"
@@ -24,10 +46,10 @@ SWEP.HitFlesh = Sound("Weapon_Bottle.HitFlesh")
 SWEP.HitRobot = Sound("MVM_Weapon_Bottle.HitFlesh")
 SWEP.HitWorld = Sound("Weapon_Bottle.HitWorld")
 
-SWEP.BrokenHitFlesh = Sound("Weapon_Bottle.BrokenHitFlesh")
-SWEP.BrokenHitWorld = Sound("Weapon_Bottle.BrokenHitWorld")
+SWEP.BrokenHitFlesh = Sound("Weapon_Bottle.HitFlesh")
+SWEP.BrokenHitWorld = Sound("Weapon_Bottle.HitWorld")
 
-SWEP.BreakSound = Sound("Weapon_Bottle.Break")
+SWEP.BreakSound = Sound("")
 
 SWEP.BaseDamage = 65
 SWEP.DamageRandomize = 0.1
@@ -62,16 +84,7 @@ end
 
 function SWEP:DrawWorldModel(from_postplayerdraw)
 	if SERVER then
-		if IsValid(self.WModel2) then
-			if self.dt.Broken ~= self.BrokenState then
-				if self.dt.Broken then
-					MsgN("Breaking bottle worldmodel")
-				end
-				
-				self.WModel2:SetBodygroup(0,(self.dt.Broken and 1) or 0)
-				self.BrokenState = self.dt.Broken
-			end
-		end
+
 	end
 	
 	self:CallBaseFunction("DrawWorldModel", from_postplayerdraw)
@@ -99,7 +112,16 @@ function SWEP:Deploy()
 	if SERVER and self.dt.Broken then
 		self.Owner:GetViewModel():SetBodygroup(1,1)
 	end
-	
+		if IsValid(self.WModel2) then
+			if self.dt.Broken ~= self.BrokenState then
+				if self.dt.Broken then
+					MsgN("Breaking bottle worldmodel")
+				end
+				
+				self.WModel2:SetBodygroup(0,(self.dt.Broken and 1) or 0)
+				self.BrokenState = self.dt.Broken
+			end
+		end
 	return self:CallBaseFunction("Deploy")
 end
 

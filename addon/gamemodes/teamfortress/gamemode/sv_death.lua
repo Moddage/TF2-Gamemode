@@ -1,4 +1,8 @@
-
+local allowedtaunts = {
+"1",
+"2",
+"3",
+}
 local ENT_ID_CURRENT = 1
 hook.Add("OnEntityCreated", "TF_DeathNoticeEntityID", function(ent)
 	if IsValid(ent) then
@@ -17,7 +21,7 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 	
 	local shouldgib = false
 	
-
+	
 	ent:StopSound("Weapon_Minifun.Fire")
 	ent:StopSound("Weapon_Minigun.Fire")
 	ent:StopSound("Weapon_Tomislav.ShootLoop")
@@ -40,7 +44,10 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 			umsg.Short(ent.DeathFlags)
 		umsg.End()
 	end
-
+	
+	for k,v in ipairs(ents.FindByName("SpyWeaponModel"..ent:EntIndex())) do
+		v:Fire("Kill", "", 0.1)
+	end
 
 	-- Remove all player states
 	ent:SetPlayerState(0, true)
@@ -206,7 +213,7 @@ function GM:PostTFPlayerDeath(ent, attacker, inflictor)
 		return
 	end
 	
-	if IsValid(inflictor) and attacker == inflictor and inflictor:IsTFPlayer() then
+	if IsValid(inflictor) and attacker == inflictor and inflictor:IsPlayer() then
 		inflictor = inflictor:GetActiveWeapon()
 		if not IsValid(inflictor) then inflictor = attacker end
 	end
@@ -313,7 +320,10 @@ function GM:PostTFPlayerDeath(ent, attacker, inflictor)
 					umsg.Short(GAMEMODE:EntityTeam(v))
 					umsg.Short(GAMEMODE:EntityID(v))
 				umsg.End()
-				
+				if v:IsPlayer() or v:IsNPC() then
+					v:SendLua("surface.PlaySound('misc/tf_domination.wav')")
+					ent:SendLua("surface.PlaySound('misc/tf_nemesis.wav')")
+				end
 				umsg.Start("PlayerDomination")
 					umsg.Entity(ent)
 					umsg.Entity(v)
@@ -336,6 +346,10 @@ function GM:PostTFPlayerDeath(ent, attacker, inflictor)
 					umsg.Short(GAMEMODE:EntityID(v))
 				umsg.End()
 				
+				if v:IsPlayer() or v:IsNPC() then
+					ent:SendLua("surface.PlaySound('misc/tf_revenge.wav')")
+					v:SendLua("surface.PlaySound('misc/tf_revenge.wav')")
+				end
 				umsg.Start("PlayerRevenge")
 					umsg.Entity(ent)
 					umsg.Entity(v)
@@ -422,29 +436,35 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			end
 		end
 	end
-
+	if ply:GetActiveWeapon():GetClass() == "tf_weapon_builder" and ply:GetActiveWeapon():GetItemData().model_player == "models/weapons/c_models/c_p2rec/c_p2rec.mdl" then
+		ply:EmitSound("Psap.Death")
+	end
 	if attacker:IsPlayer() and ply:IsPlayer() then
-		if dmginfo:GetInflictor().Critical and dmginfo:GetInflictor():Critical() then
-			attacker:EmitSound("player/crit_hit"..math.random(2,5)..".wav", 50, math.random(88, 100))
-			ply:EmitSound("player/crit_received"..math.random(1,3)..".wav", 50, math.random(88, 100))
-		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_electro" then
-			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
-		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound" then 
-			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
-		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_menu_note" then 
-			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
-		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_percussion" then 
-			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
-		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_retro" then 
-			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
-		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_vortex" then 
-			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
-		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_squasher" then 
-			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
-		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_space" then 
-			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
-		elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_beepo" then 
-			attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+		if attacker == ply then
+			ply:EmitSound("player/pl_fleshbreak.wav", 70, math.random(92,96))
+		else
+			if dmginfo:GetInflictor().Critical and dmginfo:GetInflictor():Critical() then
+				attacker:EmitSound("player/crit_hit"..math.random(2,5)..".wav", 90, math.random(88, 100))
+				ply:EmitSound("player/crit_received"..math.random(1,3)..".wav", 50, math.random(88, 100))
+			elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_electro" then
+				attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+			elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound" then 
+				attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+			elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_menu_note" then 
+				attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+			elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_percussion" then 
+				attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+			elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_retro" then 
+				attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+			elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_vortex" then 
+				attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+			elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_squasher" then 
+				attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+			elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_space" then 
+				attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+			elseif attacker:GetInfo("tf_dingalingaling_killsound") == "killsound_beepo" then 
+				attacker:EmitSound("ui/"..attacker:GetInfo("tf_dingalingaling_killsound")..".wav", 50)
+			end
 		end
 	end	
 
@@ -463,101 +483,445 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			end
 		end
 	end
-	if ply:HasDeathFlag(DF_HEADSHOT) and not ply:IsHL2() then
-		ply:RandomSentence("CritDeath")
-		local animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
-		animent:SetModel(ply:GetModel())
-		animent:SetSkin(ply:GetSkin())
-		animent:SetPos(ply:GetPos())
-		animent:SetAngles(ply:GetAngles())
-		animent:Spawn()
-		animent:Activate()
-	
-		local b1 = animent:LookupBone("bip_head")
-		local b2 = animent:LookupBone("bip_neck")
-		local b3 = animent:LookupBone("jaw_bone")
-		animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
-		animent:PhysicsInit( SOLID_OBB )
-		animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-		animent:SetSequence( "primary_death_headshot" )
-		animent:SetPlaybackRate( 1 )
-		animent.AutomaticFrameAdvance = true
+	for k,v in ipairs(player.GetBots()) do
+		if v == attacker then
 
-		if ply:GetInfoNum("tf_robot", 0) == 1 then
-		
-			ply:EmitSound("MVM_Weapon_BaseballBat.HitFlesh")
-			if ply:GetPlayerClass() == "heavy" then
-				local animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
-				animent2:SetModel(ply:GetActiveWeapon():GetModel()) 
-				animent2:SetAngles(ply:GetAngles())
-				animent2:SetPos(animent:GetPos())
-				animent2:Spawn()
-				animent2:Activate()
-				animent2:SetParent(animent)
-				animent2:AddEffects(EF_BONEMERGE)
-				animent:ManipulateBoneScale(b1, Vector(0,0,0))
-				animent:ManipulateBoneScale(b2, Vector(0,0,0))
-				animent:ManipulateBoneScale(b3, Vector(0,0,0))
-				local rag2 = ents.Create( 'prop_physics' )
-				rag2:SetPos(animent:GetPos())
-				rag2:SetAngles(animent:GetAngles())
-				rag2:SetModel("models/bots/gibs/heavybot_gib_head.mdl")
-				rag2:Spawn()
-				rag2:Activate()
-				rag2:SetCollisionGroup( COLLISION_GROUP_DEBRIS ) 
+			if v:GetPlayerClass() == "combinesoldier" then
+				EmitSentence( "COMBINE_THROW_GRENADE" .. math.random( 0, 4 ), v:GetPos(), 1, CHAN_AUTO, 1, 75, 0, 100 )
 			end
+			--[[if v:GetInfoNum("tf_robot", 0) == 1 then v:ChatPrint("You can't taunt as a robot!") return end
+			if v:GetInfoNum("tf_giantrobot", 0) == 1 then v:ChatPrint("You can't taunt as a mighty robot!") return end]]
+			if not table.HasValue(allowedtaunts, v:GetActiveWeapon():GetSlot() + 1) then return end
+			if v:GetPlayerClass() != "spy" then
+				if table.KeyFromValue(allowedtaunts,v:GetActiveWeapon():GetSlot() + 1) == 1 then
 			
-		end
-		if ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 and ply:Team() == TEAM_BLU then
-		
-			ply:EmitSound("MVM_Weapon_BaseballBat.HitFlesh")
-			if ply:GetPlayerClass() == "heavy" then
-				local animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
-				animent2:SetModel(ply:GetActiveWeapon():GetModel()) 
-				animent2:SetAngles(ply:GetAngles())
-				animent2:SetPos(animent:GetPos())
-				animent2:Spawn()
-				animent2:Activate()
-				animent2:SetParent(animent)
-				animent2:AddEffects(EF_BONEMERGE)
-				animent:ManipulateBoneScale(b1, Vector(0,0,0))
-				animent:ManipulateBoneScale(b2, Vector(0,0,0))
-				animent:ManipulateBoneScale(b3, Vector(0,0,0))
-				local rag2 = ents.Create( 'prop_physics' )
-				rag2:SetPos(animent:GetPos())
-				rag2:SetAngles(animent:GetAngles())
-				rag2:SetModel("models/bots/gibs/heavybot_gib_head.mdl")
-				rag2:Spawn()
-				rag2:Activate()
-				rag2:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-			end
+					if v:GetPlayerClass() == "combinesoldier" then
+						v:DoAnimationEvent(ACT_SPECIAL_ATTACK1, true)
+						v:SetNWBool("Taunting", true)
+						v:SetNWBool("NoWeapon", true) 
+						local frag = ents.Create("npc_grenade_frag")
+						net.Start("ActivateTauntCam")
+						net.Send(v)
+						frag:SetPos(v:EyePos() + ( v:GetAimVector() * 16 ) )
+						frag:SetAngles( v:EyeAngles() )
+						frag:SetOwner(v)
+
+						timer.Simple(0.6, function()
+							frag:Spawn()
+							
+							local phys = frag:GetPhysicsObject()
+								if ( !IsValid( phys ) ) then frag:Remove() return end
+								
+								
+								
+								local velocity = v:GetAimVector()
+								velocity = velocity * 1000
+								velocity = velocity + ( VectorRand() * 10 ) -- a random element
+								phys:ApvForceCenter( velocity )
+								frag:Fire("SetTimer",5,0)
+								frag:SetOwner(v)
+								--timer.Simple(3.5,function() frag:Ignite() end)
+						end)
+						timer.Simple(1.2, function()
+							if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+							v:SetNWBool("Taunting", false)
+							v:SetNWBool("NoWeapon", false)
+							print("Thegay.")
+							net.Start("DeActivateTauntCam")
+							net.Send(v)
+						end)
+							
+					end
+					
+					if v:GetPlayerClass() == "pyro" then
+						if v:GetInfoNum("tf_robot", 0) == 1 and table.KeyFromValue(allowedtaunts,args[1]) == 1 then
+							timer.Simple(0.1, function()
+								v:EmitSound("vo/mvm/norm/pyro_mvm_paincrticialdeath0"..math.random(1,3)..".mp3", 95, 100)
+							end)
+							timer.Simple(3, function()
+								if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+								v:SetNWBool("Taunting", false)
+								v:SetNWBool("NoWeapon", false)
+								print("Thegay.")
+								net.Start("DeActivateTauntCam")
+								net.Send(v)
+							end)
+						end
+					elseif v:GetPlayerClass() == "heavy" then
+						if v:GetInfoNum("tf_robot", 0) == 1 and table.KeyFromValue(allowedtaunts,args[1]) == 1 then
+							timer.Simple(2, function()
+								v:EmitSound("vo/mvm/norm/heavy_mvm_goodjob0"..math.random(1,3)..".mp3", 95, 100)
+							end)
+							timer.Simple(8, function()
+								if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+								v:SetNWBool("Taunting", false)
+								v:SetNWBool("NoWeapon", false)
+								print("Thegay.")
+								net.Start("DeActivateTauntCam")
+								net.Send(v)
+							end)
+						end
+					elseif v:GetPlayerClass() == "medic" then
+						if v:GetInfoNum("tf_robot", 0) == 1 and table.KeyFromValue(allowedtaunts,args[1]) == 1 then
+							timer.Simple(0.1, function()
+								v:EmitSound("vo/mvm/norm/medic_mvm_specialcompleted01.mp3", 95, 100)
+							end)
+							timer.Simple(3, function()
+								v:EmitSound("player/taunt_rubberglove_snap.wav")
+							end)
+							timer.Simple(1, function()
+								v:EmitSound("player/taunt_rubberglove_stretch.wav")
+							end)
+							timer.Simple(6, function()
+								if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+								v:SetNWBool("Taunting", false)
+								v:SetNWBool("NoWeapon", false)
+								print("Thegay.")
+								net.Start("DeActivateTauntCam")
+								net.Send(v)
+							end)
+						end
+					elseif v:GetPlayerClass() == "soldier" then
+						if v:GetInfoNum("tf_robot", 0) == 1 and table.KeyFromValue(allowedtaunts,args[1]) == 1 then
+							timer.Simple(1.6, function()
+								v:EmitSound("vo/mvm/norm/taunts/soldier_mvm_taunts01.mp3", 95, 100)
+							end)
+							timer.Simple(3, function()
+								if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+								v:SetNWBool("Taunting", false)
+								v:SetNWBool("NoWeapon", false)
+								print("Thegay.")
+								net.Start("DeActivateTauntCam")
+								net.Send(v)
+							end)
+						elseif v:GetInfoNum("tf_robot", 0) == 1 and table.KeyFromValue(allowedtaunts,args[1]) == 2 then
+							timer.Simple(3, function()
+								v:EmitSound("vo/mvm/norm/soldier_mvm_cheers0"..math.random(5,6)..".mp3", 95, 100)
+							end)
+							timer.Simple(5, function()
+								if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+								v:SetNWBool("Taunting", false)
+								v:SetNWBool("NoWeapon", false)
+								print("Thegay.")
+								net.Start("DeActivateTauntCam")
+								net.Send(v)
+							end)
+						elseif v:GetInfoNum("tf_robot", 0) == 1 and table.KeyFromValue(allowedtaunts,args[1]) == 3 then
+							timer.Simple(0.1, function()
+								v:EmitSound("vo/mvm/norm/soldier_mvm_directhittaunt02.mp3", 95, 100)
+							end)
+							timer.Simple(5, function()
+								if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+								v:SetNWBool("Taunting", false)
+								v:SetNWBool("NoWeapon", false)
+								print("Thegay.")
+								net.Start("DeActivateTauntCam")
+								net.Send(v)
+							end)
+						end
+					
+					elseif v:GetPlayerClass() == "demoman" then
+						if v:GetWeapons()[1]:GetClass() == "tf_weapon_grenadelauncher" then
+							v:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_MP40, true)
+							v:SelectWeapon(v:GetWeapons()[1]:GetClass())
+						else
+							v:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_MP40, true)
+							v:SelectWeapon(v:GetWeapons()[1]:GetClass())				
+						end
+					elseif v:GetPlayerClass() == "engineer" then
+						if v:GetWeapons()[1]:GetClass() == "tf_weapon_sentry_revenge" then
+							v:SelectWeapon(v:GetWeapons()[1]:GetClass())
+							v:DoAnimationEvent(ACT_DOD_RELOAD_DEPLOYED, true)
+							v:PlayScene("scenes/player/engineer/low/taunt07.vcd")
+							v:SetNWBool("Taunting", true)
+							v:SetNWBool("NoWeapon", true)
+							v:GetActiveWeapon().NameOverride = "taunt_guitar_kill"
+							local animent2 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+							animent2:SetModel("models/player/items/engineer/guitar.mdl") 
+							animent2:SetAngles(v:GetAngles())
+							animent2:SetPos(v:GetPos())
+							animent2:Spawn()
+							animent2:Activate()
+							animent2:SetParent(v)
+							animent2:AddEffects(EF_BONEMERGE)
+							animent2:SetName("GuitarModel"..v:EntIndex())
+							timer.Simple(1.5, function()
+								v:EmitSound("player/taunt_eng_strum.wav")
+							end)
+							timer.Simple(4.2, function()
+								if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+								v:SetNWBool("Taunting", false)
+								v:SetNWBool("NoWeapon", false)
+								print("Thegay.")
+								net.Start("DeActivateTauntCam")
+								net.Send(v)
+								animent2:Fire("Kill", "", 0.1)
+							end)
+							timer.Simple(3.7, function()
+								v:EmitSound("player/taunt_eng_smash"..math.random(1,3)..".wav")
+								for k,v in pairs(ents.FindInSphere(v:GetPos(), 90)) do 
+									if v:IsNPC() and not v:IsFriendly(v) then
+										v:TakeDamage(500, v, v)
+									elseif v:IsPlayer() and not v:IsFriendly(v) then
+										v:TakeDamage(500, v, v)
+									end
+								end
+							end)
+						end
+					else
+					
+					v:SelectWeapon(v:GetWeapons()[1]:GetClass())
+					v:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
+					end
+				elseif table.KeyFromValue(allowedtaunts,v:GetActiveWeapon():GetSlot() + 1) == 2 then
 			
-		end
-		function animent:Think() -- This makes the animation work
-			if ply:GetRagdollEntity():IsValid() then
-				ply:GetRagdollEntity():Remove()
+					if v:GetPlayerClass() == "combinesoldier" then
+						v:DoAnimationEvent(ACT_SPECIAL_ATTACK1, true)
+						v:SetNWBool("Taunting", true)
+						v:SetNWBool("NoWeapon", true) 
+						local frag = ents.Create("npc_grenade_frag")
+						net.Start("ActivateTauntCam")
+						net.Send(v)
+						frag:SetPos(v:EyePos() + ( v:GetAimVector() * 16 ) )
+						frag:SetAngles( v:EyeAngles() )
+						frag:SetOwner(v)
+						timer.Simple(0.6, function()
+							frag:Spawn()
+							
+							local phys = frag:GetPhysicsObject()
+								if ( !IsValid( phys ) ) then frag:Remove() return end
+								
+								
+								
+								local velocity = v:GetAimVector()
+								velocity = velocity * 1000
+								velocity = velocity + ( VectorRand() * 10 ) -- a random element
+								phys:ApvForceCenter( velocity )
+								frag:Fire("SetTimer",5,0)
+								frag:SetOwner(v)
+								--timer.Simple(3.5,function() frag:Ignite() end)
+						end)
+						timer.Simple(1.2, function()
+							if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+							v:SetNWBool("Taunting", false)
+							v:SetNWBool("NoWeapon", false)
+							print("Thegay.")
+							net.Start("DeActivateTauntCam")
+							net.Send(v)
+						end)
+							 
+
+					elseif v:GetPlayerClass() == "demoman" then
+						v:SelectWeapon(v:GetWeapons()[2]:GetClass())
+						v:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
+					elseif v:GetPlayerClass() == "pyro" then
+						timer.Simple(2, function()
+							v:EmitSound("misc/flame_engulf.wav", 65, 100)
+							for k,v in pairs(ents.FindInSphere(v:GetPos(), 90)) do 
+								if v:IsNPC() and not v:IsFriendly(v) then
+									v:TakeDamage(500, v, v)
+								elseif v:IsPlayer() and not v:IsFriendly(v) then
+									v:TakeDamage(500, v, v)
+								end
+							end
+						end)
+					else
+					v:SelectWeapon(v:GetWeapons()[2]:GetClass())
+					v:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_MP40, true)
+					end
+				elseif table.KeyFromValue(allowedtaunts,v:GetActiveWeapon():GetSlot() + 1) == 3 then	
+					if v:GetPlayerClass() == "pyro" then
+						if v:GetWeapons()[3]:GetClass() == "tf_weapon_neonsign" then
+							v:EmitSound("player/sign_bass_solo.wav", 95, 100)
+						end
+					end
+					if v:GetPlayerClass() == "soldier" then
+						if v:GetWeapons()[3]:GetClass() == "tf_weapon_pickaxe" then
+							timer.Simple(2.5, function()
+								for k,v in pairs(ents.FindInSphere(v:GetPos(), 90)) do 
+									if v:IsNPC() and not v:IsFriendly(v) then
+										local d = DamageInfo()
+										d:SetDamage( v:Health() )
+										d:Setv( v )
+										d:SetDamageType( DMG_BLAST )
+										v:TakeDamageInfo( d )
+									elseif v:IsPlayer() and not v:IsFriendly(v) then
+										local d = DamageInfo()
+										d:SetDamage( v:Health() )
+										d:Setv( v )
+										d:SetDamageType( DMG_BLAST )
+										v:TakeDamageInfo( d )
+									end
+								end
+							end)
+							v:SelectWeapon(v:GetWeapons()[3]:GetClass())
+							v:DoAnimationEvent(ACT_DOD_STAND_AIM_KNIFE, true)
+						else
+							v:SelectWeapon(v:GetWeapons()[3]:GetClass())
+							v:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
+						end
+					end
+					if v:GetPlayerClass() == "heavy" then
+						v:GetActiveWeapon().NameOverride = "taunt_heavy"
+						timer.Simple(1.7, function()
+							if v:GetEyeTrace().Entity:IsNPC() and not v:GetEyeTrace().Entity:IsFriendly(v) then
+								v:GetEyeTrace().Entity:TakeDamage(500, v, v)
+							elseif v:GetEyeTrace().Entity:IsPlayer() and not v:GetEyeTrace().Entity:IsFriendly(v) then
+								v:GetEyeTrace().Entity:TakeDamage(500, v, v)
+							end
+						end)
+					end
+					if v:GetPlayerClass() == "medic" then
+						timer.Simple(0.3, function()
+						if v:GetWeapons()[3]:GetItemData().model_player == "models/weapons/c_models/c_uberneedle/c_uberneedle.mdl" then
+							v:EmitSound("player/ubertaunt_v0"..math.random(1,7)..".wav", 95, 100)
+						elseif v:GetWeapons()[3]:GetItemData().model_player != "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl" then
+							v:EmitSound("player/taunt_v0"..math.random(1,7)..".wav", 95, 100)
+						end
+						end)
+
+						if v:GetWeapons()[3]:GetItemData().model_player == "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl" then
+							timer.Simple(2, function()
+								v:GetActiveWeapon().NameOverride = "saw_kill"
+								for k,v in pairs(ents.FindInSphere(v:GetPos(), 90)) do 
+									if v:IsNPC() and not v:IsFriendly(v) then
+										local d = DamageInfo()
+										d:SetDamage( 50 )
+										d:Setv( v )
+										d:SetInflictor( v:GetActiveWeapon() )
+										d:SetDamageType( DMG_CLUB )
+										v:TakeDamage( d )
+									elseif v:IsPlayer() and not v:IsFriendly(v) then
+										local d = DamageInfo()
+										d:SetDamage( 50 )
+										d:Setv( v )
+										d:SetInflictor( v:GetActiveWeapon() )
+										d:SetDamageType( DMG_CLUB )
+										v:TakeDamageInfo( d )
+										v:ConCommand("tf_stunme")
+									end
+								end
+							end)
+
+							timer.Simple(2.89, function()
+								for k,v in pairs(ents.FindInSphere(v:GetPos(), 90)) do 
+									if v:IsNPC() and not v:IsFriendly(v) then
+										local d = DamageInfo()
+										d:SetDamage( 500 )
+										d:Setv( v )
+										d:SetInflictor( v:GetActiveWeapon() )
+										d:SetDamageType( DMG_CLUB )
+										v:TakeDamageInfo( d )
+									elseif v:IsPlayer() and not v:IsFriendly(v) then
+										local d = DamageInfo()
+										d:SetDamage( 500 )
+										d:Setv( v )
+										d:SetInflictor( v:GetActiveWeapon() )
+										d:SetDamageType( DMG_CLUB )
+										v:TakeDamageInfo( d )
+									end
+								end
+							end)
+							v:PlayScene("scenes/player/medic/low/taunt08.vcd")
+							v:SelectWeapon(v:GetWeapons()[3]:GetClass())
+							v:DoAnimationEvent(ACT_SIGNAL2, true)
+						else
+							
+							v:SelectWeapon(v:GetWeapons()[3]:GetClass())
+							v:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
+
+						end
+					end
+					if v:GetPlayerClass() == "demoman" then
+						if v:GetWeapons()[3]:GetClass() == "tf_weapon_sword" then
+							v:GetActiveWeapon().NameOverride = "taunt_demoman"
+							timer.Simple(2.5, function()
+								for k,v in pairs(ents.FindInSphere(v:GetPos(), 90)) do 
+									if v:IsTFPlayer() and not v:IsFriendly(v) then
+										v:AddDeathFlag(DF_DECAP)
+										v:TakeDamage(500, v, v)
+									end
+								end
+							end)
+							v:SelectWeapon(v:GetWeapons()[3]:GetClass())
+							v:DoAnimationEvent(ACT_DOD_STAND_AIM_KNIFE, true)
+						else
+							v:SelectWeapon(v:GetWeapons()[3]:GetClass())
+							v:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
+						end
+					end
+				else
+				v:SelectWeapon(v:GetWeapons()[3]:GetClass())
+				v:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
+				end
+				
+			else
+				if table.KeyFromValue(allowedtaunts,v:GetActiveWeapon():GetSlot() + 1) == 1 then
+					v:SelectWeapon(v:GetWeapons()[1]:GetClass())
+					v:DoAnimationEvent(ACT_DOD_CROUCH_AIM_C96, true)
+				elseif table.KeyFromValue(allowedtaunts,v:GetActiveWeapon():GetSlot() + 1) == 3 then
+					timer.Simple(2, function()
+						for k,v in pairs(ents.FindInSphere(v:GetPos(), 90)) do 
+							if v:IsNPC() and not v:IsFriendly(v) then
+								v:TakeDamage(10, v, v)
+								v:GetActiveWeapon().NameOverride = "taunt_spy"
+							elseif v:IsPlayer() and not v:IsFriendly(v) then
+								v:TakeDamage(10, v, v)
+								v:GetActiveWeapon().NameOverride = "taunt_spy"
+							end
+						end
+					end)		
+					timer.Simple(2.3, function()
+						for k,v in pairs(ents.FindInSphere(v:GetPos(), 90)) do 
+							if v:IsNPC() and not v:IsFriendly(v) then
+								v:TakeDamage(10, v, v)
+								v:GetActiveWeapon().NameOverride = "taunt_spy"
+							elseif v:IsPlayer() and not v:IsFriendly(v) then
+								v:TakeDamage(10, v, v)
+								v:GetActiveWeapon().NameOverride = "taunt_spy"
+							end
+						end
+					end)	
+					timer.Simple(4, function()
+						for k,v in pairs(ents.FindInSphere(v:GetPos(), 90)) do 
+							if v:IsNPC() and not v:IsFriendly(v) then
+								v:TakeDamage(500, v, v)
+								v:GetActiveWeapon().NameOverride = "taunt_spy"
+							elseif v:IsPlayer() and not v:IsFriendly(v) then
+								v:TakeDamage(500, v, v)
+								v:GetActiveWeapon().NameOverride = "taunt_spy"
+							end
+						end
+					end)			
+					v:SelectWeapon(v:GetWeapons()[2]:GetClass())
+					v:DoAnimationEvent(ACT_DOD_STAND_AIM_30CAL, true)
+				elseif table.KeyFromValue(allowedtaunts,v:GetActiveWeapon():GetSlot() + 1) == 4 then
+					v:SelectWeapon(v:GetWeapons()[3]:GetClass())
+					v:DoAnimationEvent(ACT_DOD_SPRINT_AIM_SPADE, true)
+				end		
 			end
-			self:NextThink( CurTime() )
-			return true
-		end
-	
-		timer.Simple( animent:SequenceDuration( "primary_death_headshot" ) + 0.2, function() -- After the sequence is done, spawn the ragdoll
-			ply:CreateRagdoll()
-			local rag = ply:GetRagdollEntity()
-			SetEntityStuff( rag, animent )
-			rag:Spawn() 
-			rag:Activate()
-			rag:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-			TransferBones( animent, rag )
-			if IsValid(rag2) then
-				rag2:Remove()
+			v:Speak("TLK_PLAYER_TAUNT")
+			v:SetNWBool("Taunting", true)
+			if IsValid(v:GetActiveWeapon()) and table.HasValue(wep, v:GetActiveWeapon():GetClass()) then v:SetNWBool("NoWeapon", true) end
+			net.Start("ActivateTauntCam")
+			net.Send(v)
+			
+			if v:GetPlayerClass() != "combinesoldier" then
+				print(v:GetNWBool("SpeechTime"))
+				timer.Simple(v:GetNWBool("SpeechTime"), function()
+					if not IsValid(v) or (not v:Alive() and not v:GetNWBool("Taunting")) then return end
+					v:SetNWBool("Taunting", false)
+					v:SetNWBool("NoWeapon", false)
+					print("Thegay.")
+					net.Start("DeActivateTauntCam")
+					net.Send(v)
+				end)
 			end
-			animent:Remove()
-		end )
+		end
 	end		
 	if ply:HasDeathFlag(DF_DECAP) and not ply:IsHL2() then
 		ply:RandomSentence("CritDeath")
-		inflictor:EmitSound("TFPlayer.Decapitated")
+		ply:EmitSound("player/flow.wav", 95)
 		ply:Decap()
 		local animent = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
 		animent:SetModel(ply:GetModel())
@@ -608,7 +972,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		end )
 	end	
 	if ply:HasDeathFlag(DF_DECAP) and ply:IsHL2() then
-		inflictor:EmitSound("TFPlayer.Decapitated")
+		ply:EmitSound("TFPlayer.Decapitated")
 		umsg.Start("GibNPCHead")
 			umsg.Entity(ply)
 			umsg.Short(ply.DeathFlags)
@@ -812,10 +1176,14 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	local shouldgib = false
 	
 
-
-	
 	if dmginfo:IsFallDamage() then -- Fall damage
 		ply.FallDeath = true
+		ply:EmitSound("player/pl_fleshbreak.wav", 70, math.random(92,96))
+		umsg.Start("Notice_EntityFell")
+			umsg.String(GAMEMODE:EntityDeathnoticeName(ply))
+			umsg.Short(GAMEMODE:EntityTeam(ply))
+			umsg.Short(GAMEMODE:EntityID(ply))
+		umsg.End()
 	elseif dmginfo:IsDamageType(DMG_ALWAYSGIB) or dmginfo:IsDamageType(DMG_BLAST) or dmginfo:IsExplosionDamage() or inflictor.Explosive then -- Explosion damage
 	
 		if ply:GetMaterial() == "models/shadertest/predator" then return end

@@ -6,7 +6,7 @@ if CLIENT then
 	}
 end
 
-CLASS.Name = "GMod Player"
+CLASS.Name = "Gmodplayer"
 CLASS.Speed = 20
 CLASS.Health = 100
 
@@ -40,7 +40,7 @@ CLASS.Loadout = {
 	"weapon_physgun",
 }
 
-CLASS.ModelName = "scout"
+CLASS.ModelName = "sniper"
 
 CLASS.IsHL2 = true
 
@@ -55,6 +55,27 @@ CLASS.Gibs = {
 	[GIB_EQUIPMENT2]	= GIBS_LAST+1,
 	[GIB_HEAD]			= GIBS_LAST+1,
 	[GIB_ORGAN]			= GIBS_ORGANS_START,
+}
+
+CLASS.Sounds = {
+	paincrticialdeath = {
+		Sound("vo/sniper_paincrticialdeath01.wav"),
+		Sound("vo/sniper_paincrticialdeath02.wav"),
+		Sound("vo/sniper_paincrticialdeath03.wav"),
+		Sound("vo/sniper_paincrticialdeath04.wav"),
+	},
+	painsevere = {
+		Sound("vo/sniper_painsevere01.wav"),
+		Sound("vo/sniper_painsevere02.wav"),
+		Sound("vo/sniper_painsevere03.wav"),
+		Sound("vo/sniper_painsevere04.wav"),
+	},
+	painsharp = {
+		Sound("vo/sniper_painsharp01.wav"),
+		Sound("vo/sniper_painsharp02.wav"),
+		Sound("vo/sniper_painsharp03.wav"),
+		Sound("vo/sniper_painsharp04.wav"),
+	},
 }
 
 if SERVER then

@@ -32,9 +32,9 @@ SWEP.IsRapidFire = false
 SWEP.ReloadSingle = false
 
 SWEP.HoldType = "ITEM1"
-
+SWEP.BaseDamage = 25
 SWEP.ProjectileShootOffset = Vector(0, 8, -5)
-
+ 
 SWEP.PunchView = Angle( -2, 0, 0 )
 
 SWEP.VM_DRAW = ACT_ITEM1_VM_DRAW
@@ -103,7 +103,7 @@ function SWEP:Inspect()
 	--[[else
 		if self.Owner:OnGround() and self.IsDeployed and self.Reloading == false then
 			self.CanInspect = true 
-		end]]
+		end]]  
 	end
 	
 	//if self:GetSequenceActivity(self:GetSequence()) == self.VM_INSPECT_IDLE then
@@ -201,7 +201,7 @@ function SWEP:ShootProjectile()
 		syringe.Inflictor = self
 		if self:Critical() then
 			syringe.critical = true
-		end
+		end 
 		syringe:SetOwner(self.Owner)
 		self:InitProjectileAttributes(syringe)
 		

@@ -11,7 +11,25 @@ Criterion "MedicNotKillSpeechMelee" "MedicKillSpeechMelee" "!=1" "required" weig
 Criterion "MedicNotSaidHealThanks" "MedicSaidHealThanks" "!=1" "required"
 Criterion "IsHelpCapMedic" "MedicHelpCap" "1" "required" weight 0
 
-
+// Custom stuff - melee dare
+// Look at enemy, then do battle cry voice command while holding a melee weapon.
+Response MeleeDareCombatMedic
+{
+	scene "scenes/Player/Medic/low/661.vcd"
+	scene "scenes/Player/Medic/low/669.vcd"
+	scene "scenes/Player/Medic/low/672.vcd"
+	scene "scenes/Player/Medic/low/667.vcd"
+	scene "scenes/Player/Medic/low/677.vcd"
+	scene "scenes/Player/Medic/low/680.vcd"
+	scene "scenes/Player/Medic/low/1241.vcd"
+	scene "scenes/Player/Medic/low/679.vcd"
+}
+Rule MeleeDareCombatMedic
+{
+	criteria ConceptPlayerBattleCry IsWeaponMelee IsMedic IsCrosshairEnemy
+	Response MeleeDareCombatMedic
+}
+//End custom
 Response MedicChargeReady
 {
 	scene "scenes/Player/Medic/low/529.vcd" 

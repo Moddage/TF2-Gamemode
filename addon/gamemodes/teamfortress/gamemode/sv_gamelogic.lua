@@ -525,7 +525,7 @@ function GM:RollCritical(pl)
 		chance = chance + math.Clamp(pl.DamageSum / 80, 0, 10)
 	end
 	
-	if math.random(1,100)<=chance then
+	if math.random(1,76)<=chance then
 		-- critz omgomgomgomgomgomg
 		pl:SetNWBool("NextShotIsCritical", true)
 		--pl.NextShotIsCritical = true

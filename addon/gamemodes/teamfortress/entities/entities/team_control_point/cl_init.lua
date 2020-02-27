@@ -88,7 +88,8 @@ usermessage.Hook("TF_SetControlPointTeam", function(msg)
 	
 	if not cp then return end
 	
-	cp.owner = msg:ReadChar()
+	cp.owner = msg:ReadFloat() 
+
 	UpdateControlPointTexture(cp)
 end)
 
@@ -99,6 +100,15 @@ usermessage.Hook("TF_LockControlPoint", function(msg)
 	if not cp then return end
 	
 	cp.locked = true
+	UpdateControlPointTexture(cp)
+end)
+usermessage.Hook("TF_UnLockControlPoint", function(msg)
+	local id = msg:ReadChar()
+	local cp = GAMEMODE.ControlPoints[id]
+	
+	if not cp then return end
+	
+	cp.locked = false
 	UpdateControlPointTexture(cp)
 end)
 

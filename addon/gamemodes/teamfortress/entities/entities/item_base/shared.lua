@@ -128,7 +128,7 @@ function ENT:PlayerTouched(pl)
 end
 
 function ENT:StartTouch(ent)
-	if not self.NextActive and ent:IsPlayer() and self:CanPickup(ent) then
+	if not self.NextActive and ent:IsTFPlayer() and self:CanPickup(ent) and ent != self:GetOwner() then
 		self:PlayerTouched(ent)
 	end
 end

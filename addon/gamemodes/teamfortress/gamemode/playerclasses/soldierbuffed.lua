@@ -67,7 +67,10 @@ CLASS.AmmoMax = {
 if SERVER then
 
 	function CLASS:Initalize()
-		self:SelectWeapon(self:GetWeapons()[2])
+		timer.Simple(0.8, function()
+			self:SelectWeapon("tf_weapon_buff_item_conch")
+			self:GetActiveWeapon():PrimaryAttack()
+		end)
 	end
 
 end

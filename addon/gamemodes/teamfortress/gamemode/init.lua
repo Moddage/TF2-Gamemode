@@ -1,4 +1,4 @@
-include("sv_clientfiles.lua")
+ include("sv_clientfiles.lua")
 include("sv_resource.lua")
 include("sv_response_rules.lua")
 
@@ -12,14 +12,14 @@ include("sv_mvm_bots_red.lua")
 include("shd_gravitygun.lua")
 include("sv_chat.lua")
 include("shd_taunts.lua")
- 
+resource.AddFile("scenes/scenes.image")
 local LOGFILE = "teamfortress/log_server.txt"
 file.Delete(LOGFILE)
 file.Append(LOGFILE, "Loading serverside script\n")
 local load_time = SysTime()
 
 include("sv_npc_relationship.lua")
-include("sv_ent_substitute.lua")
+include("sv_ent_substitute.lua") 
 
 CreateConVar("grapple_distance", -1, false) 
 response_rules.Load("talker/tf_response_rules.txt")
@@ -192,6 +192,115 @@ local function PrintHelpText(ply)
 	end
 end
 
+concommand.Add("voicemenu_gesture", function(pl, cmd, args)
+	local a, b = tonumber(args[1]), tonumber(args[2])
+	if not a or not b then return end
+		if a == 0 and b == 0 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_FORWARD_ZOOMED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_SIGNAL1,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_COVER_MED,true)
+			end
+		elseif a == 0 and b == 1 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_30CAL,true)
+			end
+		elseif a == 0 and b == 2 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_ZOOMED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_PRONE_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_DOD_DEPLOYED,true)
+			end
+		elseif a == 0 and b == 3 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_ZOOMED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_PRONE_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_DOD_DEPLOYED,true)
+			end
+		elseif a == 0 and b == 4 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_ZOOMED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_PRONE_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_DOD_DEPLOYED,true)
+			end
+		elseif a == 0 and b == 5 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_ZOOMED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_PRONE_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_DOD_DEPLOYED,true)
+			end
+		elseif a == 0 and b == 6 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_30CAL,true)
+			end
+		elseif a == 1 and b == 0 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_FORWARD_ZOOMED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_SIGNAL1,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_COVER_MED,true)
+			end
+		elseif a == 2 and b == 0 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_FORWARD_ZOOMED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_SIGNAL1,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_COVER_MED,true)
+			end
+		elseif a == 2 and b == 1 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_IDLE_ZOOMED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_WALK_IDLE_MP44,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_DOD_CROUCH_AIM_RIFLE,true)
+			end
+		elseif a == 2 and b == 2 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_IDLE_ZOOMED,true) 
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_WALK_IDLE_MP44,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_DOD_CROUCH_AIM_RIFLE,true)
+			end
+		elseif a == 2 and b == 6 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then     
+				pl:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_30CAL,true)
+			end
+		elseif a == 2 and b == 7 then
+			if pl:GetActiveWeapon():GetSlot() == 0 then
+				pl:DoAnimationEvent(ACT_DOD_PRONE_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 1 then
+				pl:DoAnimationEvent(ACT_DOD_PRIMARYATTACK_DEPLOYED,true)
+			elseif pl:GetActiveWeapon():GetSlot() == 2 then
+				pl:DoAnimationEvent(ACT_DOD_CROUCHWALK_AIM_30CAL,true)
+			end
+		end
+end)
 concommand.Add("callvote", function(ply, cmd, args)
 	if GetGlobalBool("FirstWaiting") then return end
 	if !cvar_voteEnable:GetBool() then
@@ -223,7 +332,7 @@ concommand.Add("callvote", function(ply, cmd, args)
 			local mapcheck = file.Exists("maps/"..args[2]..".bsp", "GAME")
 			if !mapcheck then
 				ply:PrintMessage(HUD_PRINTTALK, "Not a valid map!")
-				return
+ 				return
 			end
 			SetGlobalString("VoteName", args[2])
 		elseif args[1] == "kick" and args[2] then
@@ -371,14 +480,6 @@ hook.Add("PlayerSelectSpawn", "PlayerSelectTeamSpawn", function(pl)
 end)
 
 hook.Add("PlayerFootstep", "RoboStep", function( ply, pos, foot, sound, volume, rf)
-	if not ply:IsHL2() and ply:GetInfoNum("tf_robot", 0) == 1 then
-		if ply:GetPlayerClass() != "medic" then
-			ply:EmitSound( "MVM.BotStep" ) -- Play the footsteps hunter is using
-		else
-			ply:EmitSound( "items/cart_rolling_"..table.Random({"stop", "start"})..".wav", 75, 100, 0.5)
-		end
-		return true -- Don't allow default footsteps
-	end
 	if not ply:IsHL2() and ply:GetInfoNum("tf_hhh", 0) == 1 then
 		ply:EmitSound( "Halloween.HeadlessBossFootfalls" )
 		if ply:GetInfoNum("tf_giant_robot", 0) == 1 then
@@ -395,9 +496,9 @@ hook.Add("PlayerFootstep", "RoboStep", function( ply, pos, foot, sound, volume, 
 		else
 			ply:EmitSound( "items/cart_rolling_"..table.Random({"stop", "start"})..".wav", 75, 100, 0.5)
 		end
-		return true -- Don't allow default footsteps
+		return true -- Don't allow default footsteps        
 	end
-	if not ply:IsHL2() and ply:Team() == TEAM_BLU and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	if not ply:IsHL2() and ply:Team() == TEAM_BLU and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		if ply:GetPlayerClass() != "medic" then
 			ply:EmitSound( "MVM.BotStep" ) -- Play the footsteps hunter is using
 		else
@@ -991,23 +1092,23 @@ hook.Add("PlayerStepSoundTime", "FootTime", function(ply, iType, iWalking)
 	elseif ply:GetPlayerClass() == "scout" and ply:GetInfoNum("mp_cl_enable_custom_footstep_time", 0) == 1 then
 		return 200
 	end
-	if ply:GetPlayerClass() == "heavy" and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	if ply:GetPlayerClass() == "heavy" and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		return 260
-	elseif ply:GetPlayerClass() == "pyro" and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	elseif ply:GetPlayerClass() == "pyro" and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		return 290
-	elseif ply:GetPlayerClass() == "soldier" and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	elseif ply:GetPlayerClass() == "soldier" and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		return 325
-	elseif ply:GetPlayerClass() == "demoman" and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	elseif ply:GetPlayerClass() == "demoman" and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		return 300
-	elseif ply:GetPlayerClass() == "engineer" and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	elseif ply:GetPlayerClass() == "engineer" and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		return 280
-	elseif ply:GetPlayerClass() == "medic" and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	elseif ply:GetPlayerClass() == "medic" and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		return 285
-	elseif ply:GetPlayerClass() == "sniper" and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	elseif ply:GetPlayerClass() == "sniper" and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		return 305
-	elseif ply:GetPlayerClass() == "spy" and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	elseif ply:GetPlayerClass() == "spy" and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		return 310
-	elseif ply:GetPlayerClass() == "scout" and ply:IsBot() and GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+	elseif ply:GetPlayerClass() == "scout" and ply:IsBot() and GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 		return 200
 	end
 	if ply:GetPlayerClass() == "heavy" and ply:GetInfoNum("tf_robot", 0) == 1 then
@@ -1313,7 +1414,7 @@ local function PlayerGiantBotSpawn( ply, mv )
 				end
 			end)
 			timer.Simple(0.1, function()
-			if GetConVar("tf_botbecomerobots"):GetInt() == 1 then
+			if GetConVar("tf_bots_are_robots"):GetInt() == 1 then
 				if ply:Team() == TEAM_BLU then
 				ply:SetBloodColor(BLOOD_COLOR_MECH)
 				if ply:GetPlayerClass() == "scout" then
@@ -1550,211 +1651,6 @@ local function PlayerGiantBotSpawn( ply, mv )
 				if !ply:Alive() then timer.Stop("SentryBusterExplodeOnDeath"..ply:EntIndex()) return end
 				if ply:GetInfoNum("tf_sentrybuster",0) != 1 then timer.Stop("SentryBusterExplodeOnDeath"..ply:EntIndex()) return end
 				if ply:GetInfoNum("tf_sentrybuster",0) != 1 then return end
-				if ply:Health() <= 30 then
-				ply:EmitSound("MVM.SentryBusterSpin")
-				timer.Simple(0.1, function()
-				ply:GodEnable()
-				ply:SetNoDraw(true)
-				ply:SetNWBool("Taunting", true)
-				ply:SetNWBool("NoWeapon", true)
-				net.Start("ActivateTauntCam")
-				local animent = ents.Create( 'base_gmodentity' ) -- The entity used as a reference for the bone positioning
-				animent:SetModel( ply:GetModel() )
-				animent:SetModelScale( ply:GetModelScale() )
-				timer.Create("SetAnimPos", 0.01, 0, function()
-					if not animent:IsValid() then timer.Stop("SetAnimPos") return end
-					animent:SetPos( ply:GetPos() )
-					animent:SetAngles( ply:GetAngles() )
-				end )
-				animent:SetNoDraw( false ) -- The ragdoll is the thing getting seen
-				animent:Spawn()
-	
-				animent:SetSequence( "sentry_buster_preexplode" ) -- If the sequence isn't valid, the sequence length is 0, so the timer takes care of things
-				animent:SetPlaybackRate( 1 )
-				animent.AutomaticFrameAdvance = true
-	
-				animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
-				animent:PhysicsInit( SOLID_OBB )
-				animent:SetMoveType( MOVETYPE_FLYGRAVITY )
-				animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-				animent:PhysWake()
-	
-				function animent:Think() -- This makes the animation work
-					self:NextThink( CurTime() - 5 )
-					return true
-				end
-				timer.Simple(2, function()
-					ParticleEffect("asplode_hoodoo_shockwave", ply:GetPos() + Vector(0,0,35), ply:GetAngles())
-					ParticleEffect("asplode_hoodoo_shockwave", ply:GetPos() + Vector(0,0,35), ply:GetAngles())
-					ParticleEffect("asplode_hoodoo_shockwave", ply:GetPos() + Vector(0,0,35), ply:GetAngles())
-					ParticleEffect("asplode_hoodoo_shockwave", ply:GetPos() + Vector(0,0,35), ply:GetAngles())
-	
-					ParticleEffect("cinefx_goldrush_flash", ply:GetPos(), ply:GetAngles())
-					ParticleEffect("fireSmoke_Collumn_mvmAcres", ply:GetPos(), Angle())
-					ParticleEffect("fluidSmokeExpl_ring_mvm", ply:GetPos() + Vector(50,50,25), ply:GetAngles())
-					ParticleEffect("fluidSmokeExpl_ring_mvm", ply:GetPos() + Vector(-50,-50,25), ply:GetAngles())
-					ParticleEffect("fluidSmokeExpl_ring_mvm", ply:GetPos() + Vector(-50,50,25), ply:GetAngles())
-					ParticleEffect("fluidSmokeExpl_ring_mvm", ply:GetPos() + Vector(50,-50,25), ply:GetAngles())
-
-					ParticleEffect("fireSmoke_Collumn_mvmAcres_sm", ply:GetPos() + Vector(50,50,25), ply:GetAngles())
-					ParticleEffect("fireSmoke_Collumn_mvmAcres_sm", ply:GetPos() + Vector(-50,-50,25), ply:GetAngles())
-					ParticleEffect("fireSmoke_Collumn_mvmAcres_sm", ply:GetPos() + Vector(-50,50,25), ply:GetAngles())
-					ParticleEffect("fireSmoke_Collumn_mvmAcres_sm", ply:GetPos() + Vector(50,-50,25), ply:GetAngles())
-		
-					if animent:IsValid() then
-						animent:Remove()
-					end
-	
-					ply:EmitSound("MvM.SentryBusterExplode")
-					ply:SetNoDraw(false)
-					ply:GodDisable()
-
-					ply:SetNWBool("Taunting", false)
-					ply:SetNWBool("NoWeapon", false)
-					net.Start("DeActivateTauntCam")
-					if ply:GetRagdollEntity():IsValid() then
-						ply:GetRagdollEntity():Remove()
-					end
-					for k,v in pairs(ents.FindInSphere(ply:GetPos(), 800)) do 
-						if v:IsNPC() and not v:IsFriendly(ply) then
-							v:TakeDamage( v:Health(), ply, ply:GetActiveWeapon() )
-						elseif v:IsPlayer() and not v:IsFriendly(ply) and ply:Alive() then
-							v:TakeDamage( v:Health(), ply, ply:GetActiveWeapon() )
-						end
-					end
-					ply:Kill()
-				end)
-				end)
-				timer.Stop("SentryBusterExplodeOnDeath")
-				end
-			end)
-		end
-
-		if ply:GetPlayerClass() == "sentrybuster" then 
-			for k,v in pairs(player.GetAll()) do
-				if not v:IsFriendly(ply) and v:Alive() and not v:IsHL2() then
-					if v:GetPlayerClass() == "heavy" then
-						v:EmitSound("vo/heavy_mvm_sentry_buster01.mp3", 85, 100, 1, CHAN_REPLACE)
-					elseif v:GetPlayerClass() == "medic" then
-						v:EmitSound("vo/medic_mvm_sentry_buster01.mp3", 85, 100, 1, CHAN_REPLACE)
-					elseif v:GetPlayerClass() == "soldier" then
-						v:EmitSound("vo/soldier_mvm_sentry_buster01.mp3", 85, 100, 1, CHAN_REPLACE)
-					elseif v:GetPlayerClass() == "engineer" then
-						v:EmitSound("vo/engineer_mvm_sentry_buster01.mp3", 85, 100, 1, CHAN_REPLACE)
-					end
-				end
-			end
-			for k,v in ipairs(player.GetAll()) do
-				v:EmitSound("Announcer.MVM_Sentry_Buster_Alert")
-			end
-			ply:EmitSound("MVM.SentryBusterIntro")
-			ply:EmitSound("BusterLoop")
-			ply:SetModel("models/bots/demo/bot_sentry_buster.mdl")
-			ply:SetHealth(3600)
-			ply:StripWeapon("tf_weapon_grenadelauncher")
-			ply:StripWeapon("tf_weapon_pipebomblauncher")
-			ply:SetModelScale(1.75)
-
-			timer.Create("HHHSpeed2"..ply:EntIndex(), 0.01, 0, function()
-				if !ply:Alive() then timer.Stop("HHHSpeed2"..ply:EntIndex()) return end
-				if ply:GetPlayerClass() != "sentrybuster" then timer.Stop("HHHSpeed2"..ply:EntIndex()) return end
-				ply:SetWalkSpeed(700)
-				ply:SetRunSpeed(800)
-			end)
-			timer.Create("SentryBusterIntroLoop"..ply:EntIndex(), 4, 0, function()
-				if !ply:Alive() then timer.Stop("SentryBusterIntroLoop"..ply:EntIndex()) return end
-				if ply:GetPlayerClass() != "sentrybuster" then timer.Stop("SentryBusterIntroLoop"..ply:EntIndex()) return end
-				ply:EmitSound("MVM.SentryBusterIntro")
-			end)
-		
-			timer.Create("SentryBusterExplodeNearSentry"..ply:EntIndex(), 0.1, 0, function()
-				if !ply:Alive() then timer.Stop("SentryBusterExplodeNearSentry") return end
-				if ply:GetPlayerClass() != "sentrybuster" then timer.Stop("SentryBusterExplodeNearSentry") return end
-				if ply:GetPlayerClass() != "sentrybuster" then return end
-				for _,building in pairs(ents.FindInSphere(ply:GetPos(), 80)) do
-					if building:GetClass() == "obj_sentrygun" then	
-					ply:SetNoDraw(true)
-					ply:EmitSound("MVM.SentryBusterSpin")
-					ply:SetNWBool("Taunting", true)
-					ply:SetNWBool("NoWeapon", true)
-					net.Start("ActivateTauntCam")
-					net.Send(ply)
-					local animent = ents.Create( 'base_gmodentity' ) -- The entity used as a reference for the bone positioning
-					animent:SetModel( ply:GetModel() )
-					animent:SetModelScale( ply:GetModelScale() )
-					timer.Create("SetAnimPos", 0.01, 0, function()
-						if not animent:IsValid() then timer.Stop("SetAnimPos") return end
-						animent:SetPos( ply:GetPos() )
-						animent:SetAngles( ply:GetAngles() )
-					end )
-					animent:SetNoDraw( false ) -- The ragdoll is the thing getting seen
-					animent:Spawn()
-										
-					animent:SetSequence( "sentry_buster_preexplode" ) -- If the sequence isn't valid, the sequence length is 0, so the timer takes care of things
-					animent:SetPlaybackRate( 1 )
-					animent.AutomaticFrameAdvance = true
-											
-					animent:SetSolid( SOLID_OBB ) -- This stuff isn't really needed, but just for physics
-					animent:PhysicsInit( SOLID_OBB )
-					animent:SetMoveType( MOVETYPE_FLYGRAVITY )
-					animent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-					animent:PhysWake()
-										
-					function animent:Think() -- This makes the animation work
-						self:NextThink( CurTime() )
-						return true
-					end
-					timer.Simple(2.5, function()
-						ParticleEffect("asplode_hoodoo_shockwave", ply:GetPos() + Vector(0,0,35), ply:GetAngles())
-						ParticleEffect("asplode_hoodoo_shockwave", ply:GetPos() + Vector(0,0,35), ply:GetAngles())
-						ParticleEffect("asplode_hoodoo_shockwave", ply:GetPos() + Vector(0,0,35), ply:GetAngles())
-						ParticleEffect("asplode_hoodoo_shockwave", ply:GetPos() + Vector(0,0,35), ply:GetAngles())
-										
-						ParticleEffect("cinefx_goldrush_flash", ply:GetPos(), ply:GetAngles())
-							ParticleEffect("fireSmoke_Collumn_mvmAcres", ply:GetPos(), Angle())
-						ParticleEffect("fluidSmokeExpl_ring_mvm", ply:GetPos() + Vector(50,50,25), ply:GetAngles())
-						ParticleEffect("fluidSmokeExpl_ring_mvm", ply:GetPos() + Vector(-50,-50,25), ply:GetAngles())
-						ParticleEffect("fluidSmokeExpl_ring_mvm", ply:GetPos() + Vector(-50,50,25), ply:GetAngles())
-						ParticleEffect("fluidSmokeExpl_ring_mvm", ply:GetPos() + Vector(50,-50,25), ply:GetAngles())
-
-						ParticleEffect("fireSmoke_Collumn_mvmAcres_sm", ply:GetPos() + Vector(50,50,25), ply:GetAngles())
-						ParticleEffect("fireSmoke_Collumn_mvmAcres_sm", ply:GetPos() + Vector(-50,-50,25), ply:GetAngles())
-						ParticleEffect("fireSmoke_Collumn_mvmAcres_sm", ply:GetPos() + Vector(-50,50,25), ply:GetAngles())
-						ParticleEffect("fireSmoke_Collumn_mvmAcres_sm", ply:GetPos() + Vector(50,-50,25), ply:GetAngles())
-
-						if animent:IsValid() then
-							animent:Remove() 
-						end
-
-						ply:EmitSound("MvM.SentryBusterExplode")
-						ply:EmitSound("MvM.SentryBusterExplode")
-						ply:EmitSound("MvM.SentryBusterExplode")
-						ply:SetNoDraw(false)
-
-						ply:SetNWBool("Taunting", false)
-						ply:SetNWBool("NoWeapon", false)
-						net.Start("DeActivateTauntCam")
-						net.Send(ply)
-						if ply:GetRagdollEntity():IsValid() then
-							ply:GetRagdollEntity():Remove()
-						end
-						for k,v in pairs(ents.FindInSphere(ply:GetPos(), 800)) do 
-							if !v:IsPlayer() and v:Health() >= 0 and not v:IsFriendly(ply) then
-								v:TakeDamage( v:Health(), ply, ply:GetActiveWeapon() )
-							elseif v:IsPlayer() and not v:IsFriendly(ply) and v:Alive() and v:Nick() != ply:Nick() then
-								v:TakeDamage( v:Health(), ply, ply:GetActiveWeapon() )
-							end
-						end
-						ply:TakeDamage( ply:Health(), ply, ply:GetActiveWeapon() )
-					end)
-					timer.Stop("SentryBusterExplodeNearSentry"..ply:EntIndex())
-					end
-				end
-			end)
-			timer.Create("SentryBusterExplodeOnDeath", 0.1, 0, function()
-				if !ply:Alive() then timer.Stop("SentryBusterExplodeOnDeath") return end
-				if ply:GetPlayerClass() != "sentrybuster" then timer.Stop("SentryBusterExplodeOnDeath") return end
-				if ply:GetPlayerClass() != "sentrybuster" then return end
 				if ply:Health() <= 30 then
 				ply:EmitSound("MVM.SentryBusterSpin")
 				timer.Simple(0.1, function()
@@ -2311,7 +2207,7 @@ concommand.Add( "changeteam", function( pl, cmd, args )
 		pl:KillSilent()
 	end
 	pl:SetTeam( tonumber( args[ 1 ] ) )  
-	timer.Simple(0.3, function() if !IsValid(pl) then return end pl:SendLua("chat.AddText( Color( 235, 226, 202 ), 'Player ', LocalPlayer():Nick(), ' joined team ', team.GetName(LocalPlayer():Team()) )") end)
+	timer.Simple(0.3, function() if !IsValid(pl) then return end PrintMessage(HUD_PRINTTALK, 'Player '.. pl:Nick() ..	' joined team '.. team.GetName(pl:Team()) ) end) 
 	if pl:Alive() then pl:Kill() end 
 end )
 
@@ -2440,7 +2336,7 @@ if ( file.Exists( "teamfortress/gamemode/maps/"..game.GetMap()..".lua", "LUA" ) 
 	include( "maps/"..game.GetMap()..".lua" )
 
 end
-
+  
 -- Called by GoToNextLevel
 function GM:GrabAndSwitch()
 
@@ -2449,7 +2345,7 @@ function GM:GrabAndSwitch()
 	game.ConsoleCommand( "changelevel "..NEXT_MAP.."\n" )
 
 end
-
+ 
 
 function GM:ShouldDrawWorldModel(pl) 
 	
@@ -2464,12 +2360,12 @@ function GM:ShouldDrawWorldModel(pl)
 	end
 	return true
 end
-
+ 
 function GM:PlayerButtonDown( pl, key )
 	if key == KEY_G then
-		pl:ConCommand("tf_taunt "..pl:GetActiveWeapon():GetSlotPos())
+		pl:ConCommand("tf_taunt "..pl:GetActiveWeapon():GetSlot() + 1)         
 		print("taunt")
-		print(pl:GetActiveWeapon():GetSlot())
+		print(pl:GetWeapon(pl:GetActiveWeapon():GetClass()):GetSlot() + 1)
 	end
 	if key == KEY_Z then
 		pl:ConCommand("voice_menu_1") 
@@ -2518,12 +2414,12 @@ function RandomWeapon(ply, wepslot)
 		end
 	end
 
-	local wep = table.Random(validweapons)
+	local wep = table.Random(validweapons)  
 
 	ply:PrintMessage(HUD_PRINTTALK, "You were given " .. wep .. "!")
 	ply:ConCommand("giveitem " .. wep)
 end
-
+ 
 concommand.Add("randomweapon", function(ply, _, args)
 	if !args[1] then
 		local random = math.random(1, 3)
@@ -2538,50 +2434,28 @@ concommand.Add("randomweapon", function(ply, _, args)
 		RandomWeapon(ply, args[1])
 	end
 end)
-
-function GM:MouthMoveAnimation( ply )
-
-	local flexes = {
-		ply:GetFlexIDByName( "jaw_drop" ),
-		ply:GetFlexIDByName( "left_part" ),
-		ply:GetFlexIDByName( "right_part" ),
-		ply:GetFlexIDByName( "left_mouth_drop" ),
-		ply:GetFlexIDByName( "right_mouth_drop" )
-	}
-	
-	local flexes2 ={
-		ply:GetFlexIDByName( "ah" )
-	}
-	
-	local weight = ply:IsSpeaking() && math.Clamp( ply:VoiceVolume() * 2, 0, 2 ) || 0
-
-	for k, v in pairs( flexes ) do
-		if ply:IsHL2() then
-			ply:SetFlexWeight( v, weight )
-		end
-
-	end
-
-	for k, v in pairs( flexes2 ) do
-
-		if not ply:IsHL2() then
-			ply:SetFlexWeight( v, weight )
-		end
-
-	end
-end
-
-
+  
 function GM:PlayerSpawn(ply)
 	if ply.CPPos and ply.CPAng then
-		ply:SetPos(ply.CPPos)
+		ply:SetPos(ply.CPPos) 
 		ply:SetEyeAngles(ply.CPAng)
 	end 
-	ply:SetNoCollideWithTeammates( true )
-	if ply:GetPlayerClass() == "soldierbuffed" then 
-		timer.Simple(0.8, function()
-			ply:SelectWeapon("tf_weapon_buff_item_conch")
-			ply:GetActiveWeapon():PrimaryAttack()
+	if GetConVar("tf_grapplinghook_enable"):GetBool() then
+		ply:ConCommand("__svgiveitem Grappling Hook")
+	end
+	if string.find(game.GetMap(), "mvm_") then
+		timer.Simple(0.4, function()
+			for k,v in ipairs(ents.FindByClass("obj_teleporter")) do
+				if GAMEMODE:EntityTeam(v) == TEAM_BLU then
+					if ply:Team() == TEAM_BLU then
+						ply:SetPos(v:GetPos())
+						v:Teleport(ply)
+						for _,pl in ipairs(player.GetAll()) do 
+							pl:SendLua([[surface.PlaySound("mvm/mvm_tele_deliver.wav")]])
+						end
+					end
+				end
+			end
 		end)
 	end
 	if ply:GetPlayerClass() == "engineer" and ply:IsBot() and string.find(game.GetMap(), "mvm_") then 
@@ -2597,7 +2471,8 @@ function GM:PlayerSpawn(ply)
 	ply:SetNWBool("ShouldDropDecapitatedRagdoll", false)
 	ply:SetNWBool("DeathByHeadshot", false)]]
 	ply:ResetDeathFlags()
-	ply:EnablePhonemes()
+	ply:EnablePhonemes()       
+	ply:SetNoCollideWithTeammates( false )
 	ply.LastWeapon = nil
 	self:ResetKills(ply)
 	self:ResetDamageCounter(ply)
@@ -2630,12 +2505,6 @@ function GM:PlayerSpawn(ply)
 		if ply:GetObserverMode() ~= OBS_MODE_NONE then
 			ply:UnSpectate()
 		end]]
-	elseif ply:GetPlayerClass()=="sniper" then
-		ply:SetPlayerClass("scout")
-		ply:SetPlayerClass("sniper")
-		timer.Simple(0.1, function()
-			ply:SetPlayerClass("sniper")
-		end)
 	else
 		timer.Simple(0.1, function() -- god i'm such a timer whore
 			ply:SetPlayerClass(ply:GetPlayerClass())
@@ -2677,7 +2546,7 @@ function GM:PlayerSpawn(ply)
 			end
 		end
 	end
-
+   
 	ply:Speak("TLK_PLAYER_EXPRESSION", true)
 
 	local playercolorconv = ply:GetInfo("cl_playercolor")
@@ -2687,7 +2556,7 @@ function GM:PlayerSpawn(ply)
 
 	ply:SetPlayerColor(playercolor)
 	ply:SetWeaponColor(weaponcolor)
-	ply:SetAvoidPlayers(true)
+	ply:SetAvoidPlayers(true)  
 	
 	if GetConVar("tf_randomizer"):GetBool() and !ply:IsHL2() then
 		RandomWeapon(ply, "primary")

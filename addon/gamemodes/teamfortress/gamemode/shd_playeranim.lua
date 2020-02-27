@@ -127,11 +127,32 @@ function GM:HandlePlayerDriving(pl)
 	return false
 end
 
+function GM:MouthMoveAnimation( ply )
+
+	local flexes = {
+		ply:GetFlexIDByName( "jaw_drop" ),
+		ply:GetFlexIDByName( "left_part" ),
+		ply:GetFlexIDByName( "right_part" ),
+		ply:GetFlexIDByName( "left_mouth_drop" ),
+		ply:GetFlexIDByName( "AH" ),
+		ply:GetFlexIDByName( "right_mouth_drop" )
+	}
+	if SERVER then
+	local weight = ply:IsSpeaking() && math.Clamp( ply:VoiceVolume() * 2, 0, 2 ) || 0
+
+	for k, v in pairs( flexes ) do
+		if ply:IsSpeaking() then
+			ply:SetFlexWeight( v, weight )
+		end
+
+	end
+	end
+end
+
 function GM:UpdateAnimation(pl, velocity, maxseqgroundspeed)
 	if pl:IsHL2() then
 		return self.BaseClass:UpdateAnimation(pl, velocity, maxseqgroundspeed)
-	end
-	
+	end   
 	local c = pl:GetPlayerClassTable()
 	local maxspeed = 100
 	
@@ -279,9 +300,18 @@ local TauntGestures = {
 	[ACT_DOD_CROUCHWALK_AIM_MP40] = "taunt02",
 	[ACT_DOD_STAND_AIM_30CAL] = "taunt03",
 	[ACT_DOD_SPRINT_AIM_SPADE] = "taunt04",
-	[ACT_DOD_CROUCH_AIM_RIFLE] = "taunt07_halloween",
-	[ACT_DOD_WALK_IDLE_MP44] = "taunt11_howl",
-	[ACT_DOD_CROUCHWALK_AIM_30CAL] = "Dropship_Deploy",
+	[ACT_DOD_CROUCH_AIM_RIFLE] = "gesture_melee_cheer",
+	[ACT_DOD_DEPLOYED] = "gesture_melee_go",
+	[ACT_COVER_MED] = "gesture_melee_help",
+	[ACT_DOD_PRONE_DEPLOYED] = "gesture_primary_positive",
+	[ACT_DOD_IDLE_ZOOMED] = "gesture_primary_cheer",
+	[ACT_DOD_PRONE_ZOOMED] = "gesture_primary_go",
+	[ACT_DOD_PRONE_FORWARD_ZOOMED] = "gesture_primary_help",
+	[ACT_DOD_PRIMARYATTACK_DEPLOYED] = "gesture_secondary_positive",
+	[ACT_DOD_PRIMARYATTACK_PRONE_DEPLOYED] = "gesture_secondary_go",
+	[ACT_DOD_WALK_IDLE_MP44] = "gesture_secondary_cheer",
+	[ACT_SIGNAL1] = "gesture_secondary_help",
+	[ACT_DOD_CROUCHWALK_AIM_30CAL] = "gesture_melee_positive",
 	[ACT_DOD_STAND_ZOOM_BOLT] = "taunt_hifivesuccess",
 	[ACT_DOD_CROUCH_ZOOM_BOLT] = "taunt_highfivesuccess",
 	[ACT_DOD_CROUCHWALK_ZOOM_BOLT] = "taunt_highfivesuccessfull",
@@ -289,7 +319,7 @@ local TauntGestures = {
 	[ACT_DOD_SECONDARYATTACK_PRONE_BOLT] = "taunt_dosido_dance",
 	[ACT_DOD_PRONEWALK_IDLE_BAR] = "taunt_rps_scissors_win",
 	[ACT_DOD_SPRINT_IDLE_BAR] = "taunt_rps_scissors_lose",
-	[ACT_DOD_PRIMARYATTACK_BOLT] = "throw_fire",
+	[ACT_DOD_PRIMARYATTACK_BOLT] = "selectionMenu_Anim0l",
 	[ACT_DOD_SECONDARYATTACK_BOLT] = "taunt_flip_success_initiator",
 	[ACT_WALK_SCARED] = "taunt_party_trick",
 	[ACT_DOD_PRIMARYATTACK_PRONE_BOLT] = "taunt_flip_success_receiver",
@@ -297,6 +327,7 @@ local TauntGestures = {
 	[ACT_DOD_CROUCH_IDLE_TOMMY] = "taunt06",
 	[ACT_DOD_STAND_AIM_KNIFE] = "taunt09",
 	[ACT_COVER] = "taunt_flip_start",
+	[ACT_COVER_LOW] = "taunt05",
 	[ACT_DOD_CROUCHWALK_IDLE_PISTOL] = "taunt_conga",
 	[ACT_DI_ALYX_ZOMBIE_TORSO_MELEE] = "taunt_russian",
 	[ACT_DOD_CROUCH_IDLE_PISTOL] = "taunt04",
@@ -305,17 +336,9 @@ local TauntGestures = {
 	[ACT_DOD_RELOAD_PSCHRECK] = "taunt_rps_rock_lose",
 	[ACT_DOD_ZOOMLOAD_PSCHRECK] = "taunt_rps_paper_win",
 	[ACT_DOD_RELOAD_DEPLOYED_FG42] = "taunt_rps_paper_lose",
-	[ACT_DOD_DEPLOYED] = "Shoved_Backward",
-	[ACT_DOD_PRONE_DEPLOYED] = "melee_pounce",
-	[ACT_DOD_IDLE_ZOOMED] = "Charger_punch",
 	[ACT_DOD_WALK_ZOOMED] = "a_grapple_pull_idle",
 	[ACT_DOD_CROUCH_ZOOMED] = "a_grapple_SHOOT",
 	[ACT_DOD_CROUCHWALK_ZOOMED] = "a_grapple_pull_start",
-	[ACT_DOD_PRONE_ZOOMED] = "rocketpack_stand_launch",
-	[ACT_DOD_PRONE_FORWARD_ZOOMED] = "SECONDARY_fire_alt",
-	[ACT_DOD_PRIMARYATTACK_DEPLOYED] = "ReloadStand_MELEE_ALLCLASS",
-	[ACT_DOD_PRIMARYATTACK_PRONE_DEPLOYED] = "ReloadStand_ITEM1",
-	[ACT_SIGNAL1] = "stomp_ITEM4",
 	[ACT_SIGNAL2] = "taunt08",
 	[ACT_DOD_RELOAD_DEPLOYED] = "taunt07",
 	[ACT_DOD_RELOAD_PRONE_DEPLOYED] = "selectionMenu_Anim01",

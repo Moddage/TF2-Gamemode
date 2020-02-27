@@ -258,6 +258,7 @@ function ENT:Pickup(ply)
 		self:SetNotSolid(true)
 		self:SetTrigger(false)
 		self:SetParent(ply)
+		ply:Speak("TLK_FLAGPICKUP")
 		self:Fire("SetParentAttachment", "flag", 0)
 		if ply:IsPlayer() and ply:IsHL2() then
 			self:Fire("SetParentAttachment", "chest", 0)

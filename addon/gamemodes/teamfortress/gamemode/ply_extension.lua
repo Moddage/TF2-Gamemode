@@ -156,6 +156,7 @@ function meta:Explode()
 		umsg.Long(self:UserID())
 		umsg.Short(self.DeathFlags)
 	umsg.End()
+	self:EmitSound("physics/flesh/flesh_squishy_impact_hard2.wav", 100)
 end
 
 function meta:Decap()
@@ -210,7 +211,21 @@ function meta:Build(number1,number2)
 	local sub = tonumber(number2)
 	
 	local builder = self:GetWeapon("tf_weapon_builder")
-
+	
+	if builds[group] and (!GetConVar("tf_unlimited_buildings"):GetBool() or GetConVar("tf_competitive"):GetBool()) then
+		local tab = ents.FindByClass(builds[group])
+		for k, v in pairs(tab) do
+			if v.Player == pl and builds[group] ~= "obj_teleporter" then
+				return
+			elseif v.Player == pl and builds[group] == "obj_teleporter" then
+				for i, o in pairs(tab) do
+					if (sub == 0 and v:IsEntrance() and o:IsEntrance()) or (sub == 1 and v:IsExit() and o:IsExit()) then
+						return
+					end
+				end
+			end
+		end
+	end
 	builder:SetHoldType("BUILDING")
 	
 	builder.Moving = false
@@ -231,9 +246,75 @@ function meta:Build(number1,number2)
 		
 		group, sub = unpack(old_group_translate[group])
 	end
+	local Buildings = {}
+	local Buildings2 = {}
+	local Buildings3 = {}
+	local Buildings4 = {}
+	table.remove(Buildings, 1) 
+	table.remove(Buildings2, 1) 
+	local current = self:GetActiveWeapon()
+	for k,v in ipairs(ents.FindByClass("obj_sentrygun")) do
+		if IsValid(v) and v:GetBuilder() == self then
+			table.insert(Buildings, v:EntIndex()) 
+			PrintTable(Buildings)
+		elseif !IsValid(v) then
+			table.remove(Buildings, 1) 
+		end
+	end
+	for k,v in ipairs(ents.FindByClass("obj_dispenser")) do
+		if IsValid(v) and v:GetBuilder() == self then
+			table.insert(Buildings2, v:EntIndex())
+		elseif !IsValid(v) then
+			table.remove(Buildings2, 1) 
+		end
+	end
+	for k,v in ipairs(ents.FindByClass("obj_teleporter")) do 
+		if IsValid(v) and v:GetBuilder() == self then
+			table.insert(Buildings3, v:EntIndex())
+		elseif !IsValid(v) then
+			table.remove(Buildings3, 1) 
+			table.remove(Buildings3, 2)
+		end
+	end
+	if self:SetBuilding(group, sub) and current ~= builder then
+		if current.IsPDA then
+			local last = self:GetWeapon(self.LastWeapon)
+			if not IsValid(last) or last.IsPDA then
+			last = self:GetWeapons()[1]
+		end
+		builder.LastWeapon = last:GetClass()
+		self:SelectWeapon(last:GetClass())
+	else
+		builder.LastWeapon = current:GetClass()
+	end
+	self:SelectWeapon("tf_weapon_builder")
+end
+ 
+end
+function meta:Move(number1,number2)
+	local group = tonumber(number1)
+	local sub = tonumber(number2) 
+	if self:GetInfoNum("tf_robot", 0) == 1 then
+		self:EmitSound("vo/mvm/norm/engineer_mvm_sentrypacking0"..math.random(1,3)..".mp3", 80, 100)
+	else
+		self:EmitSound("vo/engineer_sentrypacking0"..math.random(1,3)..".mp3", 80, 100)		
+	end
+	local builder = self:GetWeapon("tf_weapon_builder")
+	
+	if not IsValid(builder) then return end
+	if not group then return end
+	
+	builder:SetHoldType("BUILDING_DEPLOYED")
+	builder.HoldType = "BUILDING_DEPLOYED"
+	
+	if not sub then
+		if not old_group_translate[group] then return end
+		
+		group, sub = unpack(old_group_translate[group])
+	end
 	
 	local current = self:GetActiveWeapon()
-	if self:SetBuilding(group, sub) and current ~= builder then
+	if builder:SetBuilding2(group, sub) and current ~= builder then
 		if current.IsPDA then
 			local last = self:GetWeapon(self.LastWeapon)
 			if not IsValid(last) or last.IsPDA then
@@ -245,6 +326,7 @@ function meta:Build(number1,number2)
 			builder.LastWeapon = current:GetClass()
 		end
 		self:SelectWeapon("tf_weapon_builder")
+		builder.Moving = true
 	end
 end
 
@@ -257,13 +339,16 @@ function meta:EnablePhonemes( ent, on )
 		self:SetupPhonemeMappings( "" )
 	else
 		-- Enable mouth movement
-		self:SetupPhonemeMappings( ""..self:GetPlayerClass().."/phonemes" )
+		if self:GetPlayerClass() == "demoman" then
+		self:SetupPhonemeMappings( "player/demo/phonemes" )
+		else
+		self:SetupPhonemeMappings( "player/"..self:GetPlayerClass().."/phonemes" )		
+		end
 	end
 
 end
 
 function meta:RandomSentence(group)
-	if self:IsHL2() then return end
 	
 	local class = self:GetPlayerClassTable()
 	if not class then return end

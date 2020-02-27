@@ -111,6 +111,41 @@ Rule PlayerCloakedSpySpyScout
 	Response PlayerCloakedSpySpyScout
 }
 
+Rule MvMBombPickupScout
+{
+	criteria ConceptMvMBombPickup 5PercentChance  IsScout
+	Response MvMBombPickupScout
+}
+
+Response MvMBombPickupScout
+{
+	scene "scenes/Player/Scout/low/362.vcd" 
+	scene "scenes/Player/Scout/low/1281.vcd" 
+	scene "scenes/Player/Scout/low/363.vcd" 
+	scene "scenes/Player/Scout/low/364.vcd" 
+}
+
+// Custom stuff - melee dare
+// Look at enemy, then do battle cry voice command while holding a melee weapon.
+Response MeleeDareCombatScout
+{
+	scene "scenes/Player/Scout/low/2584.vcd"
+	scene "scenes/Player/Scout/low/2579.vcd" 
+	scene "scenes/Player/Scout/low/2580.vcd" 
+	scene "scenes/Player/Scout/low/2582.vcd" 
+	scene "scenes/Player/Scout/low/2583.vcd" 
+	scene "scenes/Player/Scout/low/2581.vcd" 
+	scene "scenes/Player/Scout/low/2642.vcd" 
+	scene "scenes/Player/Scout/low/500.vcd" 
+	scene "scenes/Player/Scout/low/494.vcd"
+	scene "scenes/Player/Scout/low/496.vcd"
+}
+Rule MeleeDareCombatScout
+{
+	criteria ConceptPlayerBattleCry IsWeaponMelee IsScout IsCrosshairEnemy
+	Response MeleeDareCombatScout
+}
+//End custom
 
 //--------------------------------------------------------------------------------------------------------------
 // Auto Speech
@@ -174,7 +209,7 @@ Response PlayerGrabbedIntelligenceScout
 }
 Rule PlayerGrabbedIntelligenceScout
 {
-	criteria ConceptPlayerGrabbedIntelligence IsScout NotScoutGrabbedIntelligence 10PercentChance
+	criteria ConceptPlayerGrabbedIntelligence IsScout
 	ApplyContext "ScoutGrabbedIntelligence:1:30"
 	Response PlayerGrabbedIntelligenceScout
 }
@@ -193,6 +228,33 @@ Response PlayerSuddenDeathScout
 	scene "scenes/Player/Scout/low/428.vcd" 
 	scene "scenes/Player/Scout/low/430.vcd" 
 }
+
+Response PlayerJarateHitScout
+{
+	scene "scenes/Player/Scout/low/362.vcd" 
+	scene "scenes/Player/Scout/low/1281.vcd" 
+	scene "scenes/Player/Scout/low/363.vcd" 
+	scene "scenes/Player/Scout/low/364.vcd" 
+}
+// Milk toss
+Response MilkLaunchScout
+{
+	scene "scenes/player/Scout/low/504.vcd"
+	scene "scenes/player/Scout/low/2705.vcd"
+	scene "scenes/player/Scout/low/2604.vcd"
+}
+Rule MilkLaunchScout
+{
+	criteria ConceptJarateLaunch IsScout 50PercentChance
+	Response MilkLaunchScout
+}
+Rule PlayerJarateHitScout
+{
+	criteria ConceptJarateHit IsScout
+	Response PlayerJarateHitScout
+}
+
+
 Rule PlayerSuddenDeathScout
 {
 	criteria ConceptPlayerSuddenDeathStart IsScout
@@ -239,7 +301,7 @@ Response CartMovingBackwardsDefenseScout
 }
 Rule CartMovingBackwardsDefenseScout
 {
-	criteria ConceptCartMovingBackward IsOnDefense IsScout ScoutNotSaidCartMovingBackwardD
+	criteria ConceptCartMovingBackward IsScout ScoutNotSaidCartMovingBackwardD
 	ApplyContext "SaidCartMovingBackwardD:1:20"
 	Response CartMovingBackwardsDefenseScout
 }
@@ -257,7 +319,7 @@ Response CartMovingBackwardsOffenseScout
 }
 Rule CartMovingBackwardsOffenseScout
 {
-	criteria ConceptCartMovingBackward IsOnOffense IsScout ScoutNotSaidCartMovingBackwardO
+	criteria ConceptCartMovingBackward IsScout ScoutNotSaidCartMovingBackwardO
 	ApplyContext "SaidCartMovingBackwardO:1:20"
 	Response CartMovingBackwardsOffenseScout
 }
@@ -273,7 +335,7 @@ Response CartMovingForwardDefenseScout
 }
 Rule CartMovingForwardDefenseScout
 {
-	criteria ConceptCartMovingForward IsOnDefense IsScout ScoutNotSaidCartMovingForwardD
+	criteria ConceptCartMovingForward IsScout ScoutNotSaidCartMovingForwardD
 	ApplyContext "SaidCartMovingForwardD:1:20"
 	Response CartMovingForwardDefenseScout
 }
@@ -295,7 +357,7 @@ Response CartMovingForwardOffenseScout
 }
 Rule CartMovingForwardOffenseScout
 {
-	criteria ConceptCartMovingForward IsOnOffense IsScout ScoutNotSaidCartMovingForwardO
+	criteria ConceptCartMovingForward IsScout ScoutNotSaidCartMovingForwardO
 	ApplyContext "SaidCartMovingForwardO:1:20"
 	Response CartMovingForwardOffenseScout
 }
@@ -308,7 +370,7 @@ Response CartMovingStoppedDefenseScout
 }
 Rule CartMovingStoppedDefenseScout
 {
-	criteria ConceptCartMovingStopped IsOnDefense IsScout ScoutNotSaidCartMovingStoppedD
+	criteria ConceptCartMovingStopped IsScout ScoutNotSaidCartMovingStoppedD
 	ApplyContext "SaidCartMovingStoppedD:1:20"
 	Response CartMovingStoppedDefenseScout
 }
@@ -321,7 +383,7 @@ Response CartMovingStoppedOffenseScout
 }
 Rule CartMovingStoppedOffenseScout
 {
-	criteria ConceptCartMovingStopped IsOnOffense IsScout ScoutNotSaidCartMovingStoppedO
+	criteria ConceptCartMovingStopped IsScout ScoutNotSaidCartMovingStoppedO
 	ApplyContext "SaidCartMovingStoppedO:1:20"
 	Response CartMovingStoppedOffenseScout
 }

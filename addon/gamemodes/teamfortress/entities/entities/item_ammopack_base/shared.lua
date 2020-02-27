@@ -21,7 +21,9 @@ function ENT:PlayerTouched(pl)
 	
 	self:EmitSound("AmmoPack.Touch", 100, 100)
 	self:Hide()
-	GAMEMODE:GiveAmmoPercent(pl, a)
+	if pl:IsPlayer() then
+		GAMEMODE:GiveAmmoPercent(pl, a)
+	end
 end
 
 

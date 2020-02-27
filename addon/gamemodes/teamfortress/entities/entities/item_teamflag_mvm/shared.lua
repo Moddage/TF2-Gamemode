@@ -266,19 +266,9 @@ function ENT:Pickup(ply)
 
 		for _, ply in pairs(player.GetAll()) do
 			if ply:Team() == self.TeamNum then
-				if ply:GetPlayerClass() == "scout" then
-					ply:EmitSound("vo/scout_cartgoingbackoffense02.mp3", 80, 100)
-				elseif ply:GetPlayerClass() == "soldier" then
-					ply:EmitSound("vo/soldier_mvm_bomb_see0"..math.random(1,3)..".mp3", 80, 100)
-				elseif ply:GetPlayerClass() == "heavy" then
-					ply:EmitSound("vo/heavy_mvm_bomb_see0"..math.random(1,2)..".mp3", 80, 100)
-				elseif ply:GetPlayerClass() == "medic" then
-					ply:EmitSound("vo/medic_mvm_bomb_see0"..math.random(1,3)..".mp3", 80, 100)
-				elseif ply:GetPlayerClass() == "engineer" then
-					ply:EmitSound("vo/engineer_mvm_bomb_see0"..math.random(1,3)..".mp3", 80, 100)
-				end
+				ply:Speak("TLK_MVM_BOMB_PICKUP")
 			end
-		end
+		end 
 	
 		timer.Create("DropIfCarrierNotAlive", 0.001, 0, function()
 			if ply:Alive() then

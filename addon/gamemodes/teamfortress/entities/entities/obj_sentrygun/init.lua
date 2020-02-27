@@ -72,6 +72,24 @@ ENT.CritDamageMultiplier = 3
 
 ENT.OriginZOffset = 40
 
+function ENT:SpawnFunction(pl, tr)
+	if not tr.Hit then return end
+	
+	local pos = tr.HitPos
+	
+	local ent = ents.Create(self.ClassName)
+	ent:SetPos(pos)
+	ent:Spawn()
+	ent:Activate()
+	
+	ent:SetPos(pos - Vector(0,0,ent:OBBMins().z))
+	
+	ent:SetTeam(pl:Team())
+	
+	return ent
+end
+
+
 local function sign(n)
 	if n<0 then return -1
 	elseif n>0 then return 1
@@ -447,7 +465,6 @@ function ENT:ShootBullets()
 	else
 		self.GunCounter = 0
 	end
-	
 	local pos = self:ShootPos(self.GunCounter > 0)
 	local tarpos = self.TargetPos
 	
@@ -501,7 +518,6 @@ function ENT:ShootBullets()
 		TracerName = "bullet_tracer01",
 		Force = 1,
 	}
-	
 	self.SoundCounter = self.SoundCounter - 1
 	
 	return true
@@ -535,7 +551,7 @@ end
 function ENT:FindTarget(dbg)
 	local Target, MinDist, Method
 	for _,v in pairs(ents.FindInSphere(self:GetPos(), self.Range)) do
-		if (v:IsPlayer() or v:IsNPC()) and ( v:Health() > 0 ) and (self:Team()==TEAM_NEUTRAL or GAMEMODE:EntityTeam(v)~=self:Team()) then
+		if (v:IsTFPlayer()) and ( v:Health() > 0 ) and (self:Team()==TEAM_NEUTRAL or GAMEMODE:EntityTeam(v)~=self:Team()) then
 			local d = self:GetPos():Distance(v:GetPos())
 			if not MinDist or d<MinDist then
 				local method = self:GetTargetMethod(v, true, dbg)
@@ -546,71 +562,6 @@ function ENT:FindTarget(dbg)
 					if ( v:IsPlayer() and v:HasGodMode() != false ) then
 						return
 					end 
-					Target = v
-					MinDist = d
-					Method = method
-				end
-			end
-		end
-	end
-	for _,v in pairs(ents.FindByClass("npc_*_red")) do
-		if v.Team == "RED" and self:Team() == TEAM_BLU then
-			local d = self:GetPos():Distance(v:GetPos())
-			if not MinDist or d<MinDist then
-				local method = self:GetTargetMethod(v, true, dbg)
-				if method then
-					Target = v
-					MinDist = d
-					Method = method
-				end
-			end
-		end
-	end
-	for _,v in pairs(ents.FindByClass("npc_*_blue")) do
-		if v.Team == "BLU" and self:Team() == TEAM_RED then
-			local d = self:GetPos():Distance(v:GetPos())
-			if not MinDist or d<MinDist then
-				local method = self:GetTargetMethod(v, true, dbg)
-				if method then
-					Target = v
-					MinDist = d
-					Method = method
-				end
-			end
-		end
-	end
-	for _,v in pairs(ents.FindByClass("npc_*_mvm")) do
-		if v.Team == "GREY" and self:Team() == TEAM_RED or self:Team() == TEAM_BLU then
-			local d = self:GetPos():Distance(v:GetPos())
-			if not MinDist or d<MinDist then
-				local method = self:GetTargetMethod(v, true, dbg)
-				if method then
-					Target = v
-					MinDist = d
-					Method = method
-				end
-			end
-		end
-	end
-	for _,v in pairs(ents.FindByClass("npc_*_mvm_*")) do
-		if v.Team == "GREY" and self:Team() == TEAM_RED or self:Team() == TEAM_BLU then
-			local d = self:GetPos():Distance(v:GetPos())
-			if not MinDist or d<MinDist then
-				local method = self:GetTargetMethod(v, true, dbg)
-				if method then
-					Target = v
-					MinDist = d
-					Method = method
-				end
-			end
-		end
-	end
-	for _,v in pairs(ents.FindByClass("npc_demo_halloween")) do
-		if v.Team == "GREY" and self:Team() == TEAM_RED or self:Team() == TEAM_BLU then
-			local d = self:GetPos():Distance(v:GetPos())
-			if not MinDist or d<MinDist then
-				local method = self:GetTargetMethod(v, true, dbg)
-				if method then
 					Target = v
 					MinDist = d
 					Method = method
@@ -689,12 +640,15 @@ function ENT:Think()
 		deltatime = CurTime() - self.LastThink
 	end
 	self.LastThink = CurTime()
-	
-	if !IsValid(self:GetBuilder()) then
-		self:Explode()
-	end
-	if self:GetBuilder():GetPlayerClass() != "engineer" then
-		self:Explode()
+		if !IsValid(self:GetBuilder()) then
+			if self:GetBuilder():IsPlayer() then
+				self:Explode()
+			end
+		end
+	if IsValid(self:GetBuilder()) then
+		if self:GetBuilder():IsPlayer() and self:GetBuilder():GetPlayerClass() != "engineer" then
+			self:Explode()
+		end
 	end
 	self:OnThink()
 	if state==0 then

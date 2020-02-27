@@ -73,14 +73,10 @@ function ENT:Initialize()
 		self:PhysicsInit(SOLID_VPHYSICS)
 	
 	self:SetMoveType(MOVETYPE_VPHYSICS)
-	self:SetSolid(SOLID_CUSTOM)
+	self:SetSolid(SOLID_VPHYSICS)
 	self:SetHealth(1)
 	
-	if self.GrenadeMode==1 then
-		self:SetMoveCollide(MOVECOLLIDE_FLY_BOUNCE)
-	else
-		self:SetMoveCollide(MOVECOLLIDE_FLY_SLIDE)
-	end
+	self:SetMoveCollide(MOVECOLLIDE_FLY_BOUNCE)
 	
 	if GAMEMODE:EntityTeam(self:GetOwner()) == TEAM_BLU then
 		if self.GrenadeMode==1 then
@@ -181,20 +177,20 @@ function ENT:DoExplosion()
 	elseif self.BouncesLeft<=0 then
 		range = self.ExplosionRadiusInit
 		
-		self.BaseDamage = 64
+		ent.BaseDamage = 64
 		self.DamageRandomize = 0
 		self.OwnerDamage = 1
 	else
 		range = self.ExplosionRadiusInit * 0.7
 		
-		self.BaseDamage = 100
+		ent.BaseDamage = 100
 		self.DamageRandomize = 0.05
 		self.OwnerDamage = 0.6
 	end
 	
-	--self.ResultDamage = self.BaseDamage
+	--self.ResultDamage = ent.BaseDamage
 	
-	--util.BlastDamage(self, owner, self:GetPos(), range, self.BaseDamage)
+	--util.BlastDamage(self, owner, self:GetPos(), range, ent.BaseDamage)
 	util.BlastDamage(self, owner, self:GetRealPos(), range, 65)
 	
 	self:SetNoDraw(true)
@@ -218,9 +214,38 @@ function ENT:Break()
 	self:SetNoDraw(true)
 	self:Fire("kill", "", 0.01)
 end
-
+function ENT:Touch(ent)
+	if ent.Base == "npc_tf2base" or ent.Base == "npc_tf2base_mvm" or ent.Base == "npc_demo_red" or ent.Base == "npc_demo_mvm" or ent.Base == "npc_scout_mvm" or ent.Base == "npc_hwg_red" or ent.Base == "npc_heavy_mvm" or ent.Base == "npc_heavy_mvm_shotgun" or ent.Base == "npc_soldier_red" or ent.Base == "npc_sniper_red" or ent.Base == "npc_spy_red" or ent.Base == "npc_scout_red" or ent.Base == "npc_pyro_red" or ent.Base == "npc_medic_red" or ent.Base == "npc_engineer_red" and !ent:IsFriendly(self:GetOwner()) and ent:Health()>0 and self.critical and !ent.IsStunned then
+		self:EmitSound(self.ExplosionSound2, 100, 100)
+		timer.Create("StunRobot25", 0.001, 1, function()
+			ent:RestartGesture(ACT_MP_STUN_BEGIN,2)
+			timer.Create("StunRobotloop3", 0.6, 0, function()
+				if not IsValid(ent) then timer.Stop("StunRobotloop") return end
+				timer.Create("StunRobotloop4", 0.2,  0, function()
+					if not IsValid(ent) then timer.Stop("StunRobotloop4") return end
+					ent:RestartGesture(ACT_MP_STUN_MIDDLE,2)
+				end)
+			end)
+		end) 
+		ent:RestartGesture(ACT_MP_STUN_BEGIN, true)
+		ent.IsStunned = true
+		self:GetOwner():EmitSound("vo/scout_stunballhit0"..math.random(1,9)..".wav")
+		ParticleEffectAttach("bonk_text", PATTACH_POINT_FOLLOW, ent, ent:LookupAttachment("head"))
+		timer.Simple(5, function()
+			if not IsValid(ent) then return end
+			timer.Stop("StunRobotloop3")
+			timer.Stop("StunRobotloop4")
+			
+			ent.IsStunned = false
+			ent:RestartGesture(ACT_MP_STUN_END,2)
+		end)
+	elseif ent.Base == "npc_tf2base" or ent.Base == "npc_tf2base_mvm" or ent.Base == "npc_demo_red" or ent.Base == "npc_demo_mvm" or ent.Base == "npc_scout_mvm" or ent.Base == "npc_hwg_red" or ent.Base == "npc_heavy_mvm" or ent.Base == "npc_heavy_mvm_shotgun" or ent.Base == "npc_soldier_red" or ent.Base == "npc_sniper_red" or ent.Base == "npc_spy_red" or ent.Base == "npc_scout_red" or ent.Base == "npc_pyro_red" or ent.Base == "npc_medic_red" or ent.Base == "npc_engineer_red" and !ent:IsFriendly(self:GetOwner()) and ent:Health()>0 and !self.critical then
+		self:EmitSound(self.ExplosionSound2, 100, 100)
+		self:DoExplosion()
+	end
+end
 function ENT:PhysicsCollide(data, physobj)
-	if data.HitEntity and data.HitEntity:IsValid() and data.HitEntity:IsPlayer() and !data.HitEntity:IsFriendly(self:GetOwner()) and data.HitEntity:Health()>0 and self.critical then
+	if data.HitEntity and data.HitEntity:IsValid() and data.HitEntity:IsTFPlayer() and !data.HitEntity:IsNPC() and !data.HitEntity:IsFriendly(self:GetOwner()) and data.HitEntity:Health()>0 and self.critical then
 		self:EmitSound(self.ExplosionSound2, 100, 100)
 		if data.HitEntity:GetNWBool("Taunting") == true then return end
 		if not data.HitEntity:IsOnGround() then return end
@@ -241,6 +266,7 @@ function ENT:PhysicsCollide(data, physobj)
 		data.HitEntity:SetNWBool("NoWeapon", true)
 		net.Start("ActivateTauntCam")
 		net.Send(data.HitEntity)
+		self:GetOwner():EmitSound("vo/scout_stunballhit0"..math.random(1,9)..".wav")
 		ParticleEffectAttach("bonk_text", PATTACH_POINT_FOLLOW, data.HitEntity, data.HitEntity:LookupAttachment("head"))
 		timer.Simple(5, function()
 			if not IsValid(data.HitEntity) or (not data.HitEntity:Alive() and not data.HitEntity:GetNWBool("Taunting")) then data.HitEntity:Freeze(false) return end
@@ -254,7 +280,7 @@ function ENT:PhysicsCollide(data, physobj)
 			data.HitEntity:SetNWBool("Taunting", false)
 		end)
 	end
-	if data.HitEntity and data.HitEntity:IsValid() and data.HitEntity:IsPlayer() and !data.HitEntity:IsFriendly(self:GetOwner()) and data.HitEntity:Health()>0 then
+	if data.HitEntity and data.HitEntity:IsValid() and data.HitEntity:IsTFPlayer() and !data.HitEntity:IsNPC() and !data.HitEntity:IsFriendly(self:GetOwner()) and data.HitEntity:Health()>0 then
 			self:EmitSound(self.ExplosionSound, 100, 100)
 		if data.HitEntity:GetNWBool("Taunting") == true then return end
 		if not data.HitEntity:IsOnGround() then return end
@@ -262,6 +288,7 @@ function ENT:PhysicsCollide(data, physobj)
 		data.HitEntity:SetNWBool("NoWeapon", true)
 		data.HitEntity:ConCommand("tf_thirdperson")
 		data.HitEntity:StripWeapons()
+		self:GetOwner():EmitSound("vo/scout_stunballhit0"..math.random(1,9)..".wav")
 		ParticleEffectAttach("bonk_text", PATTACH_POINT_FOLLOW, data.HitEntity, data.HitEntity:LookupAttachment("head"))
 		timer.Simple(5, function()
 			if not IsValid(data.HitEntity) or (not data.HitEntity:Alive() and not data.HitEntity:GetNWBool("Taunting")) then data.HitEntity:Freeze(false) return end
@@ -283,6 +310,7 @@ function ENT:PhysicsCollide(data, physobj)
 		data.HitEntity:SetMaxHealth(data.HitEntity:GetMaxHealth() + 50)
 		data.HitEntity:SetHealth(data.HitEntity:GetHealth() + 45)
 		data.HitEntity:Fire("DisableBark", "", 8)
+		self:GetOwner():EmitSound("vo/scout_stunballhit0"..math.random(1,9)..".wav")
 	end 
 	if data.HitEntity and data.HitEntity:IsValid() and data.HitEntity:GetClass() == "npc_antlionguard" and !data.HitEntity:IsFriendly(self:GetOwner()) and self.critical and data.HitEntity:Health()>0 then
 		self:EmitSound(self.ExplosionSound2, 100, 100)
@@ -295,6 +323,7 @@ function ENT:PhysicsCollide(data, physobj)
 		data.HitEntity:SetMaxHealth(data.HitEntity:GetMaxHealth() + 140)
 		data.HitEntity:SetHealth(data.HitEntity:GetHealth() + 125)
 		data.HitEntity:Fire("DisableBark", "", 15)
+		self:GetOwner():EmitSound("vo/scout_stunballhit0"..math.random(1,9)..".wav")
 	end 
 	if data.HitEntity and data.HitEntity:IsValid() and (data.HitEntity:IsNPC() or data.HitEntity:IsPlayer()) and data.HitEntity:Health()>0 then
 		if self.BouncesLeft>0 then
@@ -303,7 +332,8 @@ function ENT:PhysicsCollide(data, physobj)
 			else
 				self:EmitSound(self.ExplosionSound, 100, 100)
 			end
-			self:DoExplosion()		
+			self:DoExplosion()	
+			self:GetOwner():EmitSound("vo/scout_stunballhit0"..math.random(1,9)..".wav")
 		end
 	else
 		if self.DetonateMode == 2 then

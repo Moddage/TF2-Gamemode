@@ -1,9 +1,9 @@
 include('shared.lua')
      
-local matBeam                   = Material( "cable/cable_red" )
+
      
 function ENT:Initialize()              
-     
+		self.matBeam                   = Material( "cable/cable_red" )
 		self.Size = 0
 		self.MainStart = self.Entity:GetPos()
 		self.MainEnd = self:GetEndPos()
@@ -16,8 +16,7 @@ end
      
 function ENT:Think()
      
-		self.Entity:SetRenderBoundsWS( self:GetEndPos(), self.Entity:GetPos(), Vector()*8 )
-           
+		self.Entity:SetRenderBoundsWS( self:GetEndPos(), self.Entity:GetPos(), Vector()*8 ) 
 		self.Size = math.Approach( self.Size, 1, 10*FrameTime() )
 end
      
@@ -30,7 +29,7 @@ function ENT:DrawMainBeam( StartPos, EndPos, dt, dist )
 		EndPos = StartPos + (self.dAng * ((1 - dt)*dist))
            
 		-- Beam effect
-		render.SetMaterial( matBeam )
+		render.SetMaterial( self.matBeam )
 		render.DrawBeam( EndPos, StartPos,2,TexOffset*-0.4, TexOffset*-0.4 + StartPos:Distance(EndPos) / 256,ca )
 end
      
@@ -79,7 +78,6 @@ function ENT:Draw()
 	local Normal    = gbAngle:Forward()
      
 	self:DrawMainBeam( StartPos, StartPos + Normal * Distance, self.dt, Distance )
-             
 end
 function ENT:IsTranslucent()
 	return true

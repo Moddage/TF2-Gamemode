@@ -110,9 +110,7 @@ end
 hook.Add("PlayerBindPress", "TargeChargeBindPress", function(pl, cmd, down)
 	local t = LocalPlayer().TargeEntity
 	if IsValid(t) and t.dt and t.dt.Charging then
-		if string.find(cmd, "+jump") then
-			return true
-		elseif string.find(cmd, "+duck") then
+		if string.find(cmd, "+duck") then
 			return true
 		end
 	end
@@ -404,7 +402,9 @@ function ENT:Think()
 		if self.Owner:Crouching() then
 			self.Owner:ConCommand("-duck")
 		end
-		
+		if !self.Owner:OnGround() then
+		self.Owner:SetVelocity(self.Owner:GetAimVector() * 50)
+		end
 		if not self.MaxSpeed or vel > self.MaxSpeed then
 			self.MaxSpeed = vel
 		end
@@ -441,6 +441,7 @@ function ENT:Think()
 			GAMEMODE:StartCritBoost(self.Owner)
 			self.ChargeState = 1
 		end
+		
 	elseif not self.dt.Ready then
 		if CurTime() > self.dt.NextEndCharge then
 			self.dt.Ready = true
@@ -458,12 +459,10 @@ function ENT:Think()
 	end
 	
 	if self.Owner:KeyDown(IN_ATTACK2) and self.dt.Ready then
-		if self.Owner:OnGround() then
 			if self.Owner:Crouching() then
 				self.Owner:ConCommand("-duck")
 			end
 			self:StartCharging()
-		end
 	end
 	
 	self:NextThink(CurTime())

@@ -67,28 +67,34 @@ function ENT:GetRealPos()
 end
 
 function ENT:Initialize()
-	if self:GetOwner().TempAttributes.ProjectileModelModifier == 1 then
-		self.ExplosiveHat = true
-		self.BouncesLeft = 1
-		self:SetModel("models/player/items/soldier/soldier_shako.mdl")
-		self:PhysicsInit(SOLID_VPHYSICS)
-		self.BounceSound = "Flesh.ImpactSoft"
-		self:SetPos(self:GetPos() - 81 * self:GetUp())
-	elseif self.GrenadeMode==-1 then
-		self:SetModel(self.Model)
-		self:SetNoDraw(true)
-		self:DrawShadow(false)
-		self:SetNotSolid(true)
-		self:DoExplosion()
-		return
-	elseif self.GrenadeMode==1 then
-		self.BouncesLeft = 2
-		self:SetModel(self.Model2)
-		self:PhysicsInitSphere(8, "metal_bouncy")
+	if self:GetOwner():IsPlayer() then
+		if self:GetOwner().TempAttributes.ProjectileModelModifier == 1 then
+			self.ExplosiveHat = true
+			self.BouncesLeft = 1
+			self:SetModel("models/player/items/soldier/soldier_shako.mdl")
+			self:PhysicsInit(SOLID_VPHYSICS)
+			self.BounceSound = "Flesh.ImpactSoft"
+			self:SetPos(self:GetPos() - 81 * self:GetUp())
+		elseif self.GrenadeMode==-1 then
+			self:SetModel(self.Model)
+			self:SetNoDraw(true)
+			self:DrawShadow(false)
+			self:SetNotSolid(true)
+			self:DoExplosion()
+			return
+		elseif self.GrenadeMode==1 then
+			self.BouncesLeft = 2
+			self:SetModel(self.Model2)
+			self:PhysicsInitSphere(8, "metal_bouncy")
+		else
+			self.BouncesLeft = 1
+			self:SetModel(self.Model)
+			self:PhysicsInit(SOLID_VPHYSICS)
+		end
 	else
-		self.BouncesLeft = 1
-		self:SetModel(self.Model)
-		self:PhysicsInit(SOLID_VPHYSICS)
+			self.BouncesLeft = 1
+			self:SetModel(self.Model)
+			self:PhysicsInit(SOLID_VPHYSICS)
 	end
 	
 	self:SetMoveType(MOVETYPE_VPHYSICS)
@@ -184,6 +190,11 @@ function ENT:Think()
 		self:DoExplosion()
 		self.NextExplode = nil
 	end
+	for k,v in ipairs(ents.FindInSphere(self:GetPos(), 80)) do
+		if ( v:IsValid() and v:IsTFPlayer() and v:Health() >= 0 and v != self:GetOwner() ) then
+			self:DoExplosion()
+		end
+	end
 end
 
 function ENT:DoExplosion()
@@ -252,7 +263,7 @@ function ENT:Break()
 end
 
 function ENT:PhysicsCollide(data, physobj)
-	if data.HitEntity and data.HitEntity:IsValid() and (data.HitEntity:IsNPC() or data.HitEntity:IsPlayer()) and data.HitEntity:Health()>0 then
+	if data.HitEntity and data.HitEntity:IsValid() and (data.HitEntity:IsTFPlayer()) and data.HitEntity:Health()>0 then
 		if self.BouncesLeft>0 then
 			self:DoExplosion()
 		end

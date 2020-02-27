@@ -52,6 +52,8 @@ function ENT:StartTouch(ply)
 			if game.GetMap() == "mvm_terroristmission_v7_1" then
 				RunConsoleCommand("tf_red_wins")
 			end
+			
+			ply:Speak("TLK_FLAGCAPTURED")
 			v:Capture()
 			--team.AddScore(v.TeamNum, 1)
 			if v.TeamNum == TEAM_RED then

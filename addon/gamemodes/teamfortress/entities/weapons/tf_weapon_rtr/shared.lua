@@ -209,6 +209,8 @@ function SWEP:PrimaryAttack()
 				self:SetNextPrimaryFire(CurTime() + 2)
 				self.Owner:DoAnimationEvent(ACT_MP_ATTACK_STAND_GRENADE)
 				v:EmitSound("weapons/sapper_plant.wav") 
+				v.Sapped = true
+				v.SappedBy = self.Owner
 				if SERVER then
 				if v:GetClass() == "obj_sentrygun" then
 					v:GetBuilder():EmitSound("vo/engineer_autoattackedbyspy03.mp3", 80, 100)
@@ -221,7 +223,7 @@ function SWEP:PrimaryAttack()
 						v.Model:ResetSequence("build")
 						v.Model:SetCycle(1)
 						v.Model:SetPlaybackRate(-0.5)
-						timer.Simple(11, function()
+						timer.Create("SapEnd"..v:EntIndex(), 11, 1, function()
 							v:StopSound("TappedRobot")
 							v:Explode()
 						end)
@@ -235,7 +237,7 @@ function SWEP:PrimaryAttack()
 						v.Model:ResetSequence("upgrade")
 						v.Model:SetCycle(1)
 						v.Model:SetPlaybackRate(-0.4)
-						timer.Create("SapSentry3", 4, 1, function()
+						timer.Create("SapSentry3"..v:EntIndex(), 4, 1, function()
 								if v:GetClass() == "obj_sentrygun" then
 									v:SetLevel(1)
 									v:SetModel("models/buildables/sentry1_heavy.mdl")
@@ -246,7 +248,7 @@ function SWEP:PrimaryAttack()
 									v.Model:ResetSequence("build")
 									v.Model:SetCycle(1)
 									v.Model:SetPlaybackRate(-0.4)
-									timer.Simple(11, function()
+									timer.Create("SapEnd"..v:EntIndex(), 11, 1, function()
 										v:StopSound("TappedRobot")
 										v:Explode()
 									end)
@@ -276,7 +278,7 @@ function SWEP:PrimaryAttack()
 										v.Model:ResetSequence("upgrade")
 										v.Model:SetCycle(1)
 										v.Model:SetPlaybackRate(-0.4)
-										timer.Create("SapSentry3", 4, 1, function()
+										timer.Create("SapSentry3"..v:EntIndex(), 4, 1, function()
 												if v:GetClass() == "obj_sentrygun" then
 													v:SetLevel(1)
 													v:SetModel("models/buildables/sentry1_heavy.mdl")
@@ -287,7 +289,7 @@ function SWEP:PrimaryAttack()
 													v.Model:ResetSequence("build")
 													v.Model:SetCycle(1)
 													v.Model:SetPlaybackRate(-0.5)
-													timer.Simple(11, function()
+													timer.Create("SapEnd"..v:EntIndex(), 11, 1, function()
 														v:StopSound("TappedRobot")
 														v:Explode()
 													end)
@@ -392,7 +394,7 @@ function SWEP:PrimaryAttack()
 				end
 				
 				v:EmitSound("TappedRobot")
-				timer.Create("SapSentry", 0.001, 0, function()
+				timer.Create("SapSentry"..v:EntIndex(), 0.001, 0, function()
 					v.Target = nil
 			
 					v.TurretPitch = 0
@@ -408,6 +410,8 @@ function SWEP:PrimaryAttack()
 						v:StopSound("TappedRobot")
 						timer.Stop("SapSentry")
 					end
+					if v.Sapped == false then
+						timer.Stop("SapSentry"..v:EntIndex())
 				end)
 			end
 		end

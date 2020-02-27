@@ -18,9 +18,8 @@ ENT.BuildYOffsetStand = 10
 ENT.BuildYOffsetDuck = -4
 ENT.BuildYRange = 120
 ENT.HeightTolerancy = 10
-
 ENT.KillCreditAsInflictor = true
-
+ENT.SappedBy = nil
 PrecacheParticleSystem("ExplosionCore_buildings")
 
 function ENT:GetObjectHealth()

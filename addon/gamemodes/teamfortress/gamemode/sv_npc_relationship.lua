@@ -8,7 +8,9 @@ local IgnoredClasses = {
 
 local function CalcRelationship(ent1, ent2)
 	local t1, t2 = GAMEMODE:EntityTeam(ent1), GAMEMODE:EntityTeam(ent2)
-	
+	if t1==TEAM_FRIENDLY then
+		return D_LI
+	end
 	if t1==t2 then
 		if t1==TEAM_RED or t1==TEAM_BLU then
 			return D_LI

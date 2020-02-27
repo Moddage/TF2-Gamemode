@@ -4,11 +4,11 @@ end
 
 if CLIENT then
 	SWEP.PrintName			= "Bonesaw"
-SWEP.Slot				= 2
 end
 
 SWEP.Base				= "tf_weapon_melee_base"
 
+SWEP.Slot				= 2
 SWEP.ViewModel			= "models/weapons/v_models/v_bonesaw_medic.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_bonesaw.mdl"
 SWEP.Crosshair = "tf_crosshair3"

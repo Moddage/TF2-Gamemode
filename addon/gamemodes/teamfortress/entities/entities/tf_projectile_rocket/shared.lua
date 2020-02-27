@@ -263,7 +263,16 @@ function ENT:DoExplosion(ent)
 		util.BlastDamage(self, owner, self:GetPos(), range*6, 100)
 	else
 		--util.BlastDamage(self, owner, self:GetPos(), range, damage)
-		util.BlastDamage(self, owner, self:GetPos(), range*1, 100)
+		if owner:IsPlayer() and owner:GetActiveWeapon():GetItemData().model_player == "models/weapons/c_models/c_rocketjumper/c_rocketjumper.mdl" then
+			util.BlastDamage(self, owner, self:GetPos(), range*1, 0)
+			for k,v in ipairs(ents.FindInSphere(self:GetPos(), range*1)) do
+				if v == owner then
+					v:SetLocalVelocity(v:GetVelocity() * 2.5 + Vector(0, 0, 400)) 
+				end
+			end
+		else
+			util.BlastDamage(self, owner, self:GetPos(), range*1, 100)
+		end
 	end
 	
 	if ForceDamageClasses[ent:GetClass()] then

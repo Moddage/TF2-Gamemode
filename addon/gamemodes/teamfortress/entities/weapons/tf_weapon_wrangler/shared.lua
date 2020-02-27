@@ -72,11 +72,14 @@ function SWEP:PrimaryAttack()
 						end	
 					end
 				end
-
-				if v:GetLevel() >= 1 then
+				if v:GetLevel() >= 2 then
+					
+					v.Model:RestartGesture(ACT_RANGE_ATTACK1, true)
 					self.NextFireBullets = CurTime() + 0.1
 				else
-					self.NextFireBullets = CurTime() + 0.3
+					
+					v.Model:RestartGesture(ACT_RANGE_ATTACK1_LOW, true)
+					self.NextFireBullets = CurTime() + 0.13
 				end
 			end
 		end
@@ -112,6 +115,9 @@ function SWEP:Holster()
 			if SERVER then
 				v.Wrangled = false
 			end
+			if IsValid(animent3) then
+			animent3:Fire("Kill", "", 0.01)
+			end
 		end
 	end
 
@@ -135,6 +141,15 @@ function SWEP:Deploy()
 			end
 			v.Wrangled = true 
 			self.Owner:PrintMessage(HUD_PRINTCENTER, "Wrangler Enabled!")
+			if SERVER then
+				animent3 = ents.Create( 'base_gmodentity' ) -- The entity used for the death animation	
+				animent3:SetAngles(v:GetAngles())
+				animent3:SetPos(v:GetPos())
+				animent3:SetModel("models/buildables/sentry_shield.mdl")
+				animent3:Spawn()
+				animent3:Activate()
+				animent3:SetParent(v)
+			end
 		end
 	end	
 end 

@@ -33,9 +33,9 @@ PrecacheParticleSystem("bullet_scattergun_tracer01_blue_crit")
 PrecacheParticleSystem("muzzle_scattergun")
 
 
-SWEP.BaseDamage = 5
+SWEP.BaseDamage = 8
 SWEP.DamageRandomize = 0.3
-SWEP.MaxDamageRampUp = 0.2
+SWEP.MaxDamageRampUp = 0.4
 
 SWEP.BulletsPerShot = 10
 SWEP.BulletSpread = 0.0675
@@ -327,9 +327,12 @@ function SWEP:Think()
 			if SERVER then	
 			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
 			end
-			local fx = EffectData()
-			fx:SetOrigin(self.Owner:GetPos() + Vector(0, 0, 50))
-			util.Effect("ShotgunShellEject", fx)
+	
+			if CLIENT then
+				local effectdata = EffectData()
+				effectdata:SetOrigin( self.CModel:GetAttachment(2).Pos )
+				util.Effect( "ShotgunShellEject", effectdata )
+			end
 			if self.ReloadTime == 0.2 then
 				self.Owner:GetViewModel():SetPlaybackRate(2)
 			end
@@ -350,9 +353,11 @@ function SWEP:Think()
 		if SERVER then	
 			self.Owner:DoAnimationEvent(ACT_MP_RELOAD_STAND_LOOP, true)
 		end		
-		local fx = EffectData()
-		fx:SetOrigin(self.Owner:GetPos() + Vector(0, 0, 50))
-		util.Effect("ShotgunShellEject", fx)
+		if CLIENT then
+			local effectdata = EffectData()
+			effectdata:SetOrigin( self.CModel:GetAttachment(2).Pos )
+			util.Effect( "ShotgunShellEject", effectdata )
+		end
 		if self.ReloadTime == 0.2 then
 			self.Owner:GetViewModel():SetPlaybackRate(2)
 		end

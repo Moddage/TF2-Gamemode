@@ -3,10 +3,10 @@ if SERVER then
 	
 end
 
+SWEP.Slot				= 0
 if CLIENT then
 
 SWEP.PrintName			= "Sniper Rifle"
-SWEP.Slot				= 0
 
 usermessage.Hook("ClearZoomStatus",function(msg)
 	local pl = msg:ReadEntity()
@@ -291,6 +291,15 @@ function SWEP:PrimaryAttack()
 	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
 	self:TakePrimaryAmmo(1)
 	self:RustyBulletHole()
+	
+	timer.Simple(0.7, function()
+		if CLIENT then
+			local effectdata = EffectData()
+			effectdata:SetOrigin( self.CModel:GetAttachment(2).Pos )
+			util.Effect( "RifleShellEject", effectdata )
+		end
+	end)
+	
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 	if SERVER then
 		self.NextAutoZoomOut = CurTime()+0.6
@@ -429,7 +438,11 @@ if SERVER then
 
 hook.Add("PreScaleDamage", "BackstabSetDamage2", function(ent, hitgroup, dmginfo)
 	if dmginfo:GetInflictor().ZoomStatus then	
-		ent:AddDeathFlag(DF_HEADSHOT)
+		if dmginfo:GetInflictor():GetItemData().model_player == "models/workshop/weapons/c_models/c_pro_rifle/c_pro_rifle.mdl" then
+			ent:AddDeathFlag(DF_DECAP)
+		else
+			ent:AddDeathFlag(DF_HEADSHOT)
+		end
 	end
 end)
 

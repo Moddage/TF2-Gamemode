@@ -18,7 +18,6 @@ SWEP.WorldModel = "models/weapons/c_models/c_grappling_hook/c_grappling_hook.mdl
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
 SWEP.AdminOnly          = true
-
 local sndGrappleHitPlayer		= Sound("weapons/grappling_hook_impact_flesh.wav")
 local sndGrappleHit		= Sound("weapons/grappling_hook_impact_default.wav")
 local sndGrappleShoot	= Sound("weapons/grappling_hook_shoot.wav")
@@ -30,7 +29,7 @@ local VM_FIRESTART = ACT_GRAPPLE_FIRE_START
 local VM_FIREIDLE = ACT_GRAPPLE_FIRE_IDLE
 local VM_PULLSTART = ACT_GRAPPLE_PULL_START
 local VM_PULLIDLE = ACT_GRAPPLE_PULL_IDLE
-local VM_PULLEND = ACT_GRAPPLE_PULL_END
+local VM_PULLEND = ACT_GRAPPLE_PULL_END 
 
 function SWEP:InspectAnimCheck()
 self:CallBaseFunction("InspectAnimCheck")	
@@ -69,6 +68,11 @@ function SWEP:Think()
 	
 	return self:CallBaseFunction("Think")
 
+end
+
+function SWEP:CalcViewModelView(vm, oldpos, oldang, newpos, newang)
+
+	return newpos, newang
 end
 
 function SWEP:DoTrace( endpos )
@@ -111,6 +115,13 @@ function SWEP:StartAttack()
 				self.Beam = ents.Create( "trace2" )
 					self.Beam:SetPos( self.Owner:GetShootPos() )
 				self.Beam:Spawn()
+				if CLIENT then
+					if self.Owner:Team() == TEAM_BLU then
+						self.Beam.matBeam = Material( "cable/cable_blue" )
+					else
+						self.Beam.matBeam = Material( "cable/cable_red" )
+					end
+				end
 			end
 			
 			self.Beam:SetParent( self.Owner )
@@ -119,7 +130,7 @@ function SWEP:StartAttack()
 		end
 		
 		self:DoTrace()
-		self.speed = 5000 -- Rope latch speed. Was 3000.
+		self.speed = 3000 -- Rope latch speed. Was 3000.
 		self.startTime = CurTime()
 		self.endTime = CurTime() + self.speed
 		self.dt = -1
@@ -170,8 +181,9 @@ function SWEP:UpdateAttack()
 			end
 			if(self.dt < 0) then
 				self.Owner:EmitSound("Grappling")
-				if self.Tr.Entity:IsPlayer() or self.Tr.Entity:IsNPC() then
-					self.Beam:EmitSound( sndGrappleHitPlayer )
+				if self.Tr.Entity:IsTFPlayer() then
+					self.Tr.Entity:EmitSound( "Weapon_Arrow.ImpactFlesh" )
+					self.Tr.Entity:EmitSound( sndGrappleHitPlayer )
 					self.Tr.Entity:EmitSound( "GrappledFlesh" )
 					if !self.Tr.Entity:IsFriendly(self.Owner) then
 						self.Tr.Entity:TakeDamage(5, self.Owner, self)
@@ -194,7 +206,7 @@ function SWEP:UpdateAttack()
 					if !self.Owner:KeyDown( IN_ATTACK ) then return end
 					self:SendWeaponAnim(ACT_GRAPPLE_PULL_IDLE)
 				end)
-				timer.Create("AirWalkAnim"..self.Owner:EntIndex(), self.Owner:SequenceDuration("a_grapple_pull_idle"), 0, function()
+				timer.Create("AirWalkAnim"..self.Owner:EntIndex(), self.Owner:SequenceDuration(self.Owner:LookupSequence("a_grapple_pull_idle")), 0, function()
 					if !self.Owner:KeyDown( IN_ATTACK ) then self.Tr.Entity:StopSound("GrappledFlesh") timer.Stop("AirWalkAnim"..self.Owner:EntIndex()) return end
 					if !IsValid(self) then self.Tr.Entity:StopSound("GrappledFlesh") timer.Stop("AirWalkAnim"..self.Owner:EntIndex()) return end
 					self.Owner:DoAnimationEvent(ACT_DOD_WALK_ZOOMED,true)
@@ -204,7 +216,7 @@ function SWEP:UpdateAttack()
 			
 			if(self.dt == 0) then
 			zVel = self.Owner:GetVelocity().z
-			vVel = vVel:GetNormalized()*(math.Clamp(Distance,0,100))
+			vVel = vVel:GetNormalized()*1000
 				if( SERVER ) then
 				local gravity = GetConVarNumber("sv_Gravity")
 				vVel:Add(Vector(0,0,(50/20)*1.5)) -- Player speed. DO NOT MESS WITH THIS VALUE!
@@ -212,7 +224,7 @@ function SWEP:UpdateAttack()
 					vVel:Sub(Vector(0,0,zVel/10))
 				end
 
-				self.Owner:SetVelocity(vVel)
+				self.Owner:SetLocalVelocity(vVel)
 				end
 			end
 	
@@ -240,6 +252,9 @@ end
 
 function SWEP:Holster()
 	self:EndAttack( false )
+	if SERVER then
+		self.WModel2:Remove()
+	end
 	self.BaseClass.Holster(self)
 	return true
 end

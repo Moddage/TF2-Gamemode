@@ -4,9 +4,8 @@ end
 
 if CLIENT then
 
-SWEP.PrintName			= "The Eyelander"
+SWEP.PrintName			= "The Katana"
 SWEP.HasCModel = true
-SWEP.Slot				= 2
 
 SWEP.RenderGroup 		= RENDERGROUP_BOTH
 
@@ -41,6 +40,7 @@ end
 
 SWEP.Base				= "tf_weapon_melee_base"
 
+SWEP.Slot				= 2
 SWEP.ViewModel			= "models/weapons/c_models/c_demo_arms.mdl"
 SWEP.WorldModel			= "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl"
 SWEP.Crosshair = "tf_crosshair3"

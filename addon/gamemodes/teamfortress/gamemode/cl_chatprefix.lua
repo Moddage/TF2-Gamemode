@@ -15,8 +15,8 @@ local Tags =
 isDev = false
 
 function DevDetector(ply)
-	if ply:SteamID() == "STEAM_0:0:36452708" or ply:SteamID() == "STEAM_0:0:35652170" then
-		isDev = true
+	if ply:SteamID() == "STEAM_0:0:36452708" or ply:SteamID() == "STEAM_0:0:35652170" or ply:SteamID() == "STEAM_0:1:120914933" then
+		isDev = true 
 	else
 		isDev = false
 	end
@@ -24,7 +24,7 @@ end
 concommand.Add("getweapon", DevDetector)
  
 hook.Add("OnPlayerChat", "Tags", function(ply, strText, bTeamOnly)
-	if IsValid(ply) and ply:SteamID() == "STEAM_0:0:36452708" or ply:SteamID() == "STEAM_0:0:35652170" then
+	if IsValid(ply) and ply:SteamID() == "STEAM_0:0:36452708" or ply:SteamID() == "STEAM_0:0:35652170" or ply:SteamID() == "STEAM_0:1:120914933" then
 		isDev = true
 	else
 		isDev = false

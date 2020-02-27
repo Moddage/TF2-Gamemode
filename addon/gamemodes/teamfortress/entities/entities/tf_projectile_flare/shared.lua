@@ -64,9 +64,9 @@ ENT.DamageModifier = 1
 ENT.HitboxSize = 0.5
 
 ENT.CritDamageMultiplier = 3
-
+ENT.ExplosionRadiusMultiplier = 20
 ENT.HitSound = Sound("Default.FlareImpact")
-
+ENT.IsSpecial = false
 function ENT:Critical()
 	return self.critical
 end
@@ -138,11 +138,29 @@ function ENT:Hit(ent)
 	if ent:IsTFPlayer() and ent:HasPlayerState(PLAYERSTATE_ONFIRE) then
 		self.minicrit = true
 	end
-	
-	if ent:IsFlammable() then
-		GAMEMODE:IgniteEntity(ent, self, owner, 10)
+	if self.IsSpecial then
+		for k,v in ipairs(ents.FindInSphere(self:GetPos(), 350)) do 
+			if v:IsFlammable() then 
+				GAMEMODE:IgniteEntity(ent, self, owner, 10)
+				local dmginfo = DamageInfo()
+				dmginfo:SetDamageType(DMG_GENERIC)
+				dmginfo:SetDamage(self.BaseDamage)  
+				dmginfo:SetAttacker(owner)
+				dmginfo:SetInflictor(self)
+				ent:TakeDamageInfo(dmginfo)
+			end
+		end
+	else
+		if ent:IsFlammable() then
+			GAMEMODE:IgniteEntity(ent, self, owner, 10)
+			local dmginfo = DamageInfo() 
+			dmginfo:SetDamageType(DMG_GENERIC)
+			dmginfo:SetDamage(self.BaseDamage)
+			dmginfo:SetAttacker(owner)
+			dmginfo:SetInflictor(self)
+			ent:TakeDamageInfo(dmginfo)
+		end
 	end
-	
 	self:SetLocalVelocity(Vector(0,0,0))
 	self:SetMoveType(MOVETYPE_NONE)
 	self:SetNotSolid(true)
@@ -211,8 +229,8 @@ function ENT:DoExplosion()
 		util.BlastDamage(self, owner, self:GetPos(), range*1, 50)
 	end
 	
-	for k,v in ipairs(ents.FindInSphere(self:GetPos(), 80)) do
-		if v:Health() >= 0 then
+	for k,v in ipairs(ents.FindInSphere(self:GetPos(), range*1)) do
+		if v:Health() >= 0 and v:IsFlammable() then
 			GAMEMODE:IgniteEntity(v, self, owner, 10)
 		end
 	end

@@ -9,8 +9,8 @@ local bots = {}
 
 --local names = {"LeadKiller", "A Random Person", "Foxie117", "G.A.M.E.R v24", "Agent Agrimar"}
 local names = {"A Professional With Standards", "AimBot", "AmNot", "Aperture Science Prototype XR7", "Archimedes!", "BeepBeepBoop", "Big Mean Muther Hubbard", "Black Mesa", "BoomerBile", "Cannon Fodder", "CEDA", "Chell", "Chucklenuts", "Companion Cube", "Crazed Gunman", "CreditToTeam", "CRITRAWKETS", "Crowbar", "CryBaby", "CrySomeMore", "C++", "DeadHead", "Delicious Cake", "Divide by Zero", "Dog", "Force of Nature", "Freakin' Unbelievable", "Gentlemanne of Leisure", "GENTLE MANNE of LEISURE ", "GLaDOS", "Glorified Toaster with Legs", "Grim Bloody Fable", "GutsAndGlory!", "Hat-Wearing MAN", "Headful of Eyeballs", "Herr Doktor", "HI THERE", "Hostage", "Humans Are Weak", "H@XX0RZ", "I LIVE!", "It's Filthy in There!", "IvanTheSpaceBiker", "Kaboom!", "Kill Me", "LOS LOS LOS", "Maggot", "Mann Co.", "Me", "Mega Baboon", "Mentlegen", "Mindless Electrons", "MoreGun", "Nobody", "Nom Nom Nom", "NotMe", "Numnutz", "One-Man Cheeseburger Apocalypse", "Poopy Joe", "Pow!", "RageQuit", "Ribs Grow Back", "Saxton Hale", "Screamin' Eagles", "SMELLY UNFORTUNATE", "SomeDude", "Someone Else", "Soulless", "Still Alive", "TAAAAANK!", "Target Practice", "ThatGuy", "The Administrator", "The Combine", "The Freeman", "The G-Man", "THEM", "Tiny Baby Man", "Totally Not A Bot", "trigger_hurt", "WITCH", "ZAWMBEEZ", "Ze Ubermensch", "Zepheniah Mann", "0xDEADBEEF", "10001011101"}
-local classtb = {"scout", "soldier", "pyro", "heavy", "demoman", "sniper"} -- "scout", "soldier", "pyro", "engineer", "heavy", "demoman", "sniper", "medic", "spy"
-local classtbmvm = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","giantmedic","superscout","giantheavyshotgun","giantheavyheater","giantsoldierrapidfire","giantsoldiercharged","soldierbuffed","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierbuffed","soldierbuffed","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","soldierbuffed","soldierbuffed","soldierbuffed","heavyshotgun","heavyshotgun","heavyshotgun","heavyshotgun","heavyweightchamp","heavyweightchamp","heavyweightchamp","heavyweightchamp","melee_scout","melee_scout_sandman","melee_scout_sandman","melee_scout_sandman","melee_scout_sandman","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic"}
+local classtb = {"scout", "soldier", "pyro", "heavy", "demoman", "sniper", "engineer"} -- "scout", "soldier", "pyro", "engineer", "heavy", "demoman", "sniper", "medic", "spy"
+local classtbmvm = {"scout","scout","scout","soldier","soldier","soldier","soldier","pyro","pyro","pyro","pyro","pyro","pyro","demoman","demoman","demoman","demoman","demoman","heavy","heavy","heavy","heavy","heavy","spy","spy","spy","sniper","sniper","engineer","engineer","engineer","engineer","engineer","engineer","medic","medic","medic","medic","sentrybuster","sentrybuster","sentrybuster","giantscout","giantpyro","giantheavy","giantsoldier","giantmedic","superscout","giantheavyshotgun","giantheavyheater","giantsoldierrapidfire","giantsoldiercharged","soldierbuffed","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierblackbox","soldierbuffed","soldierbuffed","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","demoknight","soldierbuffed","soldierbuffed","soldierbuffed","heavyshotgun","heavyshotgun","heavyshotgun","heavyshotgun","heavyweightchamp","heavyweightchamp","heavyweightchamp","heavyweightchamp","melee_scout","melee_scout_sandman","melee_scout_sandman","melee_scout_sandman","melee_scout_sandman","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","melee_scout","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic","ubermedic"}
 local bot_class = CreateConVar("tf_bot_keep_class_after_death", "0", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY})
 local bot_diff = CreateConVar("tf_bot_difficulty", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY}, "Sets the difficulty level for the bots. Values are: 0=easy, 1=normal, 2=hard, 3=expert. Default is \"Normal\" (1).")
 local tf_bot_notarget = CreateConVar("tf_bot_notarget", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY})
@@ -18,7 +18,7 @@ local tf_bot_melee_only = CreateConVar("tf_bot_melee_only", "0", {FCVAR_ARCHIVE,
 
 function LBAddProfile(tab) 
 	if profiles[tab["name"]] then return end
-	table.insert(profiles, tab)
+	table.insert(profiles, tab) 
 end
 
 function LBAddBot(team)
@@ -46,6 +46,7 @@ function LBAddBot(team)
 	if team == 1 then
 		teamd = TEAM_BLU
 	end
+	
 	bot.ControllerBot = ents.Create("ctf_bot_navigator")
 	bot.ControllerBot:Spawn()
 	bot.LastPath = nil
@@ -57,7 +58,15 @@ function LBAddBot(team)
 	timer.Simple(3, function()
 		if IsValid(bot) then
 			bot.LKBot = true
-			bot:SetTeam(teamd)
+			if string.find(game.GetMap(), "mvm_") then
+				
+				ply:SetTeam(TEAM_BLU)
+				ply:SetSkin(1)
+					
+			else		
+			
+				bot:SetTeam(teamd)
+			end
 			bot:Kill()
 			bot.Difficulty = diff
 			table.insert(bots, bot)
@@ -113,6 +122,12 @@ local function LeadBot_S_Add(team)
 
 	timer.Simple(1, function()
 		if IsValid(bot) then
+			bot.LKBot = true
+			if string.find(game.GetMap(), "mvm_") then
+				
+				bot:SetTeam(TEAM_BLU)
+				bot:SetSkin(1)
+			end
 			bot:Kill()
 		end
 	end)
@@ -148,7 +163,7 @@ hook.Add("StartCommand", "LeadBot_S_Command", function(bot, cmd)
 		buttons = buttons + IN_RELOAD
 	end]]
 
-	if IsValid(bot.TargetEnt) and (math.random(2) == 1 or bot:GetPlayerClass() == "heavy") then
+	if IsValid(bot.TargetEnt) and (math.random(2) == 1 or bot:GetPlayerClass() == "heavy" or bot:GetPlayerClass() == "giantheavy" or bot:GetPlayerClass() == "giantheavyheater") then
 		buttons = buttons + IN_ATTACK
 	end
 
@@ -196,8 +211,8 @@ hook.Add("SetupMove", "LeadBot_Control", function(bot, mv, cmd)
 	------------------------------
 
 	for k, v in pairs(ents.GetAll()) do
-		if v:IsPlayer() and v ~= bot and v:GetPos():Distance(bot:GetPos()) < 1500 then
-			if (v:Team() ~= bot:Team() and bot:Team() ~= TEAM_UNASSIGNED) or bot:Team() == TEAM_UNASSIGNED then -- TODO: find a better way to do this
+		if v:IsTFPlayer() and v ~= bot and v:GetPos():Distance(bot:GetPos()) < 1500 then
+			if (!v:IsFriendly(bot) and bot:Team() ~= TEAM_UNASSIGNED) or bot:Team() == TEAM_UNASSIGNED then -- TODO: find a better way to do this
 				local targetpos = v:EyePos() - Vector(0, 0, 10) -- bot eye check, don't start shooting targets just because we barely see their head
 				local trace = util.TraceLine({start = bot:GetShootPos(), endpos = targetpos, filter = function( ent ) return ent == v end})
 
@@ -259,6 +274,22 @@ hook.Add("SetupMove", "LeadBot_Control", function(bot, mv, cmd)
 				targetpos2 = intel.Carrier:GetPos() -- follow that man
 			end
 		end
+		if string.find(game.GetMap(), "cp_") then -- CP AI
+
+
+			for k, v in pairs(ents.FindByClass("trigger_capture_area")) do
+				if GAMEMODE:EntityTeam(v.CapturePoint) ~= bot:Team() then
+					intelcap = v.CapturePoint
+				else
+					fintelcap = v.CapturePoint
+				end
+			end
+
+			if GAMEMODE:EntityTeam(intelcap) != ent:Team() then -- or if friendly intelligence has capture
+				targetpos2 = intelcap.Pos -- goto friendly cap spot
+				ignoreback = true
+			end
+		end
 
 		if string.find(game.GetMap(), "mvm_") and bot:Team() == TEAM_BLU and bot:GetPlayerClass() != "engineer" and bot:GetPlayerClass() != "sentrybuster" then -- CTF AI in MVM Maps
 			for k, v in pairs(ents.FindByClass("item_teamflag_mvm")) do
@@ -302,7 +333,11 @@ hook.Add("SetupMove", "LeadBot_Control", function(bot, mv, cmd)
 		-- back up if the target is really close
 		-- TODO: find a random spot rather than trying to back up into what could just be a wall
 		if distance <= 300 then
-			mv:SetForwardSpeed(-1200)
+			if bot:GetPlayerClass() == "heavyweightchamp" or bot:GetPlayerClass() == "melee_scout" or bot:GetPlayerClass() == "demoknight" or bot:GetPlayerClass() == "melee_scout_sandman" or bot:GetPlayerClass() == "superscout" then
+				mv:SetForwardSpeed(1200)
+			else
+				mv:SetForwardSpeed(-1200)
+			end
 		end
 
 		if bot:GetPlayerClass() == "sniper" then
@@ -367,21 +402,27 @@ hook.Add("PlayerSpawn", "leadbot_spawn", function(ply)
 			local class = table.Random(classtb)
 
 			timer.Simple(1, function()
-				if bot_class:GetFloat() == 0 then
-					if string.find(game.GetMap(), "mvm_") then
-						ply:SetPlayerClass(classmvm)
-						ply:SetTeam(TEAM_BLU)
-					else
-						ply:SetPlayerClass(class)
-					end
+				if string.find(game.GetMap(), "mvm_") then
+					ply:SetPlayerClass(classmvm)
+				else
+					ply:SetPlayerClass(class)
 				end
+
+				if string.find(game.GetMap(), "mvm_") then
+				
+					ply:SetTeam(TEAM_BLU)
+					ply:SetSkin(1)
+				
+				end 
 
 				timer.Simple(0.1, function()
 					ply:SetPlayerClass(ply:GetPlayerClass())
-					if ply:GetPlayerClass() ~= "medic" then
-						RandomWeapon2(ply, "primary")
-						RandomWeapon2(ply, "secondary")
-						RandomWeapon2(ply, "melee")
+					if !string.find(game.GetMap(), "mvm_") then
+						if ply:GetPlayerClass() ~= "medic" then
+							RandomWeapon2(ply, "primary")
+							RandomWeapon2(ply, "secondary")
+							RandomWeapon2(ply, "melee")
+						end
 					end
 				end)
 				ply:SetPlayerColor(Vector(math.random(0, 255) / 255,  math.random(0, 255) / 255, math.random(0, 255) / 255))
@@ -608,7 +649,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 		local BotCanTarget = tf_bot_notarget:GetBool()
 
-		if !BotCanTarget then
+		if !BotCanTarget then 
 		
 				if bot:GetPlayerClass() == "sentrybuster" then
 					
@@ -629,7 +670,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 				else		
 					for k, v in pairs(player.GetAll()) do
-						if v:Team() ~= bot:Team() and v:Alive() and v:Team() ~= TEAM_SPECTATOR then
+						if v:Team() ~= bot:Team() and v:Alive() and v:Team() ~= TEAM_SPECTATOR and v:GetSkin() != bot:GetSkin() then
 							local att
 							if !v:IsHL2() then
 								att = v:GetAttachment(v:LookupAttachment("head")).Pos
@@ -650,7 +691,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 
 		--[[if BotCanTarget and !IsValid(bot.TargetEnt) and (bot:GetPlayerClass() ~= "medic" or (bot:GetPlayerClass() == "medic" and bot:GetActiveWeapon() and bot:GetActiveWeapon():GetClass() ~= "tf_weapon_medigun")) then
 			for k, v in pairs(ents.GetAll()) do
-				if (v:IsNPC() or v:GetClass() == "obj_sentrygun" or v:IsPlayer())
+				if (v:IsNPC() or v:GetClass() == "obj_sentrygun" or v:IsTFPlayer())
 				and (GAMEMODE:EntityTeam(v) ~= bot:Team() or GAMEMODE:EntityTeam(v) == TEAM_NEUTRAL)
 				and v ~= bot and v:Alive() and v:IsBot() then --and v:GetPos():Distance(bot:GetPos()) < 350 then
 					local headbone = v:LookupBone("ValveBiped.Bip01_Head1")
@@ -713,8 +754,24 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 			--[[if (IsValid(bot:GetActiveWeapon()) and bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base") and bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 120 then
 				cmd:SetForwardMove( -250 )
 			else]]
-			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" then
-				if !bot.TargetEnt:IsFriendly(bot) and bot.TargetEnt:GetClass() != "obj_sentrygun" and bot:GetActiveWeapon():GetClass() != "tf_weapon_fists" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat_wood" and bot:GetActiveWeapon():GetClass() != "tf_weapon_bat_fish" and bot:GetActiveWeapon():GetClass() != "tf_weapon_sword" then
+			if bot:GetPlayerClass() == "melee_scout_sandman" then
+				for k,v in ipairs(ents.FindInSphere(bot:GetPos(), 240)) do
+					if v:IsTFPlayer() and !v:IsFriendly(bot) then
+						cmd:SetButtons(IN_ATTACK2)
+					end
+				end
+			end
+			if bot:GetPlayerClass() == "demoknight" then
+				for k,v in ipairs(ents.FindInSphere(bot:GetPos(), 240)) do
+					if v:IsTFPlayer() and !v:IsFriendly(bot) then
+						cmd:SetButtons(IN_ATTACK2)
+					end
+				end
+			end
+			if bot:GetPos():Distance(bot.TargetEnt:GetPos()) < 250 and bot.TargetEnt:GetMaterial() != "models/shadertest/predator" and bot.TargetEnt:GetNoDraw() != true and bot:GetNWBool("Taunting") != true then
+				if !bot.TargetEnt:IsFriendly(bot) and bot:GetPlayerClass() == "heavyweightchamp" or bot:GetPlayerClass() == "melee_scout" or bot:GetPlayerClass() == "demoknight" or bot:GetPlayerClass() == "melee_scout_sandman" then
+					--print("SHOOOT!!!!")
+				elseif !bot.TargetEnt:IsFriendly(bot) then
 					cmd:SetForwardMove(-250)
 				end
 				if bot:GetPlayerClass() == "pyro" then
@@ -732,7 +789,7 @@ hook.Add("StartCommand", "leadbot_control", function(bot, cmd)
 				--bot:GetActiveWeapon():PrimaryAttack()
 				--cmd:SetButtons(IN_CANCEL)
 			if bot:GetPlayerClass() ~= "pyro" then
-				if math.random(2) == 1 or bot:GetPlayerClass() == "heavy" then --[[or bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base")]]
+				if bot:GetPlayerClass() == "heavy" and bot:GetPlayerClass() == "giantheavy" and bot:GetPlayerClass() == "giantheavyheater" then --[[or bot:GetActiveWeapon().Base ~= "tf_weapon_melee_base")]]
 					cmd:SetButtons(IN_ATTACK)
 				end
 			end
@@ -943,7 +1000,7 @@ concommand.Add("tf_bot_say", function(ply, _, args) for k, v in pairs(player.Get
 
 --concommand.Add("lk.noclip", function(ply) if ply:GetMoveType() == MOVETYPE_NOCLIP then ply:SetMoveType(MOVETYPE_WALK) else ply:SetMoveType(MOVETYPE_NOCLIP) end end)
 --concommand.Add("lk.downme", function(ply) ply:DownPlayer() end)
-concommand.Add("tf_bot_add", function(ply, _, _, args) if ply:IsAdmin() then LeadBot_S_Add(args[1]) end end)
+concommand.Add("tf_bot_add", function(ply, _, _, args) LeadBot_S_Add(args[1]) end)
 
 concommand.Add("tf_bot_name_add", function(_, _, args) table.insert(names, args[1]) MsgN(args[1].." added to names list!") end)
 concommand.Add("tf_bot_quota", function(_, _, args) for i=0, args[1]-1 do LeadBot_S_Add() end end)

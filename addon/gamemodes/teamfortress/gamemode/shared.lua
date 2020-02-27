@@ -26,6 +26,22 @@ sound.Add( {
 	sound = { "weapons/smg1/smg1_fireburst1.wav" } 
 } )
 sound.Add( {
+	name = "Player.FallDamage",
+	volume = 1.0,
+	level = 95,
+	pitch = { 100 },
+	channel = CHAN_WEAPON,
+	sound = { "player/pl_fallpain.wav" } 
+} )
+sound.Add( {
+	name = "Player.FallGib",
+	volume = 1.0,
+	level = 95,
+	pitch = { 92, 96 },
+	channel = CHAN_WEAPON,
+	sound = { "player/pl_fleshbreak.wav" } 
+} )
+sound.Add( {
 	name = "AlienSlavePowerup",
 	volume = 1.0,
 	level = 140,
@@ -118,680 +134,6 @@ sound.Add( {
 	sound = { "weapons/grenade_launcher_dm_cock_back.wav" } 
 } )
 
-sound.Add( {
-	name = "Heavy.BattleCry01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_battlecry01.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Go01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_Go01.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Go02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_Go02.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Go03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_Go03.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.BattleCry02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_battlecry02.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.BattleCry03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_battlecry03.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.BattleCry04",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_battlecry04.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.BattleCry05",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_battlecry05.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.BattleCry06",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_battlecry06.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.PainSharp05",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainSharp05.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.PainSharp04",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainSharp04.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.PainSharp03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainSharp03.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.PainSharp02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainSharp02.wav" } 
-} )
-
-
-sound.Add( {
-	name = "Heavy.PainSharp01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainSharp01.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.PainSevere01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainSevere01.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.PainSevere02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainSevere02.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.PainSevere03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainSevere03.wav" } 
-} )
-
-
-sound.Add( {
-	name = "Scout.PainSharp05",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSharp05.wav" } 
-} )
-
-sound.Add( {
-	name = "Scout.PainSharp06",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSharp06.wav" } 
-} )
-
-sound.Add( {
-	name = "Scout.PainSharp07",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSharp07.wav" } 
-} )
-
-
-sound.Add( {
-	name = "Scout.PainSharp08",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSharp08.wav" } 
-} )
-sound.Add( {
-	name = "Scout.PainSharp04",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSharp04.wav" } 
-} )
-
-sound.Add( {
-	name = "Scout.PainSharp03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSharp03.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.PainSharp02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_PainSharp02.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.Cheers01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_Cheers01.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Cheers02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_Cheers02.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Cheers03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_Cheers03.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Cheers04",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_Cheers04.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.Cheers05",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_Cheers05.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.Cheers06",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_Cheers06.wav" } 
-} )
-
-
-sound.Add( {
-	name = "Heavy.Cheers07",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_Cheers07.wav" } 
-} )
-
-
-sound.Add( {
-	name = "Heavy.Cheers08",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_Cheers08.wav" } 
-} )
-
-sound.Add( {
-	name = "Heavy.Generic01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Heavy_Generic01.wav" } 
-} )
-
-
-
-
-
-
-
-
-sound.Add( {
-	name = "Scout.PainSharp01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSharp01.wav" } 
-} )
-
-sound.Add( {
-	name = "Scout.PainSevere01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSevere01.wav" } 
-} )
-
-sound.Add( {
-	name = "Scout.PainSevere02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSevere02.wav" } 
-} )
-
-sound.Add( {
-	name = "Scout.PainSevere03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSevere03.wav" } 
-} )
-sound.Add( {
-	name = "Scout.PainSevere04",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSevere04.wav" } 
-} )
-sound.Add( {
-	name = "Scout.PainSevere05",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSevere05.wav" } 
-} )
-sound.Add( {
-	name = "Scout.PainSevere06",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_PainSevere06.wav" } 
-} )
-sound.Add( {
-	name = "Scout.BattleCry01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_BattleCry01.wav" } 
-} )
-sound.Add( {
-	name = "Scout.BattleCry02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_BattleCry02.wav" } 
-} )
-sound.Add( {
-	name = "Scout.BattleCry03",
-	volume = 1.0,
-	level = 75,
-	channel = CHAN_VOICE,
-	pitch = { 100 },
-	sound = { "vo/Scout_BattleCry03.wav" } 
-} )
-sound.Add( {
-	name = "Scout.BattleCry04",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_BattleCry04.wav" } 
-} )
-sound.Add( {
-	name = "Scout.BattleCry05",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/Scout_BattleCry05.wav" } 
-} )
-
-
-
-sound.Add( {
-	name = "Heavy.HelpMe01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_helpme01.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.HelpMe02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_helpme02.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.HelpMe03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_helpme03.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Meleeing01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_meleeing01.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Meleeing02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_meleeing02.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Meleeing03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_meleeing03.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Meleeing04",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_meleeing04.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Meleeing05",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_meleeing05.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Meleeing06",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_meleeing06.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Meleeing07",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_meleeing07.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Meleeing08",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_meleeing08.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.Meleeing09",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_meleeing09.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt01.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt02.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt03.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt04",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt04.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt05",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt05.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichEat",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	sound = { "vo/SandwichEat09.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt06",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt06.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt07",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt07.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt08",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	sound = { "vo/heavy_SandwichTaunt08.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt09",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt09.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt10",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt10.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt11",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt11.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt12",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt12.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt13",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt13.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt14",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt14.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt15",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt15.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt16",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt16.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.SandwichTaunt17",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_SandwichTaunt17.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.PainCrticialDeath01",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainCrticialDeath01.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.PainCrticialDeath02",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainCrticialDeath02.wav" } 
-} )
-sound.Add( {
-	name = "Heavy.PainCrticialDeath03",
-	volume = 1.0,
-	level = 75,
-	pitch = { 100 },
-	channel = CHAN_VOICE,
-	sound = { "vo/heavy_PainCrticialDeath03.wav" } 
-} )
-sound.Add( {
-	name = "Weapon_GrenadeLauncherDM.Cock_Forward",
-	volume = 1.0,
-	level = 90,
-	pitch = { 100 },
-	sound = { "weapons/grenade_launcher_dm_cock_forward.wav" } 
-} )
-sound.Add( {
-	name = "Weapon_GrenadeLauncherDM.DrumLoad",
-	volume = 1.0,
-	level = 90,
-	pitch = { 100 },
-	sound = { "weapons/grenade_launcher_dm_drum_load.wav" } 
-} )
 sound.Add( {
 	name = "Weapon_Pistol.SlideForward",
 	volume = 1.0,
@@ -1442,6 +784,14 @@ sound.Add( {
 	sound = { ")ambient/nucleus_electricity.wav" }
 } )
 sound.Add( {
+	name = "Psap.Death",
+	channel = CHAN_STATIC,
+	volume = 1.0,
+	level = 105,
+	pitch = { 100 },
+	sound = { "vo/items/wheatley_sapper/wheatley_player_death01.mp3", "vo/items/wheatley_sapper/wheatley_player_death02.mp3", "vo/items/wheatley_sapper/wheatley_player_death03.mp3", "vo/items/wheatley_sapper/wheatley_player_death04.mp3", "vo/items/wheatley_sapper/wheatley_player_death05.mp3", "vo/items/wheatley_sapper/wheatley_player_death06.mp3", "vo/items/wheatley_sapper/wheatley_player_death08.mp3", "vo/items/wheatley_sapper/wheatley_player_death09.mp3", "vo/items/wheatley_sapper/wheatley_player_death10.mp3", "vo/items/wheatley_sapper/wheatley_player_death12.mp3", "vo/items/wheatley_sapper/wheatley_player_death13.mp3", "vo/items/wheatley_sapper/wheatley_player_death14.mp3", "vo/items/wheatley_sapper/wheatley_player_death15.mp3", "vo/items/wheatley_sapper/wheatley_player_death16.mp3" , "vo/items/wheatley_sapper/wheatley_player_death17.mp3", "vo/items/wheatley_sapper/wheatley_player_death19.mp3", "vo/items/wheatley_sapper/wheatley_player_death21.mp3", "vo/items/wheatley_sapper/wheatley_player_death22.mp3", "vo/items/wheatley_sapper/wheatley_player_death23.mp3", "vo/items/wheatley_sapper/wheatley_player_death24.mp3", "vo/items/wheatley_sapper/wheatley_player_death25.mp3", "vo/items/wheatley_sapper/wheatley_player_death26.mp3"}
+} )
+sound.Add( {
 	name = "Grappling",
 	channel = CHAN_REPLACE,
 	volume = 1.0,
@@ -1459,6 +809,74 @@ sound.Add( {
 } )
 
 
+sound.Add( {
+	name = "Weapon_Tomislav.Fire",
+	volume = 1.0,
+	level = 90,
+	pitch = { 93 },
+	channel = CHAN_WEAPON,
+	sound = { "weapons/tomislav_shoot.wav" } 
+} )
+sound.Add( { 
+	name = "Weapon_Tomislav.FireCrit",
+	volume = 1.0,
+	level = 90,
+	pitch = { 93 },
+	channel = CHAN_WEAPON,
+	sound = { "weapons/tomislav_shoot_crit.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Tomislav.WindUp",
+	volume = 1.0,
+	level = 90,
+	pitch = { 93 },
+	channel = CHAN_WEAPON,
+	sound = { "weapons/tomislav_wind_up.wav" } 
+} )
+sound.Add( {
+	name = "Weapon_Tomislav.WindDown",
+	volume = 1.0,
+	level = 90,
+	pitch = { 93 },
+	channel = CHAN_WEAPON,
+	sound = { "weapons/tomislav_wind_down.wav" } 
+} )
+
+
+sound.Add( {
+	name = "ControlPoint.Start",
+	channel = CHAN_STATIC,
+	volume = 1.0,
+	level = 80,
+	pitch = { 100 },
+	sound = "misc/hologram_start.wav"
+} )
+
+sound.Add( {
+	name = "ControlPoint.Move",
+	channel = CHAN_STATIC,
+	volume = 1.0,
+	level = 80,
+	pitch = { 100 },
+	sound = "misc/hologram_move.wav"
+} )
+
+sound.Add( {
+	name = "ControlPoint.Malfunction",
+	channel = CHAN_STATIC,
+	volume = 1.0,
+	level = 80,
+	pitch = { 100 },
+	sound = "misc/hologram_malfunction.wav"
+} )
+sound.Add( {
+	name = "ControlPoint.Stop",
+	channel = CHAN_STATIC,
+	volume = 1.0,
+	level = 80,
+	pitch = { 100 },
+	sound = "misc/hologram_stop.wav"
+} )
 HOOK_WARNING_THRESHOLD = 0.1
 
 local old_hook_call = hook.Call
@@ -1529,6 +947,7 @@ tf_soundscript.Load("teamfortress/scripts/game_sounds_weapons_tf.txt")
 
 CreateConVar('tf_talkicon_computablecolor', 1, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Compute color from location brightness.')
 CreateConVar('tf_bot_mvm_max_deaths', 20, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Maximum Deaths. Not Functional.')
+CreateConVar('tf_grapplinghook_enable', 0, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'When Enabled: TF2 Players get the Grappling Hook.')
 CreateConVar('tf_bot_mvm_has_bots', 0, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Automatically set by Lua')
 CreateConVar('tf_bot_mvm_giant_max_deaths', 3, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Maximum Deaths. Not Functional.')
 CreateConVar('tf_talkicon_showtextchat', 1, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE, 'Show icon on using text chat.')
@@ -1660,6 +1079,7 @@ local VoiceMenuChatMessage = {
 	["TLK_PLAYER_NO"] = 			"#Voice_Menu_No",
 	["TLK_PLAYER_INCOMING"] = 		"#Voice_Menu_Incoming",
 	["TLK_PLAYER_CLOAKEDSPY"] = 	"#Voice_Menu_CloakedSpy",
+	["TLK_MVM_SNIPER_CALLOUT"] = 	"Sniper!",
 	["TLK_PLAYER_SENTRYAHEAD"] = 	"#Voice_Menu_SentryAhead",
 	["TLK_PLAYER_ACTIVATECHARGE"] = "#Voice_Menu_ActivateCharge",
 	["TLK_PLAYER_HELP"] = 			"#Voice_Menu_Help",
@@ -1754,6 +1174,7 @@ TEAM_RED = 1
 TEAM_BLU = 2
 TEAM_HIDDEN = 3
 TEAM_NEUTRAL = 4
+TEAM_FRIENDLY = 5
 
 TeamSecondaryColors = {}
 function SetTeamSecondaryColor(t, c)
@@ -1776,6 +1197,10 @@ function GM:CreateTeams()
 	team.SetUp(TEAM_NEUTRAL, "NEUTRAL", Color(110, 255, 80))
 	SetTeamSecondaryColor(TEAM_NEUTRAL, Color(74, 130, 54))
 	team.SetSpawnPoint(TEAM_NEUTRAL, "info_player_start")
+	
+	team.SetUp(TEAM_FRIENDLY, "FRIENDLY", Color(255, 192, 203))
+	SetTeamSecondaryColor(TEAM_FRIENDLY, Color(255, 192, 203))
+	team.SetSpawnPoint(TEAM_FRIENDLY, "info_player_start")
 	
 	team.SetUp(TEAM_SPECTATOR, "Spectator", Color(204, 204, 204))
 	SetTeamSecondaryColor(TEAM_SPECTATOR, Color(255, 255, 255))

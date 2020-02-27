@@ -248,7 +248,7 @@ Response CartMovingBackwardsDefenseSniper
 }
 Rule CartMovingBackwardsDefenseSniper
 {
-	criteria ConceptCartMovingBackward IsOnDefense IsSniper SniperNotSaidCartMovingBackwardD
+	criteria ConceptCartMovingBackward IsSniper SniperNotSaidCartMovingBackwardD
 	ApplyContext "SaidCartMovingBackwardD:1:20"
 	Response CartMovingBackwardsDefenseSniper
 }

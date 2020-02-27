@@ -251,6 +251,41 @@ Response KilledPlayerVeryManySoldier
 {
 	scene "scenes/Player/Soldier/low/1206.vcd" 
 }
+
+// Custom stuff - melee dare
+// Look at enemy, then do battle cry voice command while holding a melee weapon.
+Response MeleeDareCombatSoldier
+{
+	scene "scenes/Player/Soldier/low/1196.vcd"
+	scene "scenes/Player/Soldier/low/1210.vcd"
+	scene "scenes/Player/Soldier/low/1205.vcd"
+	scene "scenes/Player/Soldier/low/1208.vcd"
+	scene "scenes/Player/Soldier/low/1203.vcd"
+	scene "scenes/Player/Soldier/low/1190.vcd" 
+}
+Rule MeleeDareCombatSoldier
+{
+	criteria ConceptPlayerBattleCry IsWeaponMelee IsSoldier IsCrosshairEnemy
+	Response MeleeDareCombatSoldier
+}
+
+// Added the unused Direct Hit screams here, as they can't be added to the taunt.
+Response KilledPlayerMeleeSoldier
+{
+	scene "scenes/Player/Soldier/low/1185.vcd" 
+	scene "scenes/Player/Soldier/low/3403.vcd" 
+	scene "scenes/Player/Soldier/low/3405.vcd" 
+	scene "scenes/Player/Soldier/low/3406.vcd" 
+}
+Rule KilledPlayerMeleeSoldier
+{
+	criteria ConceptKilledPlayer KilledPlayerDelay 30PercentChance  IsWeaponMelee SoldierNotKillSpeechMelee IsSoldier
+	ApplyContext "SoldierKillSpeechMelee:1:10"
+	Response KilledPlayerMeleeSoldier
+}
+
+
+
 Rule KilledPlayerVeryManySoldier
 {
 	criteria ConceptKilledPlayer IsVeryManyRecentKills 50PercentChance IsWeaponPrimary KilledPlayerDelay SoldierNotKillSpeech IsSoldier
