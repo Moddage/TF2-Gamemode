@@ -218,9 +218,9 @@ function meta:Build(number1,number2)
 	if builds[group] and (!GetConVar("tf_unlimited_buildings"):GetBool() or GetConVar("tf_competitive"):GetBool()) then
 		local tab = ents.FindByClass(builds[group])
 		for k, v in pairs(tab) do
-			if v.Player == pl and builds[group] ~= "obj_teleporter" then
+			if v.Player == self and builds[group] ~= "obj_teleporter" then
 				return
-			elseif v.Player == pl and builds[group] == "obj_teleporter" then
+			elseif v.Player == self and builds[group] == "obj_teleporter" then
 				for i, o in pairs(tab) do
 					if (sub == 0 and v:IsEntrance() and o:IsEntrance()) or (sub == 1 and v:IsExit() and o:IsExit()) then
 						return
