@@ -3,7 +3,10 @@
 
 local meta = FindMetaTable( "Player" )
 if (!meta) then return end 
-
+local builds = {}
+builds[2] = "obj_sentrygun"
+builds[0] = "obj_dispenser"
+builds[1] = "obj_teleporter"
 local Player = FindMetaTable("Player")
 local oNick = Player.Nick
 
