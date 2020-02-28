@@ -133,14 +133,18 @@ SWEP.SpecialSound2 = Sound("Weapon_Minigun.WindDown")
 SWEP.SpecialSound3 = Sound("Weapon_Minigun.Spin")
 SWEP.ShootCritSound = Sound("Weapon_Minigun.FireCrit")
 
-function SWEP:CreateSounds()
-	self.SpinUpSound = CreateSound(self.Owner, self.SpecialSound1)
-	self.SpinDownSound = CreateSound(self.Owner, self.SpecialSound2)
-	self.SpinSound = CreateSound(self.Owner, self.SpecialSound3)
-	self.ShootSoundLoop = CreateSound(self.Owner, self.ShootSound2)
-	self.ShootCritSoundLoop = CreateSound(self.Owner, self.ShootCritSound)
-	
-	self.SoundsCreated = true
+function SWEP:InspectAnimCheck()
+	self:CallBaseFunction("InspectAnimCheck")
+
+	if !self.SoundsCreated then
+		self.SpinUpSound = CreateSound(self.Owner, self.SpecialSound1)
+		self.SpinDownSound = CreateSound(self.Owner, self.SpecialSound2)
+		self.SpinSound = CreateSound(self.Owner, self.SpecialSound3)
+		self.ShootSoundLoop = CreateSound(self.Owner, self.ShootSound2)
+		self.ShootCritSoundLoop = CreateSound(self.Owner, self.ShootCritSound)
+
+		self.SoundsCreated = true
+	end
 end
 
 function SWEP:SpinUp()
@@ -321,10 +325,6 @@ function SWEP:Think()
 		else
 			self.Owner:ResetClassSpeed()
 		end
-	end
-	
-	if not self.SoundsCreated then
-		self:CreateSounds()
 	end
 	
 	

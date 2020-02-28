@@ -194,7 +194,7 @@ function SWEP:Equip()
 		end
 		
 		-- quickfix for deploy animations since gmod update 104
-		self.NextReplayDeployAnim = CurTime() + 0.1
+		-- self.NextReplayDeployAnim = CurTime() + 0.01
 	end
 end
 
@@ -202,6 +202,7 @@ function SWEP:Deploy()
 	--MsgFN("Deploy %s", tostring(self))
 	self:StopTimers()
 	self.DeployPlayed = nil
+	self:InspectAnimCheck()
 	if self:GetItemData().hide_bodygroups_deployed_only then
 		local visuals = self:GetVisuals()
 		local owner = self.Owner
@@ -228,6 +229,7 @@ function SWEP:Deploy()
 			self.Owner:SetBodygroup(v,1)
 		end
 	end
+
 	if GetConVar("tf_righthand") then
 	if GetConVar("tf_righthand"):GetInt() == 0 then
 		self.ViewModelFlip = true
@@ -283,6 +285,8 @@ function SWEP:Deploy()
 	end
 	
 	--MsgFN("SendWeaponAnim %s %d", tostring(self), self.VM_DRAW)
+	print("DRAW ANIM")
+	self:InspectAnimCheck()
 	self:SendWeaponAnim(self.VM_DRAW)
 	
 	local draw_duration = self:SequenceDuration()
@@ -313,7 +317,79 @@ function SWEP:Deploy()
 end
 
 function SWEP:InspectAnimCheck()
+	-- todo: find a better way to do this
+	-- InspectAnimCheck probably isn't the best place for this...
+	if !self.AnimReplaced then
+		if self:GetVisuals() then
+			local visuals = self:GetVisuals()
+			if visuals.animation_replacement then
+				local replace = visuals.animation_replacement
 
+				if replace.act_vm_draw then
+					self.VM_DRAW = getfenv()[replace.act_vm_draw]
+				end
+
+				if replace.act_vm_idle then
+					self.VM_IDLE = getfenv()[replace.act_vm_idle]
+				end
+
+				if replace.act_vm_primaryattack then
+					self.VM_PRIMARYATTACK = getfenv()[replace.act_vm_primaryattack]
+				end
+
+				if replace.act_vm_reload then
+					self.VM_RELOAD = getfenv()[replace.act_vm_reload]
+				end
+
+				if replace.act_primary_vm_inspect_end then
+					self.VM_INSPECT_END = getfenv()[replace.act_primary_vm_inspect_end]
+				end
+
+
+				if replace.act_primary_vm_inspect_start then
+					self.VM_INSPECT_START = getfenv()[replace.act_primary_vm_inspect_start]
+				end
+
+				if replace.act_primary_vm_inspect_idle then
+					self.VM_INSPECT_IDLE = getfenv()[replace.act_primary_vm_inspect_idle]
+				end
+			end
+
+			if visuals.sound_single_shot then
+				self.ShootSound = Sound(visuals.sound_single_shot)
+			end
+
+			if visuals.sound_burst then
+				self.ShootCritSound = Sound(visuals.sound_burst)
+			end
+
+			if visuals.sound_double_shot then
+				self.ShootSound2 = Sound(visuals.sound_double_shot)
+			end
+
+			if visuals.sound_empty then
+				self.EmptySound = Sound(visuals.sound_empty)
+			end
+
+			if visuals.sound_reload then
+				self.ReloadSound = Sound(visuals.sound_reload)
+			end
+
+			if visuals.sound_special1 then
+				self.SpecialSound1 = Sound(visuals.sound_special1)
+			end
+
+			if visuals.sound_special2 then
+				self.SpecialSound2 = Sound(visuals.sound_special2)
+			end
+
+			if visuals.sound_special3 then
+				self.SpecialSound3 = Sound(visuals.sound_special3)
+			end
+		end
+
+		self.AnimReplaced = true
+	end
 end
 
 function SWEP:ResetInspect()
@@ -321,8 +397,6 @@ function SWEP:ResetInspect()
 end
 
 function SWEP:Inspect()
-	self:InspectAnimCheck()
-
 	if (self:GetOwner():GetMoveType()==MOVETYPE_NOCLIP) and GetConVar("tf_haltinspect"):GetBool() and self.CanInspect == true then
 		//self.CanInspect = false
 		//self:StopTimers()
@@ -645,6 +719,7 @@ function SWEP:Reload()
 end
 
 function SWEP:Think()
+	self:InspectAnimCheck()
 	self:TFViewModelFOV()
 	self:TFFlipViewmodel()
 	//deployspeed = math.Round(GetConVar("tf_weapon_deploy_speed"):GetFloat() - GetConVar("tf_weapon_deploy_speed"):GetInt(), 2)
@@ -653,7 +728,7 @@ function SWEP:Think()
 	if SERVER and self.NextReplayDeployAnim then
 		if CurTime() > self.NextReplayDeployAnim then
 			--MsgFN("Replaying deploy animation %d", self.VM_DRAW)
-			timer.Simple(0.1, function() self:SendWeaponAnim(self.VM_DRAW) end)
+			-- timer.Simple(0, function() self:SendWeaponAnim(self.VM_DRAW) end)
 			self.NextReplayDeployAnim = nil
 		end
 	end

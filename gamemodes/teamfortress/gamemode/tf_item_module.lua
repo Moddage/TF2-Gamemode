@@ -107,6 +107,19 @@ function ITEM:GetVisuals()
 	return self:GetItemData().visuals or {}
 end
 
+--[[
+function ITEM:GetVisuals()
+	local item = self:GetItemData()
+	local visuals = item.visuals
+	if item.prefab and istable(tf_items.PrefabsByName[item.prefab]) then
+		visuals = table.Merge(visuals, tf_items.PrefabsByName[item.prefab].visuals)
+		ErrorNoHalt("nice! :D")
+	end
+	print("!!", item)
+	return self:GetItemData().visuals or {}
+end
+]]--
+
 function ITEM:GetKillIconName()
 	local d = self:GetItemData()
 	if d.item_iconname then

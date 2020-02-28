@@ -9,6 +9,7 @@ ItemSets = {}
 
 AttributesByID = {}
 ItemsByID = {}
+PrefabsByName = {}
 
 COUNTER = 0
 

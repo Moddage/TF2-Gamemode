@@ -120,16 +120,22 @@ SWEP.HoldType = "PRIMARY"
 
 SWEP.ProjectileShootOffset = Vector(3, 8, -5)
 
-function SWEP:CreateSounds(owner)
-	if not IsValid(owner) then return end
-	
-	self.SpinUpSound = CreateSound(owner, self.ShootSound)
-	self.SpinDownSound = CreateSound(owner, self.ShootSoundEnd)
-	self.FireSound = CreateSound(owner, self.SpecialSound1)
-	self.FireCritSound = CreateSound(owner, self.ShootCritSound)
-	self.PilotSound = CreateSound(owner, self.PilotLoop)
-	
-	self.SoundsCreated = true
+function SWEP:InspectAnimCheck()
+	self:CallBaseFunction("InspectAnimCheck")
+
+	if !self.SoundsCreated then
+		self.SpinUpSound = CreateSound(self.Owner, self.ShootSound)
+		self.SpinDownSound = CreateSound(self.Owner, self.ShootSoundEnd)
+		self.FireSound = CreateSound(self.Owner, self.SpecialSound1)
+		self.FireCritSound = CreateSound(self.Owner, self.ShootCritSound)
+		self.PilotSound = CreateSound(self.Owner, self.PilotLoop)
+
+		self.SoundsCreated = true
+	end
+
+	if !self.PilotSound:IsPlaying() then
+		self.PilotSound:Play()
+	end
 end
 
 function SWEP:PrimaryAttack()
@@ -285,10 +291,6 @@ function SWEP:Think()
 		self.IsDeployed = true
 	end
 	
-	if not self.SoundsCreated then
-		self:CreateSounds(self.Owner)
-	end
-	
 	if self.NextIdle and CurTime()>=self.NextIdle then
 		self:SendWeaponAnim(self.VM_IDLE)
 		self.NextIdle = nil
@@ -302,9 +304,6 @@ function SWEP:Think()
 end
 
 function SWEP:Deploy()
-	if not self.SoundsCreated then
-		self:CreateSounds(self.Owner)
-	end
 	
 	if self.SoundsCreated then
 		self.PilotSound:Play()

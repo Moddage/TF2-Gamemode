@@ -211,10 +211,15 @@ SWEP.MaxLastDamageTime = 15
 
 SWEP.UberchargeRate = 2.5
 
-function SWEP:CreateSounds()
-	self.ShootSoundLoop = CreateSound(self, self.ShootSound)
-	self.ChargedLoop = CreateSound(self, self.ChargedSound)
-	self.SoundsCreated = true
+function SWEP:InspectAnimCheck()
+	self:CallBaseFunction("InspectAnimCheck")
+
+	if !self.SoundsCreated then
+		self.ShootSoundLoop = CreateSound(self, self.ShootSound)
+		self.ChargedLoop = CreateSound(self, self.ChargedSound)
+
+		self.SoundsCreated = true
+	end
 end
 
 function SWEP:SetHealTarget(e)
@@ -307,7 +312,7 @@ function SWEP:Reload()
 end
 
 function SWEP:StopFiring()
-	if IsValid(self.Target) and self.Target:IsPlayer() and self.Target:Alive() then
+	if IsValid(self.Target) and self.Target:IsPlayer() and self.Target:Alive() and self.Target.Speak then
 		self.Target:Speak("TLK_HEALTARGET_STOPPEDHEALING")
 	end
 	
@@ -339,9 +344,6 @@ function SWEP:Think()
 		end
 	end
 	
-	if not self.SoundsCreated then
-		self:CreateSounds()
-	end
 	
 	if self.NextIdle and CurTime()>=self.NextIdle then
 		self:SendWeaponAnim(self.VM_IDLE)
@@ -468,9 +470,6 @@ function SWEP:Think()
 end
 
 function SWEP:Deploy()
-	if not self.SoundsCreated then
-		self:CreateSounds()
-	end
 	
 	if self.Owner:GetNWInt("Ubercharge")>=100 then
 		self.ChargedLoop:Play()

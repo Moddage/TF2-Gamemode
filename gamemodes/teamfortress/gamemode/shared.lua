@@ -66,6 +66,7 @@ include("shd_playeranim.lua")
 include("shd_criticals.lua")
 
 include("shd_ragdolls.lua")
+include("shd_ragdolls2.lua")
 
 include("shd_items_game.lua")
 

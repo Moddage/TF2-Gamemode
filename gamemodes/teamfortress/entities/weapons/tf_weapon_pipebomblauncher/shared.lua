@@ -70,6 +70,12 @@ function SWEP:InspectAnimCheck()
 self.VM_INSPECT_START = ACT_SECONDARY_VM_INSPECT_START
 self.VM_INSPECT_IDLE = ACT_SECONDARY_VM_INSPECT_IDLE
 self.VM_INSPECT_END = ACT_SECONDARY_VM_INSPECT_END
+
+	if !self.SoundsCreated then
+		self.ChargeUpSound = CreateSound(self, self.ChargeSound)
+
+		self.SoundsCreated = true
+	end
 end
 
 function SWEP:Deploy()
@@ -99,12 +105,6 @@ end
 function SWEP:InitOwner()
 	self.Owner:SetNWInt("NumBombs", 0)
 	self.Owner.Bombs = {}
-end
-
-function SWEP:CreateSounds()
-	self.ChargeUpSound = CreateSound(self, self.ChargeSound)
-	
-	self.SoundsCreated = true
 end
 
 function SWEP:PrimaryAttack()
@@ -211,13 +211,13 @@ function SWEP:GlobalSecondaryAttack()
 end
 
 function SWEP:ShootProjectile()
+		if self.Owner:GetInfoNum("tf_autoreload", 1) > 0 then
+			timer.Create("AutoReload", (self:SequenceDuration() + self.AutoReloadTime), 1, function() self:Reload() end)
+		end
+
 	if SERVER then
 		if not self.Owner.Bombs then
 			self:InitOwner()
-		end
-		
-		if auto_reload then
-			timer.Create("AutoReload", (self:SequenceDuration() + self.AutoReloadTime), 1, function() self:Reload() end)
 		end
 		
 		local grenade = ents.Create("tf_projectile_pipe_remote")
