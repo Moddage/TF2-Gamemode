@@ -30,6 +30,9 @@ PrecacheParticleSystem("healthlost_red")
 PrecacheParticleSystem("healthlost_blu")
 
 PrecacheParticleSystem("blood_decap")
+PrecacheParticleSystem("blood_decap_arterial_spray")
+PrecacheParticleSystem("blood_decap_fountain")
+PrecacheParticleSystem("blood_decap_streaks")
 
 PrecacheParticleSystem("rocketjump_smoke")
 PrecacheParticleSystem("burningplayer_flyingbits")

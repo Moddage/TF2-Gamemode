@@ -101,48 +101,48 @@ end
 local function StartDeathPose(ent, dp)
 	if not IsValid(ent) then return end
 	ent.OldPhysParams = {}
-	for k,v in pairs(dp.PhysParams) do
-		local p = BoneToPhysBone(ent, k)
-		if p then
-			local phys = ent:GetPhysicsObjectNum(p)
-			if phys then
-				ent.OldPhysParams[p] = {d=phys:GetSpeedDamping(), rd=phys:GetRotDamping(), m=phys:GetMass()}
-				if v.f then
-					phys:EnableMotion(false)
-					phys:SetVelocity(Vector(0,0,0))
-					phys:EnableMotion(true)
-				end
-				
-				if v.d and v.rd then
-					phys:SetDamping(Val(v.d), Val(v.rd))
-				elseif v.d then
-					phys:SetDamping(Val(v.d), phys:GetRotDamping())
-				elseif v.rd then
-					phys:SetDamping(phys:GetSpeedDamping(), Val(v.rd))
-				end
-				
-				if v.m then
-					phys:SetMass(phys:GetMass() * Val(v.m))
-				end
+
+	for bone, tab in pairs(dp.PhysParams) do
+		local physn = ent:TranslateBoneToPhysBone(ent:LookupBone(bone))
+		if physn ~= -1 then
+			local phys = ent:GetPhysicsObjectNum(physn)
+			ent.OldPhysParams[physn] = {phys:GetSpeedDamping(), phys:GetRotDamping(), phys:GetMass()}
+			if tab.f then
+				phys:EnableMotion(false)
+				phys:SetVelocity(Vector(0, 0, 0))
+				phys:EnableMotion(true)
+			end
+
+			if tab.d and tab.rd then
+				phys:SetDamping(Val(tab.d), Val(tab.rd))
+			elseif tab.d then
+				phys:SetDamping(Val(tab.d), phys:GetRotDamping())
+			elseif tab.rd then
+				phys:SetDamping(phys:GetSpeedDamping(), Val(tab.rd))
+			end
+
+			if tab.m then
+				phys:SetMass(phys:GetMass() * Val(tab.m))
 			end
 		end
 	end
 end
 
 function EndDeathPose(ent)
-	if not IsValid(ent) then return end
-	for k,v in pairs(ent.OldPhysParams or {}) do
-		local phys = ent:GetPhysicsObjectNum(k)
-		phys:SetDamping(v.d, v.rd)
-		phys:SetMass(v.m)
+	if !IsValid(ent) then return end
+
+	for id, tab in pairs(ent.OldPhysParams) do
+		local phys = ent:GetPhysicsObjectNum(id)
+		phys:SetDamping(tab[1], tab[2])
+		phys:SetMass(tab[3])
 	end
 end
 
 function PlayDeathPose(ent, dp)
 	-- Deathposes should be played serverside on serverside ragdolls
 	if CLIENT and ent.IsServerRagdoll then return end
-	
-	if --[[debug_deathposes:GetBool() or]] math.random()<dp.Probability then
+
+	if math.random() < dp.Probability then
 		StartDeathPose(ent, dp)
 		timer.Simple(math.Rand(dp.MinDuration, dp.MaxDuration), function() EndDeathPose(ent) end)
 	end
@@ -293,6 +293,12 @@ local function Decap_TF2(ent)
 	ent:SetBoneMatrix(b2, m2)
 end
 
+hook.Add("CreateClientsideRagdoll", "TF_Decapitate", function(ent, rag)
+	if ent:IsNPC() and ent:HasDeathFlag(DF_DECAP) then
+		print("Decapme!")
+	end
+end)
+
 function GM:DecapitateRagdoll(rag, owner, deathpose)
 	local b
 	--print("decap1")
@@ -300,15 +306,16 @@ function GM:DecapitateRagdoll(rag, owner, deathpose)
 	if b and b>0 then
 		rag.NextDecapEnd = CurTime() + 5
 		rag.DecapLocator = ClientsideModel("models/props_junk/watermelon01.mdl")
+		rag.DecapLocator:SetPos(rag:GetBonePosition(b))
 		rag.DecapLocator:SetNoDraw(true)
 		rag.DecapLocator:SetParent(rag)
 		--print("decap2")
 		ParticleEffectAttach("blood_decap", PATTACH_ABSORIGIN_FOLLOW, rag.DecapLocator, 0)
 		rag.Owner = owner
 		--rag.BuildBonePositions = Decap_HL2
-		rag:AddBuildBoneHook("RagdollDecap", Decap_HL2)
+		--rag:AddBuildBoneHook("RagdollDecap", Decap_HL2)
 		rag:EmitSound("player/flow.wav")
-		rag:ManipulateBoneScale(b, Vector(0,0,0))
+		rag:ManipulateBoneScale(b, Vector(0, 0, 0))
 		
 		if deathpose  then
 			PlayDeathPose(rag, DecapDeathPose)
@@ -327,9 +334,9 @@ function GM:DecapitateRagdoll(rag, owner, deathpose)
 		ParticleEffectAttach("blood_decap", PATTACH_ABSORIGIN_FOLLOW, rag.DecapLocator, 0)
 		rag.Owner = owner
 		--rag.BuildBonePositions = Decap_TF2
-		rag:AddBuildBoneHook("RagdollDecap", Decap_TF2)
+		--rag:AddBuildBoneHook("RagdollDecap", Decap_TF2)
 		rag:EmitSound("player/flow.wav")
-		rag:ManipulateBoneScale(b, Vector(0,0,0))
+		rag:ManipulateBoneScale(b, Vector(0, 0, 0))
 		return 0
 	end
 end
@@ -346,10 +353,9 @@ function GM:SetupNPCRagdoll(ent, rag)
 	end
 	
 	if ent:HasDeathFlag(DF_DECAP) then
-		local dp = true
-		--if ent:OnGround() then dp = true end
-		
-		self:DecapitateRagdoll(rag, ent, dp)
+		if ent:IsOnGround() and SERVER then
+			-- self:DecapitateRagdoll(rag, ent, true)
+		end
 	elseif ent:HasDeathFlag(DF_HEADSHOT) then
 		PlayDeathPose(rag, HeadshotDeathPose)
 	end
@@ -573,8 +579,8 @@ hook.Add("CreateEntityRagdoll", "TFServersideNPCRagdoll", function(npc, rag)
 		end
 		
 		rag:SetMaterial("models/player/shared/gold_player")
-	elseif npc:HasDeathFlag(DF_DECAP) then
-		PlayDeathPose(rag, DecapDeathPose)
+	--elseif npc:HasDeathFlag(DF_DECAP) then
+	--	PlayDeathPose(rag, DecapDeathPose)
 	elseif npc:HasDeathFlag(DF_HEADSHOT) then
 		PlayDeathPose(rag, HeadshotDeathPose)
 	end

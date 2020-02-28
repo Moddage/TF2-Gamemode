@@ -32,8 +32,8 @@ function EFFECT:Init(data)
 	local exclude = {}
 	
 	for _,v in pairs(pl:GetTFItems()) do
-		if v then
-		if v:GetVisuals() ~= nil then
+		if IsValid(v) then
+		if v.GetVisuals and v:GetVisuals() ~= nil then
 		local bodygroups = v:GetVisuals().hide_player_bodygroup_names
 		for _,b in ipairs(bodygroups or {}) do
 			if b == "hat" then
