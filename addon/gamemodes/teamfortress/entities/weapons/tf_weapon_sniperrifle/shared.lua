@@ -23,7 +23,7 @@ usermessage.Hook("SetZoomStatus",function(msg)
 	local self = msg:ReadEntity()
 	local b = msg:ReadBool()
 	self.ZoomStatus = b
-	if b then
+	if b and IsValid(self.Owner) then
 		self.Owner.TargetZoom = 3 * (self.ZoomMultiplier or 1)
 		if self.Owner==LocalPlayer() then
 			HudSniperChargeMeter:SetVisible(true)
@@ -38,7 +38,7 @@ usermessage.Hook("SetZoomStatus",function(msg)
 		self.Rate = 1
 		self.DrawCrosshair = false
 	else
-		if self and self.Owner then
+		if self and IsValid(self.Owner) then
 			self.Owner.TargetZoom = 1
 			if self.Owner==LocalPlayer() then
 				HudSniperChargeMeter:SetVisible(false)
@@ -46,6 +46,7 @@ usermessage.Hook("SetZoomStatus",function(msg)
 		end
 		
 		self.ChargeTimerStart = nil
+		self.ChargeSoundPlayed = nil
 		self.DrawCrosshair = true
 	end
 end)
@@ -89,6 +90,11 @@ function SWEP:DrawHUD()
 			
 			charge = math.Clamp(100*charge/chargetime, 0, 100)
 			HudSniperChargeMeter:SetProgress(charge)
+		end
+
+		if charge == 100 and !self.ChargeSoundPlayed then
+			surface.PlaySound("player/recharged.wav")
+			self.ChargeSoundPlayed = true
 		end
 		
 		local tex
@@ -146,6 +152,10 @@ SWEP.Base				= "tf_weapon_gun_base"
 SWEP.ViewModel			= "models/weapons/v_models/v_sniperrifle_sniper.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_sniperrifle.mdl"
 SWEP.Crosshair = "tf_crosshair2"
+
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
 
 SWEP.MuzzleEffect = "muzzle_sniperrifle"
 
@@ -280,7 +290,7 @@ function SWEP:PrimaryAttack()
 	else
 		self.BaseDamage = self.MinDamage
 	end
-	print(self.BaseDamage)
+	--print(self.BaseDamage)
 	self:ShootProjectile(self.BulletsPerShot, self.BulletSpread)
 	self:TakePrimaryAmmo(1)
 	self:RustyBulletHole()

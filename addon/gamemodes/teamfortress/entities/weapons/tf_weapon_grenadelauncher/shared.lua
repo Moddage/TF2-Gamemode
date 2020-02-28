@@ -32,6 +32,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_grenadelauncher_demo.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_grenadelauncher.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 --[[ --Viewmodel Settings Override (left-over from testing; works well)
 SWEP.ViewModelFOV	= 70
 SWEP.ViewModelFlip	= false
@@ -89,25 +93,6 @@ self.VM_INSPECT_END = ACT_PRIMARY_VM_INSPECT_END
 	end
 
 	if ( self:GetOwner():KeyReleased( IN_SPEED ) and inspecting_idle == true and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_sprintinspect", 1) == 1 ) then
-		if CLIENT then
-			timer.Create("PlaySpin", 1.07, 1, function() surface.PlaySound( "player/taunt_clip_spin_long.wav" ) end)
-		end
-	end
-
-	if ( self:GetOwner():KeyPressed( IN_RELOAD ) and self:Clip1() == self:GetMaxClip1() and inspecting == false and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
-		timer.Create("StartInspection", self:SequenceDuration(), 1,function()
-			if self:GetOwner():KeyDown( IN_RELOAD ) then 
-				inspecting_idle = true
-			else
-				if CLIENT then
-					timer.Create("PlaySpin", 1.07, 1, function() surface.PlaySound( "player/taunt_clip_spin_long.wav" ) end)
-				end
-				inspecting_idle = false
-			end
-		end )
-	end
-
-	if ( self:GetOwner():KeyReleased( IN_RELOAD ) and self:Clip1() == self:GetMaxClip1() and inspecting_idle == true and GetConVar("tf_caninspect"):GetBool() and self.Owner:GetInfoNum("tf_reloadinspect", 1) == 1 ) then
 		if CLIENT then
 			timer.Create("PlaySpin", 1.07, 1, function() surface.PlaySound( "player/taunt_clip_spin_long.wav" ) end)
 		end

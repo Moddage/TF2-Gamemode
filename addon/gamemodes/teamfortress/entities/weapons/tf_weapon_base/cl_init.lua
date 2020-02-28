@@ -10,7 +10,7 @@ SWEP.DrawCrosshair		= true
 SWEP.DrawWeaponInfoBox	= false
 SWEP.BounceWeaponIcon   = false
 SWEP.WepSelectIcon = surface.GetTextureID( "weapons/swep" )
-SWEP.SwayScale			= 0.5
+SWEP.SwayScale			= 0 -- 0.5
 SWEP.BobScale			= 0.5
 
 SWEP.RenderGroup 		= RENDERGROUP_OPAQUE
@@ -202,9 +202,13 @@ function SWEP:RenderWModel()
 	end
 end
 
-function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
+function SWEP:DrawWeaponSelection(x, y, w, h, alpha)
 	surface.SetDrawColor(255, 255, 255, alpha)
-	local tex = self:GetIconTextureID()
+	local tex = self:GetIconTextureID() or nil
+	if tex == nil then
+		draw.SimpleText(self.PrintName, "TFHudSelectionText", x + w / 2, y + h * 0.4, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+		return
+	end
 	surface.SetTexture(tex)
 	local rx, ry = surface.GetTextureSize(tex)
 
@@ -379,6 +383,10 @@ function SWEP:DoMuzzleFlash()
 	else
 		ParticleEffectAttach(self.MuzzleEffect, PATTACH_POINT_FOLLOW, ent, ent:LookupAttachment("muzzle"))
 	end
+end
+
+function SWEP:Draw()
+	self:DrawModel()
 end
 
 usermessage.Hook("DoMuzzleFlash", function(msg)

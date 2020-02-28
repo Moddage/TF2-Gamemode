@@ -13,6 +13,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_fist_heavy.mdl"
 SWEP.WorldModel			= ""
 SWEP.Crosshair = "tf_crosshair3"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.Swing = Sound("Weapon_Fist.Miss")
 SWEP.SwingCrit = Sound("Weapon_Fist.MissCrit")
 SWEP.HitFlesh = Sound("Weapon_Fist.HitFlesh")

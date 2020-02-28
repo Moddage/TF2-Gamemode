@@ -7,7 +7,7 @@ if CLIENT then
 end
 
 CLASS.Name = "GMod Player"
-CLASS.Speed = 83
+CLASS.Speed = 20
 CLASS.Health = 100
 
 CLASS.AdditionalAmmo = {

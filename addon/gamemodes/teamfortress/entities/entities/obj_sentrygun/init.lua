@@ -369,11 +369,72 @@ function ENT:OnThink()
 			self.Model:SetBodygroup(2, 1)
 		end
 	end
+end
+
+function ENT:Think()
+	local state = self:GetState()
+	local deltatime = 0
+	
+	if self.LastThink then
+		deltatime = CurTime() - self.LastThink
+	end
+	self.LastThink = CurTime()
+	
+	self:OnThink()
+	if state==0 then
+		if CurTime()-self.StartTime>=self.TimeLeft then
+			self:Build()
+		end
+	elseif state==1 then
+		local time_added = deltatime
+		
+		if self.BuildBoost then
+			local total = 1
+			local mul = self.DefaultBuildRate / self.BuildRate
+			
+			for pl,data in pairs(self.BuildBoost) do
+				if CurTime() > data.endtime then
+					self.BuildBoost[pl] = nil
+				else
+					total = total + data.val * mul
+				end
+			end
+			
+			self.Model:SetPlaybackRate(self.BuildRate * total)
+			time_added = time_added * total
+		end
+		
+		self.BuildProgress = math.Clamp(self.BuildProgress + time_added, 0, self.BuildProgressMax)
+		self:SetBuildProgress(self.BuildProgress / self.BuildProgressMax)
+		
+		local health = math.Clamp((self.BuildProgress / self.BuildProgressMax) * self:GetMaxHealth(), self.InitialHealth, self:GetMaxHealth())
+		self:SetHealth(health - (self.BuildSubstractHealth or 0))
+		
+		if self.BuildProgress >= self.BuildProgressMax then
+			self:OnDoneBuilding()
+			self:SetHealth(self:GetMaxHealth() - (self.BuildSubstractHealth or 0))
+			self:Enable()
+		end
+	elseif state==2 then
+		if CurTime()-self.StartTime>=self.TimeLeft then
+			self:OnDoneUpgrade()
+			self:Enable()
+		end
+		
+		if not self.DisableDuringUpgrade then
+			self:OnThinkActive()
+		end
+	elseif state==3 then
+		self:OnThinkActive()
+	end
 	self:SetPoseParameter("aim_pitch", self.VisualTurretPitch)
 	self:SetPoseParameter("aim_yaw", self.TurretYaw)
 	self.Model:SetPoseParameter("aim_pitch", self.VisualTurretPitch)
 	self.Model:SetPoseParameter("aim_yaw", self.TurretYaw)
+	self:NextThink(CurTime())
+	return true
 end
+
 
 function ENT:StartFiring()
 	self.Firing = true

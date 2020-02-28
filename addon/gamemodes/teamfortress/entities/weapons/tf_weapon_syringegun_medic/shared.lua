@@ -16,6 +16,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_syringegun_medic.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_syringegun.mdl"
 SWEP.Crosshair = "tf_crosshair1"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.MuzzleEffect = "muzzle_syringe"
 PrecacheParticleSystem("muzzle_syringe")
 

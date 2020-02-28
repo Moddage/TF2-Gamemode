@@ -57,8 +57,9 @@ end
 function PANEL:PaintBackground()
 	-- If we don't have a Bg image, use the foreground
 	local tex = self.BackgroundTexture or self.ForegroundTexture
+	local color = self.BackgroundColor or Color(0, 0, 0)
 	surface.SetTexture(tex)
-	surface.SetDrawColor(self.BackgroundColor)
+	surface.SetDrawColor(color)
 	
 	local wide, tall = self:GetSize()
 	
@@ -68,7 +69,7 @@ function PANEL:PaintBackground()
 		surface.DrawTexturedRect(0, 0, wide, tall)
 	end
 	
-	if self.Centered then
+	--[[if self.Centered then
 		draw.Text{
 			text=math.floor(self:GetProgress()*100),
 			font="HudClassHealth",
@@ -86,7 +87,7 @@ function PANEL:PaintBackground()
 			xalign=TEXT_ALIGN_CENTER,
 			yalign=TEXT_ALIGN_CENTER,
 		}
-	end
+	end]]
 end
 
 function PANEL:Paint()
@@ -102,6 +103,8 @@ function PANEL:DrawCircleSegment(c, endProgress, clockwise)
 	if not self.ForegroundTexture then
 		return
 	end
+
+	c = c or Color(0, 0, 0)
 	
 	local wide, tall = self:GetSize()
 	local halfWide, halfTall = wide/2, tall/2

@@ -7,6 +7,8 @@ include("sv_hl2replace.lua")
 include("sv_gamelogic.lua")
 include("sv_damage.lua")
 include("sv_death.lua")
+include("sv_ctf_bots.lua")
+include("sv_chat.lua")
 include("shd_taunts.lua")
 
 local LOGFILE = "teamfortress/log_server.txt"
@@ -21,8 +23,6 @@ response_rules.Load("talker/tf_response_rules.txt")
 response_rules.Load("talker/demoman_custom.txt")
 response_rules.Load("talker/heavy_custom.txt")
 
-CreateConVar( "tf_caninspect", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players can inspect weapons." )
-CreateConVar( "tf_npc_friendlyfire", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "NPC Friendly Fire" )
 CreateConVar( "tf_use_hl_hull_size", "0", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players use the HL2 hull size found on coop." )
 CreateConVar( "tf_kill_on_change_class", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will die if they change class." )
 CreateConVar( "tf_flashlight", "1", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_NOTIFY, FCVAR_ARCHIVE}, "Whether or not players will have a flashlight as a TF2 Class" )
@@ -60,7 +60,7 @@ concommand.Add("changeclass", function(pl, cmd, args)
 	if pl:Team()==TEAM_SPECTATOR then return end
 	if pl:GetObserverMode() ~= OBS_MODE_NONE then pl:Spectate(OBS_MODE_NONE) end
 	if pl:Alive() and GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:Kill() end	
-	if GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:SetPlayerClass("gmodplayer") end
+	--if GetConVar("tf_kill_on_change_class"):GetInt() ~= 0 then pl:SetPlayerClass("gmodplayer") end
 	pl:SetPlayerClass(args[1])
 end, function() return GAMEMODE.PlayerClassesAutoComplete end)
 
@@ -69,6 +69,9 @@ concommand.Add( "changeteam", function( pl, cmd, args )
 	if ( tonumber( args[ 1 ] ) == 0 or tonumber( args[ 1 ] ) == 3 ) then pl:ChatPrint("Invalid Team!") return end
 	if ( pl:Team() == tonumber( args[ 1 ] ) ) then return false end
 	if ( GetConVar("tf_competitive"):GetBool() and tonumber( args[ 1 ] ) == 4 ) then pl:ChatPrint("Competitive mode is on!") return end
+	if pl:Team() == TEAM_SPECTATOR then
+		pl:KillSilent()
+	end
 	pl:SetTeam( tonumber( args[ 1 ] ) )  
 	timer.Simple(0.3, function() if !IsValid(pl) then return end pl:SendLua("chat.AddText( Color( 235, 226, 202 ), 'Player ', LocalPlayer():Nick(), ' joined team ', team.GetName(LocalPlayer():Team()) )") end)
 	if pl:Alive() then pl:Kill() end 
@@ -107,7 +110,7 @@ function GM:PlayerInitialSpawn(ply)
 	end
 	
 	Msg("PlayerInitialSpawn : "..ply:GetName().." "..tostring(self.Landmark).."\n")
-	if self.Landmark and self.Landmark:IsValidMap() then
+	if self.Landmark then--and self.Landmark:IsValidMap() then
 		self.Landmark:LoadPlayerData(ply)
 	end
 end
@@ -168,6 +171,36 @@ function RandomWeapon(ply, wepslot)
 	local wep = table.Random(validweapons)
 
 	ply:PrintMessage(HUD_PRINTTALK, "You were given " .. wep .. "!")
+	ply:EquipInLoadout(wep)
+end
+
+function RandomWeapon2(ply, wepslot)
+	local weps = tf_items.ReturnItems()
+	local class = ply:GetPlayerClass()
+	local validweapons = {}
+	for k, v in pairs(weps) do
+		if v and istable(v) and isstring(wepslot) and v["name"] and v["item_slot"] == wepslot and v["used_by_classes"] and v["used_by_classes"][class] and !string.StartWith(v["name"], "Australium") and v["craft_class"] == "weapon" then
+			table.insert(validweapons, v["name"])
+		end
+	end
+
+	local wep = table.Random(validweapons)
+	ply:EquipInLoadout(wep)
+end
+
+function RandomWeapon(ply, wepslot)
+	local weps = tf_items.ReturnItems()
+	local validweapons = {}
+	for k, v in pairs(weps) do
+		if v and istable(v) and isstring(wepslot) and v["name"] and v["item_slot"] == wepslot and !string.StartWith(v["name"], "Australium") and v["craft_class"] == "weapon" then
+			PrintTable(v)
+			table.insert(validweapons, v["name"])
+		end
+	end
+
+	local wep = table.Random(validweapons)
+
+	ply:PrintMessage(HUD_PRINTTALK, "You were given " .. wep .. "!")
 	ply:ConCommand("giveitem " .. wep)
 end
 
@@ -208,10 +241,29 @@ function GM:PlayerSpawn(ply)
 	if ply:GetPlayerClass()=="" then
 		ply:ConCommand("tf_changeclass")
 		ply:SetPlayerClass("gmodplayer")
-		ply:Spectate(OBS_MODE_FIXED)
-		ply:StripWeapons()
+		--ply:Spectate(OBS_MODE_FIXED)
+		--ply:StripWeapons()
+	--[[elseif ply:GetPlayerClass()=="sniper" then -- dumb hack wtf??
+		ply:SetPlayerClass("scout")
+		timer.Simple(0.1, function()
+			if IsValid(ply) then
+				ply:SetPlayerClass("sniper")
+			end
+		end)
+		if ply:GetObserverMode() ~= OBS_MODE_NONE then
+			ply:UnSpectate()
+		end]]
+	elseif ply:GetPlayerClass()=="sniper" then
+		ply:SetPlayerClass("scout")
+		ply:SetPlayerClass("sniper")
+		timer.Simple(0.1, function()
+			ply:SetPlayerClass("sniper")
+		end)
 	else
-		ply:SetPlayerClass(ply:GetPlayerClass())
+		timer.Simple(0.1, function() -- god i'm such a timer whore
+			ply:SetPlayerClass(ply:GetPlayerClass())
+		end)
+
 		if ply:GetObserverMode() ~= OBS_MODE_NONE then
 			ply:UnSpectate()
 		end
@@ -229,10 +281,23 @@ function GM:PlayerSpawn(ply)
 	
 	if !ply:IsHL2() then
 		ply:AllowFlashlight(GetConVar("tf_flashlight"):GetBool())
+
 		if ply:Team()==TEAM_BLU then
 			ply:SetSkin(1)
 		else
 			ply:SetSkin(0)
+		end
+
+		for k, v in pairs(ents.FindByClass('tf_wearable_item')) do
+			if v:GetClass() == 'tf_wearable_item' then
+				if v:GetOwner() == ply and string.find(v:GetModel(), "zombie") then
+					if ply:Team()==TEAM_BLU then
+						ply:SetSkin(5)
+					else
+						ply:SetSkin(4)
+					end
+				end
+			end
 		end
 	end
 
@@ -245,6 +310,8 @@ function GM:PlayerSpawn(ply)
 
 	ply:SetPlayerColor(playercolor)
 	ply:SetWeaponColor(weaponcolor)
+	ply:SetNoCollideWithTeammates(true)
+	ply:SetAvoidPlayers(true)
 	
 	if GetConVar("tf_randomizer"):GetBool() and !ply:IsHL2() then
 		RandomWeapon(ply, "primary")
@@ -286,6 +353,27 @@ function GM:PlayerSelectSpawn(pl)
 	
 	if self.MasterSpawn then
 		return self.MasterSpawn
+	end
+
+	local spawnsred = {}
+	local spawnsblu = {}
+
+	for k, v in pairs(ents.FindByClass("info_player_teamspawn")) do
+		--print(v, "says")
+		if v:GetKeyValues()["StartDisabled"] == 0 then
+		if v:GetKeyValues()["TeamNum"] == 3 then
+			table.insert(spawnsblu, v)
+		elseif v:GetKeyValues()["TeamNum"] == 2 then
+			table.insert(spawnsred, v)
+		end
+		end
+	end
+
+
+	if pl:Team() == TEAM_RED and IsValid(spawnsred[1]) then
+		return table.Random(spawnsred)
+	elseif pl:Team() == TEAM_BLU and IsValid(spawnsblu[1]) then
+		return table.Random(spawnsblu)
 	end
 	
 	return self.BaseClass:PlayerSelectSpawn(pl)
@@ -501,7 +589,7 @@ end
 util.AddNetworkString("UpdateLoadout")
 
 function GM:PlayerDroppedWeapon(ply)
-	if !ply:IsHL2() then
+	if IsValid(ply) and ply:IsPlayer() and !ply:IsHL2() then
 		net.Start("UpdateLoadout")
 		net.Send(ply)
 	end

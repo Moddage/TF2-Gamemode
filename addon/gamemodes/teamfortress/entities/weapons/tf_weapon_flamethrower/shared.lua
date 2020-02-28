@@ -87,6 +87,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_flamethrower_pyro.mdl"
 SWEP.WorldModel			= "models/weapons/c_models/c_flamethrower.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.MuzzleEffect = "pyro_blast"
 
 SWEP.ShootSound = Sound("Weapon_FlameThrower.FireStart")

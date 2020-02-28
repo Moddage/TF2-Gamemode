@@ -165,10 +165,10 @@ function PANEL:Paint()
 	BlueTeamName.text = tf_lang.GetRaw("#TF_ScoreBoard_Blue")
 	draw.Text(BlueTeamName)
 	
-	BlueTeamScoreShadow.text = 0
+	BlueTeamScoreShadow.text = team.GetScore(TEAM_BLU)
 	draw.Text(BlueTeamScoreShadow)
 	
-	BlueTeamScore.text = 0
+	BlueTeamScore.text = team.GetScore(TEAM_BLU)
 	draw.Text(BlueTeamScore)
 	
 	num = #team.GetPlayers(TEAM_BLU)
@@ -189,10 +189,10 @@ function PANEL:Paint()
 	RedTeamName.text = tf_lang.GetRaw("#TF_ScoreBoard_Red")
 	draw.Text(RedTeamName)
 	
-	RedTeamScoreShadow.text = 0
+	RedTeamScoreShadow.text = team.GetScore(TEAM_RED)
 	draw.Text(RedTeamScoreShadow)
 	
-	RedTeamScore.text = 0
+	RedTeamScore.text = team.GetScore(TEAM_RED)
 	draw.Text(RedTeamScore)
 	
 	num = #team.GetPlayers(TEAM_RED)
@@ -233,7 +233,8 @@ function PANEL:Paint()
 	draw.Text(ServerTimeLeft)
 	
 	tab = team.GetPlayers(TEAM_SPECTATOR)
-	table.Add(tab, team.GetPlayers(TEAM_NEUTRAL))
+	local tab2 = team.GetPlayers(TEAM_NEUTRAL)
+	-- table.Add(tab, team.GetPlayers(TEAM_NEUTRAL))
 	num = #tab
 	if num > 0 then
 		local t = {}
@@ -251,24 +252,37 @@ function PANEL:Paint()
 		draw.Text(Spectators)
 	end
 	
-	--[[
-	tab = team.GetPlayers(TEAM_NEUTRAL)
-	num = #tab
+	
+	tab2 = team.GetPlayers(TEAM_NEUTRAL)
+	num2 = #tab2
+
 	if num > 0 then
+		SpectatorsInQueue.pos = {115*Scale, 358*Scale}
+	else
+		SpectatorsInQueue.pos = {111*Scale, 367*Scale}
+	end
+
+	if num2 > 0 then
 		local t = {}
-		for k,v in ipairs(tab) do
+		for k,v in ipairs(tab2) do
 			t[k] = v:GetName()
 		end
 		t = string.Implode(", ", t)
 		
-		if num == 1 then
+		--[[if num == 1 then
 			SpectatorsInQueue.text = tf_lang.GetFormatted("#TF_Arena_ScoreBoard_Spectator", num, t)
 		else
 			SpectatorsInQueue.text = tf_lang.GetFormatted("#TF_Arena_ScoreBoard_Spectators", num, t)
+		end]]
+
+		if num2 == 1 then
+			SpectatorsInQueue.text = "1 neutral: "..t
+		else
+			SpectatorsInQueue.text = "Neutral: "..t
 		end
 		
 		draw.Text(SpectatorsInQueue)
-	end]]
+	end
 	
 	PlayerName.color = team.GetColor(playerteam)
 	PlayerName.text = LocalPlayer():GetName()

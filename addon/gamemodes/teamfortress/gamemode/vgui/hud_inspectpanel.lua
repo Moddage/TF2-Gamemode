@@ -160,7 +160,7 @@ end
 function PANEL:PaintOver()
 	if hud_showitempanel:GetBool() and LocalPlayer():Alive() then
 		local w = LocalPlayer():GetActiveWeapon()
-		
+
 		if IsValid(w) and w ~= self.CurrentActiveWeaponLocal then
 			if self.Panel then
 				self:SetActiveItem(w)

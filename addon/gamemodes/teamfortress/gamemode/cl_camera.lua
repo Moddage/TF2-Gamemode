@@ -64,13 +64,14 @@ hook.Add("DoPlayerDeath", "SetPlayerKiller", function(pl, attacker)
 end)]]
 
 hook.Add("CreateMove", "TauntMove", function(cmd)
+	local s = SensitivityMultiplier * sensitivity:GetFloat()
+	taunt_angles.pitch = taunt_angles.pitch	+ cmd:GetMouseY() * GetConVar("m_pitch"):GetFloat()
+	taunt_angles.yaw = taunt_angles.yaw		- cmd:GetMouseX() * GetConVar("m_yaw"):GetFloat()
 	if LocalPlayer():GetNWBool("Taunting") then
 		if lockangle == nil then
 			lockangle = taunt_angles * 1
 		end
-		local s = SensitivityMultiplier * sensitivity:GetFloat()
-		taunt_angles.pitch = taunt_angles.pitch	+ cmd:GetMouseY() * s
-		taunt_angles.yaw = taunt_angles.yaw		- cmd:GetMouseX() * s
+
 		cmd:SetViewAngles(lockangle)
 		cmd:ClearButtons()
 		cmd:ClearMovement()
@@ -86,8 +87,8 @@ hook.Add("CreateMove", "SimulateCamera", function(cmd)
 
 	if not LocalPlayer().SimulatedCamera then
 		local s = SensitivityMultiplier * sensitivity:GetFloat()
-		LocalPlayer().CameraAngles.p = math.Clamp(LocalPlayer().CameraAngles.p + cmd:GetMouseY() * s, -90, 90)
-		LocalPlayer().CameraAngles.y = math.NormalizeAngle(LocalPlayer().CameraAngles.y - math.Clamp(cmd:GetMouseX() * s, -180, 180))
+		LocalPlayer().CameraAngles.p = math.Clamp(LocalPlayer().CameraAngles.p + cmd:GetMouseY() * GetConVar("m_side"):GetFloat() * GetConVar("sensitivity"):GetFloat(), -90, 90)
+		LocalPlayer().CameraAngles.y = math.NormalizeAngle(LocalPlayer().CameraAngles.y - math.Clamp(cmd:GetMouseX() * GetConVar("m_pitch"):GetFloat() * GetConVar("sensitivity"):GetFloat(), -180, 180))
 	end
 end)
 
@@ -302,7 +303,7 @@ hook.Add("CalcView", "TFCalcView", function(pl, pos, ang, fov)
 		ang = pl.CameraAngles
 	end
 
-	if pl.FirstReality then
+	if pl.FirstReality and pl:Alive() then
 		if pl:IsHL2() then
 			pos = pl:GetBonePosition(pl:LookupBone("ValveBiped.Bip01_Head1"))+(ang:Up()*10)+(ang:Forward()*5)
 			pl:ManipulateBoneScale(pl:LookupBone("ValveBiped.Bip01_Head1"), Vector(0,0,0))
@@ -315,6 +316,14 @@ hook.Add("CalcView", "TFCalcView", function(pl, pos, ang, fov)
 	
 	if pl.TauntingCam then
 		ang = taunt_angles
+	else
+		ang = taunt_angles + pl:GetViewPunchAngles()
+		ang = Angle(Angle(math.Clamp(ang.p, -80, 80), ang.y, ang.r))
+		local angle = (util.QuickTrace(pos, ang:Forward() * 5024, pl).HitPos - pl:GetShootPos()):Angle()
+		pl:SetEyeAngles(Angle(angle.p, angle.y, ang.r))
+		if !pl.FirstReality and !pl.SimulatedCamera then
+			pos = pl:GetPos() + pl:GetViewOffset() + ang:Forward() * 75 + ang:Right() * 25
+		end
 	end
 
 	if pl.NextEndThirdperson then

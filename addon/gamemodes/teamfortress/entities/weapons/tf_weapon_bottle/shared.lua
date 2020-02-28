@@ -13,6 +13,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_bottle_demoman.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_bottle.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.Swing = Sound("Weapon_Bottle.Miss")
 SWEP.SwingCrit = Sound("Weapon_Bottle.MissCrit")
 

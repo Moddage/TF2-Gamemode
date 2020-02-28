@@ -150,9 +150,17 @@ function PANEL:Paint()
 	txt.pos = {68*Scale, 19*Scale}
 	txt.color = Colors.TanLight
 	draw.Text(txt)
-	
+
+	local cantext = tf_lang.GetRaw("#Hud_Menu_Build_Cancel")
+	local competitive = GetConVar("tf_competitive"):GetBool()
+	if competitive then
+		cantext = string.Replace(cantext, "%lastinv%", input.LookupBinding("+menu"))
+	else
+		cantext = string.Replace(string.Replace(cantext, "%lastinv%", input.LookupBinding("lastinv")), "''", "'UNBOUND'")
+	end
+
 	draw.Text{
-		text=tf_lang.GetRaw("#Hud_Menu_Build_Cancel"),
+		text=cantext,
 		font="SpectatorKeyHints",
 		pos={(218+200)*Scale, (35+6.5)*Scale},
 		xalign=TEXT_ALIGN_RIGHT,

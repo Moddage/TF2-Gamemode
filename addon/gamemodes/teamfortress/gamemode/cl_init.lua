@@ -6,9 +6,7 @@ local load_time = SysTime()
 local blacklist = {["Frying Pan"] = true, ["Golden Frying Pan"] = true, ["The PASSTIME Jack"] = true, ["TTG Max Pistol"] = true, ["Sexo de Pene Gay"] = true, ["Team Spirit"] = true,} -- Items that should NEVER show, must be their item.name if a hat/weapon!
 local name_blacklist = {["The AK47"] = true,} -- Weapons that have names of other weapons must have their item.name put in here
 
-include("tf_lang_module.lua")
 include("shd_items.lua")
-tf_lang.Load("tf_english.txt")
 
 include("cl_proxies.lua")
 include("cl_pickteam.lua")
@@ -31,6 +29,8 @@ include("cl_materialfix.lua")
 include("cl_pac.lua")
 
 include("proxies/itemtintcolor.lua")
+
+include("proxies/sniperriflecharge.lua")
 
 CreateClientConVar( "tf_haltinspect", "1", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Whether or not players can inspect while no-clipping." )
 CreateClientConVar( "tf_maxhealth_hud", "1", {FCVAR_CLIENTCMD_CAN_EXECUTE, FCVAR_ARCHIVE}, "Enable maxhealth above health when hurt." )
@@ -291,7 +291,7 @@ local load_time = SysTime()
 
 function GetImprovedItemName(name)
 for k, v in pairs(tf_items.ReturnItems()) do
-	if v and istable(v) and v["used_by_classes"] and v["name"] and v["name"] == name and v["used_by_classes"][LocalPlayer():GetPlayerClass()] and v["item_slot"] and not blacklist[v["name"]] then
+	if v and istable(v) and v["used_by_classes"] and v["name"] and v["name"] == name and v["used_by_classes"][LocalPlayer():GetPlayerClass()] and v["item_slot"] and not blacklist[v["name"]] and v["prefab"] ~= "tournament_medal" then
 		if (v["item_slot"] == "primary" or v["item_slot"] == "secondary" or v["item_slot"] == "melee") then
 			if name_blacklist[v["name"]] then
 				return "wep"..v["name"]
@@ -302,7 +302,7 @@ for k, v in pairs(tf_items.ReturnItems()) do
 			else
 				return "wep"..tf_lang.GetRaw(v["item_name"]) or v["name"]
 			end
-		elseif v and v["item_slot"] and v["item_slot"] == "head" and ((v["model_player"] and util.GetModelInfo(v["model_player"]) and util.GetModelInfo(v["model_player"])["KeyValues"]) or (v["model_player_per_class"] and util.GetModelInfo(v["model_player_per_class"][LocalPlayer():GetPlayerClass()]) and util.GetModelInfo(v["model_player_per_class"][LocalPlayer():GetPlayerClass()])["KeyValues"])) then
+		elseif v and v["item_slot"] and v["item_slot"] == "head" then
 			return "hat"..v["name"]
 		elseif v and v["item_slot"] and v["item_slot"] == "misc" then
 			return "hat"..v["name"]
@@ -380,11 +380,13 @@ SpyButton:SetPos(730, 35)
 SpyButton:SetText("Spy") --Set the name of the button
 SpyButton.DoClick = function() RunConsoleCommand("changeclass", "spy") surface.PlaySound( "/music/class_menu_09.wav" ) ClassFrame:Close() end
 
+if !GetConVar("tf_disable_fun_classes"):GetBool() then
 local GmodButton = vgui.Create("DButton", ClassFrame)
 GmodButton:SetSize(100, 30)
 GmodButton:SetPos(366, 70)
 GmodButton:SetText("GMod Player") --Set the name of the button
 GmodButton.DoClick = function() RunConsoleCommand("changeclass", "gmodplayer") ClassFrame:Close() end
+end
 
 local Hint = vgui.Create( "DLabel", ClassFrame )
 Hint:SetPos( 10, 70 )
@@ -411,6 +413,34 @@ function TeamBlu.DoClick() RunConsoleCommand( "changeteam", 2 ) ClassFrame:Close
 TeamBlu:SetPos( 700, 105 )
 TeamBlu:SetSize( 130, 20 )
 TeamBlu:SetText( "BLU Team" )
+
+local spectate = vgui.Create("DModelPanel", ClassFrame)
+spectate:SetPos( 625, 65 )
+spectate:SetSize( 75, 100 )
+spectate:SetModel( "models/vgui/ui_team01_spectate.mdl" )
+
+spectate:SetFOV(15)
+spectate:SetCamPos(Vector(90, 50, 35))
+spectate:SetLookAt(Vector(-1.883671, -12.644326, 30.984015))
+
+function spectate.DoClick() RunConsoleCommand( "tf_spectate" ) ClassFrame:Close() end
+
+function spectate:LayoutEntity()
+	self.Hov = self.Hov or false
+	if self:IsHovered() and !self.Hov then
+		self.Entity:SetBodygroup(1, 1)
+		local random = math.random(3)
+		if random == 1 then
+			surface.PlaySound("ui/tv_tune.mp3")
+		else
+			surface.PlaySound("ui/tv_tune"..random..".mp3")
+		end
+		self.Hov = true
+	elseif !self:IsHovered() and self.Hov then
+		self.Entity:SetBodygroup(1, 0)
+		self.Hov = false
+	end
+end
 
 if !GetConVar("tf_competitive"):GetBool() then
 	local TeamNeu = vgui.Create( "DButton", ClassFrame )
@@ -706,12 +736,20 @@ for k, v in pairs(tf_items.ReturnItems()) do
 
 		t.RealName = v["name"]
 		t.centerytext = true
-
+		print(v["id"], string.sub(GetImprovedItemName(v["name"]), 4))
 		t.disabled = false
-		t.itemImage = surface.GetTextureID(v["image_inventory"])
-		if Material(v["image_inventory"]):IsError() then
+		print(v["image_inventory"])
+		if !isstring(v["image_inventory"]) or Material(v["image_inventory"]):IsError() then
 			t.FallbackModel = v["model_player"]
+			t.itemImage = surface.GetTextureID("backpack/weapons/c_models/c_bat")
+		elseif isstring(v["image_inventory"]) then
+			-- t.FallbackModel = v["model_player"]
+			t.itemImage = surface.GetTextureID(v["image_inventory"])
 		end
+
+		--[[if v["item_class"] ~= "tf_wearable_item" and tonumber(v["id"]) > 6000 then
+			t.FallbackModel = v["model_player"]
+		end]]
 
 		if v["attributes"] and v["attributes"]["material override"] and v["attributes"]["material override"]["value"] then
 			t.overridematerial = v["attributes"]["material override"]["value"]
@@ -721,7 +759,10 @@ for k, v in pairs(tf_items.ReturnItems()) do
 
 		t.text = string.sub(GetImprovedItemName(v["name"]), 4)
 		--t.text = tf_lang.GetRaw(v["item_name"]) or v["name"]
-		local quality = string.upper(string.sub(v["item_quality"], 1, 1)) .. string.sub(v["item_quality"], 2)
+		local quality = 0
+		if v["item_quality"] then
+			quality = string.upper(string.sub(v["item_quality"], 1, 1)) .. string.sub(v["item_quality"], 2)
+		end
 		t:SetQuality(quality)
 
 		t.model_xpos = 0

@@ -26,6 +26,10 @@ function PANEL:Paint()
 	
 	local size, amplitude, frequency
 	local health = LocalPlayer():Health()
+
+	if LocalPlayer():GetObserverTarget() and LocalPlayer():GetObserverTarget():IsPlayer() then
+		health = LocalPlayer():GetObserverTarget():Health()
+	end
 	
 	if health<=0 then
 		surface.SetTexture(health_dead)
@@ -107,7 +111,7 @@ function PANEL:Paint()
 			draw.Text{
 				text=maxhealth,
 				font="HudClassHealthMax",
-				pos={(75+25)*Scale, (20+9)*Scale},
+				pos={(75+26)*Scale, (20+9)*Scale},
 				color=Colors.TanDark,
 				xalign=TEXT_ALIGN_CENTER,
 				yalign=TEXT_ALIGN_CENTER,

@@ -33,7 +33,7 @@ function ENT:Think()
 	local resupplied
 	
 	for pl,last in pairs(self.Players) do
-		if last==-1 or CurTime()-last>1 then
+		if (last==-1 or CurTime()-last>1) and IsValid(pl) and pl:IsPlayer() then
 			resupplied = true
 			GAMEMODE:GiveHealthPercent(pl, 100)
 			GAMEMODE:GiveAmmoPercent(pl, 100)

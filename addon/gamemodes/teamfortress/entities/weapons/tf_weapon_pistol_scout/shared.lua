@@ -13,6 +13,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_pistol_scout.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_pistol.mdl"
 SWEP.Crosshair = "tf_crosshair1"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.MuzzleEffect = "muzzle_pistol"
 --SWEP.BetaMuzzle = "tf_muzzleflash_beta"
 SWEP.MuzzleOffset = Vector(20, 4, -2)

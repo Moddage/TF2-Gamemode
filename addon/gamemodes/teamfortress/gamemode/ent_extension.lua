@@ -214,7 +214,7 @@ function meta:IsFriendly(target)
 end
 
 function meta:CanDamage(target)
-	return self==target or not self:IsFriendly(target)
+	return self==target or ((!GetConVar("mp_friendlyfire"):GetBool() and not self:IsFriendly(target)) or GetConVar("mp_friendlyfire"):GetBool())
 end
 
 function meta:IsValidEnemy(target)

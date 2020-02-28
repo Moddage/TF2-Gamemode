@@ -80,7 +80,7 @@ function PANEL:PerformLayout()
 end
 
 function PANEL:SelectMenu(n)
-	if not VoiceMenuList[n] then return end
+	if not VoiceMenuList[n] or LocalPlayer():IsHL2() then return end
 	if n == self.CurrentMenu then
 		self:Hide()
 		return

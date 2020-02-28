@@ -55,6 +55,14 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 		ent:AddDeaths(1)
 	end
 	
+	if attacker:IsWeapon() then
+		attacker = attacker:GetOwner()
+	end
+	
+	if attacker:IsVehicle() and IsValid(attacker:GetDriver()) then
+		attacker = attacker:GetDriver()
+	end
+	
 	if attacker:IsPlayer() and attacker ~= ent then
 		local score = inflictor.Score or 1
 		if attacker.customdeath == "headshot" then
@@ -84,7 +92,11 @@ function GM:DoTFPlayerDeath(ent, attacker, dmginfo)
 			ApplyGlobalAttributesFromPlayer(a, "on_kill", ent, inflictor, attacker)
 		end
 		
-		if IsValid(v.inflictor) and v.inflictor:IsBuilding() and v.inflictor.AddAssists then
+		if v
+			and isentity(v)
+			and v.inflictor and
+			v.inflictor:IsBuilding()
+			and v.inflictor.AddAssists then
 			v.inflictor:AddAssists(1)
 		end
 	end
@@ -173,8 +185,17 @@ function GM:PostTFPlayerDeath(ent, attacker, inflictor)
 	local cooperator = self:GetDisplayedAssistant(ent, attacker) or NULL
 	--print("Displayed assistant")
 	--print(cooperator)
+
+	if attacker:IsWeapon() then
+		attacker = attacker:GetOwner()
+	end
+	
+	if attacker:IsVehicle() and IsValid(attacker:GetDriver()) then
+		attacker = attacker:GetDriver()
+	end
 	
 	local killer = attacker
+	
 	--[[if inflictor.KillCreditAsInflictor then
 		killer = inflictor
 	end]]

@@ -23,6 +23,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_knife_spy.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_knife.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.Swing = Sound("Weapon_Knife.Miss")
 SWEP.SwingCrit = Sound("Weapon_Knife.MissCrit")
 SWEP.HitFlesh = Sound("Weapon_Knife.HitFlesh")

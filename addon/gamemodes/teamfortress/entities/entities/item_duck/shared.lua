@@ -4,10 +4,10 @@ ENT.Information		= "It's a duck! Quack."
 ENT.Category		= "Team Fortress 2"
 
 ENT.Spawnable			= true
-ENT.AdminSpawnable		= true
+ENT.AdminOnly		= true
 
-ENT.Type = "anim"  
-ENT.Base = "item_healthkit_base"    
+ENT.Type = "anim"
+ENT.Base = "item_base"
 
 ENT.Model = "models/items/target_duck.mdl"
 ENT.HealthPercentage = 1
@@ -17,20 +17,18 @@ if SERVER then
 AddCSLuaFile("shared.lua")
 
 function ENT:CanPickup(ply)
-	return ply:Health()<ply:GetMaxHealth()
+	return true
 end
 
 function ENT:PlayerTouched(pl)
-	local h = self.HealthPercentage
-	if pl.TempAttributes and pl.TempAttributes.HealthFromPacksMultiplier then
-		h = h * pl.TempAttributes.HealthFromPacksMultiplier
-	end
-	
-	self:EmitSound("Duck.Touch")
-	self:Hide()
-	GAMEMODE:GiveHealthPercent(pl, h)
-	GAMEMODE:ExtinguishEntity(pl)
-	GAMEMODE:EntityStopBleeding(pl)
+	local effect = EffectData()
+	local color = ColorRand(false)
+	effect:SetOrigin(self:GetPos())
+	effect:SetStart(Vector(color.r, color.g, color.b))
+	util.Effect("balloon_pop", effect)
+	self:EmitSound("misc/halloween/duck_pickup_pos_01.wav")
+	self:Remove()
+	pl:AddFrags(1)
 end
 
 end

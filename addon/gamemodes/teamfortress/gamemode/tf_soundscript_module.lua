@@ -28,6 +28,7 @@ if not meta.EmitSoundOLD then
 end
 function meta:EmitSound(snd, lvl, pitch)
 	local s = tf_soundscript.Sounds[string.lower(snd)]
+	--print(snd)
 	if s then
 		snd = table.Random(s.wave)
 		local pitch

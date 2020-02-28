@@ -10,7 +10,7 @@ end
 HOOK_WARNING_THRESHOLD = 0.1
 
 local old_hook_call = hook.Call
-function hook.Call(name, gm, ...)
+--[[function hook.Call(name, gm, ...)
 	if HOOK_WARNING_THRESHOLD then
 		local time_start = SysTime()
 		local res = {old_hook_call(name, gm, ...)}
@@ -24,7 +24,7 @@ function hook.Call(name, gm, ...)
 	else
 		return old_hook_call(name, gm, ...)
 	end
-end
+end]]
 
 if not util.PrecacheModel0 then
 	util.PrecacheModel0 = util.PrecacheModel
@@ -34,6 +34,9 @@ function util.PrecacheModel(mdl)
 	if SERVER and game.SinglePlayer() then return end
 	return util.PrecacheModel0(mdl)
 end
+
+include("tf_lang_module.lua")
+tf_lang.Load("tf_english.txt")
 
 include("particle_manifest.lua")
 include("vmatrix_extension.lua")
@@ -53,6 +56,7 @@ include("shd_extras.lua")
 include("shd_workshop.lua")
 
 include("shd_competitive.lua")
+include("shd_spec.lua")
 
 --include("shd_items_temp.lua")
 
@@ -62,6 +66,9 @@ include("shd_playeranim.lua")
 include("shd_criticals.lua")
 
 include("shd_ragdolls.lua")
+
+include("shd_items_game.lua")
+
 tf_soundscript.Load("teamfortress/scripts/game_sounds_weapons_tf.txt")
 
 function GM:PostTFLibsLoaded()
@@ -74,6 +81,7 @@ GM.Author 		= "_Kilburn; Fixed by wango911; Ported by Jcw87; Workshopped by Agen
 GM.Email 		= "N/A"
 GM.Website 		= "N/A"
 GM.TeamBased 	= true
+GM.Version 	= "1.0"
 
 GM.Data = {}
 
@@ -255,6 +263,9 @@ function GM:EntityName(ent, nolocalize)
 end
 
 function GM:EntityDeathnoticeName(ent, nolocalize)
+	if ent:IsWeapon() then
+		ent = ent:GetOwner()
+	end
 	if ent.GetDeathnoticeName then
 		return ent:GetDeathnoticeName(nolocalize)
 	else

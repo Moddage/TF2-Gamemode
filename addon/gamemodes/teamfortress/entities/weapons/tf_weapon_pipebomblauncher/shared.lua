@@ -31,6 +31,10 @@ SWEP.ViewModel			= "models/weapons/v_models/v_stickybomb_launcher_demo.mdl"
 SWEP.WorldModel			= "models/weapons/w_models/w_stickybomb_launcher.mdl"
 SWEP.Crosshair = "tf_crosshair3"
 
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = false
+SWEP.Category = "Team Fortress 2"
+
 SWEP.MuzzleEffect = "muzzle_pipelauncher"
 PrecacheParticleSystem("muzzle_pipelauncher")
 

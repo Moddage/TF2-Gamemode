@@ -148,6 +148,11 @@ tf_weapon_knife = "d_knife",
 tf_weapon_knife_backstab = "d_backstab",
 tf_weapon_ambassador_headshot = "d_ambassador_headshot",
 
+-- Vehicles
+prop_vehicle_jeep_old = "d_vehicle",
+prop_vehicle_jeep = "d_vehicle",
+prop_vehicle_airboat = "d_vehicle",
+
 -- Other
 entityflame = "d_firedeath",
 tf_entityflame = "d_firedeath",

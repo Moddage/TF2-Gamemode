@@ -36,6 +36,15 @@ function PANEL:Paint()
 	
 	local t = LocalPlayer():Team()
 	local tbl = LocalPlayer():GetPlayerClassTable()
+
+	if IsValid(LocalPlayer():GetObserverTarget()) and LocalPlayer():GetObserverTarget():IsPlayer() then
+		local pl = LocalPlayer():GetObserverTarget()
+		w = pl:GetActiveWeapon()
+		ammo = w:Clip1()
+		reserve = w:Ammo1()
+		t = pl:Team()
+		tbl = pl:GetPlayerClassTable()
+	end
 	
 	local tex = ammo_bg[t] or ammo_bg[1]
 	surface.SetTexture(tex)

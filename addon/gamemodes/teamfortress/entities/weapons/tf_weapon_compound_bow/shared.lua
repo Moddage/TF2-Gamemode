@@ -34,7 +34,7 @@ SWEP.Base				= "tf_weapon_gun_base"
 SWEP.ViewModel			= Model("models/weapons/c_models/c_sniper_arms.mdl")
 SWEP.WorldModel			= Model("models/weapons/c_models/c_bow/c_bow.mdl")
 SWEP.Crosshair = "tf_crosshair1"
-SWEP.ViewModelFlip	= true
+SWEP.ViewModelFlip	= false
 
 SWEP.MuzzleEffect = ""
 
@@ -166,6 +166,14 @@ end
 
 function SWEP:Think()
 	self:TFViewModelFOV()
+
+	if GetConVar("tf_righthand") then
+		if GetConVar("tf_righthand"):GetInt() == 1 then
+			self.ViewModelFlip = true
+		else
+			self.ViewModelFlip = false
+		end
+	end
 
 	if SERVER and self.NextReplayDeployAnim then
 		if CurTime() > self.NextReplayDeployAnim then

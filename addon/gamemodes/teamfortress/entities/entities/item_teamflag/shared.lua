@@ -1,3 +1,4 @@
+AddCSLuaFile()
 
 ENT.Type = "anim"  
 ENT.Base = "item_base"    
@@ -6,9 +7,15 @@ ENT.Model = "models/flag/briefcase.mdl"
 
 local FlagReturnTime = 60
 
-
-
 if SERVER then
+
+hook.Add("DoPlayerDeath", "IntelSafeHelp", function(ply)
+	for _,v in pairs(ents.FindByClass("item_teamflag")) do
+		if v.Carrier==ply then
+			v:Drop()
+		end
+	end
+end)
 
 concommand.Add("drop_flag", function(pl)
 	for _,v in pairs(ents.FindByClass("item_teamflag")) do
@@ -36,6 +43,8 @@ function ENT:Initialize()
 	self.Prop:SetPos(self:GetPos())
 	self.Prop:SetAngles(self:GetAngles())
 	self.Prop:Spawn()
+
+	self:SetNWEntity("prop", self.Prop)
 	
 	self.Prop:SetParent(self)
 	
@@ -44,19 +53,7 @@ function ENT:Initialize()
 	self.Prop:SetPlaybackRate(1)
 	self.Prop:SetCycle(1)
 	
-	if self.TeamNum==0 then
-		self:SetSkin(2)
-		self.Prop:SetSkin(2)
-	elseif self.TeamNum==TEAM_RED then
-		self:SetSkin(0)
-		self.Prop:SetSkin(0)
-	elseif self.TeamNum==TEAM_BLU then
-		self:SetSkin(1)
-		self.Prop:SetSkin(1)
-	end
-	
 	self.State = 0
-	
 	
 	self.Trail = ents.Create("info_particle_system")
 	self.Trail:SetPos(self:GetPos())
@@ -83,6 +80,7 @@ function ENT:KeyValue(key, value)
 	if key=="gametype" then
 		self.GameType = tonumber(value)
 	elseif key=="teamnum" then
+		self.te = tonumber(value)
 		local t = tonumber(value)
 		
 		if t==0 then
@@ -96,6 +94,56 @@ function ENT:KeyValue(key, value)
 end
 
 function ENT:Think()
+	self:SetNWEntity("carrier", self.Carrier)
+
+	if self.TeamNum==0 then -- this feels unoptimized...
+		if self.Carrier then
+			self:SetSkin(2)
+			self.Prop:SetSkin(2)
+		else
+			self:SetSkin(5)
+			self.Prop:SetSkin(5)
+		end
+	elseif self.TeamNum==TEAM_RED then
+		if self.Carrier then
+			self:SetSkin(3)
+			self.Prop:SetSkin(3)
+		else
+			self:SetSkin(0)
+			self.Prop:SetSkin(0)
+		end
+	elseif self.TeamNum==TEAM_BLU then
+		if self.Carrier then
+			self:SetSkin(4)
+			self.Prop:SetSkin(4)
+		else
+			self:SetSkin(1)
+			self.Prop:SetSkin(1)
+		end
+	end
+
+	for k, v in pairs(player.GetAll()) do
+		local trace = util.QuickTrace(self:GetPos(), v:EyePos() - self:GetPos(), self.Prop)
+		if self:GetSkin() == 1 and v:IsBot() and !v:IsHL2() then
+			local color = Color(255, 0, 0)
+			if trace.Entity == v then
+				color = Color(0, 255, 255)
+			end
+			debugoverlay.Line(trace.StartPos, trace.HitPos, 1.1, color, true)
+			--print(trace.Entity)
+		end
+
+		if v:GetPos():Distance(self:GetPos()) <= 80 and self:CanPickup(v) and util.QuickTrace(self:GetPos(), v:EyePos() - self:GetPos(), self.Prop).Entity == v then
+			self:PlayerTouched(v)
+		end
+
+		--print(self.PickupLock[v])
+
+		if v:GetPos():Distance(self:GetPos()) >= 80 and self.PickupLock[v] then
+			self.PickupLock[v] = nil
+		end
+	end
+
 	if self.NextReturn then
 		if not self.NextClientUpdateTimer or CurTime()>self.NextClientUpdateTimer then
 			self:SetNWFloat("TimeRemaining", self.NextReturn - CurTime())
@@ -111,7 +159,7 @@ function ENT:Think()
 end
 
 function ENT:CanPickup(ply)
-	return ply:Team()~=self.TeamNum
+	return ply:Team()~=self.TeamNum and not self.PickupLock[v]
 end
 
 function ENT:StartTouch(ent)
@@ -131,21 +179,34 @@ function ENT:PlayerTouched(pl)
 end
 
 function ENT:Capture()
-	self:Return()
+	self:Return(true)
 	if IsValid(self.Carrier) then
 		self:TriggerOutput("OnCapture", self.Carrier)
 	end
 end
 
-function ENT:Return()
+function ENT:Return(nosound)
 	if self.State~=0 then
+		self:Drop(true)
 		self.State = 0
-		self:Drop()
 		self:SetNWBool("TimerActive", false)
 		self.NextReturn = nil
 		self:SetPos(self.HomePosition)
 		self:SetAngles(self.HomeAngles)
+		print(self.HomePosition)
 		self:TriggerOutput("OnReturn")
+
+		if nosound then
+			return
+		end
+
+		for _, ply in pairs(player.GetAll()) do
+			if ply:Team() ~= self.TeamNum then
+				ply:SendLua([[surface.PlaySound("vo/intel_teamreturned.mp3")]])
+			else
+				ply:SendLua([[surface.PlaySound("vo/intel_enemyreturned.mp3")]])
+			end
+		end
 	end
 end
 
@@ -169,11 +230,22 @@ function ENT:Pickup(ply)
 		self:SetTrigger(false)
 		self:SetParent(ply)
 		self:Fire("SetParentAttachment", "flag", 0)
+		if ply:IsHL2() then
+			self:Fire("SetParentAttachment", "chest", 0)
+		end
 		self:TriggerOutput("OnPickup", ply)
+
+		for _, ply in pairs(player.GetAll()) do
+			if ply:Team() ~= self.TeamNum then
+				ply:SendLua([[surface.PlaySound("vo/intel_teamstolen.mp3")]])
+			else
+				ply:SendLua([[surface.PlaySound("vo/intel_enemystolen.mp3")]])
+			end
+		end
 	end
 end
 
-function ENT:Drop()
+function ENT:Drop(nosound)
 	if self.State==1 and IsValid(self.Carrier) then
 		self:SetNWBool("TimerActive", true)
 		self:SetNWFloat("TimeRemaining", FlagReturnTime)
@@ -193,6 +265,18 @@ function ENT:Drop()
 		self:SetAngles(Angle(0, self:GetAngles().y, 0))
 		self:DropToFloor()
 		self:TriggerOutput("OnDrop", ply)
+
+		if nosound then
+			return
+		end
+
+		for _, ply in pairs(player.GetAll()) do
+			if ply:Team() ~= self.TeamNum then
+				ply:SendLua([[surface.PlaySound("vo/intel_teamdropped.mp3")]])
+			else
+				ply:SendLua([[surface.PlaySound("vo/intel_enemydropped.mp3")]])
+			end
+		end
 	end
 end
 
@@ -246,6 +330,24 @@ function ENT:Initialize()
 end
 
 function ENT:Draw()
+	if IsValid(self:GetNWEntity("prop", self)) and IsValid(self:GetParent()) then
+		if self:GetParent() == LocalPlayer() and !LocalPlayer():ShouldDrawLocalPlayer() then
+			self:GetNWEntity("prop", self):SetNoDraw(true) -- true)
+		else
+			self:GetNWEntity("prop", self):SetNoDraw(false)
+		end
+
+		if self:GetParent():IsHL2() and self:GetParent():LookupAttachment("chest") > 0 then
+			local att = self:GetParent():GetAttachment(self:GetParent():LookupAttachment("chest"))
+			local ang = att.Ang
+			local pos = att.Pos
+			local pos2, ang2 = LocalToWorld(ang:Forward() * 10, Angle(90, 0, 180), pos, ang)
+			self:GetNWEntity("prop", self):SetAngles(ang2)
+			self:GetNWEntity("prop", self):SetPos(pos - ang:Forward() * 10)
+			--self:Fire("SetParentAttachment", "chest", 0)
+		end
+	end
+
 	if not self:GetNWBool("TimerActive") then return end
 	
 	local s = self:GetSkin()
