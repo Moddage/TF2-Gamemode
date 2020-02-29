@@ -285,6 +285,7 @@ else
         ParticleEffectAttach("blood_decap_fountain", PATTACH_POINT_FOLLOW, rag, eyes)
         ParticleEffectAttach("blood_decap_streaks", PATTACH_POINT_FOLLOW, rag, eyes)
         local head = ClientsideRagdoll(rag:GetModel())
+        head:SetSkin(rag:GetSkin())
 
         if rag:GetClass() == "prop_ragdoll" then
             for i = 1, rag:GetBoneCount() do
