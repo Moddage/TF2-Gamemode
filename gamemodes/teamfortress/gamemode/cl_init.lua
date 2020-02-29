@@ -380,39 +380,7 @@ SpyButton:SetPos(730, 35)
 SpyButton:SetText("Spy") --Set the name of the button
 SpyButton.DoClick = function() RunConsoleCommand("changeclass", "spy") surface.PlaySound( "/music/class_menu_09.wav" ) ClassFrame:Close() end
 
-if !GetConVar("tf_disable_fun_classes"):GetBool() then
-local GmodButton = vgui.Create("DButton", ClassFrame)
-GmodButton:SetSize(100, 30)
-GmodButton:SetPos(366, 70)
-GmodButton:SetText("GMod Player") --Set the name of the button
-GmodButton.DoClick = function() RunConsoleCommand("changeclass", "gmodplayer") ClassFrame:Close() end
-end
-
-local Hint = vgui.Create( "DLabel", ClassFrame )
-Hint:SetPos( 10, 70 )
-Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showteam" )) or "F2" ).." to open this menu" )
-Hint:SizeToContents()
-
-local Hint = vgui.Create( "DLabel", ClassFrame )
-Hint:SetPos( 10, 82 )
-Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showspare1" )) or "F3" ).." to open the hat picker" )
-Hint:SizeToContents()
-
-local Hint = vgui.Create( "DLabel", ClassFrame )
-Hint:SetPos( 10, 94 )
-Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showspare2" )) or "F4" ).." to open the weapon picker" )
-Hint:SizeToContents()
-
-local TeamRed = vgui.Create( "DButton", ClassFrame )
-function TeamRed.DoClick() RunConsoleCommand( "changeteam", 1 ) ClassFrame:Close() end
-TeamRed:SetPos( 700, 65 )
-TeamRed:SetSize( 130, 20 )
-TeamRed:SetText( "RED Team" )
-local TeamBlu = vgui.Create( "DButton", ClassFrame )
-function TeamBlu.DoClick() RunConsoleCommand( "changeteam", 2 ) ClassFrame:Close() end
-TeamBlu:SetPos( 700, 105 )
-TeamBlu:SetSize( 130, 20 )
-TeamBlu:SetText( "BLU Team" )
+-- do this before so class comes first
 
 local spectate = vgui.Create("DModelPanel", ClassFrame)
 spectate:SetPos( 625, 65 )
@@ -441,6 +409,120 @@ function spectate:LayoutEntity()
 		self.Hov = false
 	end
 end
+
+local classes = {}
+table.Merge(classes, gmod.GetGamemode().PlayerClasses)
+classes["scout"] = nil
+classes["soldier"] = nil
+classes["pyro"] = nil
+classes["demoman"] = nil
+classes["engineer"] = nil
+classes["heavy"] = nil
+classes["medic"] = nil
+classes["sniper"] = nil
+classes["spy"] = nil
+classes["hl2"] = nil
+classes["civilian"] = nil
+
+if GetConVar("tf_disable_fun_classes"):GetBool() then
+	classes["gmodplayer"] = nil
+end
+
+local i = 0
+local sep = 95
+local amount = table.Count(classes)
+
+for classn, classtab in pairs(classes) do
+	if i < 5 and !classtab.Hidden then
+		i = i + 1
+		print(amount)
+		local button = vgui.Create("DButton", ClassFrame)
+		button:SetSize(100, 30)
+		-- nothing allows automatic centering in a grid/list :(
+		if amount == 1 then
+			button:SetPos(366, 70)
+		elseif amount == 2 then
+			button:SetPos(225 + (sep * i), 70)
+		elseif amount == 3 then
+			button:SetPos(175 + (sep * i), 70)
+		elseif amount == 4 then
+			button:SetPos(135 + (sep * i), 70)
+		else
+			button:SetPos(80 + (sep * i), 70)
+		end
+		button:SetText(classtab.Name)
+		button.DoClick = function() surface.PlaySound("music/class_menu_07db.wav") RunConsoleCommand("changeclass", classn) ClassFrame:Close() end
+	end
+end
+
+if amount > 5 then
+	local plus = vgui.Create("DButton", ClassFrame)
+	plus:SetSize(15, 15)
+	plus:SetText("+")
+	plus:SetPos(660, 77.5)
+	plus.DoClick = function()
+		local frame = vgui.Create("DFrame")
+		frame:SetTitle("Classes")
+		frame:SetSize(200, 350)
+		frame:Center()
+		frame:MakePopup()
+
+		local list = vgui.Create("DListView", frame)
+		list:Dock(FILL)
+		list:SetMultiSelect(false)
+		list:AddColumn("Classes")
+		list.OnRowSelected = function(_, _, listed)
+			local text = listed:GetColumnText(1)
+			local cmd = string.Split(text, "(")[2]
+			cmd = string.sub(cmd, 1, string.len(cmd) - 1)
+
+			surface.PlaySound("music/class_menu_07db.wav")
+			RunConsoleCommand("changeclass", cmd)
+			frame:Close()
+		end
+
+		for cmd, class in pairs(gmod.GetGamemode().PlayerClasses) do
+			if !class.Hidden then
+				list:AddLine(class.Name .. " (" .. cmd .. ")")
+			end
+		end
+		ClassFrame:Close()
+	end
+end
+
+--[[if !GetConVar("tf_disable_fun_classes"):GetBool() then
+local GmodButton = vgui.Create("DButton", ClassFrame)
+GmodButton:SetSize(100, 30)
+GmodButton:SetPos(366, 70)
+GmodButton:SetText("GMod Player") --Set the name of the button
+GmodButton.DoClick = function() RunConsoleCommand("changeclass", "gmodplayer") ClassFrame:Close() end
+end]]
+
+local Hint = vgui.Create( "DLabel", ClassFrame )
+Hint:SetPos( 10, 70 )
+Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showteam" )) or "F2" ).." to open this menu" )
+Hint:SizeToContents()
+
+local Hint = vgui.Create( "DLabel", ClassFrame )
+Hint:SetPos( 10, 82 )
+Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showspare1" )) or "F3" ).." to open the hat picker" )
+Hint:SizeToContents()
+
+local Hint = vgui.Create( "DLabel", ClassFrame )
+Hint:SetPos( 10, 94 )
+Hint:SetText(  ( string.upper(input.LookupBinding( "gm_showspare2" )) or "F4" ).." to open the weapon picker" )
+Hint:SizeToContents()
+
+local TeamRed = vgui.Create( "DButton", ClassFrame )
+function TeamRed.DoClick() RunConsoleCommand( "changeteam", 1 ) ClassFrame:Close() end
+TeamRed:SetPos( 700, 65 )
+TeamRed:SetSize( 130, 20 )
+TeamRed:SetText( "RED Team" )
+local TeamBlu = vgui.Create( "DButton", ClassFrame )
+function TeamBlu.DoClick() RunConsoleCommand( "changeteam", 2 ) ClassFrame:Close() end
+TeamBlu:SetPos( 700, 105 )
+TeamBlu:SetSize( 130, 20 )
+TeamBlu:SetText( "BLU Team" )
 
 if !GetConVar("tf_competitive"):GetBool() then
 	local TeamNeu = vgui.Create( "DButton", ClassFrame )
