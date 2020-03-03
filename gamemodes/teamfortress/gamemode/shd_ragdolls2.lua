@@ -1,7 +1,10 @@
 -- todo: fully replace all of shd_ragdoll's functions so we can delete it
--- todo: better physics (headsheadsheadsheads had very good physics, could it have been using custom models?)
--- todo: find a way that doesn't use stencils (lags with just 8-18 decapitations)
--- todo: headshot
+-- todo: better physics (headsheadsheadsheads had very good physics, could it have been using a custom model with custom phy and bonemerge?)
+-- todo: find a way that doesn't use stencils (starts lagging with just 10-12 decapitations)
+-- todo: fix GenericDeathPose being really weird with legs and allow it for backstab
+-- todo: fix clientside ragdoll anims being delayed, headshot and backstab depend on these and serverside ragdolls lag heavily
+
+local forcedecapanims = CreateClientConVar("tf_force_client_anims", 0, true, false, "Allow all ragdolls to use the serverside animations, very buggy atm")
 
 local DecapDeathPose = {
     PhysParams = {
@@ -191,7 +194,7 @@ local function StartDeathPose(ent, dp)
                 phys:EnableMotion(true)
             end
 
-            if CLIENT then return end -- unable to fix this due to physics being delayed :(
+            if CLIENT and !forcedecapanims:GetBool() then return end -- unable to fix this due to physics being delayed :(
 
             if tab.d and tab.rd then
                 phys:SetDamping(Val(tab.d), Val(tab.rd))
@@ -302,7 +305,7 @@ else
                         physh:SetPos(pos, true)
                         physh:SetAngles(ang)
 
-                        if i ~= headbone and i ~= head:LookupBone("ValveBiped.Bip01_Spine4") and i ~= head:LookupBone("ValveBiped.Bip01_Neck1") and i ~= head:LookupBone("ValveBiped.forward") then
+                        if i ~= headbone and i ~= head:LookupBone("ValveBiped.Bip01_Neck1") and i ~= head:LookupBone("ValveBiped.forward") then
                             timer.Simple(0.03, function()
                                 physh:SetVelocity(rag:GetUp() * 550 + VectorRand() * 300)
                                 physh:EnableMotion(true)
