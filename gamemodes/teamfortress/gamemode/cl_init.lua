@@ -546,7 +546,7 @@ end
 
 local Option1text = vgui.Create( "DLabel", ClassFrame )
 Option1text:SetPos( 30, 110 )
-Option1text:SetText( "Right handed" )
+Option1text:SetText( "Flip Viewmodel" )
 Option1text:SizeToContents()
 
 local Option2 = vgui.Create( "DCheckBox", ClassFrame )

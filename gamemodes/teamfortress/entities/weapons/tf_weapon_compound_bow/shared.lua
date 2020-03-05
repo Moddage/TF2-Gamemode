@@ -170,9 +170,9 @@ function SWEP:Think()
 
 	if GetConVar("cl_flipviewmodels") then
 		if GetConVar("cl_flipviewmodels"):GetInt() == 1 then
-			self.ViewModelFlip = true
-		else
 			self.ViewModelFlip = false
+		else
+			self.ViewModelFlip = true
 		end
 	end
 

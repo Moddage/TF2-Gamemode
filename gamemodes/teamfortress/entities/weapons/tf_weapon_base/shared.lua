@@ -25,7 +25,7 @@ end
 SWEP.ViewModelFlip	= false
 --eugh, another ugly hack.
 if GetConVar("cl_flipviewmodels") then
-	if GetConVar("cl_flipviewmodels"):GetInt() == 0 then
+	if GetConVar("cl_flipviewmodels"):GetInt() == 1 then
 		SWEP.ViewModelFlip = true
 	else
 		SWEP.ViewModelFlip = false
@@ -43,9 +43,9 @@ end
 
 function SWEP:TFFlipViewmodel()
 	if GetConVar("cl_flipviewmodels"):GetInt() > 0 then
-		self.ViewModelFlip = false
-	else
 		self.ViewModelFlip = true
+	else
+		self.ViewModelFlip = false
 	end
 end
 -- View/World model
@@ -100,7 +100,7 @@ SWEP.LastClass = "scout"
 
 CreateClientConVar("viewmodel_fov_tf", "54", true, false)
 CreateClientConVar("tf_use_viewmodel_fov", "1", true, false)
-CreateClientConVar("cl_flipviewmodels", "1", true, true)
+CreateClientConVar("cl_flipviewmodels", "0", true, true)
 CreateClientConVar("tf_sprintinspect", "1", true, true)
 CreateClientConVar("tf_reloadinspect", "1", true, true)
 CreateClientConVar("tf_use_min_viewmodels", "0", true, false)
@@ -124,7 +124,7 @@ end
 function SWEP:ProjectileShootPos()
 	local pos, ang = self.Owner:GetShootPos(), self.Owner:EyeAngles()
 	if self then
-		if self.Owner:GetInfoNum("cl_flipviewmodels", 1) == 0 then
+		if self.Owner:GetInfoNum("cl_flipviewmodels", 0) == 1 then
 		return pos +
 			self.ProjectileShootOffset.x * ang:Forward() - 
 			self.ProjectileShootOffset.y * ang:Right() + 
@@ -231,7 +231,7 @@ function SWEP:Deploy()
 	end
 
 	if GetConVar("cl_flipviewmodels") then
-	if GetConVar("cl_flipviewmodels"):GetInt() == 0 then
+	if GetConVar("cl_flipviewmodels"):GetInt() == 1 then
 		self.ViewModelFlip = true
 	else
 		self.ViewModelFlip = false

@@ -95,7 +95,7 @@ function SWEP:PrimaryAttack()
 
 	if not self:CallBaseFunction("PrimaryAttack") then return false end
 	
-	auto_reload = self.Owner:GetInfoNum("cl_flipviewmodels", 1)
+	auto_reload = self.Owner:GetInfoNum("tf_autoreload", 1)
 	
 	self:SendWeaponAnim(self.VM_PRIMARYATTACK)
 	self.Owner:DoAttackEvent()
