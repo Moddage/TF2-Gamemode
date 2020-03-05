@@ -9,7 +9,6 @@ include("sv_damage.lua")
 include("sv_death.lua")
 include("sv_ctf_bots.lua")
 include("sv_chat.lua")
-include("shd_taunts.lua")
 include("sv_weaponslots.lua")
 
 local LOGFILE = "teamfortress/log_server.txt"

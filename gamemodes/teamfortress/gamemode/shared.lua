@@ -68,7 +68,9 @@ include("shd_criticals.lua")
 include("shd_ragdolls.lua")
 include("shd_ragdolls2.lua")
 
+include("shd_taunts.lua")
 include("shd_items_game.lua")
+include("shd_conflict.lua")
 
 tf_soundscript.Load("teamfortress/scripts/game_sounds_weapons_tf.txt")
 

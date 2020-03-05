@@ -193,7 +193,7 @@ end
 
 -- Shared
 
-function meta:GetCrouchedWalkSpeed()
+--[[function meta:GetCrouchedWalkSpeed()
 	return self:GetNWFloat("CrouchedWalkSpeed")
 end
 
@@ -211,7 +211,7 @@ end
 
 function meta:GetUnDuckSpeed()
 	return self:GetNWFloat("TimeToUnDuck")
-end
+end]]
 
 function meta:IsHL2()
 	return self:GetNWBool("IsHL2")

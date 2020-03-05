@@ -11,8 +11,6 @@ include("shd_items.lua")
 include("cl_proxies.lua")
 include("cl_pickteam.lua")
 
-include("cl_conflict.lua")
-
 include("shared.lua")
 include("cl_entclientinit.lua")
 include("cl_deathnotice.lua")
