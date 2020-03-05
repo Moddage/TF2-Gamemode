@@ -4,10 +4,10 @@ AddCSLuaFile("shared.lua")
 
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Knife"
 SWEP.Slot				= 2
+
+if CLIENT then
 
 function SWEP:ResetBackstabState()
 	self.NextBackstabIdle = nil

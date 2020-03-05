@@ -4,10 +4,11 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "The Direct Hit"
 SWEP.Slot				= 0
+
+if CLIENT then
+
 SWEP.HasCModel = true
 
 end

@@ -14,10 +14,11 @@ end
 
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Minigun"
 SWEP.Slot				= 0
+
+if CLIENT then
+
 
 function SWEP:SetMinigunEffect(i)
 	if self.LastEffect==i then return end

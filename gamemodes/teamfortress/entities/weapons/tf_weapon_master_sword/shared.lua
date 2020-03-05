@@ -2,11 +2,14 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+SWEP.PrintName			= "The Master Sword"
+SWEP.Slot				= 2
+
 if CLIENT then
 
-SWEP.PrintName			= "The Master Sword"
+
 SWEP.HasCModel = true
-SWEP.Slot				= 2
+
 
 SWEP.DamageType = DMG_SLASH
 SWEP.CritDamageType = DMG_SLASH

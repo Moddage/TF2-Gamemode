@@ -2,9 +2,10 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
-if CLIENT then
 	SWEP.PrintName			= "The Gunslinger"
 	SWEP.Slot				= 2
+
+if CLIENT then
 	SWEP.GlobalCustomHUD = {HudAccountPanel = true}
 end
 

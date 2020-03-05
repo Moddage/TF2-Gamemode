@@ -8,11 +8,12 @@ SWEP.AutoSwitchFrom		= false
 
 end
 
+SWEP.PrintName			= "Alyx's Gun"
+
 if CLIENT then
 
 SWEP.DrawAmmo			= true
 SWEP.DrawCrosshair		= true
-SWEP.PrintName			= "Alyx's Gun"
 
 end
 

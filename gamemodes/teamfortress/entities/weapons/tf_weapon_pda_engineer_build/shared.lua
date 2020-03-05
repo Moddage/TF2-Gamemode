@@ -4,6 +4,9 @@ AddCSLuaFile("shared.lua")
 
 end
 
+SWEP.PrintName			= "Build PDA"
+SWEP.Slot				= 3
+
 SWEP.Base				= "tf_weapon_base"
 
 SWEP.ViewModel			= "models/weapons/v_models/v_builder_engineer.mdl"
@@ -16,8 +19,7 @@ SWEP.Primary.Ammo			= "none"
 
 if CLIENT then
 
-SWEP.PrintName			= "Build PDA"
-SWEP.Slot				= 3
+
 SWEP.Crosshair = "tf_crosshair6"
 
 SWEP.CustomHUD = {HudEngyMenuBuild = true}

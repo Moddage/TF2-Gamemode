@@ -2,12 +2,12 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 	
 end
+SWEP.PrintName			= "Fucking Piece of Gargbage"
 
+SWEP.Slot				= 1
 if CLIENT then
 
-SWEP.PrintName			= "Fucking Piece of Gargbage"
 SWEP.HasCModel = true
-SWEP.Slot				= 1
 
 SWEP.RenderGroup 		= RENDERGROUP_BOTH
 

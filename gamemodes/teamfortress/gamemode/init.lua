@@ -10,6 +10,7 @@ include("sv_death.lua")
 include("sv_ctf_bots.lua")
 include("sv_chat.lua")
 include("shd_taunts.lua")
+include("sv_weaponslots.lua")
 
 local LOGFILE = "teamfortress/log_server.txt"
 file.Delete(LOGFILE)
@@ -321,6 +322,10 @@ function GM:PlayerSpawn(ply)
 
 	umsg.Start("ExitFreezecam", ply)
 	umsg.End()
+
+	net.Start("TF_PlayerSpawn")
+	net.WriteEntity(ply)
+	net.Broadcast()
 end
 
 function GM:PlayerSetHandsModel( ply, ent )
@@ -587,6 +592,7 @@ end
 
 -- Networking
 util.AddNetworkString("UpdateLoadout")
+util.AddNetworkString("TF_PlayerSpawn")
 
 function GM:PlayerDroppedWeapon(ply)
 	if IsValid(ply) and ply:IsPlayer() and !ply:IsHL2() then

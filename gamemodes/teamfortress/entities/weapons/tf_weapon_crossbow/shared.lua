@@ -3,12 +3,8 @@ if SERVER then
 	SWEP.HeadshotScore = 1
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Syringe Gun"
 SWEP.Slot				= 0
-
-end
 
 SWEP.Base				= "tf_weapon_gun_base"
 

@@ -215,13 +215,13 @@ function SWEP:DrawWeaponSelection(x, y, w, h, alpha)
 	-- Borders
 	y = y - 10
 	x = x + 50
-	wide = wide - 20
+	w = w - 20
 
 	-- Draw that mother
-	surface.DrawTexturedRect( x, y,  wide * 0.6 , ( wide / 1.2 ) )
+	surface.DrawTexturedRect( x, y,  w * 0.6 , ( w / 1.2 ) )
 
 	-- Draw weapon info box
-	self:PrintWeaponInfo( x + wide + 20, y + tall * 0.95, alpha )
+	self:PrintWeaponInfo( x + w + 20, y + h * 0.95, alpha )
 end
 
 function SWEP:ViewModelDrawn()
@@ -312,6 +312,8 @@ function SWEP:DrawWorldModel(from_postplayerdraw)
 		if IsValid(self.WModel2) then
 			self.WModel2:SetSkin(self.WeaponSkin or 0)
 			self.WModel2:SetMaterial(self.WeaponMaterial or 0)
+			self.WModel2:AddEffects(bit.bor(EF_BONEMERGE, EF_BONEMERGE_FASTCULL))
+			self.WModel2:SetParent(self.Owner)
 		end
 		if IsValid(self.AttachedWModel) then
 			self.AttachedWModel:SetSkin(self.WeaponSkin or 0)

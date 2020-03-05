@@ -12,6 +12,8 @@ SWEP.GlobalCustomHUD = {HudBuildingStatus = true}
 
 end
 
+SWEP.Slot = 9
+
 SWEP.Base				= "tf_weapon_base"
 
 SWEP.ViewModel			= "models/weapons/v_models/v_toolbox_engineer.mdl"

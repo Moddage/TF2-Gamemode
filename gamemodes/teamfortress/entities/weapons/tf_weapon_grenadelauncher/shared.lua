@@ -3,10 +3,10 @@ if SERVER then
 	
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Grenade Launcher"
 SWEP.Slot				= 0
+
+if CLIENT then
 
 function SWEP:InitializeCModel()
 	self:CallBaseFunction("InitializeCModel")

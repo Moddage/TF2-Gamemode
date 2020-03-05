@@ -2,9 +2,10 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+SWEP.PrintName			= "Engineer's Fist"
+SWEP.Slot				= 2
+
 if CLIENT then
-	SWEP.PrintName			= "Engineer's Fist"
-	SWEP.Slot				= 2
 	SWEP.GlobalCustomHUD = {HudAccountPanel = true}
 end
 

@@ -3,11 +3,12 @@ if SERVER then
 	SWEP.HeadshotScore = 1
 end
 
+SWEP.PrintName			= "The Huntsman"
+SWEP.Slot				= 0
+
 if CLIENT then
 
-SWEP.PrintName			= "The Huntsman"
 SWEP.HasCModel = true
-SWEP.Slot				= 0
 
 function SWEP:InspectAnimCheck()
 inspect_start = NONE

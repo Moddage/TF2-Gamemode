@@ -3,12 +3,8 @@ if SERVER then
 	
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Nailgun"
 SWEP.Slot				= 0
-
-end
 
 SWEP.Base				= "tf_weapon_gun_base"
 

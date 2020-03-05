@@ -2,11 +2,11 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 	
 end
+SWEP.PrintName			= "Sniper Rifle"
+SWEP.Slot				= 0
 
 if CLIENT then
 
-SWEP.PrintName			= "Sniper Rifle"
-SWEP.Slot				= 0
 
 usermessage.Hook("ClearZoomStatus",function(msg)
 	local pl = msg:ReadEntity()

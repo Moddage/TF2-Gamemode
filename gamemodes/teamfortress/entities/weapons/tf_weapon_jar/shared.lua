@@ -3,12 +3,12 @@ if SERVER then
 	
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Jarate"
-SWEP.HasCModel = true
 SWEP.Slot				= 1
 
+if CLIENT then
+
+SWEP.HasCModel = true
 SWEP.RenderGroup 		= RENDERGROUP_BOTH
 
 end

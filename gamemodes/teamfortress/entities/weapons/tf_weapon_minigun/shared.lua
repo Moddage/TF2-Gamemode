@@ -14,10 +14,12 @@ end
 
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Minigun"
 SWEP.Slot				= 0
+
+if CLIENT then
+
+
 SWEP.barrelRotation 		= 0
 SWEP.barrelSpeed 			= 1
 SWEP.barrelValue1 			= 0

@@ -3,11 +3,12 @@ if SERVER then
 	
 end
 
+SWEP.PrintName			= "The Flare Gun"
+SWEP.Slot				= 1
+
 if CLIENT then
 
-SWEP.PrintName			= "The Flare Gun"
 SWEP.HasCModel = true
-SWEP.Slot				= 1
 
 end
 

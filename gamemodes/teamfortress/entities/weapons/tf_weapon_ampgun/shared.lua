@@ -79,10 +79,11 @@ end
 
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Ampgun"
 SWEP.Slot				= 1
+
+if CLIENT then
+
 SWEP.CustomHUD = {HudMedicCharge = true}
 
 --[[

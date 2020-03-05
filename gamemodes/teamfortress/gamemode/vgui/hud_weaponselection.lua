@@ -6,7 +6,7 @@ local WScale = W/640
 local Scale = H/480
 
 -- maximum number of slots to be displayed
-local MAXSLOTS = 6
+local MAXSLOTS = 7
 
 local color_panel = {
 	[0]=surface.GetTextureID("hud/color_panel_brown"),
@@ -177,6 +177,13 @@ function PANEL:CalcCurrentWeaponSlot()
 	return 1
 end
 
+local specialslots = {}
+specialslots["weapon_physgun"] = 5
+specialslots["gmod_tool"] = 6
+
+local physgunIcon = Material("entities/weapon_physgun.png")
+DEFAULT_ICONS["weapon_physgun"] = physgunIcon
+
 function PANEL:UpdateLoadout()
 	self.Loadout = {}
 	
@@ -184,15 +191,17 @@ function PANEL:UpdateLoadout()
 	local loadout = {}
 	
 	for _,v in pairs(LocalPlayer():GetWeapons()) do
-		if v.Slot and not v.Hidden then
-			loadout[v.Slot+1] = {
+		local slot = (specialslots[v:GetClass()] and specialslots[v:GetClass()]) or v.Slot or v:GetSlot()
+
+		if slot and not v.Hidden then
+			loadout[slot+1] = {
 				class=v:GetClass(),
 				ent=v,
-				slot=v.Slot+1,
+				slot=slot+1,
 				id=(v.ItemIndex and v:ItemIndex()) or -1
 			}
 			
-			if v.Slot>maxslot then maxslot = v.Slot end
+			if slot>maxslot then maxslot = slot end
 		end
 	end
 	
@@ -209,8 +218,9 @@ function PANEL:UpdateLoadout()
 	for i=1,MAXSLOTS do
 		local t = self.Panels[i]
 		local l = self.Loadout[i]
-		
+
 		if i<=self.NumSlots then
+			print(l.class, "PASSED :D")
 			t:SetVisible(true)
 			local w = tf_items.ItemsByID[l.id]
 			if w then
@@ -232,9 +242,14 @@ function PANEL:UpdateLoadout()
 					t.text = l.ent:GetFullName()
 				end
 			else
-				t.itemImage = l.ent
-				t:SetTextColor(l.ent:GetNameColor())
-				t.text = l.ent:GetFullName()
+				t.itemImage = DEFAULT_ICONS[l.class] or l.ent.WepSelectIcon or surface.GetTextureID("weapons/swep")
+				if l.ent.GetFullName then
+					t:SetTextColor(l.ent:GetNameColor())
+					t.text = l.ent:GetFullName()
+				else
+					t:SetTextColor(Color(255, 255, 255))
+					t.text = l.ent.PrintName or l.class
+				end
 			end
 			
 			if LocalPlayer():EntityTeam() == TEAM_BLU then

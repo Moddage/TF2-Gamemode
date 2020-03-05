@@ -15,10 +15,10 @@ end
 
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Flamethrower"
 SWEP.Slot				= 0
+
+if CLIENT then
 
 function SWEP:SetFlamethrowerEffect(i)
 	if self.LastEffect==i then return end

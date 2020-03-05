@@ -57,7 +57,7 @@ end
 
 function PANEL:Paint(w, h)
 	if self.invisible then return end
-	if !isnumber(self.itemImage) then return end
+	--if !isnumber(self.itemImage) then return end
 	
 	local w, h = self:GetSize()
 	
@@ -102,10 +102,20 @@ function PANEL:Paint(w, h)
 				tex = self.itemImage
 			end
 
-			if !isnumber(tex) then return end
 			
-			surface.SetTexture(tex)
-			local rx, ry = surface.GetTextureSize(tex)
+			local rx, ry = 128, 128
+			if !isnumber(tex) then
+				if !isstring(tex) and tex.IsError then
+					surface.SetMaterial(tex)
+				else
+					return
+				end
+			else
+				surface.SetTexture(tex)
+				rx, ry = surface.GetTextureSize(tex)
+			end
+			
+
 			local sy = sx * ry/rx
 
 			if self.FallbackModel then

@@ -3,11 +3,12 @@ if SERVER then
 	
 end
 
+SWEP.PrintName			= "Capsule Launcher"
+SWEP.Slot				= 0
+
 if CLIENT then
 
-SWEP.PrintName			= "Capsule Launcher"
 SWEP.HasCModel = true
-SWEP.Slot				= 0
 
 function SWEP:InitializeCModel()
 	self:CallBaseFunction("InitializeCModel")

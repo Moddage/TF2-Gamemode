@@ -3,11 +3,12 @@ if SERVER then
 	
 end
 
+SWEP.PrintName			= "Mad Milk"
+SWEP.Slot				= 1
+
 if CLIENT then
 
-SWEP.PrintName			= "Mad Milk"
 SWEP.HasCModel = true
-SWEP.Slot				= 1
 
 SWEP.RenderGroup 		= RENDERGROUP_BOTH
 

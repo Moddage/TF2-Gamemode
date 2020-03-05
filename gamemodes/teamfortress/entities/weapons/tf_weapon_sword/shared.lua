@@ -2,11 +2,12 @@ if SERVER then
 	AddCSLuaFile( "shared.lua" )
 end
 
+SWEP.PrintName			= "The Eyelander"
+SWEP.Slot				= 2
+
 if CLIENT then
 
-SWEP.PrintName			= "The Eyelander"
 SWEP.HasCModel = true
-SWEP.Slot				= 2
 
 local WhisperIdle = Sound("Sword.Idle")
 local WhisperKill = Sound("Sword.Hit")

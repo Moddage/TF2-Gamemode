@@ -79,11 +79,12 @@ end
 
 end
 
+SWEP.PrintName			= "Medigun"
+SWEP.Slot				= 1
+
 if CLIENT then
 CreateClientConVar("tf_heal_without_holding", "0", true, true)
 
-SWEP.PrintName			= "Medigun"
-SWEP.Slot				= 1
 SWEP.CustomHUD = {HudMedicCharge = true}
 
 --[[

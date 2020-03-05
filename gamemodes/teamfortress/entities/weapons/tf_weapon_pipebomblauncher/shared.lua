@@ -3,10 +3,10 @@ if SERVER then
 	
 end
 
-if CLIENT then
-
 SWEP.PrintName			= "Stickybomb Launcher"
 SWEP.Slot				= 1
+
+if CLIENT then
 
 SWEP.GlobalCustomHUD = {HudDemomanPipes = true}
 SWEP.CustomHUD = {HudBowCharge = true}
