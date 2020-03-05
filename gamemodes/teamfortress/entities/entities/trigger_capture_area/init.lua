@@ -5,7 +5,6 @@ function ENT:Initialize()
 end
 
 function ENT:InitPostEntity()
-	print(self)
 	self.CapturePoint = ents.FindByName(self.Properties.area_cap_point or "")[1] or NULL
 	
 	if IsValid(self.CapturePoint) then
