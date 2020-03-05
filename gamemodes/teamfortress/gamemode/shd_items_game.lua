@@ -56,6 +56,9 @@ for k, v in pairs(items) do
         v.item_class = "tf_weapon_flaregun"
     elseif v.item_class == "tf_weapon_katana" then
         v.item_class = "tf_weapon_sword"
+    elseif v.prefab == "weapon_eyelander" or v.prefab == "weapon_sword" or (prefabs[v.prefab] and prefabs[v.prefab].prefab == "weapon_sword") then
+        v.attach_to_hands = 1
+        v.item_class = "tf_weapon_sword"
     end
 
     -- assume it's cosmetic if it has no class
