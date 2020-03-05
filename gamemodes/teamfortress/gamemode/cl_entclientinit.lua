@@ -100,3 +100,23 @@ hook.Add("PostDrawTranslucentRenderables", "TFClientEntityDrawTranslucent", func
 		end
 	end
 end)
+
+local phoneme = {}
+phoneme["scout"] = true
+phoneme["soldier"] = true
+phoneme["pyro"] = true
+phoneme["demoman"] = true
+phoneme["heavy"] = true
+phoneme["engineer"] = true
+phoneme["medic"] = true
+phoneme["sniper"] = true
+phoneme["spy"] = true
+
+net.Receive("TF_PlayerSpawn", function()
+	local ply = net.ReadEntity()
+	if !IsValid(ply) then return end
+	local class = ply:GetPlayerClass() or "scout"
+	if phoneme[class] then
+		ply:SetupPhonemeMappings("player/" .. class .. "/phonemes/phonemes")
+	end
+end)
