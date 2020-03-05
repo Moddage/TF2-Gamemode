@@ -49,7 +49,7 @@ function PANEL:PerformLayout()
 end
 
 function PANEL:Paint()
-	if not LocalPlayer():Alive() or GetConVarNumber("cl_drawhud")==0 then return end
+	if not LocalPlayer():Alive() or GetConVar("tf_use_hl2_hud"):GetBool() or GetConVarNumber("cl_drawhud")==0 then return end
 	
 	if not IsCustomHUDVisible("HudAccountPanel") then
 		return
