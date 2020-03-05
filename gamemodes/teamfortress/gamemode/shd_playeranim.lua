@@ -405,3 +405,34 @@ function meta:SendWeaponAnim(act)
 
 	OldSendWeaponAnim(self,act)
 end
+
+if SERVER then
+	util.AddNetworkString("TF_VoiceSync")
+
+	hook.Add("EntityEmitSound", "TF_PlayerAnim", function(snd)
+		if string.StartWith(snd.SoundName, "player/pl_fallpain") then
+			snd.SoundName = "player/pl_fallpain.wav"
+			snd.Pitch = math.random(97, 99)
+			return true
+		end
+
+		if string.StartWith(snd.SoundName, "vo/") and string.EndsWith(snd.SoundName, ".mp3") then
+			net.Start("TF_VoiceSync")
+			net.WriteEntity(snd.Entity)
+			net.WriteString(snd.SoundName)
+			net.Broadcast()
+			return false
+		end
+	end)
+else
+	local sync = CreateClientConVar("tf_voicesync", 0, true, false)
+
+	net.Receive("TF_VoiceSync", function()
+		local ply = net.ReadEntity()
+		local sound = net.ReadString()
+		if sync:GetBool() then
+			string.Replace(sound, ".mp3", ".wav")
+		end
+		ply:EmitSound(sound)
+	end)
+end
