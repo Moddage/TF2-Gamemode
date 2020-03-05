@@ -73,6 +73,13 @@ function SWEP:InitializeCModel()
 			self.CModel:SetMaterial(self.MaterialOverride)
 		end
 	end
+
+	for _,v in pairs(self.Owner:GetTFItems()) do
+		if v:GetClass() == "tf_wearable_item_demoshield" then
+			self.ShieldEntity = v
+			v:InitializeCModel(self)
+		end
+	end
 end
 
 function SWEP:InitializeWModel2()
@@ -280,6 +287,13 @@ function SWEP:ViewModelDrawn()
 	if self.ViewModelFlip then
 		render.CullMode(MATERIAL_CULLMODE_CW)
 	end
+
+	if IsValid(self.ShieldEntity) and IsValid(self.ShieldEntity.CModel) then
+		self.ShieldEntity:StartVisualOverrides()
+		self.ShieldEntity.CModel:DrawModel()
+		self.ShieldEntity:EndVisualOverrides()
+	end
+
 	self:StartVisualOverrides()
 	
 	self:RenderCModel()

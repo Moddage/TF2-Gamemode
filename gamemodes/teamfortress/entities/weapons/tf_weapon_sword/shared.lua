@@ -21,27 +21,6 @@ end)
 
 SWEP.GlobalCustomHUD = {HudItemEffectMeter_Demoman = function(self) return self.dt.IsEyelander end}
 
-function SWEP:InitializeCModel()
-	self:CallBaseFunction("InitializeCModel")
-	
-	for _,v in pairs(self.Owner:GetTFItems()) do
-		if v:GetClass() == "tf_wearable_item_demoshield" then
-			self.ShieldEntity = v
-			v:InitializeCModel(self)
-		end
-	end
-end
-
-function SWEP:ViewModelDrawn()
-	self:CallBaseFunction("ViewModelDrawn")
-	
-	if IsValid(self.ShieldEntity) and IsValid(self.ShieldEntity.CModel) then
-		self.ShieldEntity:StartVisualOverrides()
-		self.ShieldEntity.CModel:DrawModel()
-		self.ShieldEntity:EndVisualOverrides()
-	end
-end
-
 end
 
 SWEP.Base				= "tf_weapon_melee_base"
