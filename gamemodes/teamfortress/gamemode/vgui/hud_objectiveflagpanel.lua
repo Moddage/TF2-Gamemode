@@ -29,7 +29,7 @@ end
 function PANEL:Paint()
 	local param
 	
-	if not LocalPlayer():Alive() or (LocalPlayer():IsHL2() and !GetConVar("hud_show_ctf_as_hl2"):GetBool()) or GetConVar("hud_forcehl2hud"):GetBool() or GetConVarNumber("cl_drawhud")==0 or GAMEMODE.ShowScoreboard or !string.find(game.GetMap(), "ctf_") then return end
+	if not LocalPlayer():Alive() or (LocalPlayer():IsHL2() and !GetConVar("hud_show_ctf_as_hl2"):GetBool()) or GetConVar("tf_use_hl2_hud"):GetBool() or GetConVarNumber("cl_drawhud")==0 or GAMEMODE.ShowScoreboard or !string.find(game.GetMap(), "ctf_") then return end
 	
 	surface.SetDrawColor(255,255,255,255)
 	

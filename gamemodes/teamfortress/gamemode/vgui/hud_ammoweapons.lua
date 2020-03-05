@@ -27,7 +27,7 @@ end
 function PANEL:Paint()
 	local w = LocalPlayer():GetActiveWeapon()
 	
-	if not LocalPlayer():Alive() or LocalPlayer():IsHL2() or GetConVar("hud_forcehl2hud"):GetBool() or GetConVarNumber("cl_drawhud")==0 or GAMEMODE.ShowScoreboard or not IsValid(w) or not w.Primary or string.lower(w.Primary.Ammo)=="none" then
+	if not LocalPlayer():Alive() or LocalPlayer():IsHL2() or GetConVar("tf_use_hl2_hud"):GetBool() or GetConVarNumber("cl_drawhud")==0 or GAMEMODE.ShowScoreboard or not IsValid(w) or not w.Primary or string.lower(w.Primary.Ammo)=="none" then
 		return
 	end
 	

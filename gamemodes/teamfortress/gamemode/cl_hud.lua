@@ -125,7 +125,7 @@ T:SetQuality("rarity3")]]
 
 local hud_targetid_anyteam = CreateConVar("hud_targetid_anyteam", "0", {FCVAR_CHEAT})
 local hud_defaultweaponselect = CreateConVar("hud_defaultweaponselect", "0")
-local hl2hudtf = CreateConVar("hud_forcehl2hud", "0")
+local hl2hudtf = CreateClientConVar("tf_use_hl2_hud", "0", true, false, "Use the Half-Life 2 HUD as Team Fortress 2 classes")
 
 local HiddenHudElements = {
 	CHudDamageIndicator = 1,

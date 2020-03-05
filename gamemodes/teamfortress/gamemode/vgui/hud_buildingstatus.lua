@@ -45,7 +45,7 @@ function PANEL:ShouldDraw()
 	if LocalPlayer():IsValid() and LocalPlayer():GetPlayerClass() != nil then
 	if LocalPlayer():GetPlayerClass() == "spy" then return false end
 	
-	return GetConVarNumber("cl_drawhud")~=0 and IsCustomHUDVisible("HudBuildingStatus")
+	return GetConVarNumber("cl_drawhud")~=0 and GetConVar("tf_use_hl2_hud"):GetFloat() ~= 1 and IsCustomHUDVisible("HudBuildingStatus")
 	end
 end
 
