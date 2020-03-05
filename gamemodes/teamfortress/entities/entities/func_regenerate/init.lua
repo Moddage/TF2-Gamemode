@@ -49,7 +49,6 @@ function ENT:Think()
 		
 		if not self.ResupplyLocker and self.ResupplyLockerName then
 			self.ResupplyLocker = ents.FindByName(self.ResupplyLockerName)[1]
-			--print("associatedmodel : "..self.ResupplyLockerName.." : "..tostring(self.ResupplyLocker))
 		end
 		
 		if self.ResupplyLocker and self.ResupplyLocker:IsValid() then

@@ -243,7 +243,6 @@ usermessage.Hook("Notice_EntityRevengeEntity", function(msg)
 end)
 
 function GM:AddDeathNotice(Attacker, team1, Inflictor, Victim, team2, Cooperator, team3, Message, Critical, Highlight, UniqueId, NoticeType)
-print(Attacker, Attacker, Attacker, team1)
 	if string.find(Attacker, "\1") then
 		local obj, owner = unpack(string.Explode("\1", Attacker))
 		if obj and owner then
@@ -305,7 +304,7 @@ print(Attacker, Attacker, Attacker, team1)
 		Message = tf_lang.GetFormatted("#Humiliation_Count", 1).." "
 	end
 	
-	if Message then
+	--[[if Message then
 		print(Attacker.." "..Message..Victim)
 	else
 		local InflictorName = string.gsub(Inflictor, "^tf_weapon_", "")
@@ -314,8 +313,8 @@ print(Attacker, Attacker, Attacker, team1)
 		else
 			print(Attacker.." killed "..Victim.." using "..InflictorName)
 		end
-	end
-	
+	end]]
+
 	local Death = {}
 	Death.time		=	CurTime()
 	Death.id		=	UniqueId

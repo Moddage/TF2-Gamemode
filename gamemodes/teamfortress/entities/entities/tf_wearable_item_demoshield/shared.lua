@@ -443,7 +443,6 @@ function ENT:Think()
 	if self.NextEndCritBoost and CurTime() > self.NextEndCritBoost then
 		GAMEMODE:StopCritBoost(self.Owner)
 		self.NextEndCritBoost = nil
-		print("!?!")
 	end
 	
 	if self.Owner:KeyDown(IN_ATTACK2) and self.dt.Ready then

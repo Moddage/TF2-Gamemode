@@ -205,7 +205,6 @@ end)
 
 
 local function Decap_HL2(ent)
-	print("nyoooooooooooooooooo")
 	local b1 = ent:LookupBone("ValveBiped.Bip01_Head1")
 	local b2 = ent:LookupBone("ValveBiped.Bip01_Spine2")
 	
@@ -292,12 +291,6 @@ local function Decap_TF2(ent)
 	ent:SetBoneMatrix(b1, m1)
 	ent:SetBoneMatrix(b2, m2)
 end
-
-hook.Add("CreateClientsideRagdoll", "TF_Decapitate", function(ent, rag)
-	if ent:IsNPC() and ent:HasDeathFlag(DF_DECAP) then
-		print("Decapme!")
-	end
-end)
 
 function GM:DecapitateRagdoll(rag, owner, deathpose)
 	local b

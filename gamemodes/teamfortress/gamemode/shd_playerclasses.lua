@@ -49,9 +49,9 @@ function GM:LoadPlayerClasses()
 		local classname = string.Replace(f, ".lua", "")
 		self:RegisterPlayerClass(classname, CLASS)
 		
-		if SERVER then
+		--[[if SERVER then
 			Msg("Registered class \""..classname.."\"\n")
-		end
+		end]]
 	end
 end
 

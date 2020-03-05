@@ -153,9 +153,9 @@ function ReadActivitiesFromModel(ent)
 			if act~="" and not _G[act] then
 				_G[act] = ent:GetSequenceActivity(i)
 				
-				if act == "ACT_MELEE_VM_HITCENTER" then
+				--[[if act == "ACT_MELEE_VM_HITCENTER" then
 					MsgFN("Setting %s to %d (model='%s' entity=%s owner=%s)", act, _G[act], ent:GetModel(), tostring(ent), tostring(ent:GetOwner()))
-				end
+				end]]
 			end
 			i = i+1
 		end

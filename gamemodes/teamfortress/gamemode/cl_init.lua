@@ -435,7 +435,6 @@ local amount = table.Count(classes)
 for classn, classtab in pairs(classes) do
 	if i < 5 and !classtab.Hidden then
 		i = i + 1
-		print(amount)
 		local button = vgui.Create("DButton", ClassFrame)
 		button:SetSize(100, 30)
 		-- nothing allows automatic centering in a grid/list :(
@@ -818,9 +817,7 @@ for k, v in pairs(tf_items.ReturnItems()) do
 
 		t.RealName = v["name"]
 		t.centerytext = true
-		print(v["id"], string.sub(GetImprovedItemName(v["name"]), 4))
 		t.disabled = false
-		print(v["image_inventory"])
 		if !isstring(v["image_inventory"]) or Material(v["image_inventory"]):IsError() then
 			t.FallbackModel = v["model_player"]
 			t.itemImage = surface.GetTextureID("backpack/weapons/c_models/c_bat")

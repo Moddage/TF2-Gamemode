@@ -156,7 +156,6 @@ end
 
 net.Receive("UpdateLoadout", function()
 	HudWeaponSelection:UpdateLoadout()
-	print("kk")
 end)
 
 -- Weapon selection

@@ -31,7 +31,6 @@ function ENT:KeyValue(key,value)
 
 		self.Team = tonumber(value)
 	end
-	print(key, value, tonumber(value), self.Team)
 end
 
 function ENT:StartTouch(ply)

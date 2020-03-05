@@ -34,7 +34,6 @@ function PANEL:AddModel(id, mdl, keys)
 
 	if keys.Color then
 		ent.ColorType = keys.Color
-		print("Yes!")
 	end
 	
 	if keys.LayoutEntity then
@@ -103,11 +102,8 @@ function PANEL:Paint()
 	self.LastPaint = RealTime()
 	for k, v in pairs(self.Entities) do
 		if v.ColorType == "hat" then
-			print("Uhh..")
-			print(v:GetModel())
 			v:SetColor(string.ToColor(LocalPlayer():GetInfo("tf_hatcolor")))
 			PrintTable(v:GetColor())
-			print(string.ToColor(LocalPlayer():GetInfo("tf_hatcolor")))
 		elseif v.ColorType == "person" and IsValid(LocalPlayer().NeutralModel) then
 			v:SetColor(LocalPlayer().NeutralModel:GetColor())
 		end

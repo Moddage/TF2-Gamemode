@@ -19,7 +19,6 @@ function ENT:Initialize()
 end
 
 function ENT:InitPostEntity()
-	print(self)
 	PrintTable(self.Properties or {})
 	
 	self.StartPaused = (self.Properties.start_paused == 1)
@@ -206,7 +205,6 @@ function ENT:Input_AddTeamTime(activator, caller, data)
 	t, sec = tonumber(t), tonumber(sec)
 	
 	if t and sec then
-		print(Format("Added %d seconds due to team %d", sec, t))
 		self:SetTime(self:GetTime() + sec)
 	end
 end
@@ -257,7 +255,6 @@ function ENT:Input_SetSetupTime(activator, caller, data)
 end
 
 function ENT:AcceptInput(name, activator, caller, data)
-	print(self, "received input", name)
 	local f = self["Input_"..name]
 	if f then
 		f(self, activator, caller, data)

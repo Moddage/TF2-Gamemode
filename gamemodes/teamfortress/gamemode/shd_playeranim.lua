@@ -249,8 +249,6 @@ function GM:DoAnimationEvent(pl, event, data, taunt)
 		return self.BaseClass:DoAnimationEvent(pl, event, data)
 	end
 	
-	print(event, data)
-	
 	local w = pl:GetActiveWeapon()
 	if event == PLAYERANIMEVENT_ATTACK_PRIMARY then
 		if pl.anim_InSwim then

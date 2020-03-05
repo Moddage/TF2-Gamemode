@@ -78,10 +78,6 @@ for k, v in pairs(items) do
     if v.item_name then
         v.name = tf_lang.GetRaw(v.item_name)
         tf_items.Items[v.name] = v
-
-        if v.name == "Tomislav" then
-            print("Tomislav Time")
-        end
     elseif v.name then
         tf_items.Items[tf_lang.GetRaw(v.name)] = v
     else

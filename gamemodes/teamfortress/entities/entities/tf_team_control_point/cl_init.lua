@@ -38,12 +38,12 @@ usermessage.Hook("TF_SetControlPointLayout", function(msg)
 	
 	GAMEMODE.ControlPointLayout = m
 	
-	for _,v in ipairs(m) do
+	--[[for _,v in ipairs(m) do
 		for _,n in ipairs(v) do
 			Msg(n.." ")
 		end
 		Msg("\n")
-	end
+	end]]
 end)
 
 usermessage.Hook("TF_AddControlPoint", function(msg)
@@ -76,8 +76,8 @@ usermessage.Hook("TF_AddControlPoint", function(msg)
 	
 	UpdateControlPointTexture(cp)
 	
-	MsgN("Control point "..id)
-	PrintTable(cp)
+	-- MsgN("Control point "..id)
+	-- PrintTable(cp)
 	
 	GAMEMODE.ControlPoints[id] = cp
 end)

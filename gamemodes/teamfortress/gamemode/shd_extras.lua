@@ -1,4 +1,4 @@
-MsgN("Loading extra items and attributes")
+-- MsgN("Loading extra items and attributes")
 
 if CLIENT then
 
@@ -1283,8 +1283,10 @@ end)
 
 end
 
+hook.Add("")
+
 -- Loading everything up
 
-tf_items.ParseGameItems(item_data)
+tf_items.ParseGameItems(item_data, true)
 
-MsgN("Done!")
+-- MsgN("Done!")

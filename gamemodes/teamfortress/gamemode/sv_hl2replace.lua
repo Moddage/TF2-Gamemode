@@ -70,13 +70,13 @@ function GM:InitPostEntity()
 		local state = global.globalstate
 		local init = global.initialstate
 		if state=="antlion_allied" then
-			Msg("Antlions are allied\n")
+			-- Msg("Antlions are allied\n")
 			SetGlobalBool("AntlionsAreAllied", true)
 			self.AntlionsAreAllied = true
 		end
 		
 		if state=="gordon_precriminal" then
-			Msg("Gordon is precriminal\n")
+			-- Msg("Gordon is precriminal\n")
 			SetGlobalBool("GordonIsPrecriminal", true)
 			self.GordonIsPrecriminal = true
 		end
@@ -87,15 +87,15 @@ function GM:InitPostEntity()
 	landmark:SetName(tostring(landmark))
 	
 	local err = landmark:Load()
-	MsgN("Loading data from previous level")
+	-- MsgN("Loading data from previous level")
 	if err==1 then
-		MsgN("No data to load")
+		-- MsgN("No data to load")
 	elseif err==2 then
-		MsgN("Error reading file")
+		-- MsgN("Error reading file")
 	end
 	
 	if not landmark:IsValidMap() then
-		MsgN("Wrong map, landmark data will not be used")
+		-- MsgN("Wrong map, landmark data will not be used")
 	end
 	
 	for _,v in pairs(ents.FindByClass("trigger_changelevel")) do
@@ -220,9 +220,9 @@ function GM:EntityKeyValue(ent, key, value)
 		ent[k] = value
 		
 		if k=="spawnflags" then
-			if bit.bor(tonumber(value),4)>0 then
+			--[[if bit.bor(tonumber(value),4)>0 then
 				print(ent,"previous")
-			end
+			end]]
 		--[[else
 			ent:SetKeyValue("spawnflags", 2)]]
 		end

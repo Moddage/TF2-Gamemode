@@ -49,7 +49,6 @@ function ENT:RunBehaviour()
 		if self.PosGen then
 			self:ChasePos({})
 		end
-		--print("Recomputing...")
 		coroutine.wait(1)
 		
 		coroutine.yield()

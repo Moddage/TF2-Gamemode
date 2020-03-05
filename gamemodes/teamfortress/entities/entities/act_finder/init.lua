@@ -152,14 +152,12 @@ function ENT:Initialize()
 			self.NumAnim = self.NumAnim + 1
 		end
 	end
-	Msg(self.NumAnim.." animations.\n")
 end
 
 function ENT:Think()
 	if not self.Act then
 		self.Act=-1
 		self.NumAnim2=0
-		Msg("Search started : "..self:GetModel().."\n")
 	end
 	
 	for i=1,100 do
@@ -175,7 +173,6 @@ function ENT:Think()
 	
 	if self.Act>5000 then
 		ErrorNoHalt("Done\n")
-		Msg(self.NumAnim2.." valid animations found.\n")
 		self:Remove()
 	end
 end

@@ -220,7 +220,6 @@ function PANEL:UpdateLoadout()
 		local l = self.Loadout[i]
 
 		if i<=self.NumSlots then
-			print(l.class, "PASSED :D")
 			t:SetVisible(true)
 			local w = tf_items.ItemsByID[l.id]
 			if w then

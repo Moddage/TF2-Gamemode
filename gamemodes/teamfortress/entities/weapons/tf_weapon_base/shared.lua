@@ -285,7 +285,6 @@ function SWEP:Deploy()
 	end
 	
 	--MsgFN("SendWeaponAnim %s %d", tostring(self), self.VM_DRAW)
-	print("DRAW ANIM")
 	self:InspectAnimCheck()
 	self:SendWeaponAnim(self.VM_DRAW)
 	
@@ -592,14 +591,13 @@ function SWEP:PrimaryAttack(noscene)
 	if SERVER and not self.Primary.NoFiringScene and not noscene then
 		self.Owner:Speak("TLK_FIREWEAPON", true)
 	end
-	--print(self.Base)
+
 	self.NextIdle = nil
 	
 	return true
 end
 
 function SWEP:RustyBulletHole()
-	--print(self.ProjectileShootOffset)
 	if self.Base ~= "tf_weapon_melee_base" and self.GetClass ~= "tf_weapon_builder" and not self.IsPDA and self.ProjectileShootOffset == Vector(0,0,0) or self.ProjectileShootOffset == Vector(3,8,-5) and self.IsDeployed == true then
 		--self:ShootBullet(0, self.BulletsPerShot, self.BulletSpread)
 		self:FireBullets({Num = self.BulletsPerShot, Src = self.Owner:GetShootPos(), Dir = self.Owner:GetAimVector(), Spread = Vector(self.BulletSpread, self.BulletSpread, 0), Tracer = 0, Force = 0, Damage = 0, AmmoType = ""})
@@ -753,8 +751,6 @@ function SWEP:Think()
 	if self.IsDeployed then
 		self.CanInspect = true
 	end
-			
-	//print(deployspeed)
 	
 	if self.NextReload and CurTime()>=self.NextReload then
 		self:SetClip1(self:Clip1() + self.AmmoAdded)

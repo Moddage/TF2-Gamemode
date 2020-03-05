@@ -81,7 +81,7 @@ function CLASS:PlayCustomGesture(anim, state)
 	
 	if actname then
 		act2 = getfenv()[actname]
-		Msg("Gesture : "..actname.." : "..tostring(act2).."\n")
+		-- Msg("Gesture : "..actname.." : "..tostring(act2).."\n")
 		self:RestartGesture(act2)
 		return true
 	end

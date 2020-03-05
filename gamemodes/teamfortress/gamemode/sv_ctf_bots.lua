@@ -355,7 +355,6 @@ hook.Add("PlayerSpawn", "leadbot_spawn", function(ply)
 						timer.Simple(0.2, function()
 							ply:SelectWeapon(v:GetClass())
 						end)
-						print(v)
 					end
 				end
 			end

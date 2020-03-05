@@ -172,7 +172,7 @@ end)
 --------------------------------------------------------------------------------
 
 function Load(path)
-	Msg("Loading response/rules script '"..path.."' ... ")
+	-- Msg("Loading response/rules script '"..path.."' ... ")
 	local nrule, nresp, ncrit = 0, 0, 0
 	local data
 	
@@ -183,7 +183,7 @@ function Load(path)
 	end
 	
 	if not data or data=="" then
-		MsgFN("Error, file '%s' not found!", path)
+		-- MsgFN("Error, file '%s' not found!", path)
 		return
 	end
 	
@@ -208,7 +208,7 @@ function Load(path)
 		nresp = nresp + 1
 	end
 	
-	Msg(nrule.." rules, "..nresp.." responses, "..ncrit.." criteria\n")
+	-- Msg(nrule.." rules, "..nresp.." responses, "..ncrit.." criteria\n")
 	
 	-- Includes
 	for str in string.gmatch(data, "#include \"(.-)\"") do

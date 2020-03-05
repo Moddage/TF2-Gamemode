@@ -132,7 +132,6 @@ local function ArrowBulletCallback(att, tr, dmginfo)
 	local ent = tr.Entity
 	local inf = dmginfo:GetInflictor()
 	
-	--print("ArrowBulletCallback", ent)
 	if ent:IsWorld() then
 		local effectdata = EffectData()
 			effectdata:SetEntity(NULL)

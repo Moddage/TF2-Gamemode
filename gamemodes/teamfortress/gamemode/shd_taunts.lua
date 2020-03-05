@@ -66,12 +66,12 @@ concommand.Add("tf_taunt", function(ply,cmd,args)
 	if IsValid(ply:GetActiveWeapon()) and table.HasValue(wep, ply:GetActiveWeapon():GetClass()) then ply:SetNWBool("NoWeapon", true) end
 	net.Start("ActivateTauntCam")
 	net.Send(ply)
-	print(ply:GetNWBool("SpeechTime"))
+
 	timer.Simple(ply:GetNWBool("SpeechTime"), function()
 		if not IsValid(ply) or (not ply:Alive() and not ply:GetNWBool("Taunting")) then return end
 		ply:SetNWBool("Taunting", false)
 		ply:SetNWBool("NoWeapon", false)
-		print("Thegay.")
+
 		net.Start("DeActivateTauntCam")
 		net.Send(ply)
 	end)

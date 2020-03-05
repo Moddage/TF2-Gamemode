@@ -81,7 +81,6 @@ end
 if CLIENT then
 
 function ENT:DrawInViewModel(vm, wep)
-	print(self:GetOwner())
 	if not wep.AddedCModels then
 		wep.AddedCModels = {}
 	end

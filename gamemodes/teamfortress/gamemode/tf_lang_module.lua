@@ -30,7 +30,7 @@ function Parse(data)
 end
 
 function Load(path)
-	Msg("Loading language script '"..path.."' ... ")
+	-- Msg("Loading language script '"..path.."' ... ")
 	local data = file.Read("resource/"..path, "GAME")
 	
 	if not data or data=="" then

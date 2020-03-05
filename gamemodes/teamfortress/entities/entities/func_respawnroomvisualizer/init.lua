@@ -11,7 +11,6 @@ function ENT:Initialize()
 end
 
 function ENT:InitPostEntity()
-	print(self)
 	PrintTable(self.Properties or {})
 end
 

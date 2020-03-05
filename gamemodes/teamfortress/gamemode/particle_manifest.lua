@@ -1,4 +1,3 @@
-print("Including TF2 Particles")
 AddCSLuaFile()
 game.AddParticles("particles/bigboom.pcf")
 game.AddParticles("particles/blood_impact.pcf")

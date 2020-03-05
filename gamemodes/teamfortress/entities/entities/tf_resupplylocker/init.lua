@@ -61,7 +61,6 @@ function ENT:Think()
 		
 		if not self and selfName then
 			self = ents.FindByName(selfName)[1]
-			--print("associatedmodel : "..selfName.." : "..tostring(self))
 		end
 		
 		if self and self:IsValid() then

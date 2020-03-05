@@ -341,7 +341,7 @@ end
 end]]
 
 function LoadGameItems(path)
-	MsgN("Loading items script '%s' ...", path)
+	-- MsgN("Loading items script '%s' ...", path)
 	
 	local data
 	
@@ -530,7 +530,7 @@ function META:EquipInLoadout(itemname, properties, noupdate)
 	-- It's a bundle, don't equip it but equip all of its items instead
 	if newitem.item_class == "bundle" then
 		for _,v in ipairs(newitem.bundle or {}) do
-			MsgFN("%s: Equipping item '%s'", itemname, v)
+			-- MsgFN("%s: Equipping item '%s'", itemname, v)
 			self:EquipInLoadout(v, {}, true)
 		end
 		self:SetPlayerClass(self:GetPlayerClass())

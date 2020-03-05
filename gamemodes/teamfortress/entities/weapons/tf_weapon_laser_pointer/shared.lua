@@ -72,6 +72,6 @@ function SWEP:Think()
 	self.BaseClass.Think(self)
 
 	if self.Owner:KeyDown(IN_ATTACK) then
-		print("Fire!")
+
 	end
 end

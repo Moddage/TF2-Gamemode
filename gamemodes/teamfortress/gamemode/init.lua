@@ -110,7 +110,7 @@ function GM:PlayerInitialSpawn(ply)
 		return
 	end
 	
-	Msg("PlayerInitialSpawn : "..ply:GetName().." "..tostring(self.Landmark).."\n")
+	-- Msg("PlayerInitialSpawn : "..ply:GetName().." "..tostring(self.Landmark).."\n")
 	if self.Landmark then--and self.Landmark:IsValidMap() then
 		self.Landmark:LoadPlayerData(ply)
 	end

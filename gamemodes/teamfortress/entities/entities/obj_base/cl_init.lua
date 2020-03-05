@@ -2,8 +2,6 @@
 include("shared.lua")
 
 function ENT:Initialize()
-	MsgFN("Initialized %s", tostring(self))
-	
 	self:InstallDataTable()
 	self:SetupDataTables() -- we need to do this manually because SNPCs do not support clientside scripts
 end

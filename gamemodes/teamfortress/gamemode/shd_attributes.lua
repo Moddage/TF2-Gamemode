@@ -610,7 +610,6 @@ local ATTRIBUTES = {
 				inf = CURRENT_ENT
 				if IsValid(inf) and IsValid(inf.Owner) then
 					att = inf.Owner
-					print(att:IsThrownByExplosion())
 					if ISPLAYER(att) and not att:OnGround() and att:IsThrownByExplosion() then return true end
 				end
 			end
