@@ -534,13 +534,13 @@ end
 
 local Option1 = vgui.Create( "DCheckBox", ClassFrame )
 Option1:SetPos( 10, 110 )
-Option1:SetValue( GetConVar("tf_righthand"):GetInt() )
+Option1:SetValue( GetConVar("cl_flipviewmodels"):GetInt() )
 
 function Option1:OnChange(new)
 	if new == false then
-		RunConsoleCommand("tf_righthand", 0)
+		RunConsoleCommand("cl_flipviewmodels", 0)
 	else
-		RunConsoleCommand("tf_righthand", 1)
+		RunConsoleCommand("cl_flipviewmodels", 1)
 	end
 end
 

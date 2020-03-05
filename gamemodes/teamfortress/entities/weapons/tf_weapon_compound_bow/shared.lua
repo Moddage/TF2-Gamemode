@@ -168,8 +168,8 @@ end
 function SWEP:Think()
 	self:TFViewModelFOV()
 
-	if GetConVar("tf_righthand") then
-		if GetConVar("tf_righthand"):GetInt() == 1 then
+	if GetConVar("cl_flipviewmodels") then
+		if GetConVar("cl_flipviewmodels"):GetInt() == 1 then
 			self.ViewModelFlip = true
 		else
 			self.ViewModelFlip = false
