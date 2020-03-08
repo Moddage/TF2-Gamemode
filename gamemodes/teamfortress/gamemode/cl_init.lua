@@ -25,6 +25,7 @@ include("tf_draw_module.lua")
 include("cl_materialfix.lua")
 
 include("cl_pac.lua")
+include("cl_loadout.lua")
 
 include("proxies/itemtintcolor.lua")
 

@@ -10,6 +10,7 @@ include("sv_death.lua")
 include("sv_ctf_bots.lua")
 include("sv_chat.lua")
 include("sv_weaponslots.lua")
+include("sv_loadout.lua")
 
 local LOGFILE = "teamfortress/log_server.txt"
 file.Delete(LOGFILE)
@@ -312,11 +313,15 @@ function GM:PlayerSpawn(ply)
 	ply:SetWeaponColor(weaponcolor)
 	ply:SetNoCollideWithTeammates(true)
 	ply:SetAvoidPlayers(true)
-	
-	if GetConVar("tf_randomizer"):GetBool() and !ply:IsHL2() then
-		RandomWeapon(ply, "primary")
-		RandomWeapon(ply, "secondary")
-		RandomWeapon(ply, "melee")
+
+	if !ply:IsHL2() then
+		if GetConVar("tf_randomizer"):GetBool() then
+			RandomWeapon(ply, "primary")
+			RandomWeapon(ply, "secondary")
+			RandomWeapon(ply, "melee")
+		else
+			ply:GiveLoadout()
+		end
 	end
 
 	umsg.Start("ExitFreezecam", ply)
@@ -427,7 +432,8 @@ function GM:ShowSpare1(ply)
 end
 
 function GM:ShowSpare2(ply)
-	ply:ConCommand("tf_itempicker wep")
+	-- ply:ConCommand("tf_itempicker wep")
+	ply:ConCommand("open_charinfo_direct")
 end
 
 function GM:HealPlayer(healer, pl, h, effect, allowoverheal)
