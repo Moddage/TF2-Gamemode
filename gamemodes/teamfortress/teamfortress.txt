@@ -1,11 +1,10 @@
 "teamfortress"
 {
-	"base"				"base"
-	"title"				"Team Fortress 2"
+	"base"			"base"
+	"title"			"Team Fortress 2"
+	"category"		"other"
 	"menusystem"		"1"
 	"workshopid"		"1417447538"
-
-	"author_name"		"LeadKiller"
 
 	"settings"
 	{
